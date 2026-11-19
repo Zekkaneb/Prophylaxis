@@ -330,21 +330,21 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
      quieter cadence below means most of these lines are never heard in a game. */
   edward: {
     book: ['Okay, this is normal.', 'I know the first few moves.'],
-    deviation: ['I do not know this one.', 'Hmm. I will just play.'],
+    deviation: ["I don't know what I'm doing", 'Random bullshit go!!.'],
     mistake: ['Oh frick.', 'Oh shoot.', 'I messed up.', "That wasn't good."],
     strong: ['I think this is okay.', "Okay, let's see."],
-    brilliant: ["I didn't expect that.", 'Hmm.'],
+    brilliant: ["I didn't expect that.", 'Hmm.', "Wait, why's this good"],
     winning: ['I think this is okay.'],
     losing: ['It is fine.', "Okay, let's see."],
-    defense: ['I should defend here.', 'It is fine.'],
+    defense: ['I should defend here.', 'It is fine.','Hmm'],
     attack: ["Okay, let's see."],
     'attack-fail': ["That wasn't good."],
     sacrifice: ['Hmm.'],
     'material-won': ['Oh. Okay.'],
-    'material-lost': ['Oh frick.', 'I messed up.'],
+    'material-lost': ['Oh frick.', 'I messed up.', 'Oopsies.'],
     win: ['Good game.', 'It is fine.'],
-    loss: ['Good game.', "That wasn't good.", 'It is fine.'],
-    draw: ['It is fine.'],
+    loss: ['Good game.', "That wasn't good.", 'It is not fine.'],
+    draw: ['Wow.'],
   },
   /* The earlier Bryan inherits his voice verbatim — the same object, the same
      lines — and adds only what a defender says. A separate object so Junior and
