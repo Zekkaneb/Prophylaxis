@@ -167,6 +167,20 @@ On normal (non-error) turns below 1000 USCF the softmax weight of the #1 engine
 move is multiplied by 0.08 and the #2 by 0.25 (`suppressTopLines`), so a beginner
 plays a plausible, slightly loose move instead of echoing Stockfish.
 
+Every game also rolls a **phase proficiency profile** (`rollPhaseProfile`): one
+level per phase, from 1 (Weak / Sloppy, -200 Elo, errors x1.35) to 5 (Peak /
+Sharp, +175, errors x0.68), with 2, 3 and 4 at -100 / 0 / +100 and 1.15 / 1.00 /
+0.82. Under 1600 Elo the three phases are three different levels; from 1600 up
+matching phases are allowed, drawn with weights 5 / 15 / 30 / 30 / 20 so Level 1
+stays at or under 5%. At or below 1400 a second Level 1 is replaced by Level 3,
+so a bot never collapses in two phases at once. Positive boosts are capped at
+`min(180, 25% of the card rating)`: a 700 bot's peak phase is 875, not 1500.
+
+`usePlayGame` rolls the profile once per game id and plays each phase at
+`getEffectivePhaseElo`, which feeds the six-bucket distribution, the depth, the
+recapture curve and the tunnel-vision filter. In DEV the roll is logged as
+`[play] bot phase profile O: L4 (800) | M: L1 (500) | E: L5 (875)`.
+
 The error rate is scaled by phase (opening `<= 8` moves x0.70 below 1400 USCF
 and x0.40 above, middlegame x1.20, endgame x0.95) and time control (`classical`
 x1.0 / depth +0 / time x1, `rapid` x1.18 / -1 / x0.55, `blitz` x1.45 / -2 /

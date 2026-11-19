@@ -373,6 +373,154 @@ const BUCKET_CHAIN: Record<Bucket, readonly Bucket[]> = {
 };
 
 /* --------------------------------------------------------------------------
+   Per-game phase proficiency
+   -------------------------------------------------------------------------- */
+
+export type PhaseProficiencyLevel = 1 | 2 | 3 | 4 | 5;
+
+export interface PhaseProfile {
+  opening: PhaseProficiencyLevel;
+  middlegame: PhaseProficiencyLevel;
+  endgame: PhaseProficiencyLevel;
+}
+
+export interface PhaseLevelMeta {
+  level: PhaseProficiencyLevel;
+  /** Debug/UI label. */
+  label: string;
+  /** Rating offset the level asks for, before the beginner ceiling. */
+  eloOffset: number;
+  /** Multiplier on the three error buckets for that phase. */
+  errorMult: number;
+}
+
+export const PHASE_LEVELS: readonly PhaseProficiencyLevel[] = [1, 2, 3, 4, 5];
+
+export const PHASE_LEVELS_META: Record<PhaseProficiencyLevel, PhaseLevelMeta> = {
+  1: { level: 1, label: 'Weak / Sloppy', eloOffset: -200, errorMult: 1.35 },
+  2: { level: 2, label: 'Below Par', eloOffset: -100, errorMult: 1.15 },
+  3: { level: 3, label: 'On-Rating', eloOffset: 0, errorMult: 1 },
+  4: { level: 4, label: 'Strong', eloOffset: 100, errorMult: 0.82 },
+  5: { level: 5, label: 'Peak / Sharp', eloOffset: 175, errorMult: 0.68 },
+};
+
+/** Below this rating the three phases must be three different levels. */
+export const PHASE_DISTINCT_ELO = 1600;
+
+/** At or below this rating at most one phase may be Level 1. */
+export const PHASE_ONE_BAD_ELO = 1400;
+
+/** Replacement level used when the one-bad-phase rule is violated. */
+export const PHASE_FALLBACK_LEVEL: PhaseProficiencyLevel = 3;
+
+/** Ceiling on any positive phase boost, and its share of the base rating. */
+export const PHASE_MAX_BOOST = 180;
+export const PHASE_MAX_BOOST_SHARE = 0.25;
+
+/** Sampling weights from 1600 Elo up: strong phases are common, Level 1 rare. */
+export const PHASE_LEVEL_WEIGHTS: Record<PhaseProficiencyLevel, number> = {
+  1: 0.05,
+  2: 0.15,
+  3: 0.3,
+  4: 0.3,
+  5: 0.2,
+};
+
+export function phaseErrorMultiplier(level: PhaseProficiencyLevel): number {
+  return PHASE_LEVELS_META[level].errorMult;
+}
+
+/**
+ * The rating a phase actually plays at.
+ *
+ * Positive boosts are capped at 25% of the base rating (at most 180), so a 700
+ * bot's best phase is 875, never a 1500-level phase. Negative offsets are taken
+ * in full and the result is clamped to the supported range.
+ */
+export function getEffectivePhaseElo(baseElo: number, level: PhaseProficiencyLevel): number {
+  const target = clampElo(baseElo);
+  const offset = PHASE_LEVELS_META[level].eloOffset;
+  const maxBoost = Math.min(PHASE_MAX_BOOST, Math.round(target * PHASE_MAX_BOOST_SHARE));
+  const applied = offset > 0 ? Math.min(offset, maxBoost) : offset;
+  return clampElo(target + applied);
+}
+
+/** Uniform pick without replacement from the five levels. */
+function distinctLevels(random: () => number): PhaseProfile {
+  const pool = [...PHASE_LEVELS];
+  const picked: PhaseProficiencyLevel[] = [];
+  while (picked.length < 3 && pool.length > 0) {
+    const index = Math.min(pool.length - 1, Math.floor(random() * pool.length));
+    picked.push(pool.splice(index, 1)[0]);
+  }
+  return { opening: picked[0], middlegame: picked[1], endgame: picked[2] };
+}
+
+/** One weighted draw, replacement allowed. */
+function weightedLevel(random: () => number): PhaseProficiencyLevel {
+  const total = PHASE_LEVELS.reduce((sum, level) => sum + PHASE_LEVEL_WEIGHTS[level], 0);
+  let roll = random() * total;
+  for (const level of PHASE_LEVELS) {
+    roll -= PHASE_LEVEL_WEIGHTS[level];
+    if (roll < 0) return level;
+  }
+  return 3;
+}
+
+/**
+ * Rolls the strength profile for one game.
+ *
+ * Under 1600 Elo the three phases are three different levels, so a beginner is
+ * always lopsided somewhere instead of uniformly weak. From 1600 up matching
+ * phases are allowed and the draw is weighted toward 3-5 with Level 1 at 5%.
+ * At or below 1400 a second Level 1 is replaced by Level 3, so a bot never
+ * collapses in more than one phase per game.
+ */
+export function rollPhaseProfile(
+  baseElo: number,
+  random: () => number = Math.random,
+): PhaseProfile {
+  const target = clampElo(baseElo);
+  const profile =
+    target < PHASE_DISTINCT_ELO
+      ? distinctLevels(random)
+      : {
+          opening: weightedLevel(random),
+          middlegame: weightedLevel(random),
+          endgame: weightedLevel(random),
+        };
+
+  if (target > PHASE_ONE_BAD_ELO) return profile;
+
+  const levels: Array<'opening' | 'middlegame' | 'endgame'> = [
+    'opening',
+    'middlegame',
+    'endgame',
+  ];
+  let badSeen = false;
+  for (const phase of levels) {
+    if (profile[phase] !== 1) continue;
+    if (!badSeen) {
+      badSeen = true;
+      continue;
+    }
+    profile[phase] = PHASE_FALLBACK_LEVEL;
+  }
+  return profile;
+}
+
+/** `O: L4 (800) | M: L1 (500) | E: L5 (875)` — dev/debug summary. */
+export function describePhaseProfile(baseElo: number, profile: PhaseProfile): string {
+  const part = (label: string, level: PhaseProficiencyLevel) =>
+    `${label}: L${level} (${getEffectivePhaseElo(baseElo, level)})`;
+  return [
+    part('O', profile.opening),
+    part('M', profile.middlegame),
+    part('E', profile.endgame),
+  ].join(' | ');
+}
+
+/* --------------------------------------------------------------------------
    Game phase, time control and clock
    -------------------------------------------------------------------------- */
 
@@ -448,6 +596,8 @@ export interface HumanSearchInput {
   incrementMs?: number;
   lastMove?: LastCapture | null;
   random?: () => number;
+  /** Rolled once per game; steps the phase's rating up or down. */
+  phaseProfile?: PhaseProfile;
 }
 
 export interface HumanSearchPlan {
@@ -464,6 +614,10 @@ export interface HumanSearchPlan {
   quality: QualityShares;
   /** `quality.blunder + quality.mistake + quality.inaccuracy`. */
   errorRate: number;
+  /** The proficiency level this game rolled for the active phase. */
+  phaseLevel: PhaseProficiencyLevel;
+  /** The phase's rating after the proficiency offset and ceiling. */
+  effectiveElo: number;
 }
 
 function uciOf(move: { from: string; to: string; promotion?: string }): string {
@@ -522,10 +676,18 @@ function thinkTimeFor(
 /** Everything the bot decides before touching the engine. */
 export function planHumanSearch(input: HumanSearchInput): HumanSearchPlan {
   const random = input.random ?? Math.random;
-  const calibration = humanCalibration(input.elo);
   const moveNumber = input.moveNumber ?? fullMoveNumber(input.fen);
   const phase = phaseForMoveNumber(moveNumber);
-  const phaseMult = phaseMultiplier(phase, input.elo);
+
+  /* The rolled phase profile is what the bot really plays at this turn: its
+     rating, its error mass, its depth and its recapture curve all read from the
+     effective rating, not the card rating. Without a profile this is a no-op. */
+  const phaseLevel = input.phaseProfile?.[phase] ?? 3;
+  const baseElo = clampElo(input.elo);
+  const effectiveElo = input.phaseProfile ? getEffectivePhaseElo(baseElo, phaseLevel) : baseElo;
+
+  const calibration = humanCalibration(effectiveElo);
+  const phaseMult = phaseMultiplier(phase, baseElo);
   const category = input.timeControlCategory ?? 'classical';
   const timeControl = timeControlScaling(category);
   const incrementMs = Math.max(0, input.incrementMs ?? 0);
@@ -537,14 +699,14 @@ export function planHumanSearch(input: HumanSearchInput): HumanSearchPlan {
   const kind = positionKind(input.fen, input.lastMove);
   const thinkTimeMs = thinkTimeFor(kind, timeControl.timeScale, timeTrouble, remaining, random);
 
-  const scaledDepth = humanSearchDepth(input.elo, timeControl.depthOffset);
+  const scaledDepth = humanSearchDepth(effectiveElo, timeControl.depthOffset);
   const depth = timeTrouble ? Math.min(scaledDepth, TROUBLE_DEPTH_CAP) : scaledDepth;
 
   /* Phase, time control and time trouble make the same player worse: they scale
      the three error buckets and hand the displaced mass to good/excellent/best. */
   const quality = scaleErrors(
     calibration.quality,
-    phaseMult * timeControl.tcMult * (timeTrouble ? 1.4 : 1),
+    phaseMult * timeControl.tcMult * (timeTrouble ? 1.4 : 1) * phaseErrorMultiplier(phaseLevel),
   );
 
   return {
@@ -557,6 +719,8 @@ export function planHumanSearch(input: HumanSearchInput): HumanSearchPlan {
     thinkTimeMs,
     quality,
     errorRate: quality.blunder + quality.mistake + quality.inaccuracy,
+    phaseLevel,
+    effectiveElo,
   };
 }
 

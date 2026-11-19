@@ -35,14 +35,19 @@ import {
   SHALLOW_DEPTH,
   SHALLOW_MULTI_PV,
   bucketFor,
+  describePhaseProfile,
+  getEffectivePhaseElo,
   lastCaptureOf,
+  phaseForMoveNumber,
   planHumanSearch,
   probeErrorMove,
   referenceCandidateScores,
+  rollPhaseProfile,
   selectHumanBotMove,
   timeControlCategory,
   type Bucket,
   type HumanMoveChoice,
+  type PhaseProfile,
 } from './humanStrength.ts';
 import { chooseRandomLegalMove } from './blunders.ts';
 import {
@@ -225,6 +230,10 @@ export function usePlayGame(engine: StockfishController) {
   const viewVisibleRef = useRef(true);
   const bookRef = useRef<RepertoireBook | null>(null);
   const bookPromiseRef = useRef<Promise<void> | null>(null);
+  /** Rolled once per game (keyed by game id) and kept for that whole game. */
+  const phaseProfileRef = useRef<{ key: string; elo: number; profile: PhaseProfile } | null>(
+    null,
+  );
   const timersRef = useRef<BotTimers>({ move: null, tick: null });
   const runBotRef = useRef<() => Promise<void>>(async () => {});
   const scheduleBotRef = useRef<(delay?: number) => void>(() => {});
@@ -471,7 +480,33 @@ export function usePlayGame(engine: StockfishController) {
     const fen = game.fen();
     const botColor = game.turn();
     const style = styleRef.current;
-    const elo = opponentRef.current?.elo ?? 1500;
+    const baseElo = opponentRef.current?.elo ?? 1500;
+
+    /* One strength profile per game: three phase levels rolled now and kept for
+       the whole match, so a bot can be sharp in the opening and sloppy in the
+       endgame (or the reverse) instead of being the same opponent throughout. */
+    const profileKey = gameIdRef.current ?? 'game';
+    const cached = phaseProfileRef.current;
+    const profileChanged = !cached || cached.key !== profileKey || cached.elo !== baseElo;
+    const phaseProfile = profileChanged ? rollPhaseProfile(baseElo) : cached.profile;
+    if (profileChanged) {
+      phaseProfileRef.current = { key: profileKey, elo: baseElo, profile: phaseProfile };
+      if (import.meta.env.DEV) {
+        console.info(
+          '[play] bot phase profile',
+          describePhaseProfile(baseElo, phaseProfile),
+        );
+      }
+    }
+
+    /* `elo` is the rating this turn is actually played at: the card rating moved
+       by the active phase's level. Everything below — book cap, blunder roll,
+       personality dials, the six-bucket distribution, depth, recapture curve and
+       tunnel-vision filter — reads this number. */
+    const phase = phaseForMoveNumber(Math.floor(sansRef.current.length / 2) + 1);
+    const phaseLevel = phaseProfile[phase];
+    const elo = getEffectivePhaseElo(baseElo, phaseLevel);
+
     /** Theory is only followed while this rating would still remember it. */
     const inBookWindow = sansRef.current.length < bookPlyLimit(elo);
     /** A search that resolves after a rematch must not move in the new game. */
@@ -572,7 +607,8 @@ export function usePlayGame(engine: StockfishController) {
           ? null
           : planHumanSearch({
               fen,
-              elo,
+              elo: baseElo,
+              phaseProfile,
               moveNumber: Math.floor(sansRef.current.length / 2) + 1,
               timeControlCategory: timeControlCategory(
                 (configRef.current?.initialSeconds ?? 0) * 1000,

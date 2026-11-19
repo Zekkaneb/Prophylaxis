@@ -15,25 +15,32 @@ import {
   ERROR_TEMPERATURE_BOOST,
   ERROR_TEMPERATURE_BOOST_LOW,
   HUMAN_MULTI_PV,
+  PHASE_DISTINCT_ELO,
+  PHASE_LEVELS_META,
+  PHASE_ONE_BAD_ELO,
   QUALITY_BANDS,
   SELF_MATE_GUARD_ELO,
   allowsMateInOne,
   beginnerScaling,
   bucketFor,
   clampElo,
+  describePhaseProfile,
   errorTemperatureBoost,
+  getEffectivePhaseElo,
   hasHumanIntent,
   humanCalibration,
   humanSearchDepth,
   lastCaptureOf,
   moveIntent,
   phaseForMoveNumber,
+  phaseErrorMultiplier,
   phaseMultiplier,
   pickCategory,
   planHumanSearch,
   positionKind,
   qualityShares,
   recaptureChance,
+  rollPhaseProfile,
   scaleErrors,
   selectHumanBotMove,
   suppressTopLines,
@@ -538,6 +545,107 @@ test('win probability is 50% at a dead level and rises with the score', () => {
   assert.ok(winProbability(300) > winProbability(100));
   assert.ok(winProbability(-300) < 50);
   assert.ok(HUMAN_MULTI_PV >= 10);
+});
+
+test('phase levels carry the documented offsets and error multipliers', () => {
+  assert.deepEqual(
+    [1, 2, 3, 4, 5].map((level) => PHASE_LEVELS_META[level as 1 | 2 | 3 | 4 | 5].eloOffset),
+    [-200, -100, 0, 100, 175],
+  );
+  assert.deepEqual(
+    [1, 2, 3, 4, 5].map((level) => phaseErrorMultiplier(level as 1 | 2 | 3 | 4 | 5)),
+    [1.35, 1.15, 1, 0.82, 0.68],
+  );
+});
+
+test('the effective phase rating is capped by the card rating', () => {
+  assert.equal(getEffectivePhaseElo(700, 5), 875);
+  assert.equal(getEffectivePhaseElo(700, 4), 800);
+  assert.equal(getEffectivePhaseElo(700, 1), 500);
+  assert.equal(getEffectivePhaseElo(600, 5), 750);
+  assert.equal(getEffectivePhaseElo(100, 1), 100);
+  assert.equal(getEffectivePhaseElo(2000, 5), 2175);
+  assert.equal(getEffectivePhaseElo(2800, 5), 2800);
+  assert.equal(getEffectivePhaseElo(1200, 3), 1200);
+});
+
+test('a game rolls three distinct phase levels below 1600 Elo', () => {
+  const sequence = (values: number[]) => {
+    let index = 0;
+    return () => values[index++] ?? 0.5;
+  };
+  const profile = rollPhaseProfile(1200, sequence([0, 0.2, 0.4]));
+  const levels = [profile.opening, profile.middlegame, profile.endgame];
+  assert.deepEqual(levels, [1, 2, 4]);
+  assert.equal(new Set(levels).size, 3);
+
+  /* Sampling with replacement only starts at 1600. */
+  assert.equal(PHASE_DISTINCT_ELO, 1600);
+  const strong = rollPhaseProfile(1800, sequence([0.99, 0.99, 0.99]));
+  assert.deepEqual(
+    [strong.opening, strong.middlegame, strong.endgame],
+    [5, 5, 5],
+  );
+});
+
+test('a low-rated bot never collapses in more than one phase', () => {
+  assert.equal(PHASE_ONE_BAD_ELO, 1400);
+  let badSeeds = 0;
+  for (let index = 0; index < 300; index += 1) {
+    for (const elo of [100, 700, 1100, 1400]) {
+      const profile = rollPhaseProfile(elo);
+      const levels = [profile.opening, profile.middlegame, profile.endgame];
+      assert.ok(
+        levels.filter((level) => level === 1).length <= 1,
+        `two Level 1 phases at ${elo}`,
+      );
+      if (levels.includes(1)) badSeeds += 1;
+      if (elo < PHASE_DISTINCT_ELO) assert.equal(new Set(levels).size, 3);
+    }
+  }
+  assert.ok(badSeeds > 0);
+
+  /* Level 1 is rare from 1600 up. */
+  let bad = 0;
+  for (let index = 0; index < 500; index += 1) {
+    const profile = rollPhaseProfile(2000);
+    bad += [profile.opening, profile.middlegame, profile.endgame].filter(
+      (level) => level === 1,
+    ).length;
+  }
+  assert.ok(bad / 500 <= 0.2, `Level 1 drawn too often: ${bad}/1500 phases`);
+});
+
+test('the plan plays at the phase rating, not the card rating', () => {
+  const profile = { opening: 4, middlegame: 1, endgame: 5 } as const;
+  const opening = plan(1200, { moveNumber: 3, phaseProfile: profile });
+  assert.equal(opening.phaseLevel, 4);
+  assert.equal(opening.effectiveElo, 1300);
+  assert.equal(opening.calibration.elo, 1300);
+  assert.equal(opening.depth, humanSearchDepth(1300));
+
+  const middlegame = plan(1200, { moveNumber: 20, phaseProfile: profile });
+  const onRating = plan(1200, { moveNumber: 20 });
+  assert.equal(middlegame.phaseLevel, 1);
+  assert.equal(middlegame.effectiveElo, 1000);
+  assert.ok(middlegame.errorRate > onRating.errorRate);
+  assert.ok(middlegame.depth <= onRating.depth);
+
+  /* No profile means no change at all. */
+  const plain = plan(1200, { moveNumber: 20 });
+  assert.equal(plain.phaseLevel, 3);
+  assert.equal(plain.effectiveElo, 1200);
+});
+
+test('the debug summary reads the rolled profile', () => {
+  assert.equal(
+    describePhaseProfile(700, { opening: 4, middlegame: 1, endgame: 5 }),
+    'O: L4 (800) | M: L1 (500) | E: L5 (875)',
+  );
+  assert.equal(
+    describePhaseProfile(1200, { opening: 4, middlegame: 1, endgame: 5 }),
+    'O: L4 (1300) | M: L1 (1000) | E: L5 (1375)',
+  );
 });
 
 test('the last capture is read from the game history', () => {
