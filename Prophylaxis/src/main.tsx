@@ -7,6 +7,8 @@ import { ThemeProvider } from './theme/ThemeProvider.tsx';
 import './premium.css';
 /* After everything: the one viewport-height frame the board rooms share. */
 import './workbench.css';
+/* Last: the phone layout that settles the workbench rules at hand size. */
+import './mobile.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

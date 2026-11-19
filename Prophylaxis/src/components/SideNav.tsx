@@ -34,7 +34,16 @@ const SEARCH_DEBOUNCE_MS = 140;
 /** Remembers whether the rail was left open or folded to icons. */
 const COLLAPSE_KEY = 'chess-trainer.sidebar.v1';
 
+/** Below this width the bar always shows the room names (see `mobile.css`). */
+const PHONE_QUERY = '(max-width: 640px)';
+
+function isPhone(): boolean {
+  return window.matchMedia(PHONE_QUERY).matches;
+}
+
 function readCollapsed(): boolean {
+  /* A phone has no rail to reclaim: the labelled bar is the navigation. */
+  if (isPhone()) return false;
   try {
     const stored = localStorage.getItem(COLLAPSE_KEY);
     if (stored) return stored === 'collapsed';
@@ -92,12 +101,25 @@ function SideNavComponent({
   }, [onQuery, text]);
 
   useEffect(() => {
+    /* A phone never folds, so it must not overwrite the desktop preference. */
+    if (isPhone()) return;
     try {
       localStorage.setItem(COLLAPSE_KEY, collapsed ? 'collapsed' : 'open');
     } catch {
       /* Private mode: the rail simply forgets its state between visits. */
     }
   }, [collapsed]);
+
+  /* Narrowing the window into phone width opens the labels back up, so the
+     rooms never collapse into unlabelled glyphs on a small screen. */
+  useEffect(() => {
+    const query = window.matchMedia(PHONE_QUERY);
+    const sync = () => {
+      if (query.matches) setCollapsed(false);
+    };
+    query.addEventListener('change', sync);
+    return () => query.removeEventListener('change', sync);
+  }, []);
 
   /* The search button opens the rail and puts the caret in the field. */
   useEffect(() => {

@@ -1,0 +1,386 @@
+/* --------------------------------------------------------------------------
+   Phones
+   --------------------------------------------------------------------------
+   The shell above this file is a workbench: a rail, a fixed-height room and a
+   board fitted from a percentage. That reads well on a laptop and falls apart
+   in a hand — the rail eats a fifth of the glass, the room tabs clip, and the
+   percentage-based board collapses to a third of the width because its
+   containing blocks shrink to the nameplates' text.
+
+   This sheet settles those three things once, for every room, and sizes the
+   controls for a thumb. It is imported last in `main.tsx`, so it wins the ties
+   the workbench breakpoints leave at phone widths without editing them.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  /* --------------------------------- shell -------------------------------- */
+
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .sidenav {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .app-shell__body {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .view {
+    padding: 12px 12px calc(28px + env(safe-area-inset-bottom));
+  }
+
+  /* The bar is sticky, so anything scrolled or focused into view needs to clear
+     it instead of landing underneath. */
+  html {
+    scroll-padding-top: 124px;
+  }
+
+  .page {
+    gap: 16px;
+  }
+
+  /* ------------------------------ navigation ------------------------------
+     The rail becomes the app bar: the mark, the search field and the local
+     actions on the first row; the six rooms as a labelled strip beneath them.
+     Every room is a word again, not a glyph, and nothing is off-screen. */
+
+  .sidenav,
+  .sidenav.is-collapsed {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: auto;
+    padding: calc(6px + env(safe-area-inset-top)) 10px 7px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line-soft);
+    box-shadow: 0 1px 0 var(--inset-hi);
+    transition: none;
+  }
+
+  .sidenav.is-collapsed {
+    padding-inline: 10px;
+  }
+
+  .sidenav__top,
+  .sidenav.is-collapsed .sidenav__top {
+    order: 1;
+    flex: none;
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  .sidenav .brand {
+    padding: 0;
+    font-size: 17px;
+  }
+
+  /* The mark alone: the wordmark is the one thing the bar can spare. */
+  .sidenav .brand > span:last-child {
+    display: none;
+  }
+
+  /* Folding is a wide-window idea — on a phone there is nothing to reclaim,
+     and the labels are the whole point. */
+  .sidenav__toggle {
+    display: none;
+  }
+
+  .sidenav__search {
+    order: 2;
+    flex: 1 1 90px;
+    min-width: 0;
+  }
+
+  .sidenav__search form,
+  .sidenav__search-btn {
+    height: 38px;
+  }
+
+  .sidenav .sidebar-bottom {
+    order: 3;
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    margin-top: 0;
+  }
+
+  .sidenav .sidebar-bottom .nav-item {
+    width: 38px;
+    height: 38px;
+    min-height: 0;
+    padding: 0;
+    justify-content: center;
+    font-size: 15px;
+  }
+
+  .sidenav .sidebar-bottom .nav-item em {
+    display: none;
+  }
+
+  .sidenav .board-utility {
+    width: auto;
+  }
+
+  .sidenav .board-utility__btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sidenav .main-nav {
+    order: 4;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 2px;
+    flex: 1 0 100%;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .sidenav .nav-item {
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    min-height: 46px;
+    padding: 4px 0;
+    font-size: 10.5px;
+    border-radius: 10px;
+  }
+
+  .sidenav .nav-item em {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ---------------------------------- play -------------------------------- */
+
+  /* Four rooms do not fit one row: two rows of two, each a full tap target,
+     instead of a strip that silently clips its last tab. */
+  .play-topbar {
+    gap: 8px;
+  }
+
+  .play-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .play-tabs__tab {
+    min-height: 44px;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+
+  .play-live {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ------------------------------ board rooms -----------------------------
+     `--board-px` is a percentage fit, so it needs a definite containing block.
+     At phone widths the stacks shrink to their text and hand the board a third
+     of the screen; every stage is made definite here and then fitted from the
+     column, capped by the height left under the app bar. */
+
+  .play,
+  .play-current,
+  .study,
+  .gr,
+  .wp {
+    --board-chrome: 250px;
+    --board-px: max(220px, min(100%, calc(100dvh - var(--board-chrome))));
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  /* The evaluation lane is 34px on each side of the board on a laptop. In a
+     hand that is a fifth of the glass spent on gutters, so the lane narrows and
+     only the bar's own side keeps its space; the right side goes to the board. */
+  .play-current {
+    --eval-lane: 18px;
+    --eval-gap: 5px;
+  }
+
+  .play-current .play-stage {
+    padding-left: calc(var(--eval-lane) + var(--eval-gap));
+    padding-right: 0;
+  }
+
+  .play-stage,
+  .play-game__board,
+  .study__stage,
+  .gr-board-col,
+  .wp__board {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .play-stage__stack,
+  .play-seat,
+  .play-turn,
+  .play-board-wrap,
+  .study__board-host,
+  .wp__board-wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* The bot match parks its score bar just outside the board's left edge, so
+     the board keeps a lane for it instead of pushing the bar off the screen. */
+  .bot-match .play-board-wrap {
+    padding-left: 30px;
+  }
+
+  .bot-match__eval {
+    width: 18px;
+    margin-right: 6px;
+  }
+
+  /* The plates line up with the board, not with the lane the bar sits in. */
+  .bot-match .play-seat {
+    width: calc(100% - 30px);
+    margin-left: 30px;
+    margin-right: 0;
+  }
+
+  /* Transport: five 30px glyphs are a coin flip with a thumb. */
+  .play-review__nav,
+  .play-game__nav {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .play-nav__btn {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 17px;
+  }
+
+  .play-review__counter,
+  .play-review__turn {
+    min-height: 44px;
+    align-content: center;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ------------------------------ form controls ---------------------------
+     16px fields stop iOS from zooming the whole page on focus, and 44px is the
+     smallest control a thumb hits first time. */
+
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .play-action,
+  .play-time,
+  .play-segment__option,
+  .play-custom__field input,
+  .bot-choice,
+  .button {
+    min-height: 44px;
+  }
+
+  .play-opponents {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Thirteen opponents at 76px a portrait is a very long scroll: a compact row
+     keeps the ladder readable and the Start Game card within reach. */
+  .play-opponents .play-avatar--lg {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    font-size: 20px;
+  }
+
+  .play-opponent {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .play-timegrid {
+    gap: 6px;
+  }
+
+  .play-time {
+    padding: 10px 6px;
+  }
+
+  .play-block {
+    padding-bottom: 18px;
+  }
+
+  /* ------------------------------- dashboard ------------------------------ */
+
+  .ledger,
+  .dash-hero {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ledger dd {
+    font-size: 26px;
+  }
+
+  /* -------------------------------- review -------------------------------- */
+
+  /* Same trade as the live game: the score bar keeps its own lane on the left,
+     the board takes the rest of the width instead of a matching gutter. */
+  .gr {
+    --eval-lane: 20px;
+    --eval-gap: 5px;
+  }
+
+  .gr-board-col {
+    padding-right: 0;
+  }
+
+  .gr-move,
+  .gr-keymove,
+  .gr-classes__row,
+  .gr-candidate {
+    min-height: 40px;
+  }
+}
+
+/* On the smallest phones the six rooms keep their labels but lose a step of
+   letter spacing, and the dashboard drops to one number per row. */
+@media (max-width: 380px) {
+  .sidenav .main-nav {
+    gap: 0;
+  }
+
+  .sidenav .nav-item {
+    font-size: 9.5px;
+  }
+
+  .ledger,
+  .dash-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
