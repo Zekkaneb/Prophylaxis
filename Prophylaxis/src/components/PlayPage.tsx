@@ -6,7 +6,12 @@ import PlaySection from './play/PlaySection';
  * The tab is a hash route (`#/play`); the three views are local state so moving
  * between them never unmounts a live game.
  */
-export default function PlayPage() {
+export default function PlayPage({
+  onReviewGame,
+}: {
+  /** Sends a finished game to the Review tab, where it is analysed on open. */
+  onReviewGame?: (gameId: string) => void;
+} = {}) {
   return (
     <section className="page page--play" aria-label="Play">
       <header className="page-heading">
@@ -19,7 +24,7 @@ export default function PlayPage() {
           </p>
         </div>
       </header>
-      <PlaySection />
+      <PlaySection onReviewGame={onReviewGame} />
     </section>
   );
 }

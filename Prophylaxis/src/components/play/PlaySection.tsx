@@ -21,7 +21,16 @@ export type PlayView = 'new' | 'current' | 'bots' | 'match' | 'history' | 'revie
  * back) keeps the position, clocks and move list intact. The unfinished game is
  * also stored in IndexedDB, so leaving the tab or reloading does not lose it.
  */
-export function PlaySection() {
+export interface PlaySectionProps {
+  /**
+   * Sends a finished game to the Review tab, where it is analysed on open.
+   *
+   * Without it "Review game" keeps its local replay view.
+   */
+  onReviewGame?: (gameId: string) => void;
+}
+
+export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
   const [view, setView] = useState<PlayView>('new');
   const [reviewId, setReviewId] = useState<string | null>(null);
   /* One shared Stockfish worker serves both the human game and bot matches. */
@@ -166,7 +175,7 @@ export function PlaySection() {
             onNewGame={() => setView('new')}
             onHistory={() => setView('history')}
             onFlip={game.flipBoard}
-            onReview={openReview}
+            onReview={onReviewGame ?? openReview}
             onDismissNotice={game.clearNotice}
           />
         ) : game.resumable && resumeProfile ? (

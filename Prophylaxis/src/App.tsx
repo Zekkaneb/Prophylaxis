@@ -75,6 +75,8 @@ export default function App() {
 
   const [course, setCourse] = useState<PgnCourseRecord | null>(null);
   const [query, setQuery] = useState('');
+  /* A finished game handed from Play to Review, analysed as soon as it opens. */
+  const [reviewGameId, setReviewGameId] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [busy, setBusy] = useState<'export' | 'import' | null>(null);
   const { soundOn, setSoundOn } = useAppearance();
@@ -189,6 +191,14 @@ export default function App() {
   const openSettings = useCallback(() => setSettingsOpen(true), []);
   const exitStudy = useCallback(() => go({ courseId: null }), [go]);
   const openReview = useCallback(() => go({ tab: 'review', courseId: null }), [go]);
+  const startGameReview = useCallback(
+    (gameId: string) => {
+      setReviewGameId(gameId);
+      go({ tab: 'review', courseId: null });
+    },
+    [go],
+  );
+  const clearReviewGame = useCallback(() => setReviewGameId(null), []);
   const openDrill = useCallback(() => go({ tab: 'drill', courseId: null }), [go]);
   const openPuzzles = useCallback(() => go({ tab: 'puzzles', courseId: null }), [go]);
   const handleSearchSubmit = useCallback(
@@ -273,7 +283,7 @@ export default function App() {
             <Drill onBrowseCourses={() => navigateTab('courses')} onNotify={notify} />
           )}
 
-          {route.tab === 'play' && <PlayPage />}
+          {route.tab === 'play' && <PlayPage onReviewGame={startGameReview} />}
 
           {route.tab === 'review' && (
             <div className="page page--review">
@@ -288,7 +298,10 @@ export default function App() {
                   </p>
                 </div>
               </div>
-              <GameReviewDashboard />
+              <GameReviewDashboard
+                initialGameId={reviewGameId}
+                onInitialConsumed={clearReviewGame}
+              />
             </div>
           )}
 

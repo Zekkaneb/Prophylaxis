@@ -793,6 +793,17 @@
   display: flex;
   flex: none;
   align-items: stretch;
+  /* The wrapper must have a width of its own: `--board-px` is a percentage of
+     the box it is used in, and a shrink-to-fit wrapper resolves that to
+     nothing, which left the slot - and the board measuring it - at zero. */
+  width: var(--board-px);
+  margin-inline: auto;
+}
+
+/* The slot fills the wrapper rather than re-resolving the same percentage
+   against it: the board is then exactly the size it was before the wrapper. */
+.bot-match__board > .board-slot {
+  width: 100%;
 }
 
 .bot-match__eval {

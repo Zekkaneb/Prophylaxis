@@ -6,6 +6,7 @@ import EmptyBoardArt from './EmptyBoardArt';
 import { BoardSlot, useBoardHandle } from '../board/PersistentBoard';
 import { db, type MoveEvaluation, type SavedReview } from '../db';
 import { useStockfish, type EngineCandidate } from '../engine/useStockfish';
+import { getPlayedGame } from '../play/gameStore';
 import {
   SUMMARY_CLASSIFICATIONS,
   canRetry,
@@ -57,6 +58,18 @@ import {
 import './GameReviewDashboard.css';
 
 type Phase = 'input' | 'analyzing' | 'review';
+
+export interface GameReviewDashboardProps {
+  /**
+   * A played game to review on open.
+   *
+   * The Play tab's "Review game" button hands the id over and switches to this
+   * tab, so the analysis starts by itself instead of asking for the PGN again.
+   */
+  initialGameId?: string | null;
+  /** Called once the handed-over game has been picked up. */
+  onInitialConsumed?: () => void;
+}
 
 /** Shallow, quick search that follows the position while you step through a game. */
 const LIVE_DEPTH = 12;
@@ -138,7 +151,10 @@ function outcomeSentence(entry: MoveEvaluation, bestSan: string): string | null 
   return null;
 }
 
-export default function GameReviewDashboard() {
+export default function GameReviewDashboard({
+  initialGameId = null,
+  onInitialConsumed,
+}: GameReviewDashboardProps = {}) {
   const stockfish = useStockfish();
   const [reviewProfile, setReviewProfile] = useReviewProfile();
   const boardRef = useBoardHandle();
@@ -275,11 +291,11 @@ export default function GameReviewDashboard() {
     setPhase('review');
   }, []);
 
-  const runAnalysis = async (source?: SavedReview) => {
+  const runAnalysis = async (source?: SavedReview, text?: string) => {
     setError(null);
     let parsed: ParsedGame;
     try {
-      parsed = parsePgn(source ? source.pgn : pgnText);
+      parsed = parsePgn(text ?? source?.pgn ?? pgnText);
     } catch (cause) {
       setError((cause as Error).message);
       return;
@@ -312,6 +328,37 @@ export default function GameReviewDashboard() {
       setPhase('input');
     }
   };
+
+  /*
+   * Auto-review: a finished game handed over from the Play tab goes straight
+   * through the same pipeline as "Analyse game" — parse, run, save, open — so
+   * the player lands on the graded game instead of an empty PGN box. The latest
+   * `runAnalysis` is kept in a ref so the effect below never re-runs on renders.
+   */
+  const runAnalysisRef = useRef(runAnalysis);
+  runAnalysisRef.current = runAnalysis;
+  const autoStarted = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!initialGameId || stockfish.status === 'loading') return;
+    if (autoStarted.current === initialGameId) return;
+    autoStarted.current = initialGameId;
+    onInitialConsumed?.();
+
+    void (async () => {
+      try {
+        const record = await getPlayedGame(initialGameId);
+        if (!record) {
+          setError('That game is no longer in your history.');
+          return;
+        }
+        setPgnText(record.pgn);
+        await runAnalysisRef.current(undefined, record.pgn);
+      } catch (cause) {
+        setError(`That game could not be prepared for review: ${(cause as Error).message}`);
+      }
+    })();
+  }, [initialGameId, onInitialConsumed, stockfish.status]);
 
   const cancelAnalysis = () => {
     abortRef.current?.abort();
