@@ -120,7 +120,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     name: 'Faadi Granillo Garcia',
     shortName: 'Faadi',
     title: 'Prime',
-    elo: 1100,
+    elo: 700,
     style:
       'The wildcard: loose, instinctive and happy to improvise. Chaotic tactics, sudden attacks, passive moments — and a comeback he is certain is coming.',
     portraitPath: 'opponents/faadi.webp',
