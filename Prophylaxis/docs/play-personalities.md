@@ -147,12 +147,25 @@ best and the six are re-normalized, so a fast game makes the same player worse
 rather than differently rated. At 100 USCF a bot blunders 56% of the time; at
 2800 it is under 1%.
 
-Recapture awareness is one continuous curve,
-`0.18 + 0.79 * (1 - exp(-3.8s))`: 18% at 100 USCF, ~45% at 400, ~75% at 1000
+Below 1000 USCF the beginner curves add error mass on top of that: the three
+error buckets grow by up to 1.5x toward the floor and the blunder share by up to
+2x below 900, fading to nothing at each boundary (`beginnerScaling`). A 700 bot
+is then suboptimal on ~58% of turns with 20-25% outright blunders; a 300 bot
+blunders roughly half the time.
+
+Recapture awareness is one curve that joins two:
+`0.12 + 0.70 * (1 - exp(-3.0s))` below 700 USCF (12% at 100, ~32% at 400, ~46%
+at 700), blended linearly into `0.18 + 0.79 * (1 - exp(-3.8s))` by 1000 (~75%)
 and ~95% at the top.
 
-Depth `max(2, round(2 + 12 * s^1.3) + depthOffset)`: 2 at 100, 5 at 1100, 14 at
-2800. Temperature `max(0.20, 1.35 * exp(-1.7s))`.
+Depth `max(2, round(2 + 12 * s^1.3) + depthOffset)`: 5 at 1100, 14 at 2800. The
+sub-1000 node cap is a depth cap in this engine path: 2 plies below 500 USCF and
+3 up to 1000, so a 700 frequently misses a two-move tactic. Temperature
+`max(0.20, 1.35 * exp(-1.7s))`.
+
+On normal (non-error) turns below 1000 USCF the softmax weight of the #1 engine
+move is multiplied by 0.08 and the #2 by 0.25 (`suppressTopLines`), so a beginner
+plays a plausible, slightly loose move instead of echoing Stockfish.
 
 The error rate is scaled by phase (opening `<= 8` moves x0.70 below 1400 USCF
 and x0.40 above, middlegame x1.20, endgame x0.95) and time control (`classical`

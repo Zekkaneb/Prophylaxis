@@ -44,6 +44,19 @@ export const SHALLOW_DEPTH = 3;
 /** Below this rating the bot has no idea what it is doing yet. */
 export const BEGINNER_ELO = 600;
 
+/** Under this rating the beginner curves add error mass and suppress the top line. */
+export const BEGINNER_VULNERABILITY_ELO = 1000;
+
+/** Under this rating the blunder share gets its extra multiplier. */
+export const BEGINNER_BLUNDER_ELO = 900;
+
+/** From here down the analysis is only one or two plies deep. */
+export const BEGINNER_DEPTH_ELO = 1000;
+
+/** Softmax weight of the #1 and #2 engine moves below 1000 USCF. */
+export const BEGINNER_TOP_WEIGHT = 0.08;
+export const BEGINNER_SECOND_WEIGHT = 0.25;
+
 /** From here up the bot is expected to see a counter-attack coming. */
 export const TUNNEL_VISION_ELO = 600;
 
@@ -236,13 +249,35 @@ export function skillOf(elo: number): number {
  * plenty of merely-sound moves), excellent rises with rating, and best takes
  * whatever the other five do not.
  */
+/**
+ * Extra error mass below 1000 USCF.
+ *
+ * The smooth curves are calibrated for club players and up; a true beginner is
+ * not a slightly worse club player. Below `BEGINNER_VULNERABILITY_ELO` the three
+ * error buckets grow linearly toward the floor (and below 900 the blunder
+ * share grows further), so a 700 USCF bot is suboptimal on ~58% of turns with
+ * roughly a fifth to a quarter of them outright blunders.
+ */
+export function beginnerScaling(elo: number): { errors: number; blunder: number } {
+  const target = clampElo(elo);
+  if (target >= BEGINNER_VULNERABILITY_ELO) return { errors: 1, blunder: 1 };
+
+  const errorGap = 1 - target / BEGINNER_VULNERABILITY_ELO;
+  const blunderGap = target >= BEGINNER_BLUNDER_ELO ? 0 : 1 - target / BEGINNER_BLUNDER_ELO;
+  /* 1.35x error mass and 1.67x blunders at 300 USCF, 1.15x / 1.22x at 700,
+     both fading to 1 exactly at their boundaries. */
+  return { errors: 1 + 0.5 * errorGap, blunder: 1 + 1.0 * blunderGap };
+}
+
 export function qualityShares(elo: number, errorMultiplier = 1): QualityShares {
   const s = skillOf(elo);
+  const beginner = beginnerScaling(elo);
 
-  const blunder = 0.0005 + 0.56 * Math.exp(-5.4 * Math.pow(s, 1.15));
-  const mistake = 0.008 + 0.28 * Math.exp(-3.1 * s);
+  const blunder = (0.0005 + 0.56 * Math.exp(-5.4 * Math.pow(s, 1.15))) * beginner.blunder;
+  const mistake = (0.008 + 0.28 * Math.exp(-3.1 * s)) * beginner.errors;
   const inaccuracy =
-    0.035 + 0.21 * Math.sin(Math.PI * Math.pow(s, 0.75)) * Math.exp(-0.6 * s);
+    (0.035 + 0.21 * Math.sin(Math.PI * Math.pow(s, 0.75)) * Math.exp(-0.6 * s)) *
+    beginner.errors;
   const good = 0.06 + 0.34 * Math.sin(Math.PI * Math.pow(s, 0.85));
   const excellent = 0.03 + 0.3 * Math.pow(s, 0.9);
   const best = Math.max(0.01, 1 - (blunder + mistake + inaccuracy + good + excellent));
@@ -253,11 +288,26 @@ export function qualityShares(elo: number, errorMultiplier = 1): QualityShares {
 /**
  * Chance an obvious recapture is actually taken.
  *
- * 18% at 100 USCF (the piece is simply not taken back), ~45% at 400, ~75% at
- * 1000 and ~95% at the top — one continuous curve instead of a two-step gate.
+ * Below 900 USCF the beginner curve is used and blended into the standard one
+ * by 1000, so the two never meet in a step:
+ *
+ * - beginner `0.12 + 0.70 * (1 - exp(-3.0s))` — 12% at 100, ~32% at 400,
+ *   ~46% at 700, so a 700 USCF bot misses an obvious recapture about half the
+ *   time;
+ * - standard `0.18 + 0.79 * (1 - exp(-3.8s))` — ~75% at 1000, ~95% at the top.
  */
 export function recaptureChance(elo: number): number {
-  return 0.18 + 0.79 * (1 - Math.exp(-3.8 * skillOf(elo)));
+  const s = skillOf(elo);
+  const beginner = 0.12 + 0.7 * (1 - Math.exp(-3 * s));
+  const standard = 0.18 + 0.79 * (1 - Math.exp(-3.8 * s));
+
+  const target = clampElo(elo);
+  if (target <= 700) return beginner;
+  if (target >= BEGINNER_VULNERABILITY_ELO) return standard;
+
+  /* 700-1000: linear blend, so the curve stays monotone across the join. */
+  const t = (target - 700) / (BEGINNER_VULNERABILITY_ELO - 700);
+  return beginner + (standard - beginner) * t;
 }
 
 /**
@@ -267,7 +317,14 @@ export function recaptureChance(elo: number): number {
  */
 export function humanSearchDepth(elo: number, depthOffset = 0): number {
   const s = skillOf(elo);
-  return Math.max(2, Math.round(2 + Math.pow(s, 1.3) * 12) + depthOffset);
+  const depth = Math.max(2, Math.round(2 + Math.pow(s, 1.3) * 12) + depthOffset);
+
+  /* The analogue of a node cap for this engine path: a sub-1000 player simply
+     does not look far enough to see a two-move tactic. Two plies at the very
+     bottom (own move + one reply), three through the rest of the beginner
+     band. Applied after the time-control offset. */
+  if (clampElo(elo) >= BEGINNER_DEPTH_ELO) return depth;
+  return Math.min(depth, clampElo(elo) < 500 ? 2 : 3);
 }
 
 /** The continuous calibration for a target rating. */
@@ -764,6 +821,31 @@ export function errorTemperatureBoost(elo: number): number {
     : ERROR_TEMPERATURE_BOOST;
 }
 
+/**
+ * Beginner top-line suppression: below 1000 USCF the engine's first choice is
+ * multiplied by 0.08 and the second by 0.25 on normal turns, so the bot picks a
+ * plausible, slightly loose human move instead of echoing Stockfish. Error
+ * turns never reach here — they are already band-picked.
+ */
+export function suppressTopLines(
+  weights: readonly WeightedMove[],
+  elo: number,
+): WeightedMove[] {
+  if (clampElo(elo) >= BEGINNER_VULNERABILITY_ELO || weights.length === 0) {
+    return weights.map((entry) => ({ ...entry }));
+  }
+
+  const copy = weights.map((entry) => ({ ...entry }));
+  copy[0] = { ...copy[0], weight: copy[0].weight * BEGINNER_TOP_WEIGHT };
+  if (copy.length > 1) {
+    copy[1] = { ...copy[1], weight: copy[1].weight * BEGINNER_SECOND_WEIGHT };
+  }
+
+  const total = copy.reduce((sum, entry) => sum + entry.weight, 0);
+  if (!(total > 0)) return weights.map((entry) => ({ ...entry }));
+  return copy.map((entry) => ({ ...entry, weight: entry.weight / total }));
+}
+
 /** Damps the top line and re-normalizes the weights so they still sum to 1. */
 function dampTopLine(weights: readonly WeightedMove[], elo: number): WeightedMove[] {
   const factor = topLineDamping(elo);
@@ -927,7 +1009,7 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
           : errorTemperatureBoost(elo);
       if (step === 'good' || step === 'excellent' || step === 'best') {
         const weights = dampTopLine(
-          softmaxWeights(matches, temperature * boost),
+          suppressTopLines(softmaxWeights(matches, temperature * boost), elo),
           elo,
         );
         const chosen = pick(weights, random) ?? weights[0];

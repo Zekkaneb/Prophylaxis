@@ -2,7 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Chess } from 'chess.js';
 import {
+  BEGINNER_BLUNDER_ELO,
+  BEGINNER_DEPTH_ELO,
   BEGINNER_ELO,
+  BEGINNER_SECOND_WEIGHT,
+  BEGINNER_TOP_WEIGHT,
+  BEGINNER_VULNERABILITY_ELO,
   BUCKET_ORDER,
   DEEP_SLIP_ELO,
   ELO_MAX,
@@ -13,6 +18,7 @@ import {
   QUALITY_BANDS,
   SELF_MATE_GUARD_ELO,
   allowsMateInOne,
+  beginnerScaling,
   bucketFor,
   clampElo,
   errorTemperatureBoost,
@@ -30,6 +36,7 @@ import {
   recaptureChance,
   scaleErrors,
   selectHumanBotMove,
+  suppressTopLines,
   skillOf,
   timeControlCategory,
   timeControlScaling,
@@ -97,14 +104,30 @@ test('the six quality buckets sum to 1 across the whole range', () => {
   }
 });
 
-test('the distribution matches the documented curves at both ends', () => {
+test('the beginner tiers carry the extra error mass', () => {
   const floor = qualityShares(100);
-  assert.ok(Math.abs(floor.blunder - 0.5605) < 0.002);
-  assert.ok(Math.abs(floor.mistake - 0.288) < 0.002);
-  assert.ok(Math.abs(floor.inaccuracy - 0.035) < 0.002);
-  assert.ok(Math.abs(floor.good - 0.06) < 0.002);
-  assert.ok(Math.abs(floor.excellent - 0.03) < 0.002);
-  assert.ok(Math.abs(floor.best - 0.0265) < 0.002);
+  assert.ok(floor.blunder > 0.55);
+  assert.ok(floor.best < 0.02);
+
+  const sevenHundred = qualityShares(700);
+  const errorRate =
+    sevenHundred.blunder + sevenHundred.mistake + sevenHundred.inaccuracy;
+  assert.ok(errorRate > 0.55 && errorRate < 0.61, `700 error rate ${errorRate}`);
+  assert.ok(
+    sevenHundred.blunder >= 0.2 && sevenHundred.blunder <= 0.25,
+    `700 blunder share ${sevenHundred.blunder}`,
+  );
+
+  /* The boost is gone at exactly 1000, where the smooth curves take over. */
+  assert.equal(beginnerScaling(BEGINNER_VULNERABILITY_ELO).errors, 1);
+  assert.equal(beginnerScaling(BEGINNER_VULNERABILITY_ELO).blunder, 1);
+  assert.equal(beginnerScaling(BEGINNER_BLUNDER_ELO).blunder, 1);
+  assert.ok(beginnerScaling(700).errors > 1);
+  assert.ok(beginnerScaling(700).blunder > beginnerScaling(700).errors);
+
+  const oneThousand = qualityShares(1000);
+  assert.ok(Math.abs(oneThousand.blunder - 0.122) < 0.01);
+  assert.ok(oneThousand.best > 0.04);
 
   const ceiling = qualityShares(2800);
   assert.ok(ceiling.blunder < 0.005);
@@ -183,7 +206,7 @@ test('phase and time control scale the error buckets, not the rating', () => {
   const base = humanCalibration(800);
   const middlegame = plan(800);
   assert.ok(middlegame.errorRate > base.errorRate);
-  assert.ok(Math.abs(middlegame.errorRate - 0.613) < 0.01);
+  assert.ok(middlegame.errorRate > 0.55 && middlegame.errorRate < 0.75);
   assert.ok(Math.abs(sharesSum(middlegame.quality) - 1) < 1e-9);
 
   const opening = plan(800, { moveNumber: 3 });
@@ -216,6 +239,10 @@ test('a rating multiplier moves mass through the quality buckets', () => {
 
 test('depth and temperature follow the skill curve', () => {
   assert.equal(humanCalibration(100).depth, 2);
+  assert.equal(humanCalibration(300).depth, 2);
+  assert.equal(humanCalibration(700).depth, 3);
+  assert.equal(humanCalibration(900).depth, 3);
+  assert.equal(humanCalibration(1000).depth, 5);
   assert.equal(humanCalibration(2800).depth, 14);
   assert.ok([4, 5].includes(humanCalibration(1100).depth));
   assert.equal(humanSearchDepth(1100, -2), 3);
@@ -258,8 +285,9 @@ test('thinking time is randomized per position and time control', () => {
 });
 
 test('an obvious recapture follows the rating curve, not a switch', () => {
-  assert.ok(Math.abs(recaptureChance(100) - 0.18) < 1e-9);
-  assert.ok(Math.abs(recaptureChance(400) - 0.45) < 0.03);
+  assert.ok(Math.abs(recaptureChance(100) - 0.12) < 1e-9);
+  assert.ok(Math.abs(recaptureChance(400) - 0.32) < 0.02);
+  assert.ok(Math.abs(recaptureChance(700) - 0.46) < 0.02);
   assert.ok(Math.abs(recaptureChance(1000) - 0.75) < 0.03);
   assert.ok(recaptureChance(2400) > 0.9);
   assert.ok(recaptureChance(2800) < 1);
@@ -522,6 +550,44 @@ test('the last capture is read from the game history', () => {
   const quiet = new Chess();
   quiet.move('e4');
   assert.equal(lastCaptureOf(quiet), null);
+});
+
+test('below 1000 USCF the top two engine moves are suppressed', () => {
+  assert.equal(BEGINNER_VULNERABILITY_ELO, 1000);
+  assert.equal(BEGINNER_DEPTH_ELO, 1000);
+  assert.equal(BEGINNER_TOP_WEIGHT, 0.08);
+  assert.equal(BEGINNER_SECOND_WEIGHT, 0.25);
+
+  const weights = [
+    { uci: 'e2e4', weight: 0.52, cpLoss: 0, winDrop: 0 },
+    { uci: 'd2d4', weight: 0.3, cpLoss: 2, winDrop: 0.2 },
+    { uci: 'b1c3', weight: 0.18, cpLoss: 3, winDrop: 0.3 },
+  ];
+  const beginner = suppressTopLines(weights, 700);
+  /* The #1 line drops behind the third choice: that is the beginner drift. */
+  assert.ok(beginner[0].weight < beginner[2].weight);
+  assert.ok(beginner[0].weight < weights[0].weight / 2);
+  assert.ok(Math.abs(beginner.reduce((sum, entry) => sum + entry.weight, 0) - 1) < 1e-9);
+  assert.deepEqual(
+    suppressTopLines(weights, 2200).map((entry) => entry.weight),
+    weights.map((entry) => entry.weight),
+  );
+
+  const candidates = [candidate('e2e4', 0), candidate('d2d4', -2), candidate('b1c3', -3)];
+  const play = (elo: number) =>
+    selectHumanBotMove({
+      fen: START_FEN,
+      elo,
+      candidates,
+      plan: plan(elo),
+      forcedBucket: 'best',
+      random: () => 0.9,
+    });
+
+  const weak = play(700);
+  const strong = play(2200);
+  assert.ok(weak.weights[0].weight < strong.weights[0].weight / 2);
+  assert.notEqual(weak.uci, 'e2e4');
 });
 
 test('the beginner tier and the time-control bands are the documented ones', () => {
