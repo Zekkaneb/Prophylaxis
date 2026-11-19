@@ -1,0 +1,161 @@
+/* --------------------------------------------------------------------------
+   Drill tab: the spaced-repetition ledger of learned lines.
+   -------------------------------------------------------------------------- */
+
+.drill-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 4px 0;
+  border-block: 1px solid var(--line);
+}
+
+.drill-stats__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 14px 24px;
+  border-left: 1px solid var(--line);
+}
+
+.drill-stats__cell:first-child {
+  border-left: 0;
+  padding-left: 2px;
+}
+
+.drill-stats dt {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.drill-stats dd {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 34px;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.drill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+}
+
+.drill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.drill-row__main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.drill-row__course {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.drill-row strong {
+  font-size: 14.5px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.drill-row__meta {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.drill-row__side {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+}
+
+.drill-row__mastery {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.drill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 184, 125, 0.45);
+}
+
+.drill-dot.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.drill-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+
+.drill-empty p {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--soft);
+}
+
+@media (max-width: 900px) {
+  .drill-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0;
+  }
+
+  .drill-stats__cell {
+    padding: 14px 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .drill-stats__cell:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .drill-stats__cell:nth-child(odd) {
+    border-left: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .drill-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .drill-row__side {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

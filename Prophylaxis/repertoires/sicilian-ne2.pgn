@@ -1,0 +1,15 @@
+[Event "Sicilian Defence — 2.Ne2 move order"]
+[Site "supplied"]
+[Date "????.??.??"]
+[White "Sicilian Defence"]
+[Black "2.Ne2"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B20"]
+[Opening "Sicilian Defense"]
+[StudyName "Sicilian Defence — 2.Ne2"]
+[ChapterName "2.Ne2 move order"]
+[Orientation "white"]
+
+1. e4 c5 2. Ne2 { The supplied White move order against the Sicilian. Nothing beyond
+this move was provided, so the book ends here and the engine continues. } *

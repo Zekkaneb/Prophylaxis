@@ -1,0 +1,50 @@
+{
+  "tier": "expert",
+  "name": "Expert",
+  "min_rating": 2251,
+  "max_rating": 2400,
+  "version": 20261120,
+  "generated_at": "2026-11-18T17:59:33.590Z",
+  "source": "lichess-open-database",
+  "seed": 20261118,
+  "pool_size": 5000,
+  "shard_size": 1000,
+  "count": 5000,
+  "shards": [
+    {
+      "index": 1,
+      "file": "shard-0001.json",
+      "count": 1000,
+      "first_id": "ZythF",
+      "last_id": "wYCSo"
+    },
+    {
+      "index": 2,
+      "file": "shard-0002.json",
+      "count": 1000,
+      "first_id": "AMjuC",
+      "last_id": "Ddxpi"
+    },
+    {
+      "index": 3,
+      "file": "shard-0003.json",
+      "count": 1000,
+      "first_id": "ZwaiP",
+      "last_id": "2Zy0L"
+    },
+    {
+      "index": 4,
+      "file": "shard-0004.json",
+      "count": 1000,
+      "first_id": "jtHWj",
+      "last_id": "hB8nP"
+    },
+    {
+      "index": 5,
+      "file": "shard-0005.json",
+      "count": 1000,
+      "first_id": "g2HRl",
+      "last_id": "E2POS"
+    }
+  ]
+}

@@ -1,0 +1,952 @@
+[Event "Chess Openings: Vienna Game: Introduction to a Vienna Game"]
+[Date "2019.08.07"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Introduction to a Vienna Game"]
+[ChapterURL "https://lichess.org/study/G4gISY53/CG95vEYP"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.07"]
+[UTCTime "16:21:22"]
+[Orientation "white"]
+
+{ Hello. This is a study for the introduction of the Vienna Game opening and these are the first 3 moves for a Vienna game. } 1. e4 (1. d4 g6 2. c4 Bg7 3. Nc3) 1... e5 2. Nc3 *
+
+
+[Event "Chess Openings: Vienna Game: Falkbeer Variation"]
+[Date "2019.08.07"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C26"]
+[Opening "Vienna Game: Falkbeer Variation"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Falkbeer Variation"]
+[ChapterURL "https://lichess.org/study/G4gISY53/IToaBVS0"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.07"]
+[UTCTime "16:29:54"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 { After this move, for a Falkbeer Variation, Black has to play Nf6. } 2... Nf6 { Falkbeer Variation } (2... Nf6 { Falkbeer Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 1"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/Mry8QrTO"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "12:47:54"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 { After Nf6, for a Vienna Gambit, White has to play f4. } 3. f4 { Vienna Gambit } (3. f4 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 1"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/b0Og7fda"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:12:14"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 { After this move, for the Main Line of the Vienna Gambit, Black has to play d5. } 3... d5 { Vienna Gambit, Main Line } (3... d5 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 2"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/bfaN5b5t"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:18:06"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 d5 { After this move, to continue the Vienna Gambit, Main Line White has to play fxe5. } 4. fxe5 { Vienna Gambit, Main Line } (4. fxe5 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 3"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/05eT5Rme"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:24:13"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 d5 4. fxe5 { After, to continue the Main Line again, Black would have to play Nxe4. } 4... Nxe4 { Vienna Gambit, Main Line } (4... Nxe4 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 4"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/1mrSpxgN"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:26:57"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 d5 4. fxe5 Nxe4 { After this move, for the Main Line to continue a third time, White has to play Nf3. } 5. Nf3 { Vienna Gambit, Main Line } (5. Nf3 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 5"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 5"]
+[ChapterURL "https://lichess.org/study/G4gISY53/MKec7SPt"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:31:51"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 d5 4. fxe5 Nxe4 5. Nf3 { After this, the next move Black has to play is Nc6. This is what makes the fifth part of the Vienna Gambit, Main Line. } 5... Nc6 { Vienna Gambit, Main Line } (5... Nc6 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 6"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 6"]
+[ChapterURL "https://lichess.org/study/G4gISY53/NR7RapkI"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:36:01"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 d5 4. fxe5 Nxe4 5. Nf3 Nc6 { To put up the sixth part of the Main Line, White has to play d4. } 6. d4 { Vienna Gambit, Main Line } (6. d4 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 7"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 7"]
+[ChapterURL "https://lichess.org/study/G4gISY53/N2OjFZxk"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:38:57"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 d5 4. fxe5 Nxe4 5. Nf3 Nc6 6. d4 { For the seventh part of the Main Line of the Gambit, Black has to play Nxc3. } 6... Nxc3 { Vienna Gambit, Main Line } (6... Nxc3 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit, Main Line: Part 8"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit, Main Line"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit, Main Line: Part 8"]
+[ChapterURL "https://lichess.org/study/G4gISY53/CrjMeKRw"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:43:20"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 d5 4. fxe5 Nxe4 5. Nf3 Nc6 6. d4 Nxc3 { After that, the next move White has to play is bxc3. This creates the eighth part of the Vienna Gambit, Main Line. } 7. bxc3 { Vienna Gambit, Main Line } (7. bxc3 { Vienna Gambit, Main Line }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 1"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/nIOwl6oH"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:47:42"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 { Back in this position, another move Black could've played was exf4. } 3... exf4 { Vienna Gambit } (3... exf4 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 2"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/HXlO1sdg"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:54:38"]
+[Orientation "white"]
+
+1. e4 e5 { [%cal Gb1c3] } 2. Nc3 Nf6 3. f4 exf4 { After, for the next part, White has to play e5. } 4. e5 { Vienna Gambit } (4. e5 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 3"]
+[Date "2019.08.08"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/Qysxdw33"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.08"]
+[UTCTime "15:59:59"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 { After this move, Black plays Qe7. } 4... Qe7 { Vienna Gambit } (4... Qe7 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 4"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/t2tnEcRI"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "10:08:51"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 Qe7 { After this move, White plays Qe2. } 5. Qe2 { Vienna Gambit } (5. Qe2 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 5"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 5"]
+[ChapterURL "https://lichess.org/study/G4gISY53/mdQRxV3Z"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "10:12:06"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 Qe7 5. Qe2 { After, Black retreats the f6 Knight and moves it back Ng8. } 5... Ng8 { Vienna Gambit } (5... Ng8 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 6"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 6"]
+[ChapterURL "https://lichess.org/study/G4gISY53/k3JyYlCm"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:07:16"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 Qe7 5. Qe2 Ng8 { At this position, White plays Nf3. } 6. Nf3 { Vienna Gambit } (6. Nf3 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 7"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 7"]
+[ChapterURL "https://lichess.org/study/G4gISY53/1OSH4XQx"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:13:47"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 Qe7 5. Qe2 Ng8 6. Nf3 { After this, Black plays Nc6. } 6... Nc6 { Vienna Gambit } (6... Nc6 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Vienna Gambit: Segment 2: Part 8"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C29"]
+[Opening "Vienna Game: Vienna Gambit"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Vienna Gambit: Segment 2: Part 8"]
+[ChapterURL "https://lichess.org/study/G4gISY53/XPiVKiys"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:15:43"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 Qe7 5. Qe2 Ng8 6. Nf3 Nc6 { For the 8th part of this segment, White plays d4. } 7. d4 { Vienna Gambit } (7. d4 { Vienna Gambit }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment `1: Part 1"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment `1: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/vf4WzeEh"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:18:37"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 { Back in this position, another move Black would've played was Bc5. This brings the Anderssen Defense. } 2... Bc5 { Anderssen Defense } (2... Bc5 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment `1: Part 2"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment `1: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/2UKNVu6w"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:24:30"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 { After, White played f4. } 3. f4 { Anderssen Defense } (3. f4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment `1: Part 3"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment `1: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/3b5II1Oy"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:26:29"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. f4 { After f4, Black plays Bxg1. } 3... Bxg1 { Anderssen Defense } (3... Bxg1 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment `1: Part 4"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment `1: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/zdRbBw71"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:28:22"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. f4 Bxg1 { After, the white Rook captures back Rxg1. } 4. Rxg1 { Anderssen Defense } (4. Rxg1 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment `1: Part 5"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment `1: Part 5"]
+[ChapterURL "https://lichess.org/study/G4gISY53/ecL7Z2QO"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:30:05"]
+[Orientation "white"]
+
+{ [%cal Ge2e4] } 1. e4 e5 2. Nc3 { [%cal Gf8c5] } 2... Bc5 3. f4 { [%cal Gc5g1] } 3... Bxg1 4. Rxg1 { Next, Black does Qh4+. } 4... Qh4+ { Anderssen Defense } { [%csl Ge1][%cal Gh4e1] } (4... Qh4+ { Anderssen Defense } { [%csl Ge1][%cal Gh4e1] }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment `1: Part 6"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment `1: Part 6"]
+[ChapterURL "https://lichess.org/study/G4gISY53/0beMNPW1"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:31:44"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. f4 Bxg1 4. Rxg1 Qh4+ { After this, White blocks the check with g3. } 5. g3 { Anderssen Defense } (5. g3 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment `1: Part 7"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment `1: Part 7"]
+[ChapterURL "https://lichess.org/study/G4gISY53/t2k1ELIA"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:33:44"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. f4 Bxg1 4. Rxg1 Qh4+ 5. g3 { After, Black retreats its Queen and does Qd8. } 5... Qd8 { Anderssen Defense } (5... Qd8 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 2: Part 1"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 2: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/miUn1TUm"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:35:29"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 { Back in this position, another move White could've played was Nf3. } 3. Nf3 { Anderssen Defense } (3. Nf3 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 2: Part 2"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 2: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/EUNGVtSf"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:42:25"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 { Then, to defend the e5 pawn, Black plays d6. } 3... d6 { Anderssen Defense } (3... d6 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 2: Part 3"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 2: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/MkbiNiDK"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:44:50"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 d6 { After this move, White plays d4. } 4. d4 { Anderssen Defense } (4. d4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 2: Part 4"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 2: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/rWcplSCg"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:46:52"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 d6 4. d4 { Next, Black plays exd4. } 4... exd4 { Anderssen Defense } (4... exd4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 2: Part 5"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 2: Part 5"]
+[ChapterURL "https://lichess.org/study/G4gISY53/sTaNJIcd"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:49:11"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 d6 4. d4 exd4 { After, White captures back Nxd4. } 5. Nxd4 { Anderssen Defense } (5. Nxd4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 3: Part 1"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 3: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/yLF89WY0"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:50:11"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 { Back in this position, another move Black would've played was Nc6. } 3... Nc6 { Anderssen Defense } (3... Nc6 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 3: Part 2"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 3: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/yZIpPEQj"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:53:05"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 { Then, White would've played Nxe5. } 4. Nxe5 { Anderssen Defense } (4. Nxe5 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 3: Part 3"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 3: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/KJ0GjYmb"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "12:55:08"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 { After, Black captures back Nxe5. } 4... Nxe5 { Anderssen Defense } (4... Nxe5 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 3: Part 4"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 3: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/r9vhyp5J"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:01:46"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 Nxe5 { After this, White plays d4, putting a fork on the Black Knight and Bishop. } { [%csl Gc5,Ge5][%cal Gd2d4,Gd4c5,Gd4e5] } 5. d4 { Anderssen Defense } (5. d4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 3: Part 5"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 3: Part 5"]
+[ChapterURL "https://lichess.org/study/G4gISY53/VD09Sh4c"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:41:44"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 Nxe5 5. d4 { After this, Black plays Bb6. } 5... Bb6 { Anderssen Defense } (5... Bb6 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 3: Part 6"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 3: Part 6"]
+[ChapterURL "https://lichess.org/study/G4gISY53/VnbwCjex"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:44:25"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 Nxe5 5. d4 Bb6 { Then, White plays dxe5. } 6. dxe5 { Anderssen Defense } (6. dxe5 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 4: Part 1"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 4: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/snpdK2R5"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:45:37"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 Nxe5 5. d4 { Back in this position, another move Black could've played was Bxd4. } 5... Bxd4 { Anderssen Defense } (5... Bxd4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 4: Part 2"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 4: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/sNir0x5m"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:47:41"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 Nxe5 5. d4 Bxd4 { After, White captures back Qxd4. } 6. Qxd4 { Anderssen Defense } (6. Qxd4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 4: Part 3"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 4: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/KTQg4MDr"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:49:17"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 Nxe5 5. d4 Bxd4 6. Qxd4 { After this move, Black plays Ng6. } 6... Ng6 { Anderssen Defense } (6... Ng6 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Anderssen Defense: Segment 4: Part 4"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Anderssen Defense: Segment 4: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/F4nsAir7"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:50:35"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Bc5 3. Nf3 Nc6 4. Nxe5 Nxe5 5. d4 Bxd4 6. Qxd4 Ng6 { Next, White plays Bc4. } 7. Bc4 { Anderssen Defense } (7. Bc4 { Anderssen Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Max Lange Defense: Segment 1: Part 1"]
+[Date "2019.08.09"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Max Lange Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Max Lange Defense: Segment 1: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/74UwcCLy"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.09"]
+[UTCTime "13:52:17"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 { Back at this Vienna Game start position, another move Black would've played was Nc6. This starts the Max Lange Defense. } 2... Nc6 { Max Lange Defense } (2... Nc6 { Max Lange Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Max Lange Defense: Segment 1: Part 2"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Max Lange Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Max Lange Defense: Segment 1: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/C3LJYCif"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "10:29:47"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 { After this, White plays Bc4. } 3. Bc4 { Max Lange Defense } (3. Bc4 { Max Lange Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Stanley Variation, Three Knights Variation"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C28"]
+[Opening "Vienna Game: Stanley Variation, Three Knights Variation"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Stanley Variation, Three Knights Variation"]
+[ChapterURL "https://lichess.org/study/G4gISY53/r13gFQSO"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "11:52:05"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 { After the Max Lange Defence, White brings up the Stanley Variation, Three Knights Variation of the Stanley Variation, Three Knights Variation of the Vienna Game by playin Nf6. } 3... Nf6 { Stanley Variation, Three Knights Variation } (3... Nf6 { Stanley Variation, Three Knights Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Four Knights Game: Italian Variation: Part 1"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C47"]
+[Opening "Four Knights Game: Italian Variation"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Four Knights Game: Italian Variation: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/Ja815tbv"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "11:56:49"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Nf6 { After this move, White gets the Vienna Game out of the way and brings in a Four Knights Game by playing Nf3. This brings in the Four Knights Game: Italian Variation. } 4. Nf3 { Four Knights Game: Italian Variation } (4. Nf3 { Four Knights Game: Italian Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Four Knights Game: Italian Variation: Part 2"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C50"]
+[Opening "Four Knights Game: Italian Variation"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Four Knights Game: Italian Variation: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/RT19oRiI"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "11:59:42"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Nf6 4. Nf3 { Next, Black plays Bc5 to continue the Four Knights Game: Italian Variation. } 4... Bc5 { Four Knights Game: Italian Variation } (4... Bc5 { Four Knights Game: Italian Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 1"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C50"]
+[Opening "Italian Game: Giuoco Pianissimo, Italian Four Knights Variation"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/SIb38n6n"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:01:53"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Nf6 4. Nf3 Bc5 { After this, White brings the Italian Game: Giuoco Pianissimo, Italian Four Knights Variation by playing d3. } 5. d3 { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation } (5. d3 { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 2"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C50"]
+[Opening "Italian Game: Giuoco Pianissimo, Italian Four Knights Variation"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/BIsAkJAd"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:03:58"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Nf6 4. Nf3 Bc5 5. d3 { Then, Black plays d6. } 5... d6 { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation } (5... d6 { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 3"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C50"]
+[Opening "Italian Game: Giuoco Pianissimo"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/FOLWCYjz"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:06:01"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Nf6 4. Nf3 Bc5 5. d3 d6 { After, White does a Castle, AKA O-O. } 6. O-O { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation } (6. O-O { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 4"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C50"]
+[Opening "Italian Game: Giuoco Pianissimo"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Italian Game: Giuoco Pianissimo, Italian Four Knights Variation: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/sW3uHOHb"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:08:29"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Nf6 4. Nf3 Bc5 5. d3 d6 6. O-O { After, Black also does O-O. } 6... O-O { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation } (6... O-O { Italian Game: Giuoco Pianissimo, Italian Four Knights Variation }) *
+
+
+[Event "Chess Openings: Vienna Game: Max Lange Defense: Segment 2: Part 1"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Max Lange Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Max Lange Defense: Segment 2: Part 1"]
+[ChapterURL "https://lichess.org/study/G4gISY53/tXy3WkIm"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:10:55"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 { Back to the Vienna Game and another move Black could've played was Bc5. } 3... Bc5 { Max Lange Defense } (3... Bc5 { Max Lange Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Max Lange Defense: Segment 2: Part 2"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Max Lange Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Max Lange Defense: Segment 2: Part 2"]
+[ChapterURL "https://lichess.org/study/G4gISY53/r4MyoI1n"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:37:22"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Bc5 { After this move, White plays Qg4. } 4. Qg4 { Max Lange Defense } (4. Qg4 { Max Lange Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Max Lange Defense: Segment 2: Part 3"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Max Lange Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Max Lange Defense: Segment 2: Part 3"]
+[ChapterURL "https://lichess.org/study/G4gISY53/jghYSxDA"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:41:06"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Bc5 4. Qg4 { After this, Black plays g6. } 4... g6 { Max Lange Defense } (4... g6 { Max Lange Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Max Lange Defense: Segment 2: Part 4"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "C25"]
+[Opening "Vienna Game: Max Lange Defense"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Max Lange Defense: Segment 2: Part 4"]
+[ChapterURL "https://lichess.org/study/G4gISY53/Es2GYxCN"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:43:35"]
+[Orientation "white"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Bc5 4. Qg4 g6 { Next, White plays Nf3. } 5. Nf3 { Max Lange Defense } (5. Nf3 { Max Lange Defense }) *
+
+
+[Event "Chess Openings: Vienna Game: Conclusion"]
+[Date "2019.08.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Conclusion"]
+[ChapterURL "https://lichess.org/study/G4gISY53/vXTgovvy"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.08.11"]
+[UTCTime "12:47:10"]
+[Orientation "white"]
+
+{ I hope you enjoyed this study and hopefully I will put up another one if I can but it depends. Untill then, bye for now! } *
+
+
+[Event "Chess Openings: Vienna Game: Chapter 57"]
+[Date "2019.12.07"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Chess Openings: Vienna Game"]
+[ChapterName "Chapter 57"]
+[ChapterURL "https://lichess.org/study/G4gISY53/eNMw3JOp"]
+[Annotator "https://lichess.org/@/H2857Abdul"]
+[UTCDate "2019.12.07"]
+[UTCTime "12:50:15"]
+[Orientation "white"]
+
+ *
+
+

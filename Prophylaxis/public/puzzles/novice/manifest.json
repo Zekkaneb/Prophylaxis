@@ -1,0 +1,50 @@
+{
+  "tier": "novice",
+  "name": "Novice",
+  "min_rating": 1351,
+  "max_rating": 1500,
+  "version": 20261120,
+  "generated_at": "2026-11-18T18:00:28.885Z",
+  "source": "lichess-open-database",
+  "seed": 20261118,
+  "pool_size": 5000,
+  "shard_size": 1000,
+  "count": 5000,
+  "shards": [
+    {
+      "index": 1,
+      "file": "shard-0001.json",
+      "count": 1000,
+      "first_id": "07I8T",
+      "last_id": "KnMDt"
+    },
+    {
+      "index": 2,
+      "file": "shard-0002.json",
+      "count": 1000,
+      "first_id": "j2qkm",
+      "last_id": "DMsYy"
+    },
+    {
+      "index": 3,
+      "file": "shard-0003.json",
+      "count": 1000,
+      "first_id": "GnehP",
+      "last_id": "mwV3K"
+    },
+    {
+      "index": 4,
+      "file": "shard-0004.json",
+      "count": 1000,
+      "first_id": "2Wn2P",
+      "last_id": "FI7j7"
+    },
+    {
+      "index": 5,
+      "file": "shard-0005.json",
+      "count": 1000,
+      "first_id": "QA5lf",
+      "last_id": "vtmSg"
+    }
+  ]
+}

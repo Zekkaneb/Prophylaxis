@@ -1,0 +1,270 @@
+[Event "Austrian Attack: Intro"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack"]
+[StudyName "Austrian Attack"]
+[ChapterName "Intro"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/KiAWoxtF"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 (1... g6 2. d4 Bg7 3. Nc3 d6 4. f4 Nf6) 2. d4 Nf6 3. Nc3 g6 4. f4 *
+
+
+[Event "Austrian Attack: Austrian Attack, Weiss Variation"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Weiss Variation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Austrian Attack, Weiss Variation"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/o4YDKYZv"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 O-O 6. Bd3 Na6 { [%csl Gd5,Gd3][%cal Ga6b4,Gb4d5,Gb4d3] } (6... Nc6 { [%anno "hexachess", hexachess] In this position, white has to choose between e5 and castles, which will be a choice for many moves in the Weiss variation. Black can choose between castles and playing e5 himself, so white has to keep that in mind. } 7. O-O (7. e5 dxe5 8. fxe5 (8. dxe5 Nd5 9. Bd2 Ncb4 { [%anno "hexachess", hexachess] In these positions, white has strong bishops but black has very active knights. White still needs to cast though, and black has an easy time developing. } (9... Nb6)) 8... Nh5 { [%anno "hexachess", hexachess] Here, white has central control and the possibility for a kingside push and potentially a queenside castle. }) 7... e5 8. fxe5 dxe5 9. d5 { [%anno "hexachess", hexachess] Here, white has blocked off both black's dark-squared bishop and his light-squared bishop. White has achieved d5 to kick the knight but white will have a harder time attacking. } { [%cal Gd5c6,Gg7e5,Gd3f5] } 9... Nd4 10. Nxe5 Nxe4 11. Nxe4 Bxe5 12. c3 Nf5 13. Qf3 { [%anno "hexachess", hexachess] Here, white's center is worse but the position is pretty neutral. Black's queen has some potential on h4 but white has a battery on the f file once it opens up. } { [%csl Gf1,Gf3][%cal Gd8h4,Gf1f8,Gf3f8] }) 7. e5 { [%anno "hexachess", hexachess] I like this over castles because white usually retains the initiative. } (7. O-O c5 8. d5 Bg4 9. Bc4 Nc7 { [%cal Ge7e6,Gd5e6,Gc7e6] } 10. h3 Bxf3 11. Qxf3 e6 12. dxe6 fxe6 (12... Nxe6 13. Qd3 Nd4 14. Nd5 Nxd5 15. Bxd5 Nc6) 13. Be3 { [%anno "hexachess", hexachess] Here, both sides have a presence in the center but it is sort of a liability for both. White tries to double up rooks on the d file and black tries to dislodge the defenders of d5 so he can push and eliminate that weakness. } { [%cal Ga1d1,Gd1d2,Gf1d1,Gb7b5,Gc4b3,Gd6d5,Ge3c5] }) 7... Nd7 8. Be3 c5 (8... Nb4 { [%csl Gd3] } 9. O-O Nxd3 10. Qxd3 c6 { [%anno "hexachess", hexachess] Here, white has a much strong center and only needs to develop rooks to complete development. Although white lost their light-squared bishop, they have a lot more potential for attack. }) 9. Bxa6 { [%anno "hexachess", hexachess] Here, white's center is crumbling and black has the bishop pair, but white has superior development. } *
+
+
+[Event "Austrian Attack: Austrian Attack, 6.Be2"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack"]
+[StudyName "Austrian Attack"]
+[ChapterName "Austrian Attack, 6.Be2"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/b8FKXTNX"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 O-O 6. Be2 c5 7. dxc5 Qa5 8. O-O Qxc5+ 9. Kh1 Nc6 { [%anno "hexachess", hexachess] White is trying to open up the kingside with e5 or f5 but the bishop on e2 is supporting none of that. } { [%csl Gf4,Ge4][%cal Ge4e5,Gf4f5] } *
+
+
+[Event "Austrian Attack: Austrian Attack, 6.a3"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack"]
+[StudyName "Austrian Attack"]
+[ChapterName "Austrian Attack, 6.a3"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/mflTc7BR"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 O-O 6. a3 Na6 (6... c5 7. dxc5 Qa5 8. b4 Qd8 9. Rb1 Nfd7 10. Qd2 dxc5 11. e5 cxb4 12. axb4 Nb6) 7. e5 Nd7 8. Be3 c5 *
+
+
+[Event "Austrian Attack: Austrian Attack, Dragon Formation, 6.Bb5+"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Dragon Formation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Austrian Attack, Dragon Formation, 6.Bb5+"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/RUEMIRRY"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 c5 6. Bb5+ Bd7 7. e5 (7. Bxd7+ Nfxd7 { [%anno "hexachess", hexachess] You take with this knight to strengthen the bishop. } { [%cal Gg7b2] } 8. d5 b5 9. Nxb5 Qa5+ 10. Nc3 Bxc3+ 11. bxc3 Qxc3+ 12. Bd2) 7... Ng4 8. e6 (8. Bxd7+ Qxd7 9. d5 dxe5 10. h3 e4 11. Nxe4 Nf6 12. Nxf6+ Bxf6 13. O-O O-O { [%anno "hexachess", hexachess] This position is about equal and very messy. } { [%csl Gd5,Gc5][%cal Gf6b2] }) 8... fxe6 9. Ng5 Bxb5 (9... Nf6 10. Nxe6 Qa5 11. Bd2 Kf7 12. Bxd7 Nbxd7) 10. Nxe6 Bxd4 (10... Qa5 11. Qxg4 Bxd4 12. Nxd4 cxd4 13. Qc8+ Kf7 14. Qxh8 dxc3 15. b3) 11. Nxb5 (11. Nxd8 Bf2+ 12. Kd2 Be3+ 13. Ke1 Bf2+) *
+
+
+[Event "Austrian Attack: Austrian Attack, Dragon Formation, 6.dxc5"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Dragon Formation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Austrian Attack, Dragon Formation, 6.dxc5"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/8hfkT8n0"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 c5 6. dxc5 Qa5 7. Bd3 Qxc5 8. Qe2 { [%cal Gc1e3] } 8... O-O (8... Bg4 { [%anno "hexachess", hexachess] Lines transpose. }) 9. Be3 Qa5 10. O-O Bg4 { [%anno "hexachess", hexachess] Here, white has completed development and has the potential for a kingside push while black has a misplaced queen and is less complete in development. However, in this position, black's dark-squared bishop is much better. } { [%csl Gf3,Ge3,Gd3,Gc3,Gb8,Ga8][%cal Gg2g5,Gh2h5,Ga1d1,Gf1e1,Gf8d8,Gg7b2] } *
+
+
+[Event "Austrian Attack: Modern Defense, Pseudo-Austrian Attack"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B06"]
+[Opening "Modern Defense: Pseudo-Austrian Attack"]
+[StudyName "Austrian Attack"]
+[ChapterName "Modern Defense, Pseudo-Austrian Attack"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/a5iKyNcL"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 g6 2. d4 Bg7 3. Nc3 d6 4. f4 Nf6 5. Nf3 { [%anno "hexachess", hexachess] This is a highly transposable variation that usually goes to a regular Austrian Attack unless black waits a while to castle. } 5... Bg4 6. h3 (6. e5 dxe5 7. fxe5 Nd5 8. Bc4 Be6) 6... Bxf3 7. Qxf3 Nc6 8. Be3 e5 9. Bb5 exd4 10. Bxd4 O-O *
+
+
+[Event "Austrian Attack: Fischer v. Benko, 1963/64 US Championship"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Weiss Variation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Fischer v. Benko, 1963/64 US Championship"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/DATay7SM"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 g6 2. d4 Bg7 3. Nc3 d6 4. f4 Nf6 5. Nf3 O-O 6. Bd3 { [%anno "hexachess", hexachess] This is the Weiss Variation. } 6... Bg4 { [%anno "hexachess", hexachess] This is an inaccuracy. Black should play Nf6 and after 0-0, then Bg4. This way, if white plays h3, he weakens his kingside further and black has counterplay on the open king. } (6... Nc6 7. O-O Bg4 8. e5 dxe5 9. dxe5) 7. h3 { [%anno "hexachess", hexachess] This move now works because white can always castle queenside. } 7... Bxf3 8. Qxf3 { [%anno "hexachess", hexachess] This just gave white a glorious attacking set up where the bishops are coordinated and every one of white's pawns is ready to advance. } { [%cal Gd4d5,Ge4e5,Gf4f5,Gg2g4,Gh3h4,Gc1h6,Gd3h7,Gc3d5,Gc3e4] } 8... Nc6 9. Be3 e5 { [%anno "hexachess", hexachess] Because white did not play e5, it allows black to attempt to grab space in the center. } 10. dxe5 dxe5 11. f5 { [%anno "hexachess", hexachess] Normally, breaking with the f pawn in the Austrian Attack is worse than the e pawn, but here, white can open lines to black's king and potentially advance with the other kingside pawns. Note that fxe5 is a very weakening move and gives black a perfect knight. } { [%cal Gf5g6,Gf3f5,Gg2g4] } 11... gxf5 { [%anno "hexachess", hexachess] This is just a horrendous move on Benko's part. It opens the king's file and gives Bobby all the attacking chances he could ask for. } (11... Nd4 12. Qf2 b5 13. g4 { [%anno "hexachess", hexachess] This is an interesting line where black forces white back and seeks counterplay on the queenside. Although b5 is a pawn sacrifice, it gives black a lot of attacking chances. }) 12. Qxf5 Nd4 13. Qf2 { [%anno "hexachess", hexachess] Not trading bishop for knight to keep the queen on f5 because white hopes to trade his dark square bishop for the bishop on g7, the main defender of black's king. } 13... Ne8 { [%anno "hexachess", hexachess] Preparing f5. } 14. O-O { [%anno "hexachess", hexachess] Not only does this prevent f5, it also gives white a nice queen rook battery and control over the f file once the queen moves. } 14... Nd6 15. Qg3 { [%anno "hexachess", hexachess] Here Bobby begins his queen walk to get the queen to the optimal square. } 15... Kh8 16. Qg4 c6 17. Qh5 { [%anno "hexachess", hexachess] Here white's idea is to play e5 and threaten h7 and also potentially use the dark-squared bishop to coordinate an attack/remove the main defender on g7. } { [%cal Gd3h7,Ge3h6,Gh5h7] } 17... Qe8 { [%anno "hexachess", hexachess] This is a losing blunder by Benko. Bobby found the winning position, which is why he walked his queen to h5. } { [%csl Gf6] } (17... Ne6 { [%anno "hexachess", hexachess] This is black's best hope for defense. } { [%cal Ge6f4] }) 18. Bxd4 { [%anno "hexachess", hexachess] He either goes up a piece or gets to play e5. Either way, black is lost. } 18... exd4 19. Rf6 { [%csl Ge5][%cal Ge4e5] } (19. e5 f5) 19... Kg8 (19... Bxf6 20. e5 Ne4 21. Bxe4 h6 22. Qxh6+ Kg8 23. Qh7#) (19... dxc3 20. e5 Ne4 21. Bxe4 Bh6 22. Qxh6 Rg8 23. Qxh7#) (19... h6 20. e5 Kg8 { [%anno "hexachess", hexachess] Black is not immediately getting mated here, but it is still completely losing. You can never take the rook because of Qxh6. }) 20. e5 h6 21. Ne2 { [%anno "hexachess", hexachess] Bobby takes his time. There is no counterplay for black and he is just a piece down. Here black resigns. A crushing victory for Bobby and on his way to going 11/11 at the US Championship. } { [%cal Ge5f6,Gg7f6,Gh5g4] } *
+
+
+[Event "Austrian Attack: So vs. Mahjoob, Asian Individual Championship (2007)"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Weiss Variation"]
+[StudyName "Austrian Attack"]
+[ChapterName "So vs. Mahjoob, Asian Individual Championship (2007)"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/SiipocXd"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 O-O 6. Bd3 Na6 { [%anno "hexachess", hexachess] Prepares c5. } { [%cal Gc7c5] } 7. O-O c5 8. d5 Nc7 9. Qe1 { [%anno "hexachess", hexachess] Placing the queen on a nice file and threatening to gain space with e5 if a knight moves. } 9... e6 { [%anno "hexachess", hexachess] This is a mistake on black's part. Instead of responding in the center, black should counterattack on the queenside with the immediate b5. } (9... b5 10. Bxb5 Nxe4 11. Qxe4 Bxc3 12. bxc3 (12. Bc6 Bf6 13. Bxa8 Bf5 14. Qc4 Qxa8 { [%anno "hexachess", hexachess] This is a better line where white can preserve his pawn structure but still, his center is much worse. e6 is not the right way to undermine white's center. }) 12... Nxb5 { [%anno "hexachess", hexachess] Black has neutralized white's attack and his center is crumbling. White's pawn structure is hideous. }) 10. dxe6 fxe6 11. e5 Nfd5 { [%cal Gd5f4] } (11... dxe5 12. fxe5 Nh5 13. Bg5 { [%anno "hexachess", hexachess] White's better. }) 12. Ne4 Nxf4 { [%anno "hexachess", hexachess] Black should play Nb4 to win the light-squared bishop. This series of trades only favors white. } (12... Nb4 13. Nxd6 Nxd3 14. cxd3 Ne8 15. Nxc8 Rxc8) 13. Bxf4 Rxf4 14. Nxd6 Nd5 15. Qg3 Qf8 16. Rae1 Ne7 { [%anno "hexachess", hexachess] Too passive. } 17. Ng5 Rxf1+ { [%anno "hexachess", hexachess] Black should not trade rooks here. It only gets rid of a defender, but white brings another attacker in. } 18. Rxf1 Nf5 { [%anno "hexachess", hexachess] This sets up the winning combination that Wesley found. } 19. Bxf5 gxf5 (19... exf5 20. Qb3+ c4 21. Qxc4+ Be6 22. Qxe6+ Kh8 23. Ndf7+ Kg8 24. Nh6+ Kh8 25. Ngf7+ Qxf7 26. Nxf7+ Kg8 27. Nh6+ Kh8 28. Qg8+ Rxg8 29. Nf7#) 20. Rxf5 { So, Wesley - Mahjoob, Morteza, 1-0, Asia-ch 6th, 2007, https://lichess.org/P9OvGOZg } { [%anno "hexachess", hexachess] Bam! } 20... exf5 21. Qb3+ Kh8 22. Ndf7+ Kg8 23. Nh6+ Kh8 24. Ngf7+ Qxf7 25. Nxf7+ Kg8 26. Nh6+ Kf8 27. Qf7# *
+
+
+[Event "Austrian Attack: Polgar v. Smirin, 34th Oympiad (2000)"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Kurajica Variation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Polgar v. Smirin, 34th Oympiad (2000)"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/5ZWEmVDQ"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 g6 2. d4 Bg7 3. Nc3 d6 4. f4 Nf6 5. Nf3 O-O 6. Be3 b6 7. Qd2 { [%anno "hexachess", hexachess] Battery. } { [%cal Ge3h6,Gd2h6] } 7... c5 { [%anno "hexachess", hexachess] Black has achieved their goal of challenging white's center at the expense of the light squares. } 8. O-O-O { [%anno "hexachess", hexachess] Achieving a nice battery on the important e file. } 8... cxd4 9. Bxd4 { [%anno "hexachess", hexachess] White gains a bishop on the strong diagonal. } 9... Nc6 10. Bxf6 { [%anno "hexachess", hexachess] An interesting move. Polgar seeks to remove one of the main defenders of black's king and start a push on the kingside. } 10... Bxf6 11. h4 Bg4 12. h5 { [%anno "hexachess", hexachess] Trying to open up the files to black's king. } 12... Bxh5 13. Rxh5 { [%anno "hexachess", hexachess] An awesome rook sacrifice to gain open files to black's king. } 13... gxh5 14. Qd5 Rc8 { [%anno "hexachess", hexachess] Black has to give up the h5 pawn and allows white's queen closer to their own king unless they want to lose their knight. } (14... Bxc3 15. bxc3 Qc8 16. Qxh5 Qe6 { [%anno "hexachess", hexachess] This variation is better for black because it allows black's queen to participate in the defense. Black is just up an exchange. }) 15. Qxh5 Bg7 { [%anno "hexachess", hexachess] Adding defense to the open g file and stopping checks. } 16. e5 { [%anno "hexachess", hexachess] An important idea in this position, to break open the center and allow the bishop access to h7. } 16... Qe8 17. Qh3 { [%anno "hexachess", hexachess] ? } 17... h6 { [%anno "hexachess", hexachess] Stopping h7 weaknesses and preventing Ng5. } 18. Bd3 { [%anno "hexachess", hexachess] Targeting the h7 square. } (18. Nd5 { [%anno "hexachess", hexachess] This is the engine's recommendation. I don't like it because although it gains a strong central knight, it does nothing to attack the king. }) 18... Nb4 19. Be4 e6 { [%anno "hexachess", hexachess] Black plays this to hope for exd6. } (19... Rc4 20. Qf5 Rxe4 21. Qxe4 { [%anno "hexachess", hexachess] The engine wants black to exchange for the light-squared bishop at all costs to stop Qh7 ideas. White is still winning here. }) 20. f5 { [%anno "hexachess", hexachess] A winning move. Black's kingside is feeling the pressure, and his only hope is to gain some relief with Rxc3. } (20. exd6 Rxc3 21. bxc3 Nxa2+ 22. Kd2 Nxc3 23. Bd3 Nxd1) 20... Rxc3 21. f6 { [%anno "hexachess", hexachess] Here, black MUST play Qa4 to threaten white. Other moves hang mate. } 21... Qb5 { [%anno "hexachess", hexachess] The losing blunder. Black has a few spite checks and as long as white doesn't screw up, it's mate. } (21... Qa4 22. bxc3 Nxa2+ 23. Kb2 Qxe4 24. fxg7 Rc8 (24... Kxg7 25. Rd4 Qe3 26. Rg4+ Kh8 27. Kxa2) 25. Qxh6 Qh7 26. Qxh7+ Kxh7) 22. Qg3 { Polgar, Judit - Smirin, Ilia, 1-0, Istanbul ol (Men) 34th, 2000, https://lichess.org/0lHOqvG1 } { [%anno "hexachess", hexachess] Black has a few spite checks, but it's all over. } *
+
+
+[Event "Austrian Attack: Shirov v. Nikolic, 8th Amber Blindfold (1999)"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Weiss Variation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Shirov v. Nikolic, 8th Amber Blindfold (1999)"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/f1ArdPuU"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 O-O 6. Bd3 Nc6 7. e5 dxe5 8. fxe5 Nh5 9. Be3 Bg4 10. Be2 f6 11. exf6 exf6 { [%anno "hexachess", hexachess] Black's first mistake. He should take with the knight to bring it back into the game. } 12. O-O f5 { [%anno "hexachess", hexachess] Prepares f4 to kick the dark-squared bishop and claim space. } 13. Qd2 f4 14. Bf2 Qd7 15. Rfe1 Rae8 16. Rad1 Kh8 { [%anno "hexachess", hexachess] This is a very principled position. Both sides have played without many mistakes and have completed development. } 17. d5 { [%anno "hexachess", hexachess] An interesting choice. } 17... Bxf3 { [%anno "hexachess", hexachess] This is the best way for black to go about this, placing the knight on the strong e5 square. } 18. Bxf3 Ne5 19. Ne4 { [%anno "hexachess", hexachess] White also places his knight on a strong central square. } 19... Qf5 20. Nc5 { [%anno "hexachess", hexachess] White brings his knight closer to support his d pawn but allows an open g file and loses the bishop pair. } 20... Nxf3+ 21. gxf3 { [%anno "hexachess", hexachess] Instead of trading rooks and giving white the e file, black should continue to pressure white's king. } 21... Rxe1+ 22. Rxe1 h6 23. Ne6 Rf7 24. Bxa7 b6 25. c4 Be5 26. c5 bxc5 27. Bxc5 { [%anno "hexachess", hexachess] White traded off a pawn and brought his bishop to an important supporting square and it cannot be challenged without black losing a defender as well. Instead of winning the overextended pawn, it was converted to a strong passed pawn. } 27... Kh7 { [%anno "hexachess", hexachess] White prevents any back rank checks. } 28. a4 { [%anno "hexachess", hexachess] White threatens to push his other passed pawn to victory. } 28... Ng7 29. Qe2 { [%anno "hexachess", hexachess] White threatens black's bishop. } 29... Bd6 { [%anno "hexachess", hexachess] Black hopes to trade and blockade the d pawn so he can focus on the a and b pawns. } 30. Bd4 { [%anno "hexachess", hexachess] White gives up his strong d pawn hoping to win something on g7, but black is safe to take. } 30... Bb4 (30... Qxd5 31. Qe4 Qxe4 32. Rxe4 Nxe6 33. Rxe6) 31. Rd1 { [%anno "hexachess", hexachess] Putting a rook behind an advanced pawn. } 31... Re7 { [%anno "hexachess", hexachess] This is a losing blunder. White can simplify and be up an exchange with a three pawns that are threatening to queen. } 32. Bxg7 { Shirov, Alexei - Nikolic, Predrag, 1-0, Amber-blindfold 08th, 1999, https://lichess.org/3leMQfTK } { [%anno "hexachess", hexachess] Pawns are too strong here. } { [%csl Gc7][%cal Gd5d6,Gc7d6,Ga4a8,Gb2b8,Gc7b6,Gd5d8,Gb2b6] } *
+
+
+[Event "Austrian Attack: Polgar v. Papa, San Bernardino (1987)"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B06"]
+[Opening "Modern Defense: Pseudo-Austrian Attack"]
+[StudyName "Austrian Attack"]
+[ChapterName "Polgar v. Papa, San Bernardino (1987)"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/gjMCDlBD"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 g6 2. d4 Bg7 3. Nc3 d6 4. f4 a6 5. a4 Nc6 6. Be3 e6 { [%anno "hexachess", hexachess] Black tries for a small center to prevent any pawn advances. } 7. Nf3 Nge7 8. Bd3 f5 { [%anno "hexachess", hexachess] Weird f5 system. } 9. O-O { [%anno "hexachess", hexachess] White should advance the e pawn to claim more space. } (9. e5) 9... fxe4 10. Bxe4 O-O 11. Qd2 { [%anno "hexachess", hexachess] White wants to trade her bishop for the bishop on g7 and start a kingside attack because of the open f file. } { [%cal Ge3h6,Gd2h6] } 11... Nf5 12. Bf2 Qf6 { [%anno "hexachess", hexachess] Black should play d5 here to kick the bishop back and finally claim space in the center. } 13. d5 exd5 { [%anno "hexachess", hexachess] Taking is a mistake because it gives white a tempo gain and the e file for her rook all the space she could want. } 14. Nxd5 Qf7 (14... Qd8 15. Rae1) 15. Rae1 (15. Ng5 Qd7 16. Rae1 { [%anno "hexachess", hexachess] This is the engine's line because it improves the position of white's knight with tempo and white has the potential for a devastating kingside attack. }) 15... Bd7 { [%anno "hexachess", hexachess] REALLY bad. } 16. Nxc7 (16. Ng5 Qe8 17. Bxf5 Qd8 18. Be6+ Bxe6 19. Nxe6) 16... Rac8 { [%anno "hexachess", hexachess] Another blunder. Black needs to get the queen and king off the same diagonal to avoid this, and now white is up an insurmountable amount of material. } 17. Bd5 Rxc7 18. Bxf7+ Rxf7 19. Ng5 { [%anno "hexachess", hexachess] Black is not keeping this rook either. Here, black resigned. } *
+
+
+[Event "Austrian Attack: Fischer v. Jose Perez, Havana (1965)"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Weiss Variation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Fischer v. Jose Perez, Havana (1965)"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/ZEDzqztS"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 O-O 6. Bd3 Nc6 7. e5 dxe5 8. fxe5 Nd5 { [%anno "hexachess", hexachess] Nh5 is a more accurate move. } 9. Nxd5 Qxd5 10. c3 { [%anno "hexachess", hexachess] Defending the d pawn from a bishop pin on the knight. } { [%cal Gc3d4,Gc8g4] } 10... Bg4 11. Qe2 Rad8 12. Be4 Qd7 13. h3 { [%anno "hexachess", hexachess] White wants the bishop out of there to start a kingside push. } 13... Be6 14. O-O { [%anno "hexachess", hexachess] Nice rook. } { [%csl Gf1] } 14... Bd5 { [%anno "hexachess", hexachess] Black offers to exchange one of his key defenders and removes the blockade on the e pawn. } 15. Bxd5 Qxd5 16. Bf4 { [%anno "hexachess", hexachess] Defending the crucial pawn. } 16... b5 { [%anno "hexachess", hexachess] Black seeks an advance on the queenside, but nothing is happening over there. It's better to try to defend. } 17. Rad1 { [%anno "hexachess", hexachess] The e file for the rook here is better, especially with Bobby's plan to push. } 17... a6 { [%anno "hexachess", hexachess] Defending the pawn from any future captures. } 18. b3 { [%anno "hexachess", hexachess] Supporting a potential c4 break to kick the queen from its strong central square. } 18... Na5 { [%anno "hexachess", hexachess] Here, black should play e6 to stop white from playing it. } 19. e6 Rc8 { [%anno "hexachess", hexachess] Defending the c pawn. } (19... fxe6 20. Bxc7) 20. exf7+ Rxf7 21. Ng5 { [%anno "hexachess", hexachess] A very strong square for the knight and kicking the rook. } 21... Rf6 { [%anno "hexachess", hexachess] The only logical move. } 22. Rde1 { [%anno "hexachess", hexachess] Bobby wastes a tempo from when he played Rad1. } 22... b4 23. Ne6 { [%anno "hexachess", hexachess] Black is trying to play on the queenside but there's no time. Here, the engine recommends Rxe6 to stop the attack. } 23... bxc3 { [%anno "hexachess", hexachess] It's a big mistake to allow Nxg7. } 24. Nxg7 Qxd4+ { [%anno "hexachess", hexachess] A pointless check. } 25. Kh2 { [%anno "hexachess", hexachess] Here, black resigns. Black cannot capture the knight because of Qxe7+ followed by Be5. } 25... Kxg7 26. Qxe7+ Kg8 27. Be5 *
+
+
+[Event "Austrian Attack: Sampouw v. Hon Kah Seng, Jakarta (1978)"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack, Dragon Formation"]
+[StudyName "Austrian Attack"]
+[ChapterName "Sampouw v. Hon Kah Seng, Jakarta (1978)"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/DiTCtZ2y"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 Bg7 5. Nf3 c5 6. Bb5+ Bd7 7. e5 Ng4 8. e6 { [%anno "hexachess", hexachess] An interesting move with some fun sidelines. } 8... Bxb5 9. exf7+ Kf8 { [%anno "hexachess", hexachess] Taking the pawn, although tempting, is also dangerous for black and white can put black's king in the corner. } (9... Kxf7 10. Ng5+ Kg8 11. Nxb5) 10. Nxb5 Qa5+ 11. Nc3 Nc6 { [%anno "hexachess", hexachess] Black should trade here first to get the knight away from f3, so black can take the f7 pawn. This is asking for d5. } 12. d5 Nd4 13. Ng5 { [%anno "hexachess", hexachess] This is actually not a great move. White should castle to put the rook behind his pawns and escape the pin. } 13... Nh6 { [%anno "hexachess", hexachess] This is a mistake. Not only is the knight now solid on g5 but it retreated to a worse square. } (13... h6 14. Ne6+ (14. Ne4 Nf6 15. O-O) 14... Nxe6 15. dxe6 Bxc3+ 16. bxc3 Qxc3+ 17. Bd2) 14. O-O Nxf7 15. Nce4 { [%anno "hexachess", hexachess] White ignores the pawn and focuses on their attack. } 15... h6 { [%anno "hexachess", hexachess] This is a bad move because it walks into the sequence that follows. } 16. Nxf7 Kxf7 17. c3 { [%anno "hexachess", hexachess] Here, it's better to just let go of the knight. } 17... Nb5 18. Qg4 { [%anno "hexachess", hexachess] Now there are all sorts of threats of f5. } 18... Nc7 19. f5 { [%anno "hexachess", hexachess] This is just a crushing blow from white. Black is not getting away from this unscathed. Here, black resigned. } *
+
+
+[Event "Austrian Attack: Klerides v. Lill, 37th Chess Olympiad (2006)"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B06"]
+[Opening "Modern Defense: Pseudo-Austrian Attack"]
+[StudyName "Austrian Attack"]
+[ChapterName "Klerides v. Lill, 37th Chess Olympiad (2006)"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/noCUJo3s"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 g6 2. d4 Bg7 3. Nc3 d6 4. f4 Nf6 5. Nf3 Bg4 6. h3 Bxf3 7. Qxf3 O-O { [%anno "hexachess", hexachess] Black should definitely wait to castle to hope to avoid white's attack. } 8. e5 dxe5 { [%anno "hexachess", hexachess] The engine likes Nc6, but most humans would take. } 9. dxe5 Nfd7 10. Qxb7 Nb6 { [%anno "hexachess", hexachess] Black has to give up the b2 pawn and save his rook. } 11. Be3 { [%anno "hexachess", hexachess] Attacking the knight. } 11... Qc8 12. Qxc8 Rxc8 13. O-O-O { [%anno "hexachess", hexachess] White is up a pawn and is in a much less awkward position, with control of the d file, the bishop pair, and black still needs a couple more moves to finish development. } 13... c6 { [%anno "hexachess", hexachess] Blocking the knight's most natural development square. } 14. Be2 e6 { [%anno "hexachess", hexachess] Black made two consecutive pawn moves when he should have been developing his pieces. None of black's pieces are doing anything important. } 15. Ne4 Nd5 16. Bd2 Nd7 { [%anno "hexachess", hexachess] Finally developing his knights and grabbing the d5 square. } 17. c4 Ne7 { [%anno "hexachess", hexachess] The knight should have gone to b6. Here, black is just losing a knight. } 18. Bb4 c5 19. Rxd7 cxb4 20. Rxe7 { [%anno "hexachess", hexachess] Easy play for white. } 20... Bf8 21. Rb7 Rcb8 { [%anno "hexachess", hexachess] Don't trade. } 22. Rxb8 Rxb8 23. Rd1 Bh6 24. g3 a5 25. Rd7 Bg7 { [%anno "hexachess", hexachess] White's bishop should be on f8 to stop the advance of the pawn. } 26. c5 Kf8 { [%anno "hexachess", hexachess] Black should block with the rook before bringing his king into the game to stop c6. } 27. c6 Rb6 { [%anno "hexachess", hexachess] The idea here is to get behind the passed pawn, but white has Rd8+, which is completely crushing. } 28. c7 { [%anno "hexachess", hexachess] Here, black resigned. There is nothing to do. } *
+
+
+[Event "Austrian Attack: Trap"]
+[Date "2026.11.18"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "B09"]
+[Opening "Pirc Defense: Austrian Attack"]
+[StudyName "Austrian Attack"]
+[ChapterName "Trap"]
+[ChapterURL "https://lichess.org/study/BTujsxIs/VscKCKYR"]
+[Annotator "https://lichess.org/@/Funnichessman335"]
+[UTCDate "2026.11.18"]
+[UTCTime "18:35:17"]
+[Orientation "white"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4 c5 5. e5 Ng4 6. Bb5+ Bd7 (6... Nd7 7. Qxg4 cxd4 8. Nd5) (6... Nc6 7. d5 a6 8. dxc6 axb5 9. cxb7 Bxb7 10. Qxg4) 7. Qxg4 cxd4 8. Bxd7+ Nxd7 9. Nce2 *

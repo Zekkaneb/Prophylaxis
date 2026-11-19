@@ -1,0 +1,735 @@
+/* --------------------------------------------------------------------------
+   Application shell: top-nav layout + the page types inside it
+   -------------------------------------------------------------------------- */
+
+/* Rail + page: the navigation is a column on the left, so no room loses a
+   strip of the window to a horizontal bar. */
+.app-shell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: 100dvh;
+  min-width: 0;
+  column-gap: 0;
+}
+
+.app-shell__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.view {
+  padding-top: 26px;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.page .page-heading {
+  margin-bottom: 0;
+}
+
+/* Review and Puzzles are workbenches, not landing pages. Their own panel
+   headings already say what the screen does, so the page intro only repeats it
+   and pushes the first useful control below the fold. Keep the heading in the
+   accessibility tree (and off-screen) so the page still has a real h1. */
+.page--review .page-heading,
+.page--puzzles .page-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.page--review,
+.page--puzzles {
+  gap: 16px;
+}
+
+.heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.heading-actions .primary-btn,
+.heading-actions .secondary-btn {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* --------------------------------- tools ---------------------------------- */
+
+.tools-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tools-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tools-tab {
+  flex: none;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 160ms var(--ease),
+    color 160ms var(--ease);
+}
+
+.tools-tab:hover {
+  color: var(--text);
+}
+
+.tools-tab.is-active {
+  background: var(--accent-dark);
+  color: var(--accent-strong);
+}
+
+/* -------------------------------- dashboard ------------------------------- */
+
+/* A ledger, not a row of cards: one hairline-ruled strip keeps the top of the
+   dashboard quiet and lets the serif figures carry the hierarchy. */
+.ledger {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 4px 0;
+  border-block: 1px solid var(--line);
+}
+
+.ledger__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 14px 24px;
+  border-left: 1px solid var(--line);
+}
+
+.ledger__cell:first-child {
+  border-left: 0;
+  padding-left: 2px;
+}
+
+.ledger dt {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.ledger dd {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger__hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* The player's own card: three fields in one row, the preview above them. */
+.dash-profile {
+  margin-bottom: 16px;
+}
+
+.dash-profile__preview {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dash-profile__preview strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.dash-profile__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.dash-profile__field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dash-profile__field input {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.dash-profile__field input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.dash-profile__field--elo input {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-profile__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+}
+
+.dash-profile__status {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.block {
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+
+.block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.block__head h2 {
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+.link-btn {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.link-btn:hover {
+  color: var(--accent-strong);
+}
+
+.block__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.block__empty p {
+  margin: 0;
+}
+
+.block__empty .secondary-btn {
+  cursor: pointer;
+}
+
+.course-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.course-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+}
+
+.course-row__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.course-row__main strong {
+  font-size: 13.5px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.course-row__main > span {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.course-row__bar {
+  display: block;
+  height: 3px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.course-row__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+}
+
+.course-row__side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.course-row__pct {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.course-row__btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.activity {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.activity__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.activity__dot--gold {
+  background: var(--gold);
+  opacity: 0.75;
+}
+
+.activity div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.activity strong {
+  font-size: 12.8px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.activity span {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quick-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card-top);
+  color: var(--soft);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform var(--dur) var(--spring),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.quick-card:hover {
+  transform: translateY(-3px);
+}
+
+.quick-card:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+.quick-card > span {
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.quick-card strong {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.quick-card em {
+  font-style: normal;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.quick-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+/* -------------------------------- classroom ------------------------------- */
+
+.class-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+  gap: 14px;
+}
+
+.class-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(165deg, var(--panel-2), var(--panel));
+}
+
+.class-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.class-card__step {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--accent-strong);
+}
+
+.class-card__pct {
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.class-card h3 {
+  font-size: 15.5px;
+  line-height: 1.35;
+}
+
+.class-card p {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.class-card__bar {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.class-card__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+}
+
+.class-card .primary-btn {
+  /* Sits on the card floor so a two-line title never skews the row. */
+  margin-top: auto;
+  align-self: flex-start;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+/* ---------------------------------- how to -------------------------------- */
+
+.howto-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.howto-step {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(165deg, var(--panel-2), var(--panel));
+}
+
+.howto-step__n {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.howto-step h3 {
+  font-size: 14px;
+}
+
+.howto-step p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.shortcuts {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shortcuts > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shortcuts dt {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.shortcuts dd {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 22px;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  font-family: inherit;
+  font-size: 11px;
+  text-align: center;
+  color: var(--soft);
+}
+
+.notes {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.notes strong {
+  color: var(--text);
+}
+
+/* -------------------------------- responsive ------------------------------ */
+
+@media (max-width: 1180px) {
+  .quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .dash-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .ledger {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0;
+  }
+
+  .ledger__cell {
+    padding: 14px 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .ledger__cell:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .ledger__cell:nth-child(odd) {
+    border-left: 0;
+    padding-left: 2px;
+  }
+
+  .view {
+    padding-top: 20px;
+  }
+}
+
+@media (max-width: 620px) {
+  /* Two columns still read well on a phone; only very narrow screens stack. */
+  .ledger__cell {
+    padding: 12px 14px;
+  }
+
+  .ledger dd {
+    font-size: 30px;
+  }
+
+  .quick-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .course-row {
+    flex-wrap: wrap;
+  }
+
+  .course-row__side {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .shortcuts > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .shortcuts dd {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-card,
+  .tools-tab {
+    transition: none;
+  }
+
+  .quick-card:hover {
+    transform: none;
+  }
+}
+
+/* One-line footer note under the dashboard sections. */
+.dash-note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--muted);
+}

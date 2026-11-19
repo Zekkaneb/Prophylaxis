@@ -1,0 +1,979 @@
+/* --------------------------------------------------------------------------
+   Study screen — rail / stage / panel
+   -------------------------------------------------------------------------- */
+
+.study {
+  display: grid;
+  /* The rails and panel keep their own widths and their own places; the board
+     takes whatever is left between them, so the layout is never re-flowed to
+     suit the board's size. */
+  grid-template-columns: 296px minmax(0, 1fr) 344px;
+  gap: 16px;
+  /* Stretch the rails to the board's height so the three columns read as one
+     continuous workspace instead of three floating cards. */
+  align-items: stretch;
+  min-width: 0;
+}
+
+.study.is-collapsed {
+  grid-template-columns: 60px minmax(0, 1fr) 344px;
+}
+
+.study--empty {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--muted);
+}
+
+/* ---------------------------------- rail ---------------------------------- */
+
+.study__rail {
+  /* Runs the full height of the board column: the rail ends where the board
+     ends instead of stopping at its own content and leaving a ragged edge. */
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  max-height: none;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.study__rail-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.study__rail-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+/* Section markers: italic serif, matching the page eyebrows. */
+.study__rail-title span {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.study__rail-title strong {
+  font-size: 13.5px;
+  line-height: 1.35;
+  /* Full course titles wrap instead of being cut with an ellipsis. */
+  overflow-wrap: anywhere;
+}
+
+.study__rail-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 0;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.study__rail-mini span {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: 0;
+}
+
+.study__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 28px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--soft);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease),
+    background 160ms var(--ease),
+    border-color 160ms var(--ease);
+}
+
+.study__icon:hover:not(:disabled) {
+  color: var(--accent-strong);
+  border-color: color-mix(in srgb, var(--gold) 35%, transparent);
+}
+
+.study__icon.is-on {
+  color: var(--accent-strong);
+  background: var(--accent-dark);
+  border-color: color-mix(in srgb, var(--gold) 40%, transparent);
+}
+
+.study__switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 12.5px;
+  color: var(--soft);
+  cursor: pointer;
+}
+
+.study__switch input {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  margin: 0;
+}
+
+.study__switch em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.study__chapter-shelf {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.study__chapters-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.study__chapters-head h3 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.study__chapters-head span {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.study__chapters {
+  /* Grows into the rail; the step block below stays pinned to the floor. */
+  flex: 1 1 auto;
+  min-height: 64px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 2px;
+  scrollbar-width: thin;
+}
+
+.study__chapters-toggle {
+  align-self: flex-start;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.study__chapters-toggle:hover {
+  color: var(--accent-strong);
+}
+
+.study__chapter {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--soft);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 160ms var(--ease),
+    border-color 160ms var(--ease);
+}
+
+.study__chapter:hover {
+  background: var(--panel-2);
+}
+
+.study__chapter.is-active {
+  background: var(--accent-dark);
+  border-color: color-mix(in srgb, var(--gold) 35%, transparent);
+  color: var(--text);
+}
+
+.study__chapter-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.study__chapter-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12.8px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.study__chapter-pct {
+  flex: none;
+  font-size: 10.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Only read-to-the-end chapters that also passed a test earn this mark. */
+.study__chapter-learned {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  background: color-mix(in srgb, var(--gold) 14%, transparent);
+  color: var(--gold);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.study__chapter-bar {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.study__chapter-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  transition: width 220ms var(--ease);
+}
+
+.study__chapter-meta {
+  font-size: 10.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.study__rail-empty {
+  margin: 0;
+  padding: 6px 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.study__steps {
+  flex: none;
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  min-height: 0;
+}
+
+.study__steps h3 {
+  margin-bottom: 6px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.study__step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 190px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  /* Fade the last row out instead of guillotining it at the edge. */
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 16px), transparent);
+}
+
+.study__step {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.study__step:hover {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.study__step.is-done {
+  color: var(--soft);
+}
+
+.study__step.is-current {
+  border-color: color-mix(in srgb, var(--gold) 35%, transparent);
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  color: var(--text);
+}
+
+.study__step-label {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.study__step-san {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.study__step-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
+}
+
+.study__step.is-done .study__step-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---------------------------------- stage --------------------------------- */
+
+.study__stage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.study__board-host {
+  position: relative;
+  /* A rigid viewport, not a sizer: the board takes its size from the global
+     scale, so the rails and the lesson text can never squeeze it. When it is
+     bigger than this column it pans here instead of being cut off. */
+  width: 100%;
+  min-width: 0;
+  overflow: auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* A board-sized box, centred by its own auto margins, so the board, the arrow
+   layer and the click maths all share one origin. */
+.study__board-frame {
+  position: relative;
+  flex: 0 0 auto;
+  margin-inline: auto;
+  width: var(--board-px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+/* A real button so the drawing surface is keyboard-reachable (Esc cancels). */
+.study__arrow-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Above the persistent board layer (z-index 1), which lives above the router. */
+  z-index: 2;
+  /* Exactly the board, whatever the scale, so the drawn arrows map to the
+     squares even inside a scrolled, oversized board. */
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: crosshair;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px rgba(127, 178, 255, 0.35);
+}
+
+.study__arrow-layer.is-armed {
+  box-shadow: inset 0 0 0 2px rgba(127, 178, 255, 0.75);
+}
+
+.study__board-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.study__tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease),
+    border-color 160ms var(--ease),
+    background 160ms var(--ease);
+}
+
+.study__tool:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
+.study__tool.is-on {
+  color: var(--accent-strong);
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  background: var(--accent-dark);
+}
+
+.study__banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--gold) 8%, transparent), transparent 60%), var(--panel);
+}
+
+.study__banner p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--soft);
+  min-width: 0;
+}
+
+.study__banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.study__nav {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--soft);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.study__nav:disabled,
+.study__next:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.study__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--gold) 90%, transparent);
+}
+
+.study__next-chevron {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(20, 17, 12, 0.14);
+  font-size: 13px;
+  line-height: 1;
+  transition: transform 220ms var(--spring);
+}
+
+.study__next:hover:not(:disabled) .study__next-chevron {
+  transform: translateX(2px);
+}
+
+/* ---------------------------------- panel --------------------------------- */
+
+.study__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  /* Same height as the board column; the coach text scrolls when it is long. */
+  align-self: stretch;
+  max-height: none;
+  overflow: hidden;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+
+.study__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.study__eyebrow {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.study__panel-head strong {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.study__of {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.study__panel-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.study__depth {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.study__depth span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  transition: width 200ms var(--ease);
+}
+
+.study__moves {
+  flex: 0 1 auto;
+  min-height: 62px;
+  max-height: 210px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 3px;
+  padding: 2px;
+  scrollbar-width: thin;
+}
+
+.study__ply {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 7px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--soft);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.study__ply:hover {
+  background: var(--panel-2);
+}
+
+.study__ply.is-past {
+  color: var(--muted);
+}
+
+.study__ply.is-current {
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  background: var(--accent-dark);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.study__ply.is-marked {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.study__ply-no {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.study__ply-nag {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.study__ply-note {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.9;
+}
+
+.study__coach {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  scrollbar-width: thin;
+}
+
+.study__coach h3 {
+  margin: 0 0 5px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--accent-strong);
+}
+
+.study__coach p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--soft);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* Side lines are chapter content, not a footnote: the section is framed, the
+   move list marks every branching move, and the panel always lists the
+   branches even when the current move has none. */
+.study__alts {
+  margin-top: 14px;
+  padding: 10px 12px 12px;
+  border: 1px solid color-mix(in srgb, var(--gold) 32%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--gold) 6%, transparent);
+}
+
+.study__alts h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--accent-strong);
+}
+
+.study__alts-count {
+  padding: 1px 7px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-style: normal;
+  color: var(--gold);
+}
+
+.study__alts-hint {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.study__alts ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.study__alts li {
+  display: flex;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid color-mix(in srgb, var(--gold) 22%, var(--line));
+  border-left: 3px solid color-mix(in srgb, var(--gold) 65%, transparent);
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.5;
+  background: var(--surface-1);
+}
+
+.study__alt {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  align-items: baseline;
+}
+
+.study__alt:hover strong {
+  text-decoration: underline;
+}
+
+.study__alt em {
+  flex: none;
+  font-style: normal;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.study__alt strong {
+  color: var(--accent-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A move that starts a side line gets its own mark in the notation. */
+.study__ply-alt {
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.95;
+}
+
+.study__sidelabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 10px 0 6px;
+  padding: 7px 9px;
+  border: 1px dashed color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--gold);
+}
+
+.study__linkbtn {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gold);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.study__alts strong {
+  flex: none;
+  color: var(--accent-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.study__alts span {
+  min-width: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.study__toolbar {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+/* -------------------------------- responsive ------------------------------ */
+
+@media (max-width: 1360px) {
+  .study {
+    grid-template-columns: 264px minmax(0, 1fr) 320px;
+  }
+
+  .study.is-collapsed {
+    grid-template-columns: 56px minmax(0, 1fr) 320px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .study,
+  .study.is-collapsed {
+    grid-template-columns: minmax(0, 1fr) 316px;
+    grid-template-areas:
+      'rail rail'
+      'stage panel';
+  }
+
+  /* Below the three-column breakpoint the rail becomes a full-width shelf:
+     header and filter span the row, chapters and steps sit side by side. */
+  .study__rail {
+    grid-area: rail;
+    position: static;
+    max-height: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .study__rail-head,
+  .study__switch {
+    grid-column: 1 / -1;
+  }
+
+  .study__chapters {
+    max-height: 180px;
+  }
+
+  .study__steps {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+    padding: 0 0 0 12px;
+  }
+
+  .study__step-list {
+    max-height: 132px;
+  }
+
+  .study__stage {
+    grid-area: stage;
+  }
+
+  .study__panel {
+    grid-area: panel;
+  }
+}
+
+@media (max-width: 900px) {
+  .study,
+  .study.is-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'rail'
+      'stage'
+      'panel';
+  }
+
+  .study__panel {
+    position: static;
+    max-height: none;
+  }
+
+  .study__moves {
+    max-height: 168px;
+  }
+}
+
+@media (max-width: 720px) {
+  .study__rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .study__chapters {
+    max-height: 150px;
+  }
+
+  .study__steps {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 10px 0 0;
+  }
+
+  .study__step-list {
+    max-height: 120px;
+  }
+}
+
+@media (max-width: 560px) {
+
+  .study__banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .study__banner-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study__chapter,
+  .study__icon,
+  .study__tool,
+  .study__chapter-bar > span,
+  .study__depth span {
+    transition: none;
+  }
+}

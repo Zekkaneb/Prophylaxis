@@ -1,0 +1,50 @@
+{
+  "tier": "new-to-chess",
+  "name": "New to Chess",
+  "min_rating": 1000,
+  "max_rating": 1200,
+  "version": 20261120,
+  "generated_at": "2026-11-18T17:59:51.203Z",
+  "source": "lichess-open-database",
+  "seed": 20261118,
+  "pool_size": 5000,
+  "shard_size": 1000,
+  "count": 5000,
+  "shards": [
+    {
+      "index": 1,
+      "file": "shard-0001.json",
+      "count": 1000,
+      "first_id": "CdMU8",
+      "last_id": "wpyEf"
+    },
+    {
+      "index": 2,
+      "file": "shard-0002.json",
+      "count": 1000,
+      "first_id": "FYD7A",
+      "last_id": "5lTSf"
+    },
+    {
+      "index": 3,
+      "file": "shard-0003.json",
+      "count": 1000,
+      "first_id": "8gPSs",
+      "last_id": "jGUjc"
+    },
+    {
+      "index": 4,
+      "file": "shard-0004.json",
+      "count": 1000,
+      "first_id": "kwaKg",
+      "last_id": "gR7F1"
+    },
+    {
+      "index": 5,
+      "file": "shard-0005.json",
+      "count": 1000,
+      "first_id": "1HtZr",
+      "last_id": "rqvRp"
+    }
+  ]
+}

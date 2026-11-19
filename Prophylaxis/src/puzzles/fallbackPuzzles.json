@@ -1,0 +1,102 @@
+[
+  {
+    "fen": "6k1/1p3ppp/8/8/8/8/5PPP/R5K1 b - - 0 1",
+    "moves": "b7b6 a1a8",
+    "themes": ["mateIn1", "backRankMate", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/5PPP/3QR1K1 b - - 0 1",
+    "moves": "h7h6 d1d8",
+    "themes": ["mateIn1", "backRankMate", "middlegame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/4q3/8/8/3R1PPP/6K1 b - - 0 1",
+    "moves": "e5d4 d2d4",
+    "themes": ["hangingPiece", "middlegame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/3b4/8/3R1PPP/6K1 b - - 0 1",
+    "moves": "f7f6 d2d4",
+    "themes": ["hangingPiece", "middlegame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/3n4/4P3/8/5PPP/6K1 b - - 0 1",
+    "moves": "h7h6 e4d5",
+    "themes": ["hangingPiece", "pawnEndgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/3r4/8/8/3R1PPP/6K1 b - - 0 1",
+    "moves": "g7g6 d2d5",
+    "themes": ["hangingPiece", "middlegame"]
+  },
+  {
+    "fen": "r3k2r/ppp2ppp/8/3N4/8/8/PPP2PPP/R3K2R b - - 0 1",
+    "moves": "a7a6 d5c7 e8d8 c7a8",
+    "themes": ["fork", "middlegame", "materialAdvantage"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/3q1PPP/3R2K1 b - - 0 1",
+    "moves": "h7h6 d1d2",
+    "themes": ["hangingPiece", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/5PPP/3qR1K1 b - - 0 1",
+    "moves": "f7f6 e1d1",
+    "themes": ["hangingPiece", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/1q6/5PPP/1R4K1 b - - 0 1",
+    "moves": "h7h6 b1b3",
+    "themes": ["hangingPiece", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/2q5/8/5PPP/5BK1 b - - 0 1",
+    "moves": "g7g6 f1c4",
+    "themes": ["hangingPiece", "bishopEndgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/3n4/8/5PPP/3R2K1 b - - 0 1",
+    "moves": "h7h6 d1d4",
+    "themes": ["hangingPiece", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/5PPP/R4RK1 b - - 0 1",
+    "moves": "h7h6 a1a8",
+    "themes": ["mateIn1", "backRankMate", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/1b3PPP/2B3K1 b - - 0 1",
+    "moves": "f7f6 c1b2",
+    "themes": ["hangingPiece", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/2n5/5PPP/1N4K1 b - - 0 1",
+    "moves": "h7h6 b1c3",
+    "themes": ["hangingPiece", "knightEndgame"]
+  },
+  {
+    "fen": "2r3k1/5ppp/8/8/8/8/5PPP/2Q3K1 b - - 0 1",
+    "moves": "h7h6 c1c8",
+    "themes": ["hangingPiece", "rookEndgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/5PPP/4Q1K1 b - - 0 1",
+    "moves": "h7h6 e1e8",
+    "themes": ["mateIn1", "queenMate", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/1R3PPP/1R4K1 b - - 0 1",
+    "moves": "h7h6 b2b8",
+    "themes": ["mateIn1", "backRankMate", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/5PPP/1R4K1 b - - 0 1",
+    "moves": "h7h6 b1b8",
+    "themes": ["mateIn1", "backRankMate", "endgame"]
+  },
+  {
+    "fen": "6k1/5ppp/8/8/8/8/5PPP/2Q3K1 b - - 0 1",
+    "moves": "h7h6 c1c8",
+    "themes": ["mateIn1", "queenMate", "endgame"]
+  }
+]

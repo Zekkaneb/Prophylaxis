@@ -1,0 +1,36 @@
+{
+  "name": "chess-trainer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:single": "tsc -b && vite build --minify false && node scripts/build-standalone.mjs",
+    "lint": "oxlint",
+    "test:pgn": "node --test learn/tests/",
+    "test:puzzles": "node --test tests/puzzles/",
+    "test:play": "node --test tests/play/",
+    "test": "npm run test:pgn && npm run test:puzzles && npm run test:play",
+    "ingest:puzzles": "node scripts/ingest-lichess-puzzles.mjs",
+    "fixtures:puzzles": "node scripts/make-lichess-fixture.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "chess.js": "^1.4.0",
+    "dexie": "^4.4.7",
+    "react": "^19.3.1",
+    "react-chessboard": "^5.12.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "fake-indexeddb": "^6.2.8",
+    "oxlint": "^1.90.0",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.6"
+  }
+}

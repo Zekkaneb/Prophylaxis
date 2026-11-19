@@ -1,0 +1,244 @@
+/* --------------------------------------------------------------------------
+   Side navigation rail
+
+   The old top bar folded into a left column. It keeps the brand, the room
+   links, search, board size, sound, settings and the local data actions, and
+   collapses to a strip of glyphs so a board room can reclaim the width.
+   -------------------------------------------------------------------------- */
+
+.sidenav {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 232px;
+  height: 100dvh;
+  min-height: 0;
+  padding: 16px 12px;
+  border-right: 1px solid var(--line-soft);
+  background: var(--nav);
+  backdrop-filter: saturate(140%) blur(14px);
+  box-shadow: 1px 0 0 var(--inset-hi);
+  transition: width 220ms var(--ease);
+}
+
+.sidenav.is-collapsed {
+  width: 68px;
+  padding-inline: 10px;
+}
+
+.sidenav__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex: none;
+}
+
+.sidenav .brand {
+  padding: 2px 4px;
+  gap: 9px;
+  font-size: 19px;
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.sidenav .brand > span:last-child {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Folded: the mark and the fold button stack, so a 48px-wide rail has room for
+   both instead of squeezing the logo against the edge. */
+.sidenav.is-collapsed .sidenav__top {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidenav.is-collapsed .brand {
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+}
+
+.sidenav.is-collapsed .sidenav__toggle {
+  width: 30px;
+  height: 24px;
+}
+
+.sidenav__toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-1);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease),
+    border-color 160ms var(--ease),
+    background 160ms var(--ease);
+}
+
+.sidenav__toggle:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* ------------------------------- room links ------------------------------- */
+
+.sidenav .main-nav {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.sidenav .nav-item {
+  cursor: pointer;
+  min-width: 0;
+}
+
+.sidenav .nav-item em {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sidenav .nav-item:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.sidenav.is-collapsed .nav-item {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.sidenav.is-collapsed .nav-item > span {
+  width: auto;
+}
+
+/* --------------------------------- search --------------------------------- */
+
+.sidenav__search {
+  flex: none;
+}
+
+.sidenav__search form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-1);
+  color: var(--muted);
+  font-size: 12.5px;
+  transition: border-color 160ms var(--ease);
+}
+
+.sidenav__search form:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.sidenav__search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.sidenav__search input::placeholder {
+  color: var(--muted);
+}
+
+.sidenav__search-btn {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-1);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sidenav__search-btn:hover {
+  color: var(--text);
+}
+
+/* ---------------------------------- footer -------------------------------- */
+
+.sidenav .sidebar-bottom {
+  margin-top: auto;
+  gap: 3px;
+  flex: none;
+}
+
+.sidenav .board-utility {
+  width: 100%;
+}
+
+.sidenav .board-utility__btn {
+  width: 100%;
+  height: 32px;
+}
+
+/* The rail is narrow: the size popover opens into the content column. */
+.sidenav .board-utility__panel {
+  left: 0;
+  right: auto;
+  top: calc(100% + 6px);
+}
+
+/* The design system still carries the old phone rules for the retired bottom
+   bar (hidden brand and footer, tabs in a row). On a narrow screen the rail is
+   still a rail: same column, same items, just folded. */
+@media (max-width: 900px) {
+  .sidenav .brand,
+  .sidenav .sidebar-bottom {
+    display: flex;
+  }
+
+  .sidenav .sidebar-bottom {
+    flex-direction: column;
+  }
+
+  .sidenav .main-nav {
+    display: grid;
+    flex-direction: initial;
+    gap: 4px;
+    width: 100%;
+    justify-content: initial;
+  }
+
+  .sidenav .nav-item {
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidenav {
+    transition: none;
+  }
+}

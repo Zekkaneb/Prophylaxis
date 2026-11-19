@@ -1,0 +1,1525 @@
+.gr {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Classification tones --------------------------------------------------- */
+
+/* The 13 tones mirror `MOVE_CLASSIFICATION_META.badgeClass` in
+   src/config/moveClassifications.ts — same hue and soft contrast, expressed in
+   this app's CSS instead of Tailwind utilities. */
+
+.gr-tone--brilliant {
+  --tone: #22d3ee;
+}
+
+.gr-tone--clutch {
+  --tone: #34d399;
+}
+
+.gr-tone--great {
+  --tone: #60a5fa;
+}
+
+.gr-tone--best {
+  --tone: #4ade80;
+}
+
+.gr-tone--excellent {
+  --tone: #a3e635;
+}
+
+.gr-tone--good {
+  --tone: #5eead4;
+}
+
+.gr-tone--forced {
+  /* Muted steel: no decision was made, so no colour is earned. */
+  --tone: #a1a1aa;
+}
+
+.gr-tone--book {
+  --tone: #fde68a;
+}
+
+.gr-tone--inaccuracy {
+  --tone: #facc15;
+}
+
+.gr-tone--mistake {
+  --tone: #fb923c;
+}
+
+.gr-tone--miss {
+  --tone: #fb7185;
+}
+
+.gr-tone--blunder {
+  --tone: #ef4444;
+}
+
+.gr-tone--throw {
+  --tone: #dc2626;
+}
+
+/* Input ------------------------------------------------------------------ */
+
+.gr-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.gr-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.gr-panel--centre {
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 40px 24px;
+  max-width: 560px;
+  margin: 40px auto;
+  width: 100%;
+}
+
+.gr-panel__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  color: var(--text);
+}
+
+.gr-muted {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.gr-error {
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: rgba(244, 67, 54, 0.12);
+  border: 1px solid rgba(244, 67, 54, 0.35);
+  color: var(--danger);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.gr-eyebrow {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+.gr-textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 200px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.gr-textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  outline-offset: 1px;
+}
+
+/* Review depth ------------------------------------------------------------ */
+
+.gr-depth {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+
+.gr-depth__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gr-depth__title {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gr-depth__current {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+}
+
+.gr-depth__options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.gr-depth__option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--soft);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms var(--ease),
+    background 160ms var(--ease),
+    color 160ms var(--ease);
+}
+
+.gr-depth__option strong {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.gr-depth__option small {
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-depth__option:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text);
+}
+
+.gr-depth__option.is-active {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--text);
+}
+
+.gr-depth__option.is-active small {
+  color: var(--accent);
+}
+
+.gr-depth__hint {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.gr-input__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gr-upload {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.gr-engine {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.gr-engine--ready {
+  color: var(--accent);
+}
+
+.gr-engine--error {
+  color: var(--danger);
+}
+
+.gr-book-note {
+  font-size: 0.72rem;
+}
+
+/* Empty archive ----------------------------------------------------------- */
+
+.gr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 26px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 22px;
+  text-align: center;
+}
+
+.gr-empty > strong {
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.gr-empty .gr-muted {
+  max-width: 36ch;
+}
+
+.gr-empty .empty-art {
+  width: 84px;
+  height: 84px;
+  border-radius: 21px;
+}
+
+.gr-empty .empty-art__grid {
+  inset: 7px;
+  border-radius: 15px;
+  background-size: 20px 20px;
+}
+
+.gr-empty .empty-art__piece {
+  font-size: 40px;
+}
+
+.gr-empty .button {
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+/* History ---------------------------------------------------------------- */
+
+.gr-history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.gr-history__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+
+.gr-history__open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.gr-history__players {
+  font-size: 0.87rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gr-history__meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-history__accuracy {
+  display: flex;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-vs {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Analysing -------------------------------------------------------------- */
+
+.gr-analyzing__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 640;
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+
+.gr-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 180ms ease;
+}
+
+/* Review layout ---------------------------------------------------------- */
+
+/* A live review runs edge to edge: board on the far left, panel on the far right. */
+.view:has(.gr-review) {
+  max-width: none;
+  padding-inline: clamp(10px, 1.4vw, 24px);
+  /* The workspace owns the viewport: no page scroll means the board can never
+     slide away while the rails scroll. */
+  padding-block: 0 8px;
+}
+
+/* Container | board | container, exactly like the course workspace. */
+.gr-review {
+  display: grid;
+  grid-template-columns: clamp(212px, 17vw, 268px) minmax(0, 1fr) clamp(280px, 23vw, 360px);
+  grid-template-areas: 'left board right';
+  gap: 16px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.gr-board-col {
+  grid-area: board;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Toolbar and opening at the top of the left rail. */
+.gr-rail__head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.gr-rail__head-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gr-rail__redo {
+  margin-left: auto;
+}
+
+.gr-board-row {
+  /* Oversized boards pan here rather than pushing the side panel around. */
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Player bars: the name and rating of whoever owns the pieces on that side of
+   the board, so Black sits above the board when White is at the bottom. */
+
+.gr-board-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* The shell follows the board instead of sizing it: the board's size comes
+     from the global scale, so this only decides how much room it gets. */
+  width: 100%;
+  min-width: 0;
+  margin-inline: 0 auto;
+}
+
+.gr-player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  transition: border-color 160ms var(--ease);
+}
+
+/* The side that just moved, so the eye lands on their numbers. */
+.gr-player.is-active {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+/* Colour swatch, chess.com style: one disc, filled or outlined. */
+.gr-player__dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.gr-player__dot--white {
+  background: #f4efe4;
+}
+
+.gr-player__dot--black {
+  background: #191c22;
+  border-color: var(--line-strong);
+}
+
+.gr-player__id {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.gr-player__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Rating as a badge, the same shape the predicted rating uses. */
+.gr-player__elo {
+  margin-left: auto;
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Predicted ratings, above the evaluation graph. */
+.gr-predicted {
+  gap: 8px;
+}
+
+.gr-predicted__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--soft);
+}
+
+.gr-predicted__value {
+  margin-left: auto;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-board-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  /* Bar + board are centred in the middle column. */
+  justify-content: center;
+}
+
+/* The board column is the board, its eval lane and its transport. The lane is
+   positioned against .gr-board-wrap, so the stack is exactly board-width. */
+.gr-board-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 auto;
+  width: var(--board-px);
+}
+
+.gr-eval-wrap {
+  /* Pinned to the board's own box: top/bottom 0 of the board wrap makes the bar
+     exactly as long as the board, however tall the player cards are. */
+  position: absolute;
+  left: -64px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  width: 58px;
+  pointer-events: none;
+}
+
+.gr-eval__label {
+  /* Out of flow: the bar must own the full height, and a wider score must not
+     push the board horizontally during analysis. */
+  position: absolute;
+  top: 50%;
+  right: 22px;
+  transform: translateY(-50%);
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  border: 1px solid var(--line-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.gr-eval {
+  position: relative;
+  /* The bar keeps its 10px width and takes the board's height exactly, so it
+     stays beside the board rather than beside the player cards. */
+  flex: 0 0 14px;
+  width: 14px;
+  height: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--line-soft);
+  border: 1px solid var(--line-soft);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.gr-eval__fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f7f4ec, #ddd7c8);
+  /* Height only: transform/height are both compositor-friendly here, and the
+     bar is absolutely positioned, so animating it cannot shift the layout. */
+  transition: height 340ms var(--ease);
+  will-change: height;
+}
+
+.gr-board-wrap {
+  position: relative;
+  /* Grows into the column; its own width ceiling comes from the board setting. */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Move badges are painted inside the board layer (ChessBoardWrapper), so they
+   sit above the pieces and scale with the board. See PersistentBoard.css. */
+
+/* Navigation / retry ------------------------------------------------------ */
+
+.gr-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+/* Square transport buttons: the four arrows read as one control, the count
+   reads as its readout. */
+.gr-nav .button {
+  width: 36px;
+  height: 30px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.gr-nav__flip {
+  margin-left: 8px;
+}
+
+.gr-nav__count {
+  margin-left: auto;
+  padding-right: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-retry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.gr-retry__prompt {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--accent);
+}
+
+.gr-retry__feedback {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.gr-retry__feedback.is-good {
+  color: var(--accent);
+}
+
+.gr-retry__feedback.is-bad {
+  color: var(--danger);
+}
+
+.gr-retry__actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Rails ------------------------------------------------------------------ */
+
+/* Container | board | container, each rail running the board's full height. */
+.gr-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  align-self: stretch;
+  /* Never let the rails' content make the page scroll: they scroll instead. */
+  max-height: calc(100dvh - 82px);
+}
+
+.gr-rail--left {
+  grid-area: left;
+}
+
+.gr-rail--right {
+  grid-area: right;
+}
+
+.gr-rail__card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 2px 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  scrollbar-width: thin;
+}
+
+/* Sections stack inside one container, divided by hairlines. */
+.gr-rail__card > section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 0;
+}
+
+.gr-rail__card > section + section {
+  border-top: 1px solid var(--border);
+}
+
+/* The left rail is a reading column; the right rail scrolls its move list. */
+.gr-rail--left .gr-rail__card {
+  overflow-y: auto;
+}
+
+.gr-rail--right .gr-rail__card {
+  overflow: hidden;
+}
+
+.gr-rail--right .gr-moves-card {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.gr-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.gr-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.gr-card__title {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Summary ---------------------------------------------------------------- */
+
+/* Opening name, sitting directly above the top moves. */
+.gr-opening-strip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 2px;
+  min-width: 0;
+  font-size: 0.76rem;
+  color: var(--soft);
+}
+
+.gr-opening-strip__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gr-opening-strip__name.is-muted {
+  color: var(--text-muted);
+}
+
+.gr-opening__eco {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: rgba(120, 140, 255, 0.22);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text);
+}
+
+/* Nameplates on the board ------------------------------------------------ */
+
+/* One line per player, hugging the board's own width above and below it. Kept
+   compact so the board column still fits a 768px-tall screen. */
+.gr-board-stack .gr-player {
+  padding: 3px 9px;
+  border-radius: 9px;
+}
+
+.gr-board-stack .gr-player__name {
+  font-size: 0.82rem;
+}
+
+/* Accuracy above move quality: two plain percentages, nothing else. */
+.gr-acc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.gr-acc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+
+.gr-acc--white {
+  border-color: rgba(238, 243, 250, 0.22);
+}
+
+.gr-acc--black {
+  border-color: rgba(200, 211, 226, 0.16);
+}
+
+.gr-acc__side {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gr-acc__value {
+  font-size: 1.45rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.gr-acc__value small {
+  margin-left: 1px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.gr-acc__meta {
+  font-size: 0.64rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Classification rows ----------------------------------------------------- */
+
+.gr-classes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gr-classes__head,
+.gr-classes__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px 34px;
+  align-items: center;
+  gap: 6px;
+}
+
+.gr-classes__head {
+  padding-bottom: 2px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gr-classes__head span:not(:first-child) {
+  text-align: center;
+}
+
+.gr-classes__row {
+  padding: 5px 7px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.gr-classes__row:nth-child(odd) {
+  background: var(--surface-1);
+}
+
+.gr-classes__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: var(--soft);
+}
+
+.gr-classes__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border-radius: 999px;
+  border: 1px solid var(--tone, var(--border));
+  color: var(--tone, var(--text-muted));
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.gr-classes__row > span:not(.gr-classes__label) {
+  text-align: center;
+}
+
+.gr-classes__row > span.is-on {
+  color: var(--tone, var(--text));
+  font-weight: 700;
+}
+
+/* Active evaluation ------------------------------------------------------ */
+
+.gr-active {
+  gap: 12px;
+}
+
+.gr-active__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.gr-active__glyph {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--tone, var(--border));
+  background: var(--surface-raised);
+  color: var(--tone, var(--text-muted));
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-align: center;
+}
+
+.gr-active__bubble {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 12px 11px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+
+.gr-active__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.gr-active__label {
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: var(--tone, var(--text));
+}
+
+.gr-active__score {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 7px;
+  background: var(--line-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-active__move {
+  margin: 2px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.gr-coach__text {
+  margin: 0;
+  /* Reserved height: a one-line verdict and a three-line one occupy the same
+     space, so the panel never jumps between moves. */
+  min-height: 4.6em;
+  margin-top: 8px;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: var(--soft);
+}
+
+/* Engine lines live inside the evaluation card, separated by a hairline. */
+.gr-active__engine {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* Live engine lines ------------------------------------------------------- */
+
+.gr-candidates__status {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-candidates__status.is-busy {
+  color: var(--accent);
+}
+
+.gr-candidates__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gr-candidate {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 3px 4px;
+  border-radius: 7px;
+}
+
+.gr-candidate:nth-child(odd) {
+  background: var(--surface-1);
+}
+
+.gr-candidate__rank {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.gr-candidate:first-child .gr-candidate__rank {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.gr-candidate__san {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* The score leads each line as its own chip: light for White's advantage, dark
+   for Black's, the same figure the evaluation graph reads. */
+.gr-candidate__eval {
+  min-width: 54px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.gr-candidate__eval.is-white {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+.gr-candidate__eval.is-black {
+  background: var(--surface-3);
+  border-color: var(--line-soft);
+  color: var(--soft);
+}
+
+.gr-candidate__chev {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+
+
+.gr-coach__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gr-notice {
+  margin: 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  color: var(--gold);
+  font-size: 0.75rem;
+}
+
+/* Confirmation toast for deck exports. */
+.gr-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  max-width: min(360px, calc(100vw - 40px));
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  color: var(--accent-ink);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  animation: gr-toast-in 180ms ease-out;
+}
+
+.gr-toast.is-error {
+  background: var(--danger-bg);
+  border-color: rgba(226, 88, 88, 0.55);
+  color: var(--danger);
+}
+
+@keyframes gr-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Move list -------------------------------------------------------------- */
+
+.gr-moves-card {
+  gap: 10px;
+}
+
+.gr-toggle {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.gr-toggle:hover {
+  color: var(--text);
+}
+
+.gr-toggle.is-active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  color: var(--accent);
+}
+
+.gr-keynav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gr-keynav .gr-muted {
+  font-size: 0.72rem;
+}
+
+.gr-moves__list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.gr-move-row {
+  display: grid;
+  grid-template-columns: 30px 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+}
+
+.gr-move-num {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.gr-move {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 5px 7px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gr-move:hover {
+  background: var(--surface-raised);
+}
+
+.gr-move.is-active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.gr-move__icon {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  color: var(--tone, var(--text-muted));
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-align: center;
+}
+
+/* The circle of Clutch is optically smaller than the marks around it, so it
+   gets a slightly larger glyph in each of its slots. */
+.gr-tone--clutch .gr-move__icon {
+  font-size: 1rem;
+}
+
+.gr-tone--clutch .gr-classes__icon {
+  font-size: 1.05rem;
+}
+
+.gr-tone--clutch .gr-active__glyph {
+  font-size: 1.4rem;
+}
+
+
+.gr-keymove {
+  display: grid;
+  grid-template-columns: 42px 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.gr-keymove:hover {
+  background: var(--surface-raised);
+}
+
+.gr-keymove.is-active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.gr-keymove__num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.gr-keymove__san {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.gr-keymove__badge {
+  font-size: 0.72rem;
+  color: var(--tone, var(--text-muted));
+  white-space: nowrap;
+}
+
+.gr-keymove__eval {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 700px) {
+  /* Phones: the board needs the width more than the score chip does. The bar
+     stays, the numeric pill hides (the badge table still shows the percentages). */
+  .gr-eval-wrap {
+    width: 14px;
+  }
+
+  /* Lane shrinks with the bar, so the player bars still line up with the board. */
+  .gr-eval__label {
+    display: none;
+  }
+}
+
+/* No room for the score pill beside the bar (and floating it above would hit
+   the top bar), so the lane narrows to the bar alone; the score stays in the
+   evaluation card and the graph readout. */
+@media (max-width: 1439px) {
+  .gr-eval-wrap {
+    left: -30px;
+    width: 24px;
+  }
+
+  .gr-eval__label {
+    display: none;
+  }
+}
+
+/* Below this width three columns would squeeze the board, so the rails drop
+   under it. */
+@media (max-width: 1240px) {
+  .gr-input {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gr-review {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'board'
+      'left'
+      'right';
+  }
+
+  .gr-side {
+    max-height: none;
+  }
+
+  .gr-rail__card {
+    overflow: visible;
+  }
+}
+
+/* Motion: colour and shadow only, so nothing reflows while stepping moves. */
+
+.gr-review .button,
+.gr-side .button,
+.gr-card,
+.gr-move,
+.gr-keymove,
+.gr-candidate,
+.gr-classes__row,
+.gr-toggle,
+.gr-depth__option,
+.gr-player,
+.gr-acc {
+  transition:
+    background-color 160ms var(--ease),
+    border-color 160ms var(--ease),
+    color 160ms var(--ease),
+    box-shadow 160ms var(--ease),
+    opacity 160ms var(--ease);
+}
+
+.gr-move:hover,
+.gr-keymove:hover,
+.gr-candidate:hover,
+.gr-classes__row:hover {
+  background-color: var(--surface-raised);
+}
+
+.gr-classes__row:hover {
+  border-radius: 6px;
+}
+
+.gr-active__glyph {
+  transition:
+    color 180ms var(--ease),
+    border-color 180ms var(--ease),
+    box-shadow 180ms var(--ease);
+}
+
+.gr-review :is(button, a, [tabindex]):focus-visible,
+.gr-side :is(button, a, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The panel assembles once when the review opens, not on every move. */
+.gr-active,
+.gr-quality,
+.gr-moves-card {
+  animation: gr-card-in 320ms var(--ease) both;
+}
+
+.gr-quality {
+  animation-delay: 40ms;
+}
+
+.gr-moves-card {
+  animation-delay: 60ms;
+}
+
+@keyframes gr-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-progress span,
+  .gr-eval__fill,
+  .gr-active,
+  .gr-quality,
+  .gr-moves-card,
+  .gr-card,
+  .gr-move,
+  .gr-keymove,
+  .gr-candidate,
+  .gr-classes__row,
+  .gr-toggle,
+  .gr-depth__option,
+  .gr-review .button,
+  .gr-side .button {
+    transition: none;
+    animation: none;
+  }
+}

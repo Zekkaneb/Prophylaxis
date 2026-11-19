@@ -1,0 +1,50 @@
+{
+  "tier": "elite",
+  "name": "Elite",
+  "min_rating": 2701,
+  "max_rating": 3700,
+  "version": 20261120,
+  "generated_at": "2026-11-18T17:57:53.549Z",
+  "source": "lichess-open-database",
+  "seed": 20261118,
+  "pool_size": 5000,
+  "shard_size": 1000,
+  "count": 5000,
+  "shards": [
+    {
+      "index": 1,
+      "file": "shard-0001.json",
+      "count": 1000,
+      "first_id": "Rj7gm",
+      "last_id": "kTcwd"
+    },
+    {
+      "index": 2,
+      "file": "shard-0002.json",
+      "count": 1000,
+      "first_id": "V8NeQ",
+      "last_id": "XDTWy"
+    },
+    {
+      "index": 3,
+      "file": "shard-0003.json",
+      "count": 1000,
+      "first_id": "liI9C",
+      "last_id": "UlaT2"
+    },
+    {
+      "index": 4,
+      "file": "shard-0004.json",
+      "count": 1000,
+      "first_id": "NCD86",
+      "last_id": "3ywK2"
+    },
+    {
+      "index": 5,
+      "file": "shard-0005.json",
+      "count": 1000,
+      "first_id": "zSd7g",
+      "last_id": "e5Jwq"
+    }
+  ]
+}

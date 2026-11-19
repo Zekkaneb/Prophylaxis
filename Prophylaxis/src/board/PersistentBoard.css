@@ -1,0 +1,233 @@
+/* --------------------------------------------------------------------------
+   Persistent board layer + the slot it aligns to
+   -------------------------------------------------------------------------- */
+
+/* The reserved box. It is the board: the smaller of the height left over in the
+   window and the width its column offers, times the user's zoom, and square by
+   definition. The layer below copies this box exactly. */
+.board-slot {
+  position: relative;
+  width: var(--board-px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+  max-width: none;
+  /* Centred in its column. Auto margins resolve to 0 once the board is wider
+     than the column, so an oversized board still starts at the left edge and
+     pans instead of losing its first files. */
+  margin-inline: auto;
+}
+
+/* The single board instance, painted above the page but below the nav, dialogs
+   and any view-owned overlay (arrow layer, badges, pause veil). */
+.board-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Reproduces the slot's scroll viewport so an oversized, panned board is clipped
+   to its own panel instead of floating over the rails. */
+.board-layer__clip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Positioned with transforms by the layer, so scrolling never lays out. */
+  will-change: transform;
+}
+
+.board-layer__board {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+  will-change: transform;
+  /* Sized in pixels from the slot's own box, so the board is exactly the box
+     the view reserved for it. */
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Square badges (move classifications)
+   -------------------------------------------------------------------------- */
+
+/* They live inside the scaled board, so a 26px mark is 26px at 100% and 13px
+   at 50%: the badge keeps its proportions with the pieces instead of the page. */
+.board-scale {
+  position: relative;
+}
+
+/* The layer writes the board's own pixel size here, so a badge can be sized
+   from the square it marks rather than from the window. */
+.board-layer__board {
+  --board-px: 640px;
+}
+
+.board-badges {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.board-badge {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  /* Sized from the square (a square is board / 8), then clamped: a windowed
+     board gets a legible mark, a full-screen one gets the same proportions,
+     and a board zoomed past 100% does not turn the badge into a billboard. */
+  min-width: clamp(22px, calc(var(--board-px, 640px) / 8 * 0.44), 42px);
+  height: clamp(22px, calc(var(--board-px, 640px) / 8 * 0.44), 42px);
+  padding: 0 5px;
+  border-radius: 999px;
+  /* The anchor is the square's top-right corner; the mark hangs just inside
+     it, over the piece's upper shoulder. */
+  transform: translate(-72%, 8%);
+  background: rgba(13, 16, 21, 0.94);
+  border: 2px solid var(--tone, #9fb0c3);
+  color: var(--tone, #dfe7f2);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, calc(var(--board-px, 640px) / 8 * 0.26), 20px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-ligatures: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  animation: board-badge-in 200ms var(--ease, ease-out) both;
+}
+
+.board-badge.is-pulse {
+  animation:
+    board-badge-in 200ms var(--ease, ease-out) both,
+    board-badge-pulse 1.7s ease-in-out 200ms infinite;
+}
+
+@keyframes board-badge-in {
+  from {
+    opacity: 0;
+    transform: translate(-72%, 8%) scale(0.62);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-72%, 8%) scale(1);
+  }
+}
+
+@keyframes board-badge-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.45),
+      0 0 0 2px rgba(255, 106, 43, 0.3),
+      0 0 12px rgba(255, 106, 43, 0.6);
+  }
+  50% {
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.45),
+      0 0 0 4px rgba(255, 106, 43, 0.45),
+      0 0 26px rgba(255, 106, 43, 0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-badge,
+  .board-badge.is-pulse {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Capture targets
+   -------------------------------------------------------------------------- */
+
+/* Painted above the pieces, unlike the centred legal-move dot: a capture square
+   is occupied, so a dot underneath it would never be seen. The ring hugs the
+   square's edge, where the piece artwork keeps clear. */
+.board-captures {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.board-capture {
+  position: absolute;
+  box-sizing: border-box;
+  width: 12.5%;
+  height: 12.5%;
+  border-radius: 7px;
+  /* A crimson band with a cream hairline on its outer edge: the light rim
+     separates the ring from walnut, green and slate squares alike, and the
+     deep red stays distinct from the gold last-move tint and the blue
+     selection. */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 244, 238, 0.5),
+    inset 0 0 0 max(2px, calc(3px * var(--board-scale, 1))) rgba(190, 32, 41, 0.94),
+    inset 0 0 12px rgba(190, 32, 41, 0.36);
+  animation: board-capture-in 140ms var(--ease, ease-out) both;
+}
+
+@keyframes board-capture-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-capture {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Queued premove
+   -------------------------------------------------------------------------- */
+
+/* An overlay, not a square style: it sits above the square backgrounds, never
+   covers a piece, and keeps its proportions at every board scale. */
+.board-premove {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.board-premove svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.board-premove__square {
+  position: absolute;
+  box-sizing: border-box;
+  width: 12.5%;
+  height: 12.5%;
+  border-radius: 5px;
+}
+
+/* Chess.com marks a queued premove in red: the square the piece leaves and the
+   square it is going to, with the destination the stronger of the two. */
+.board-premove__square--from {
+  border: 2px solid rgba(255, 82, 82, 0.9);
+  background: rgba(255, 82, 82, 0.18);
+}
+
+.board-premove__square--to {
+  border: 2px solid rgba(255, 82, 82, 0.95);
+  background: rgba(255, 82, 82, 0.34);
+}
+
+.board-premove__square--pick {
+  border: 2px solid rgba(255, 82, 82, 0.6);
+  background: rgba(255, 82, 82, 0.1);
+}

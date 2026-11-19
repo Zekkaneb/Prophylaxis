@@ -1,0 +1,50 @@
+{
+  "tier": "advanced",
+  "name": "Advanced",
+  "min_rating": 1951,
+  "max_rating": 2100,
+  "version": 20261120,
+  "generated_at": "2026-11-18T18:00:00.260Z",
+  "source": "lichess-open-database",
+  "seed": 20261118,
+  "pool_size": 5000,
+  "shard_size": 1000,
+  "count": 5000,
+  "shards": [
+    {
+      "index": 1,
+      "file": "shard-0001.json",
+      "count": 1000,
+      "first_id": "ucxPz",
+      "last_id": "JX4Bc"
+    },
+    {
+      "index": 2,
+      "file": "shard-0002.json",
+      "count": 1000,
+      "first_id": "wXZ7T",
+      "last_id": "iou4J"
+    },
+    {
+      "index": 3,
+      "file": "shard-0003.json",
+      "count": 1000,
+      "first_id": "mw9Q8",
+      "last_id": "fRR1K"
+    },
+    {
+      "index": 4,
+      "file": "shard-0004.json",
+      "count": 1000,
+      "first_id": "EnURG",
+      "last_id": "it3un"
+    },
+    {
+      "index": 5,
+      "file": "shard-0005.json",
+      "count": 1000,
+      "first_id": "6E6aF",
+      "last_id": "MQwgJ"
+    }
+  ]
+}

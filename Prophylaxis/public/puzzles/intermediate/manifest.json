@@ -1,0 +1,50 @@
+{
+  "tier": "intermediate",
+  "name": "Intermediate",
+  "min_rating": 1651,
+  "max_rating": 1800,
+  "version": 20261120,
+  "generated_at": "2026-11-18T18:00:41.634Z",
+  "source": "lichess-open-database",
+  "seed": 20261118,
+  "pool_size": 5000,
+  "shard_size": 1000,
+  "count": 5000,
+  "shards": [
+    {
+      "index": 1,
+      "file": "shard-0001.json",
+      "count": 1000,
+      "first_id": "88AxQ",
+      "last_id": "lqLn8"
+    },
+    {
+      "index": 2,
+      "file": "shard-0002.json",
+      "count": 1000,
+      "first_id": "oWcGe",
+      "last_id": "w4t9z"
+    },
+    {
+      "index": 3,
+      "file": "shard-0003.json",
+      "count": 1000,
+      "first_id": "0gz17",
+      "last_id": "doeYy"
+    },
+    {
+      "index": 4,
+      "file": "shard-0004.json",
+      "count": 1000,
+      "first_id": "Rd85h",
+      "last_id": "qneFq"
+    },
+    {
+      "index": 5,
+      "file": "shard-0005.json",
+      "count": 1000,
+      "first_id": "Xi7aY",
+      "last_id": "sSi2z"
+    }
+  ]
+}

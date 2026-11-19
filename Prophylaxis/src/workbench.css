@@ -1,0 +1,1335 @@
+/* ==========================================================================
+   Workbench layer
+   --------------------------------------------------------------------------
+   The four board rooms — Courses study, Puzzles, Play, Review — share one
+   viewport-height frame:
+
+     ┌─────────────────────────────── top bar (status / clock) ─────────────┐
+     │                                                                      │
+     │   board (sized to the window)          │  inspector, 100% tall      │
+     │                                        │  lists scroll inside       │
+     └─────────────────────────────── bottom bar (controls / CTA) ─────────┘
+
+   The page itself never scrolls; only the panels do. Loaded last, so it wins
+   over the feature sheets without touching their colours or type.
+   ========================================================================== */
+
+/* ---------------------------------- frame --------------------------------- */
+
+.app-shell {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+/* Document pages (dashboard, library) scroll inside the main region; the board
+   rooms turn that off entirely. */
+.app-shell .app-main {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.app-shell--locked .app-main {
+  overflow: hidden;
+}
+
+.app-shell .view {
+  min-height: 0;
+}
+
+.app-shell--locked .view {
+  height: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.app-shell--locked .view > * {
+  height: 100%;
+  min-height: 0;
+}
+
+.app-shell--locked .page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Play says its name in the tab strip; the page intro only repeats it. */
+.page--play .page-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Each room's board takes everything the room does not need: the height left
+   over by its own top/bottom bars (measured from the layout, not guessed) and
+   the width of its centre column, whichever is smaller. That is what removes
+   the slack above and below the board. */
+.study,
+.wp,
+.play,
+.gr {
+  /* fit = the smaller of the column and the height left in the window; the
+     zoom multiplies it, so 100% is exactly fit and 200% is a deliberate
+     oversize that pans inside its stage. */
+  --board-px: calc(
+    min(100%, calc(100dvh - var(--board-chrome))) * var(--board-zoom, 1)
+  );
+}
+
+/* Courses: 49 status bar + 652 board + 30 tools + 62 action bar + gaps. The
+   rail took the old 62px top bar out of the vertical budget, so the board gains
+   that height back. */
+.study {
+  --board-chrome: 186px;
+}
+
+.study {
+  grid-template-columns: 288px minmax(0, 1fr) 336px;
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.study__rail {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.study__chapter-shelf {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.study__chapters {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.study__steps {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.study__step-list {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Board column: header bar, board, tools, action bar — in that order, so the
+   board keeps one home when you move between chapters. space-between holds the
+   header to the top and the action bar to the floor, board in the middle. */
+.study__stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+
+.study__board-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  width: var(--board-px);
+  max-width: 100%;
+  margin-inline: auto;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+}
+
+.study__board-head-title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.study__board-head-title strong {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.study__board-head-title span {
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.study__board-host {
+  flex: 1 1 auto;
+  min-height: 0;
+  /* `safe center`: centred while it fits, anchored top-left once a zoomed board
+     is longer than the stage, so every file stays reachable by panning. */
+  align-items: safe center;
+  justify-content: safe center;
+  overflow: auto;
+}
+
+.study__board-tools {
+  flex: none;
+}
+
+.study__banner {
+  flex: none;
+}
+
+.study__panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  /* Pinned footer when the content fits, its own scrollbar when it does not. */
+  overflow-y: auto;
+}
+
+.study__panel-head,
+.study__depth {
+  flex: none;
+}
+
+.study__moves {
+  flex: 0 1 auto;
+  max-height: 46%;
+  overflow-y: auto;
+}
+
+.study__coach {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* The panel's own toolbar is the pinned bottom bar of the room. */
+.study__toolbar {
+  flex: none;
+  margin-top: auto;
+}
+
+/* ==========================================================================
+   Puzzles — board · cycle panel
+   ========================================================================== */
+
+.wp {
+  --board-chrome: 192px;
+  grid-template-columns: minmax(0, 1fr) 348px;
+  gap: 18px;
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+  width: 100%;
+  /* Board + its footer + the cycle panel: no wider, so the board sits centred
+     with real gutters instead of floating in a wide empty column. */
+  max-width: min(100%, calc(var(--board-px) + 366px));
+  margin-inline: auto;
+}
+
+.wp__board {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+}
+
+.wp__board-head {
+  flex: none;
+  align-items: center;
+  margin-bottom: 0;
+  min-height: 44px;
+}
+
+.wp__turnbar {
+  flex: none;
+  margin-bottom: 0;
+}
+
+.wp__board-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: safe center;
+  justify-content: safe center;
+  overflow: auto;
+}
+
+/* Status strip under the board: the same anchor every room has. */
+.wp__board-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: var(--board-px);
+  max-width: 100%;
+  margin-inline: auto;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+  font-size: 11.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wp__board-foot strong {
+  color: var(--soft);
+  font-weight: 600;
+}
+
+/* Feedback never resizes the board: it floats over the board's lower edge. */
+.wp-banner {
+  position: absolute;
+  left: 50%;
+  bottom: 60px;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: max-content;
+  max-width: min(92%, var(--board-px));
+  animation: none;
+}
+
+.wp__side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.wp__side > header,
+.wp__side > .wp-notice,
+.wp__side > .wp-meter,
+.wp__side > .wp-stats,
+.wp__side > .wp-chips,
+.wp__side > .wp-muted {
+  flex: none;
+}
+
+.wp__rules {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.wp-history-block {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Cycle progress lives with the rest of the controls, pinned to the floor. */
+.wp__side .wp__progress {
+  flex: none;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.wp__side-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.wp__side-actions .button {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   Play — board · moves and actions
+   ========================================================================== */
+
+.play {
+  --board-chrome: 243px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+
+.play-topbar {
+  flex: none;
+}
+
+/* Setup, history and empty states scroll inside the room instead of the page.
+   The live game and bot match are columns of their own, so they never scroll. */
+.play > *:not(.play-topbar):not(.play-game):not(.play-current) {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.play-game {
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) clamp(300px, 25vw, 356px);
+  gap: 18px;
+  align-items: stretch;
+  width: 100%;
+  /* Board column + inspector, nothing else: the pair stays centred and the
+     board is never marooned in a 960px-wide empty column. */
+  max-width: min(100%, calc(var(--board-px) + 374px));
+  margin-inline: auto;
+}
+
+.play-game__board {
+  height: 100%;
+  min-height: 0;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Compact seats: the board gets the height the plates do not need. */
+.play-seat {
+  padding: 6px 10px;
+  gap: 9px;
+}
+
+.play-seat__line {
+  min-height: 12px;
+  max-height: 12px;
+  margin-top: 0;
+  line-height: 12px;
+}
+
+.play-board-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: safe center;
+  justify-content: safe center;
+  overflow: auto;
+}
+
+.play-seat,
+.play-game__nav,
+.play-turn {
+  flex: none;
+}
+
+.play-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.play-side__card {
+  flex: none;
+}
+
+/* Transport inside the inspector: no board-width cap, sits above the actions. */
+.play-side__nav {
+  max-width: none;
+  margin: 0 0 10px;
+  padding-top: 0;
+}
+
+/* Moves fill the column; the game facts sit under them; the actions are the
+   pinned bottom bar of the inspector. */
+.play-side__card:first-child {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The actions card is the room's bottom bar: always on the floor. */
+.play-side__card:has(.play-actions) {
+  margin-top: auto;
+}
+
+.play-side__card:first-child .play-moves {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ==========================================================================
+   Live game — game rail · board + evaluation · moves and actions
+   --------------------------------------------------------------------------
+   The same container | board | container architecture as the Review screen:
+   one card per rail, the board's own column holding the nameplates, the eval
+   bar and the transport, and no page scroll, so every column ends on the
+   view's floor instead of stopping short of it.
+   ========================================================================== */
+
+.play > .play-current {
+  flex: 1 1 auto;
+}
+
+.play-current {
+  /* The review screen's lane width, kept so the two rooms read as one app,
+     plus the breathing space the bar keeps from the board's first file. */
+  --eval-lane: 34px;
+  --eval-gap: 10px;
+  /* Top bar + both nameplates + transport + turn line + gaps: everything the
+     board does not get, measured from the window rather than guessed twice. */
+  --board-chrome: 284px;
+  /* Fit to the column, then the user's board scale — but never taller than the
+     height the stage actually has, so a zoomed board can pan sideways without
+     pushing the transport off the floor. */
+  --board-px: min(
+    calc(min(100%, calc(100dvh - var(--board-chrome))) * var(--board-zoom, 1)),
+    calc(100dvh - var(--board-chrome))
+  );
+  display: grid;
+  /* Lighter rails than Review's: a short facts card and the move list, so the
+     board — not the panels — gets the width. */
+  grid-template-columns:
+    clamp(196px, 15vw, 240px) minmax(0, 1fr) clamp(264px, 20vw, 320px);
+  grid-template-areas: 'left board right';
+  gap: 16px;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ------------------------------- rails ---------------------------------- */
+
+.play-rail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  align-self: stretch;
+}
+
+.play-rail--left {
+  grid-area: left;
+}
+
+.play-rail--right {
+  grid-area: right;
+}
+
+/* One container per rail, sections divided by hairlines — the review screen's
+   card, with nothing pinned over it and nothing left below it. */
+.play-rail__card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-1);
+  scrollbar-width: thin;
+  overflow: hidden;
+}
+
+/* The left rail fills its column to the floor, like the right one: the card's
+   bottom edge meets the board's instead of stopping mid-column. */
+.play-rail--left .play-rail__card {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.play-rail__card > .play-side__head {
+  flex: none;
+  padding-top: 12px;
+}
+
+.play-rail__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 0;
+}
+
+.play-rail__section + .play-rail__section {
+  border-top: 1px solid var(--line);
+}
+
+/* The facts card keeps its floor: it sits on the bottom edge of the rail, so a
+   tall column has two anchors instead of a card that stops halfway down. */
+.play-rail--left .play-rail__section:last-of-type {
+  margin-top: auto;
+}
+
+.play-rail__who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.play-rail__identity {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Two lines, never a clipped name: the rail is narrow, and a monogram beside a
+   half-name reads worse than a shorter card. */
+.play-rail__who h2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0;
+  overflow: hidden;
+  font: 650 17px/1.25 var(--font-sans);
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.play-rail__style {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* The rail's voice: the bot's latest line where its static bio used to be.
+   `min-height` reserves the room, so a new line never resizes the card. */
+.play-rail__talk {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 48px;
+}
+
+.play-rail__line {
+  margin: 0;
+  /* Two lines are reserved, so typing a new line never resizes the card. */
+  min-height: 39px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.play-rail__line-idle {
+  color: var(--muted);
+}
+
+/* Moves fill the right rail; the actions sit on its floor. */
+.play-rail--right .play-moves {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.play-rail--right .play-side__footnote {
+  flex: none;
+  padding-bottom: 10px;
+}
+
+.play-rail__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: none;
+  margin-top: auto;
+  padding: 10px 0 12px;
+  border-top: 1px solid var(--line);
+}
+
+.play-rail--right .play-notice {
+  flex: none;
+  margin-bottom: 12px;
+}
+
+/* ------------------------------- stage ----------------------------------- */
+
+.play-current .play-stage {
+  grid-area: board;
+  display: flex;
+  flex-direction: column;
+  align-items: safe center;
+  justify-content: safe center;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  /* The bar's lane: half the column's leftover width on each side keeps the
+     board centred, and the bar rides that left band, a gap clear of the file. */
+  padding-left: var(--eval-lane);
+  padding-right: var(--eval-lane);
+  /* The one pan surface: a zoomed board scrolls here instead of spilling. */
+  overflow: auto;
+}
+
+/* Nameplates, board and transport share one board-width stack, so a plate is
+   always exactly as wide as the board it belongs to. */
+.play-stage__stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: none;
+  /* The stack is exactly as wide as the board (the plates must not overhang
+     it). Auto margins centre it in a wider column and collapse to 0 when a
+     zoomed board is wider than the column, so the first file stays reachable. */
+  width: var(--board-px);
+  max-width: 100%;
+  /* A flex item's automatic minimum is its min-content width, which would make
+     the plates wider than the board they are meant to match. */
+  min-width: 0;
+  margin-inline: auto;
+  /* The navigation rail folds in 220ms; the board reclaims the space over the
+     same beat instead of snapping to its new size. */
+  transition: width 220ms var(--ease);
+}
+
+.play-current .play-board-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* The board grows with the stack when the navigation rail folds, so the pieces
+   and the plates change size over the same 220ms instead of snapping apart. */
+.play-current .board-slot {
+  transition: width 220ms var(--ease);
+}
+
+/* --------------------------- evaluation bar ------------------------------ */
+
+.play-eval-wrap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* The bar keeps the lane's outer edge and stops `--eval-gap` short of the
+     board, so it reads as its own gauge instead of touching the first file. */
+  left: calc(-1 * var(--eval-lane));
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: calc(var(--eval-lane) - var(--eval-gap));
+  pointer-events: none;
+  z-index: 2;
+}
+
+.play-eval {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--line-soft);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* White's share grows from the bottom, exactly as the review bar reads. */
+.play-eval__fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #f7f4ec, #ddd7c8);
+  transition: height 340ms var(--ease);
+  will-change: height;
+}
+
+/* The score sits directly on the bar — no chip, no border — parked at the
+   winner's end, inverting against whatever stretch of bar is behind it. */
+.play-eval__label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: block;
+  font-family: var(--font-mono);
+  /* Small enough that even a five-character score ("+12.4") keeps a pixel of
+     clear bar on each side of the pill. */
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  text-align: center;
+}
+
+.play-eval__label.is-white {
+  bottom: 8px;
+  /* On the light fill. */
+  color: var(--bg);
+}
+
+.play-eval__label.is-black {
+  top: 8px;
+  /* On the bare, dark track. */
+  color: var(--text);
+}
+
+/* Transport under the board, at board width. */
+.play-stage__nav {
+  flex: none;
+}
+
+.play-current .play-turn {
+  flex: none;
+}
+
+/* ==========================================================================
+   Review — accuracy rail · board · coaching rail
+   ========================================================================== */
+
+
+.gr {
+  /* Nameplates (58) + transport (40) + gaps (18) + the room's padding: the one
+     vertical reserve Review has, at any window height. */
+  --board-chrome: 136px;
+  /* The evaluation bar's own lane, left of the board's first file, wide enough
+     for a horizontal score inside the bar. `--eval-gap` is the breathing space
+     on each side of the bar, so it sits centred in the band between the
+     column's edge and the board instead of hugging either of them. */
+  --eval-lane: 28px;
+  --eval-gap: 4px;
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.gr-rail {
+  position: static;
+  min-height: 0;
+  height: 100%;
+}
+
+.gr-rail__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The left rail is one scroll region: accuracy, quality, graph in one column. */
+.gr-rail--left .gr-rail__card {
+  gap: 10px;
+  overflow-y: auto;
+}
+
+/* Move-quality rows are the rail's job: tighten them so every category is on
+   screen instead of running past the bottom edge. */
+.gr-classes__row {
+  padding: 2px 7px;
+  font-size: 0.76rem;
+}
+
+.gr-classes__head {
+  padding-bottom: 0;
+}
+
+.gr-classes {
+  gap: 0;
+}
+
+.gr-acc {
+  padding: 7px 10px;
+}
+
+.gr-rail--left .gr-rail__card > * {
+  flex: none;
+}
+
+.gr-board-col {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: safe center;
+  justify-content: safe center;
+  /* The band on each side is the same: gap + bar + gap on the left, an equal
+     band on the right, and the board centred between them. */
+  padding-left: calc(var(--eval-lane) + var(--eval-gap) * 2);
+  padding-right: calc(var(--eval-lane) + var(--eval-gap) * 2);
+
+  /* The one pan surface: a board zoomed past 100% scrolls here, both ways,
+     instead of spilling over the rails or being cut off. */
+  overflow: auto;
+}
+
+/* The board sits centred inside its own stack, so the stack can span the whole
+   column: the bar then reads the real band width next to the board instead of
+   guessing it. */
+.gr-board-stack {
+  width: 100%;
+}
+
+.gr-board-wrap {
+  display: flex;
+  justify-content: safe center;
+}
+
+/* The column owns the scrolling, so the row above it must not clip or centre
+   an oversized board out of reach. */
+.gr-board-row {
+  overflow: visible;
+  justify-content: safe center;
+}
+
+/* --------------------------- evaluation bar ------------------------------ */
+
+/* The bar floats in the band left of the board, centred in it: the same air
+   between it and the column's edge as between it and the board. The wrap is the
+   full column content box, so 100% is that box: the board's own centring
+   leftover widens the band, and the bar takes half of it. Clamped for a zoomed
+   board that overflows, which must keep the bar pinned beside it. */
+.gr-eval-wrap {
+  left: max(
+    calc(-1 * (var(--eval-lane) + var(--eval-gap))),
+    calc((100% - var(--board-px)) / 4 - var(--eval-lane) - var(--eval-gap))
+  );
+  width: var(--eval-lane);
+}
+
+.gr-eval {
+  flex: 0 0 var(--eval-lane);
+  width: var(--eval-lane);
+  /* A rounded pill, sitting flush against the board's left edge. */
+  border-radius: 999px;
+  border: 1px solid var(--line-soft);
+}
+
+.gr-eval__fill {
+  border-radius: 0;
+}
+
+/* The score floats directly on the bar: no chip, no border, upright, parked at
+   the winner's end (White's share grows from the bottom, Black's from the top).
+   Its colour inverts against the stretch of bar behind it, so it stays legible
+   on the light fill and on the bare track alike. */
+.gr-eval__label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: block;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-align: center;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  transform: none;
+  z-index: 2;
+}
+
+.gr-eval__label.is-white {
+  top: auto;
+  bottom: 8px;
+  /* On the light fill. */
+  color: var(--bg);
+}
+
+.gr-eval__label.is-black {
+  top: 8px;
+  bottom: auto;
+  /* On the bare, dark track. */
+  color: var(--text);
+}
+
+/* Both review rails still reserved the old top bar's height (100dvh - 82px),
+   which left 62px of dead space under them. The side rail owns that space now,
+   so the columns stretch to the view's floor instead of stopping short. */
+.gr-review {
+  max-height: none;
+  height: 100%;
+}
+
+.gr-rail {
+  max-height: none;
+  height: 100%;
+}
+
+.gr-rail--right .gr-rail__card {
+  overflow-y: auto;
+}
+
+.gr-active {
+  flex: none;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 58%;
+}
+
+.gr-moves-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gr-moves-card .gr-card__head,
+.gr-moves-card .gr-keynav {
+  flex: none;
+}
+
+.gr-moves__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ==========================================================================
+   Shorter windows (browser chrome showing, 1280×720, 1024×768)
+   --------------------------------------------------------------------------
+   The board is already fitted to `100dvh`, so it shrinks with the window. What
+   still has to give is the panels: they scroll inside themselves instead of
+   pushing their bottom bar past the edge.
+   ========================================================================== */
+
+@media (max-height: 860px) {
+  /* Short windows tighten the bars, so each room's reserve shrinks with them. */
+  .wp {
+    --board-chrome: 188px;
+  }
+
+  .play {
+    --board-chrome: 235px;
+  }
+
+  .play-current {
+    --board-chrome: 280px;
+  }
+
+  .wp__side,
+  .play-side,
+  .study__panel,
+  .gr-rail--right .gr-rail__card {
+    overflow-y: auto;
+  }
+
+  .wp__side {
+    gap: 8px;
+  }
+
+  .gr-classes__row {
+    padding: 1px 7px;
+    font-size: 0.72rem;
+  }
+
+  .gr-acc {
+    padding: 5px 9px;
+  }
+}
+
+@media (max-height: 760px) {
+  .play-seat {
+    padding: 4px 9px;
+  }
+
+  .study__board-head,
+  .wp__board-head,
+  .wp__turnbar,
+  .wp__board-foot {
+    min-height: 40px;
+  }
+
+  .gr-active {
+    max-height: 46%;
+  }
+}
+
+/* ==========================================================================
+   Narrow windows (half screen, split view, tablets)
+   --------------------------------------------------------------------------
+   Below this width three columns cannot hold a usable board, so the room stops
+   being a fixed frame: the shell scrolls, the board goes full width first, and
+   the rails/inspector stack under it at their natural height.
+   ========================================================================== */
+
+@media (max-width: 1149px) {
+  /* The page may scroll again: nothing is pinned to the window any more. */
+  .app-shell,
+  .app-shell--locked {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .app-shell .app-main,
+  .app-shell--locked .app-main {
+    overflow: visible;
+    overscroll-behavior: auto;
+  }
+
+  .app-shell--locked .view {
+    height: auto;
+    padding-bottom: 24px;
+  }
+
+  /* Natural height, but each room keeps its own display type: `.study` and
+     friends become the stacked flex column below, and `order` only works if
+     nothing resets them to `display: block`. */
+  .app-shell--locked .view > *,
+  .app-shell--locked .page {
+    height: auto;
+    min-height: 0;
+  }
+
+  .page--play {
+    display: block;
+  }
+
+  /* Board first, panels stacked beneath it. */
+  .study,
+  .gr,
+  .wp,
+  .play-game,
+  .play-current,
+  .play {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: auto;
+    min-height: 0;
+    max-width: 760px;
+    margin-inline: auto;
+  }
+
+  /* Only the bot match fills the room; the live game stacks at its own
+     height like the other rooms. */
+  .play > .play-current {
+    flex: none;
+    overflow: visible;
+  }
+
+  /* Stacked: the same band on both sides keeps the board+bar group centred in
+     the full-width column. */
+  .gr-board-col {
+    padding-left: calc(var(--eval-lane) + var(--eval-gap) * 2);
+    padding-right: calc(var(--eval-lane) + var(--eval-gap) * 2);
+  }
+
+  .study__stage,
+  .gr-board-col,
+  .wp__board,
+  .play-game__board,
+  .play-stage {
+    order: -1;
+    height: auto;
+    min-height: 0;
+  }
+
+  .play-topbar {
+    order: -2;
+  }
+
+  .study__rail,
+  .study__panel,
+  .wp__side,
+  .play-side,
+  .play-rail,
+  .play-rail__card,
+  .gr-rail,
+  .gr-rail__card {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .study__moves,
+  .study__coach,
+  .study__chapters,
+  .study__step-list,
+  .gr-rail--left .gr-rail__card,
+  .gr-moves__list,
+  .gr-active {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .play-board-wrap,
+  .wp__board-wrap,
+  .study__board-host {
+    flex: none;
+    height: auto;
+    min-height: 0;
+  }
+
+  /* Long lists keep a ceiling so the page stays navigable. */
+  .play-side__card:first-child .play-moves,
+  .play-rail--right .play-moves,
+  .wp__side .wp__progress,
+  .gr-moves__list {
+    max-height: 340px;
+    overflow-y: auto;
+  }
+
+  /* The stacked board: full width, but never taller than the window shows. */
+  .study,
+  .wp,
+  .play,
+  .play-current,
+  .gr {
+    /* Stacked: growth is capped at the window width so a 200% board never makes
+       the page scroll sideways. */
+    --board-px: min(
+      100%,
+      calc(max(300px, calc(100dvh - 220px)) * var(--board-zoom, 1))
+    );
+  }
+
+  .study__board-head,
+  .wp__board-foot,
+  .wp__turnbar,
+  .play-seat,
+  .play-turn {
+    width: var(--board-px);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .study__banner,
+  .play-side__card:has(.play-actions) {
+    margin-top: 0;
+  }
+}
+
+/* -------------------------------- dashboard ------------------------------- */
+
+/* The four training numbers — streak, puzzle accuracy, cycles, completion.
+   Same grid rhythm as the ledger below, one step louder so it reads first. */
+.dash-hero {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--line);
+}
+
+.dash-hero__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 16px 18px;
+  background: var(--panel);
+}
+
+.dash-hero__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dash-hero__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 600;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.dash-hero__unit {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.dash-hero__hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.dash-hero__bar {
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin: 2px 0 1px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.dash-hero__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.dash-hero__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-strong);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 1080px) {
+  .dash-hero {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .dash-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .wp-banner {
+    animation: none;
+  }
+}

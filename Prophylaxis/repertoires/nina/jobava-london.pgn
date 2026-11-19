@@ -1,0 +1,194 @@
+[Event "Jobava London Naroditsky style: Chapter 1"]
+[Date "2024.05.11"]
+[Result "*"]
+[Variant "Standard"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Chapter 1"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/nOrg95Be"]
+[Annotator "https://lichess.org/@/matchessman"]
+[UTCDate "2024.05.11"]
+[UTCTime "14:40:56"]
+[Orientation "white"]
+
+ *
+
+
+[Event "Jobava London Naroditsky style: Typical Ideas for White"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #1: Knight Placement on e5"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "rn1qk2r/ppp2ppp/3bpn2/3p1b2/3P1B2/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Typical Ideas for White"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/o2ZydzNc"]
+[FEN "rn1qk2r/ppp2ppp/3bpn2/3p1b2/3P1B2/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ [#] [%evp 0,1,9,-2] The Jobava London did not catch on for most of chess history for one simple reason: you are not supposed to block the c-pawn in Queen's Pawn Openings. Why, in spite of being guilty of this cardinal sin, does the Jobava London "work?" The answer is wildly complex, but a big part of it lies in the tremendous potential of our three other minor pieces, in particular the king's knight. The king's knight is the centerpiece of White's kingside play, and it must be astutely deployed and exploited to its full potential if we are to justify the violation of one of the most basic chess principles. In the majority of Jobava lines, the knight best fulfills its potential on the e5 square. The position in front of you, which arises in the symmetrical variation (3...Bf5), affords a particularly instructive example of the importance of shepharding the knight to e5 early in the opening. } 1. Ne5 { With this move, we accomplish a host of useful and important things: 1) The knight ensures the longevity of our dark-squared bishop, which itself can serve as a crucial attacker and can turn up the heat by sliding up to g5. 2) The knight interrupts the easy and natural flow of Black's development. Black can no longer develop his own knight without a second thought, and the pressure on the f7-pawn will cause Black headaches in the long run. 3) Capturing the knight with the bishop grants us the bishop pair, as well as full control over the dark squares.  I have deliberately left out one more thing, which constitutes the most important reasons for sticking the knight on e5 - an idea without which the Jobava London would be a shell of its current self. Let's illustrate this idea by considering one of Black's most natural developing moves. } 1... O-O? { What could be more natural than castling? It transpires that this extremely natural move - as well as countless other setups that Black can adopt after Ne5 - is punished by a furious kingside offensive. } 2. g4! { You will be playing this move countless times in your Jobava London career. White sends the g- and h-pawns up the board, something you are probably not used to doing in most of your current openings! The e5-knight secures the g4-pawn, making this move possible. In response to this move, Black typically has two options: 1) Taking the knight on e5, and following up by snapping off the g4-pawn (since we almost always recapture on e5 rather than on f5, which enables Black to dissolve our pawn structure with ...Bxf4), 2) Retreating the bishop to g6, which is the choice of most inexperienced players across most variations. } 2... Bg6 3. h4 { At this point, you should begin to grasp the zen of White's idea. We threaten the prosaic h5, trapping the bishop (since ...Be4 is met with f2-f3). Black has two ways to parry the threat of h5: to create an escape square for the bishop with ...h6, and to meet us at the top with ...h5. Both of these moves contain two cardinal flaws: 1) Most importantly, the bishop on g6 loses the support of the h-pawn. This allows us to favorably trade our knight for Black's bishop, leading to the complete and utter ruination of Black's pawn structure, and creating a massive weakness on g6 that we can easily attack by deploying our bishop (or, in some cases, our queen) to f3. In situations where Black has not castled yet, this is almost always our response to ...h6 and ...h5, since there is no way to defend the g6-pawn other than to bring the king up to f7!  2) In situations where Black has already castled kingside, there is a sensible (and oftentimes more powerful) alternative to Nxg6: we can simply continue our kingside pawn storm with g4-g5, smashing open the h-file and, in most cases, generating an unstoppable attack against Black's king. In this particular position, option 2 is indeed the one that we choose after both ...h6 and ...h5 (see 3...Bf5 file). } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - Idea #2: Recapturing on d3 with the Pawn"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #2: Recapturing on d3 with the Pawn"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "r2qkb1r/pppn1ppp/4pn2/3p1b2/3P1B2/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - Idea #2: Recapturing on d3 with the Pawn"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/onbPowPJ"]
+[FEN "r2qkb1r/pppn1ppp/4pn2/3p1b2/3P1B2/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ Our second idea involves an important positional idea that recurs in virtually all variations in which Black chooses to develop their light-squared bishop to f5 (this position, like the example from idea #1, comes from the 3...Bf5 variation). The first step is to deploy our light-squared bishop to d3, offering Black the option of swapping the bishops. } 1. Bd3 { Note that applying idea #1 here is ineffective, since Black already controls the e5-square with his own knight (we would, however, play Ne5 in response to ...Bd6, since Black would then not be able to recapture on e5 with the knight due to dxe5, forking the bishop on d6 and knight on f6). } { [%cal Gf5d3,Gc2d3] } 1... Bxd3 { This is Black's most popular response to Bd3 in the majority of variations. Of course, there are alternatives: Black can choose to not respond or to drop the bishop back to g6. In 99% of cases in which Black chooses to take on d3, we recapture in the same way: with the pawn! } 2. cxd3 { This pawn structure, characterized by the central pawn mass, semi open c-file, and a pathway for the White to queen to b3, is one that you will come across countless times, and merits very careful study. Of course, blind adherence to chess principles dictate that this move is anti-positional, since it creates a pair of doubled pawns in the center. However, the virtues of recapturing with the pawn greatly outweigh its drawbacks. Indeed, this pawn structure offers us a litany of dangerous positional ideas on the queenside and in the center: 1) The most obvious set of follow-up ideas involve our newfound ability to find gainful employment for our heavy pieces. The a1-rook will find a home on c1, where it creates serious pressure on the c7-pawn. The queen, of course, will chill on b3, hitting the b7-pawn. Note that any movement of the Black pawns (particularly ...b6) creates serious and enduring queenside weaknesses that we can effectively exploit due to our general level of piece activity. 2) Bringing the queen to b3 is not the only idea we have at our disposal. In situations where Black moves the c-pawn up to c6, we can carry out a plan that you might find familiar from the Carlsbad variation/structure of the Queen's Gambit declined: we can set up a minority attack with a2-a3 (and/or Rb1) followed by b2-b4-b5, shattering Black's pawn structure and generating exciting prospects for our pieces.  3) The pawn on d3, far from being dead weight, is integral to the general health of our position. By securing the e4-square, it restricts the prospects of Black's f6-knight.  4) The d3-pawn also enables us to carry out a nasty plan of central expansion: we can continue with e3-e4, grabbing space and putting pressure on the d5-pawn. We don't have to stop there: in many cases, the pawn advances to e5, pushing Black's knight to the eighth rank and heavily clamping down on Black's position. As a result, Black will have an even harder time finding active prospects for his pieces. 5) Finally, the doubled pawns on the d-file frequently take the sting out of the typical pawn advance ...c7-c5, to which we can respond by capturing on c5 and regenerating our control of the center by pushing the other pawn up to d4 (the pawn can also remain on d3).  You will come across this recapture countless times across the various lines. Get used to it! } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - Idea #3: Kingside Expansion with h2-h4"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #3: Kingside Expansion with h2-h4"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "r1bq1rk1/ppp1bppp/n3pn2/1N1p4/3P1B2/4PN2/PPP2PPP/R2QKB1R w KQ - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - Idea #3: Kingside Expansion with h2-h4"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/SF4ReLPW"]
+[FEN "r1bq1rk1/ppp1bppp/n3pn2/1N1p4/3P1B2/4PN2/PPP2PPP/R2QKB1R w KQ - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ The Jobava London is characterized by frequent play on all three sides of the board. Typical idea #3 involves a typical plan of kingside expansion involving g2-g4. But that is not the only type of kingside expansion that we come across. In situations where Black's light-squared bishop remains on c8, we can also initiate a kingside attack more directly with a move that outwardly appears brazen, but is in fact entirely justified by positional and tactical principles. This position, which stems from the 3...e6 variation, is a particularly instructive application of this idea: } 1. h4! { This move truly epitomizes the spirit of the Jobava London! Your intuition may seem to indicate that there is no way a move like this can be truly justified, since we are essentially precluding our own ability to castle kingside, and we haven't even fully completed our development! Neither of these things correspond with reality. Of course, these types of positions are very concrete and should be studied primarily by consulting the analysis, but let's bring to the table a few important points that will help you get more comfortable with pushing the h-pawn: 1) White's attack comes very fast. It takes only two moves for the pawn to appear on h6, inducing massive and permanent weaknesses along the dark-squares. If Black halts the advance with ...h6, then the g-pawn can come to the rescue, rushing up to g5 and shattering Black's kingside. Note that our delaying of kingside castling is actually a good thing here, since the rook can still move to g1 and support the kingside pawn advance. 2) White's king is quite safe in the center, since Black has no easy way of carrying out any meaningful pawn breaks (again, this has to do with our firm control of the e5-square!). But there are plenty of situations when White can, and does, castle kingside. Just because the pawn is on h4 or h5 DOES NOT mean that it is no longer possible to castle kingside; yes, the pawn becomes somewhat of a weakness when it is no longer supported by the rook, but it cannot be easily attacked and the pawn shell remains generally intact. 3) In the 3...g6 variation, this move is particularly integral to White's strategy, since the advance of the h-pawn will cause an explosion once it reaches h5. Furthermore, in that variation you will find that we are more than happy to sacrifice an exchange on h5 (i.e. h5 Nxh5 Rxh5 gxh5 Qxh5), creating tremendous attacking prospects on the kingside.  4) This isn't a truly valid reason, but don't you feel like a badass making a move like this as early as move 5?! We certainly do. In all seriousness, unconventional play of this sort produces a strong psychological effect on the opponent, and can lead to an almost immediate loss of control. Behold the early advance of Harry the h-pawn! } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - Idea #4: Queenside Blockade on the c5-square"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #4: Queenside Blockade on the c5-square"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "2rq1rk1/pp2ppb1/2n2np1/3pNb1p/B2P1B1P/P1N2P2/1PPQ2P1/R3K2R w KQ - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - Idea #4: Queenside Blockade on the c5-square"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/uwptfcdQ"]
+[FEN "2rq1rk1/pp2ppb1/2n2np1/3pNb1p/B2P1B1P/P1N2P2/1PPQ2P1/R3K2R w KQ - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ This position, which stems from the 3...g6 variation, furnishes a great example of an idea that recurs across several variations (particularly 3...e6 and 3...g6), and epitomizes White's ability to simultaneously assert control of the queenside and the kingside. It involves the following two steps: 1) First, we generate a hole on c5 by capturing either on a6 (in situations where Black has developed the knight to a6, generally in the 1.d4 Nf6 2.Nc3 d5 3.Bf4 e6 4.Nb5 a6 - Black will later play ...c6 and the knight drops back to c3, creating the possibility of Bxa6) or, as in this case, on c6. Note that we are almost always happy to give up our light-squared bishop to make this happen. 2) Second, we attain control of the c5-square by hopping over to a4. We can then move on to c5, but that is not always necessary: it is control over the c5-square that we ultimately seek. } { [%evp 0,3,2,2,11,13] } 1. Bxc6! bxc6 2. Na4 { Why is it is so important to attain control over this square? The main reason is that it makes it virtually impossible for Black to achieve any degree of queenside activity. Without being able to carry out the ...c5 pawn break, Black cannot generate activity and has absolutely nothing to attack. But we are not simply trying to halt Black's queenside play: we can use the queenside for our own benefit, using the knight to put pressure on Black's weak pawns on the queenside. This is especially common in the 3...e6/...Na6 variation, where Black will be saddled with doubled a-pawns. The Jobava London is an opening in which we constantly intersperse tactical and positional ideas.  Get used to smashing open the kingside and applying positional ideas on the other side of the board, all at the same time! } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - Idea #5: Queen Transfer to h3"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #5: Queen Transfer to h3"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "r1bq1rk1/ppn2ppp/4pn2/2bpN3/5B2/2NBP3/PPP2PPP/R2QK2R w KQ - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - Idea #5: Queen Transfer to h3"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/3N0cHOQx"]
+[FEN "r1bq1rk1/ppn2ppp/4pn2/2bpN3/5B2/2NBP3/PPP2PPP/R2QK2R w KQ - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ This idea cannot truly be called "typical" since it really only occurs in one sub-variation of the 3...e6 line (in which Black responds to Nb5 with ...Na6 and then hides his knight on c7), but we have decided to include it because it truly captures the essence of this opening and demonstrates the jaw-dropping speed with which White can uncork a decisive on the kingside. In this position, we have already carried out the typical developmental scheme, putting the knight on e5 and training the bishop on the h7-pawn. There is one missing ingredient: we need the services of the lady. } 1. Qf3! { The queen is heading for h3, where it will exert massive pressure on the h7-pawn. Most importantly, we delay the kingside pawn storm until Black moves the h- or g-pawns, which will create a hook and increase the effectiveness of a pawn storm. Let's consider what will happen if Black continues to develop without a care: } 1... Bd7 2. Qh3 { Black's position is already virtually hopeless. We are threatening the straightforward Bg5-xf6, so Black has no choice but to weaken his kingside to prolong the king's life. } { [%cal Gf4g5,Gg5f6,Gd8f6,Gh3h8] } 2... h6 { ...g6 is typically a more resilient defensive method - see the 3...e6 file for more detailed analysis. This line, however, enables us to more clearly illustrate the potency of the queen: } 3. Bxh6! gxh6 4. Qxh6 { Black has absolutely no way to kick the queen away, and we simultaneously threaten g4-g5, as well as the straightforward Nxd7, e.g. } 4... Re8 { [%cal Rc5f8] } 5. Nxd7! { Black has a rather unenviable choice between recapturing with the queen, allowing us to win back the knight, and taking with the knight: } 5... Nxd7 { This allows us to demonstrate a classic and gorgeous mating pattern: } (5... Qxd7 6. Qxf6 $18) 6. Bh7+ Kh8 7. Bg6+ Kg8 8. Qh7+ Kf8 9. Qxf7# { 1-0 White wins by checkmate. } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - Idea #6: e3-e4 Pawn Break"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #6: e3-e4 Pawn Break"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "rnbqkb1r/5ppp/p3pn2/1ppp4/3P1B2/P1N1PN2/1PP2PPP/R2QKB1R w KQkq - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - Idea #6: e3-e4 Pawn Break"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/oR4N6Rph"]
+[FEN "rnbqkb1r/5ppp/p3pn2/1ppp4/3P1B2/P1N1PN2/1PP2PPP/R2QKB1R w KQkq - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ Throughout the course, you will notice that White operates effectively on all three sides of the board: queenside, center, and kingside. Typical idea #1 involves using the center efficiently by maneuvering the knight to e5. But another very common idea involves engineering the central breakthrough e3-e4. Of course, we see the move e4 played in response to ...c5, but in most other lines - such as the 3...a6 variation - we prepare this break gradually, by deploying our bishop to d3 and queen to e2. First, we must end the central tension to prevent Black from pushing away our bishop with ...c4. } 1. dxc5 Bxc5 2. Bd3 { We are ready to push e3-e4, but Black does not have to cooperate. } 2... Bb7 3. Qe2 { Very important. All ingredients are now in place for e4, but we do not have to rush - generally, it is a good idea to castle first so that our king is not caught in the crossfire once the center opens. Following that, we will be ready to push e4, opening the center and enabling us to more effectively take advantage of our superior piece activity. Once the d-file opens, the Black queen can also be pushed around with Rad1. } { [%cal Re3e4] } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - Idea #7: Knight Jump to b5"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #7: Knight Jump to b5"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "rnbqk2r/pp2ppbp/5np1/2pp4/3P1B1P/2N1P3/PPP2PP1/R2QKBNR w KQkq - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - Idea #7: Knight Jump to b5"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/ZJkFmc6C"]
+[FEN "rnbqk2r/pp2ppbp/5np1/2pp4/3P1B1P/2N1P3/PPP2PP1/R2QKBNR w KQkq - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ On move two of the Jobava London, we develop the knight to c3, violating the most basic principle of Queen's Pawn openings. Typical #1 showed one way in which we can compensate for that: by quickly activating our other knight. However, the queen's knight is far from a lost cause: on c3, it controls the crucial e4-square. But one of the most ubiquitous ideas in the Jobava London involves hopping to b5, threatening Nc7 and forcing Black to seriously compromise the placement of his own queen's knight. In this position, which obviously stems from the 3...g6 variation, Black has just carried out the standard ...c7-c5 pawn break. This affords us a perfect opportunity to initiate the knight jump: } 1. Nb5 { It may seem rather strange that a move which creates an ultra-prosaic threat is effective, but you should remember that we are not banking on Black missing Nc7 (although, in certain cases, such as the 3...Nc6 line, Black just actually does run into a situation where there is no defense against Nc7!). Rather, the point of this move is entirely positional. } 1... Na6 2. c3 { We frequently follow up by solidifying the d4-pawn, London-style. In this position, the power of the knight jump is on full display: Black has no easy way to kick the knight out, and it can be further supported with a3-a4. In lines where Black's pawn is on c7 (particularly 3...e6), Black can force our knight out with ...c6, but this does not make Nb5 any less efficient, since Black will still have a hard time finding suitable prospects for his knight. The knight jump to b5 is yet another illustration of the multifaceted nature of the Jobava London, which features countless ideas that are both positional and tactical. } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - Idea #8: Dealing with ...Bb4 and ...Ne4"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "Idea #8: Dealing with ...Bb4 and ...Ne4"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[FEN "r1bqk2r/p4ppp/p1p1pn2/3p4/1b1P1B2/2N1P3/PPP2PPP/R2QK1NR w KQkq - 0 1"]
+[Variant "From Position"]
+[ECO "?"]
+[Opening "?"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - Idea #8: Dealing with ...Bb4 and ...Ne4"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/HVy1uE2T"]
+[FEN "r1bqk2r/p4ppp/p1p1pn2/3p4/1b1P1B2/2N1P3/PPP2PPP/R2QK1NR w KQkq - 0 1"]
+[SetUp "1"]
+[Orientation "white"]
+
+{ Black has a wide choice when it comes to the deployment of his dark-squared bishop. Most of the time, it is developed to either e7 or d6, but in some variations (such as in the line 3...e6 4.Nb5 Na6 5.e3 c6 6.Nc3, which is the one in front of you), Black can also develop the bishop more aggressively to b4. The instinctual reaction here is a2-a3, but it turns out that the so-called "threat" - to pressure our knight with ...Ne4 - requires absolutely no action on our part. As long as we can castle in response to ...Ne4 (to avoid losing an exchange), we are more than happy to part ways with a pawn in return for a tremendous initiative and total control over the queenside. } 1. Nf3 Ne4 2. O-O! { The key. } 2... Nxc3 { Black can also take with the bishop first, but that changes very little (see analysis). } 3. bxc3 Bxc3 4. Rb1 { It is clear, even to an untrained eye, that White's compensation is nothing short of massive. The bishop on c3 is vulnerable, the b-file is ours, the other bishop has no prospects, and we can pile on the pressure in several obvious ways, such as Qd3 and Ne5. Some of these things are unique to this position, but in almost all variations, Black faces tremendous difficulties upon capturing the pawn on e3. Don't be afraid to sacrifice this pawn! } *
+
+
+[Event "Jobava London Naroditsky style: Jobava London - 3...c6"]
+[Date "2023.01.29"]
+[White "Jobava London"]
+[Black "3...c6"]
+[Result "*"]
+[Annotator "BortnykChess"]
+[Variant "Standard"]
+[ECO "D01"]
+[Opening "Rapport-Jobava System"]
+[StudyName "Jobava London Naroditsky style"]
+[ChapterName "Jobava London - 3...c6"]
+[ChapterURL "https://lichess.org/study/6JdHL1yF/7Yil631T"]
+[Orientation "white"]
+
+{ [%evp 0,33,28,29,27,18,26,26,52,32,84,74,62,43,42,43,32,27,27,27,27,17,31,-3,0,2,55,40,43,71,77,82,78,46,59,70] } 1. d4 Nf6 2. Nc3 d5 3. Bf4 c6 { This move does not have too much independent value. Most of the time, Black follows up with 4...Bf5, transposing to a line that we analyze via the 3...Bf5 move order (3...Bf5 4.Nf3 c6). In this file, we give the one legitimate independent variation, in which Black quickly develops their queen to b6 and probes for queenside weaknesses. } 4. e3 Qb6 (4... Bf5 { See 3...Bf5 4.Nf3 c6. }) 5. Rb1 { Not the prettiest looking move, but it gets the job done. Furthermore, we never castle queenside in this line, so there is no chance that we will regret this move down the line. Finally, the rook on b1 can be a major asset in the ensuing queenside battle, helping to prepare the typical b4-b5 minority attack. } (5. a3!? { This is not our main recommendation, but it is a cute trap nonetheless: } 5... Qxb2?? 6. Na4 $18) 5... Bf5 6. Bd3 { We develop the bishop and immediately confront Black with an important decision. } 6... Bxd3 (6... e6 7. Bxf5 exf5 { This exchange may seem to favor Black due to his increased control over the e4-square, but in reality, the f5-pawn is a serious target that we now use as fuel for a furious kingside expansion. } 8. h3 { White's intentions are far more violent than simply making luft for the bishop on h2. We are preparing to tear Black apart with g2-g4! } 8... Be7 (8... h5 { This stops g2-g4, but creates more holes on the kingside. We now transition to straightforward development, and follow up with pawn play on the queenside. } 9. Nf3 Nbd7 10. O-O Ne4 (10... Be7 11. Ne2 { A versatile move, with two main ideas. The knight can be repurposed to d3 (via f4, once the bishop moves), and by un-blocking the c-pawn, we are preparing rapid queenside expansion with an eventual c2-c4. } 11... Ne4 (11... O-O 12. b3 { Everything is ready for the queenside attack! } 12... Qa6 13. c4! { Anyway! } 13... dxc4 (13... Qxa2 14. Ra1 Qb2 15. Qd3 dxc4 16. bxc4 { In order to un-trap the queen, Black has to give up f5: } 16... Qb6 17. Rfb1 Qd8 18. Qxf5 $18 { Note that we avoided 18.Rxb7 because of Nc5! White's massive queenside pressure, coupled with our pawn superiority in the center, grants us a decisive advantage. }) 14. bxc4 Qxc4 15. Rxb7 $14 { Black's queenside is in tatters, and he suffers from weaknesses on the other side of the board as well. }) 12. Nd2 { Getting rid of Black's strongest piece. } 12... g5 { An attempt to jump-start a kingside attack, but it falls rather short. } (12... Ndf6 13. Nxe4 fxe4 (13... Nxe4 14. f3 { Pushing away the knight. } 14... Nf6 15. Qd3 { Attacking f5 and inducing yet another weakness. } 15... g6 16. Be5 $16 { White's next step is to blast open the center with e3-e4. } { [%cal Re3e4] }) 14. c4 { Time for the queenside pawn storm! This positional sacrifice shatters Black's central pawn chain. } 14... dxc4 (14... O-O 15. Be5 { The knight is coming to f4, and Black is forced to capture on c4 anyway. } { [%cal Re2f4] } 15... dxc4 { See 14..dxc4 15.Be5 0-0. }) 15. Be5 { First, we centralize the bishop. The ability to take on f6 will serve us well in the long run, especially if our knight moves on to c3 or g3. } 15... O-O 16. b3! { Prying open the b-file. } 16... cxb3 17. Rxb3 Qa6 18. Ng3 $16 { White's compensation for the pawn is overwhelming: we are already threatening to win the pawn back with Nxh5 and Bxf6-Nxe4, but the prospect of Nf5 is even scarier. } { [%cal Rg3h5,Rg3f5] }) 13. Bh2 g4 14. Kh1 { Calmly withdrawing the king to a safer spot, underscoring the ineffectiveness of Black's pawn invasion. Black's monarch, on the other hand, has no safe haven. Our next move is c2-c4, prying open the queenside and leading to the collapse of Black's pawn structure. A sample line: } { [%cal Rc2c4] } 14... O-O-O 15. c4 Nxd2 16. Qxd2 dxc4 17. b3 { The same idea that we saw in the 12...Ndf6 13.Nxe4 fxe4 14.c4 line, forcing open the b-file and leading to a long-lasting attack against Black's king. } 17... cxb3 18. Rxb3 Qa6 19. Qc2 $18 { Targeting f5 and x-raying Black's king. Rfb1 is coming next. } { [%cal Rf1b1,Rc2f5] }) (10... g6 11. Ne2 Bg7 12. b3 O-O 13. c4 $16) 11. Nxe4 fxe4 12. Nd2 Be7 13. c4 { Undermining Black's pawn chain, and starting a furious queenside pawn storm. } 13... Nf6 14. b4! { Simple and powerful. We threaten to blast open the queenside with b4-b5, and the pawn is untouchable due to the pin against the queen. } 14... a6 15. a4 $14 { White is having all the fun: apart from the imminent threat of b4-b5, there are many ways to improve the position and accentuate the pressure, such as Qb3 and Be5. If Black is forced to take on c4, the e4-pawn will become a long-term weakness. Also note the awkwardness of the h5-pawn: anytime Black castles, Be5 will carry the additional threat of Bxf6 and Qxh5. }) (8... Bb4 9. g4 { Ignoring the possibility of ...Ne4, which doesn't bother us! } 9... Ne4 (9... fxg4 10. hxg4 Ne4 11. a3 Nxc3 (11... Ba5 12. Ne2 $16) 12. bxc3 Bxc3+ { Now, time for some Jobava London magic: the intuitive move is 13.Kf1, but we use the king as an agent of attack: } 13. Ke2! Qa6+ 14. Qd3! Qxd3+ 15. Kxd3 { The idea is revealed: the bishop on c3 is under attack, and Black has no time to defend b7. His position collapses. } 15... Ba5 16. Rxb7 $18) 10. f3! { The genius of the rook's placement on b1 is revealed in this line: by sacrificing the c3-pawn, we open up the rook and reveal the hidden vulnerability of Black's queen. Black cannot hang on to the extra pawn, since f5 hangs as well. } 10... Nxc3 11. bxc3 Bxc3+ 12. Kf2 Qa6 13. gxf5 Nd7 14. Qe2 Qxe2+ (14... Qxa2 15. Rxb7 $18) 15. Nxe2 $18 { [%cal Re2c3,Rb1b7] }) 9. g4 fxg4 10. hxg4 Nbd7 11. g5 Ne4 12. Nxe4 dxe4 13. c3 O-O-O 14. b4 $16 { White's queenside attack is virtually unstoppable. } { [%cal Gc3c4,Gb4b5] }) (6... Nbd7?? { An incredibly common blunder! } 7. Bxf5 $18) (6... Bg6 { With this move, Black keeps the tension and tosses the ball back into White's court. } 7. h4 { A typical Jobava move: we aim to force Black to trade bishops on our terms. By forcing Black to take on d3, we will create the desirable d3-d4-e3 pawn mass, enabling us to assert our dominance in the center and on the queenside. } 7... e6 (7... h5? { As usual, this move loosens Black's control over the g6-square, making the trade far more desirable! } 8. Bxg6 fxg6 9. Qd3 Kf7 10. Nf3 $18 { [%cal Rf3e5,Rf3g5] }) 8. h5 Bxd3 9. cxd3 { The desirable structure has been obtained. Now, it is time to develop our kingside and expand in the center. } 9... h6 10. Nf3 Be7 (10... Nbd7 11. e4 Bb4 12. e5 { The knight has nowhere good to go, since d7 is taken up by the other knight! } 12... Ng4 13. a3 { Note the power of the rook on b1, which shines through in the event that Black trades on c3. The awkwardness of Black's queen is on full display here. } 13... Be7 14. Na4 Qa6 15. Ng1! f5 (15... f6 16. Qxg4 Qxa4 17. Qxg7 Rf8 18. Bxh6 $18) 16. f3 $18 { It turns out that the knight on g4 is trapped! }) 11. e4 O-O 12. e5 { Driving the pawn down and gaining more space. } 12... Nfd7 13. Rh3 $16 { A sexy move indeed! We lift the rook up to g3, creating massive threats against Black's king, which has just lost its last loyal defender. White's pawn structure is visually unappealing, but our central pawn mass does a fantastic job of holding Black's counterplay at bay. For a more thorough explanation, see the note to Black's 11th move in the main line (6...Bxd3 7.cxd3). } { [%cal Rh3g3,Re1f1,Rf1g1] } 13... c5 14. dxc5 Nxc5 { Now, it is important to avoid 15.d4, which grants Black the e4-square. Instead, we use our other pawn to push Black's knight back. } 15. b4 Ncd7 16. Kf1 { A little prophylaxis before launching the kingside attack. We've taken the sting out of ...Bxb4, since the knight will no longer hang with check. } 16... Bxb4 (16... Nc6 17. b5 Na5 18. Qd2 Kh7 19. g4 $40 { The attack commences! Black has nothing going on the Q-side, while we are fully ready to tear Black apart on the other side of the board. }) 17. a3 $18) 7. cxd3 { As usual, we recapture with the pawn (see typical ideas #1 for a more thorough explanation of the potency of White's central pawn mass). We now carry out a typical set of steps: first, we complete our kingside development. Following that, we initiate central expansion with e3-e4, giving us a pleasant and easy game. } 7... e6 8. Nf3 Be7 9. O-O { Step 1 has been achieved. } 9... O-O 10. e4 { Time for phase 2, expanding in the center and preparing to shove the pawn down to e5, cramping Black even further. } (10. b4!? { A worthwhile alternative, initiating immediate queenside play along typical lines. Of course, the pawn is untouchable due to a3. } 10... a6 11. a4 Bxb4 (11... Nbd7 12. a5 Qd8 13. h4 $14) 12. Bd6! $16 { A bolt from the blue, winning at least an exchange. }) 10... Nbd7 11. e5 Ne8 { It is worth pausing and appreciating the unique potency of White's central pawn structure. The d4-e5/e6-d5 pawn chains resemble an Advanced French, with the chief difference being the additional presence of White's pawn on d3. Visually, White's pawn mass appears rather ugly, but the pawn on d3 is actually a great asset. Any time Black pushes the c-pawn - and this is Black's only active idea - White can capture on c5 and rebuild the pawn chain with d3-d4, highlighting the hidden value inherent in having doubled pawns! } 12. h4 { Expanding on the kingside. Just because we are castled kingside certainly does not mean that we can't attack on that side of the board! Note that this move does not commit us to anything in particular: the pawn on h4 is not a serious weakness, and we are not obliged to follow up with h4-h5. We are in charge on all three sides of the board: on ther queenside, we are ready to act with b2-b4. In the center, Black has nothing going and 12...c5 fails to break up our center (see main line). On the kingside, we can expand gradually with h5, g2-g3, Kg2, Rh1, etc. } 12... c5 { Black aims to generate a semblance of activity. } (12... h6 13. Ne2 { White aims to regroup the minor pieces by retreating the bishop to e3 (this also discourages ...c5), and repositioning the knight on f4, from where it can jump to h5. } 13... c5 14. dxc5 Nxc5 15. Be3 Qa6 16. b4!? { Using tactics to force the knight out of c5. Once again, it is important to refrain from 16.d4, which would grant Black a powerful post on e4. } 16... Nxd3 (16... Nd7 17. a4 Rc8 18. Qb3 $16 { Black is pushed to the edge of the board, and we will wrest the c-file from his control with Rfc1 on the next move. }) 17. b5 Qa3 18. Rb3 $18) (12... f6 { This idea is typical for French Advance-type positions, but in this case it falls short. } 13. g3 { Reinforcing the bishop and taking the sting out of ...fxe5. } 13... fxe5 14. dxe5 c5 15. d4 { Meeting Black at the top! This move grants Black a protected passer in the center, but enables us to establish complete dominance over that pawn by gaining the d4-square for our knight. } 15... cxd4 16. Nxd4 { Black lacks the piece activity and coordination to kick the knight out of d4. Furthermore, the e6-pawn is a long-term weakness that Black must babysit at all times. } 16... Nc7 (16... Bxh4 17. b4! { Ignoring the situation on the kingside! In reality, we are preparing a devious maneuver that will force Black to lose contact with the e6-pawn. } 17... Be7 18. Na4 Qa6 19. b5 Qa5 20. Nxe6 $18) 17. Rc1 { Simple chess! Of course, we could not care less about the b2-pawn, for many reasons (such as 17...Qxb2 18.Na4, picking off the c7-knight). } 17... Rac8 18. h5 { Playing on both flanks! We expand on the kingside, preparing a timely h5-h6. } 18... Qxb2 19. Qg4 { Now, the queen jumps into the game! } 19... Nc5 20. Ncb5! { Deflecting the c7-knight from its control over e6. } 20... Nxb5 21. Nxe6 Rf7 (21... Nxe6 22. Qxe6+ Kh8 23. Rxc8 $18) 22. Nxg7! { Classic Jobava London action! The rook on c8 hangs! } 22... Rc6 23. Nf5+ Kh8 24. Rb1 Qc2 25. Nxe7 Rxe7 26. Rxb5 $18 { Gaining back the piece, with a clearly overwhelming position. }) 13. Na4 { An important move, which ensures that we will remove the knight from d7 as a result of the trade on c5. This will leave Black with a far more passive knight on e8, and grant us the ability to pressure the queenside without obstruction. } 13... Qb5 14. Nxc5 Nxc5 15. dxc5 Bxc5 16. Rc1 Be7 17. Qd2 $16 { Defending b2 and coordinating the rooks. We have countless ways to improve our position, such as d3-d4, Rc2-Rfc1, as well as h4-h5. Black has no easy way to improve the placement of the knight, and suffers from a general lack of coordination and lack of space. } *
+
+

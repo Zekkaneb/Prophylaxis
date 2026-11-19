@@ -1,0 +1,236 @@
+/* ==========================================================================
+   Premium surface layer — loaded after every feature stylesheet so the
+   Editorial Slate treatment wins without touching component layout code.
+   ========================================================================== */
+
+/* Double-bezel cards: outer shell (ring + inset highlight) around a soft core. */
+.gr-panel,
+.gr-card,
+.wp-panel,
+.player__side,
+.gr-history,
+.gr-retry,
+.gr-coach,
+.lesson-modal__card,
+.set-row {
+  background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+  border: 1px solid var(--line-soft);
+  border-radius: 26px;
+  box-shadow:
+    inset 0 1px 0 var(--inset-hi),
+    var(--shadow-card);
+  transition:
+    border-color 300ms var(--ease),
+    transform 300ms var(--ease),
+    box-shadow 300ms var(--ease);
+}
+
+.set-row {
+  padding: 16px 18px;
+  margin-bottom: 10px;
+}
+
+/* Display type inside panels */
+.wp-panel__title,
+.gr-card__title,
+.gr-panel__title,
+.wp-title,
+.player__title,
+.gr-analyzing__title,
+.preview-top h2 {
+  font-family: var(--font-sans);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.player__title,
+.wp-title,
+.wp-panel__title {
+  font-weight: 650;
+  font-size: 1.55rem;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  color: var(--text);
+}
+
+/* Eyebrows: microscopic, spaced, gold */
+.gr-eyebrow,
+.wp-eyebrow,
+.player__eyebrow {
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Inputs sit inside the surface, not on top of it */
+.gr-textarea,
+.gr-input input,
+.wp-field input,
+.wp-field select,
+.wp-input,
+.lesson-modal__field > input,
+.lesson-modal__field textarea,
+.gr-retry input {
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 16px;
+  color: var(--text);
+  transition:
+    border-color 300ms var(--ease),
+    background 300ms var(--ease),
+    box-shadow 300ms var(--ease);
+}
+
+.gr-textarea:focus,
+.gr-input input:focus,
+.wp-field input:focus,
+.wp-field select:focus,
+.lesson-modal__field > input:focus,
+.lesson-modal__field textarea:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+/* Track fills */
+.meter__track,
+.wp-meter__track,
+.gr-progress,
+.progress-track {
+  background: var(--line-soft);
+  border-radius: 999px;
+}
+
+.meter__fill,
+.wp-meter__fill,
+.gr-progress__fill,
+.progress-fill {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 75%, transparent), var(--accent));
+  border-radius: 999px;
+  transition: width 420ms var(--ease);
+}
+
+/* Panel rhythm: one gutter value across every bezel surface */
+.wp-panel,
+.gr-panel,
+.player__side,
+.gr-history,
+.gr-coach,
+.lesson-modal__card {
+  padding: var(--space-5);
+}
+
+/* Chips, pills and tabs */
+.gr-pill,
+.wp-chip,
+.phase,
+.gr-toggle,
+.gr-badge-table__row,
+.chunk-move,
+.quiz-dot {
+  border-radius: 999px;
+  border: 1px solid var(--line-soft);
+  transition:
+    background 300ms var(--ease),
+    border-color 300ms var(--ease),
+    color 300ms var(--ease),
+    transform 300ms var(--ease);
+}
+
+.chunk-move {
+  border-radius: 18px;
+  background: var(--surface-2);
+}
+
+/* Move list behaves like the legacy .mv pills, in gold */
+.gr-move {
+  border-radius: 10px;
+  transition:
+    background 260ms var(--ease),
+    color 260ms var(--ease),
+    transform 260ms var(--ease);
+}
+
+.gr-move:hover {
+  background: var(--surface-3);
+}
+
+.gr-move.is-active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  transform: translateY(-1px);
+}
+
+.gr-move.is-active .gr-move__icon {
+  color: var(--accent-ink);
+}
+
+/* Board frame: machined edge, soft depth */
+.board-frame {
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 0 1px var(--inset-hi),
+    0 40px 80px -50px rgba(0, 0, 0, 0.95);
+  transition:
+    border-radius 400ms var(--ease),
+    box-shadow 400ms var(--ease);
+}
+
+.gr-board-wrap,
+.wp__board-wrap,
+.wp-banner,
+.gr-opening-banner {
+  border-radius: 22px;
+}
+
+/* Card hover physics (subtle, never bouncy) */
+.gr-card:hover,
+.wp-panel:hover {
+  border-color: var(--line);
+}
+
+/* Buttons inside feature panels: nested trailing-icon feel */
+.gr-coach__actions .button,
+.wp__head-actions .button,
+.player__actions .button,
+.gr-retry__actions .button {
+  transition:
+    background 300ms var(--ease),
+    color 300ms var(--ease),
+    transform 300ms var(--ease),
+    box-shadow 300ms var(--ease);
+}
+
+.gr-coach__actions .button:hover,
+.player__actions .button:hover {
+  transform: translateY(-1px);
+}
+
+.gr-coach__actions .button:active,
+.player__actions .button:active {
+  transform: scale(0.98);
+}
+
+/* Toasts and banners */
+.banner {
+  border-radius: 18px;
+  border: 1px solid var(--line-soft);
+}
+
+/* Empty states breathe */
+.player__empty,
+.gr-muted {
+  letter-spacing: 0.01em;
+}
+
+/* Respect reduced motion without breaking layout */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

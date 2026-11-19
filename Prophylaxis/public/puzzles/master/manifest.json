@@ -1,0 +1,50 @@
+{
+  "tier": "master",
+  "name": "Master",
+  "min_rating": 2551,
+  "max_rating": 2700,
+  "version": 20261120,
+  "generated_at": "2026-11-18T17:58:02.291Z",
+  "source": "lichess-open-database",
+  "seed": 20261118,
+  "pool_size": 5000,
+  "shard_size": 1000,
+  "count": 5000,
+  "shards": [
+    {
+      "index": 1,
+      "file": "shard-0001.json",
+      "count": 1000,
+      "first_id": "p0pvn",
+      "last_id": "6e219"
+    },
+    {
+      "index": 2,
+      "file": "shard-0002.json",
+      "count": 1000,
+      "first_id": "S0diW",
+      "last_id": "fqySG"
+    },
+    {
+      "index": 3,
+      "file": "shard-0003.json",
+      "count": 1000,
+      "first_id": "y4R3o",
+      "last_id": "MFSSv"
+    },
+    {
+      "index": 4,
+      "file": "shard-0004.json",
+      "count": 1000,
+      "first_id": "SXl1F",
+      "last_id": "bEnpK"
+    },
+    {
+      "index": 5,
+      "file": "shard-0005.json",
+      "count": 1000,
+      "first_id": "omYFC",
+      "last_id": "yZIQg"
+    }
+  ]
+}

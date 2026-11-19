@@ -1,0 +1,194 @@
+/* --------------------------------------------------------------------------
+   Line quiz: the board answers the opponent, you answer the line.
+   -------------------------------------------------------------------------- */
+
+.quiz {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.quiz__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.quiz__titles {
+  min-width: 0;
+}
+
+.quiz__eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--accent-strong);
+}
+
+.quiz__titles h1 {
+  font: 700 clamp(24px, 2.6vw, 34px) var(--font-sans);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.quiz__meta {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.quiz__bar {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.quiz__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  transition: width 320ms var(--ease);
+}
+
+.quiz__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.quiz__board {
+  /* Rigid viewport: the board is sized by the global scale, never by this
+     column, so the side panel cannot stretch or squash it. */
+  width: 100%;
+  min-width: 0;
+  overflow: auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.quiz__side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+
+.quiz__message {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  min-height: 42px;
+}
+
+.quiz__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.quiz__stats dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.quiz__stats dd {
+  margin: 2px 0 0;
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.quiz__hint {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.quiz__hint--warn {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+  background: color-mix(in srgb, var(--gold) 10%, transparent);
+  color: var(--gold);
+}
+
+.quiz__done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 520px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+}
+
+/* The hand-off strip: the score and where the quiz is going next, no buttons. */
+.quiz__done--auto {
+  border-color: color-mix(in srgb, var(--gold) 35%, var(--line));
+  background: color-mix(in srgb, var(--gold) 6%, transparent);
+}
+
+.quiz__done--auto .quiz__eyebrow {
+  color: var(--accent-strong);
+}
+
+.quiz__done--auto .quiz__summary {
+  margin-bottom: 0;
+}
+
+.quiz__score {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 56px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.quiz__summary {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.quiz__done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .quiz__stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quiz__side {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .quiz__score {
+    font-size: 46px;
+  }
+}

@@ -1,0 +1,1050 @@
+.wp {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Turn strip --------------------------------------------------------------- */
+
+.wp__turnbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.wp__turn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.wp__turn-piece {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.wp__turn--white .wp__turn-piece {
+  background: #f6f1e7;
+  color: #16110c;
+}
+
+.wp__turn--black .wp__turn-piece {
+  background: #14181d;
+  color: #f6f1e7;
+  border: 1px solid var(--border);
+}
+
+.wp__turn-meta {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wp__board {
+  min-width: 0;
+}
+
+.wp__board-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.wp__timer {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.55rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.wp__timer-label {
+  margin: 2px 0 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+.wp__head-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.wp__board-wrap {
+  /* Rigid viewport for the globally sized board: the info panel next to it can
+     never resize it, and an oversized board pans here. */
+  width: 100%;
+  min-width: 0;
+  overflow: auto;
+  position: relative;
+}
+
+/* Board-sized box, centred in the wrap, so the pause veil covers exactly the
+   board wherever it sits. */
+.wp__board-frame {
+  position: relative;
+  width: var(--board-px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+}
+
+.wp__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 8px;
+  background: var(--scrim-soft);
+  backdrop-filter: blur(16px);
+}
+
+.wp__veil p {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+.wp__side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  min-height: 100%;
+}
+
+/* The history table takes the bottom of the rail, so the panel matches the
+   board's height instead of ending in empty space. */
+.wp__side .wp-history-block {
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.wp-eyebrow {
+  margin: 0 0 4px;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+.wp-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+}
+
+.wp-muted {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.wp-error {
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: rgba(244, 67, 54, 0.12);
+  border: 1px solid rgba(244, 67, 54, 0.35);
+  color: var(--danger);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.wp-notice {
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  color: var(--accent);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+/* Meter ------------------------------------------------------------------- */
+
+.wp-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wp-meter__track {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+
+.wp-meter__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 240ms ease;
+}
+
+.wp-meter__text {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stats ------------------------------------------------------------------- */
+
+.wp-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.wp-stats div {
+  padding: 10px;
+  border-radius: 9px;
+  background: var(--surface-raised);
+}
+
+.wp-stats dt {
+  font-size: 0.64rem;
+  text-transform: none;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.wp-stats dd {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rules ------------------------------------------------------------------- */
+
+.wp-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface-raised);
+}
+
+.wp-rules ul {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wp-rules li {
+  display: flex;
+  gap: 8px;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.wp-rules li span {
+  flex: none;
+  width: 16px;
+  text-align: center;
+  color: var(--accent);
+}
+
+/* Chips ------------------------------------------------------------------- */
+
+.wp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wp-chip {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.wp-chip--good {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
+}
+
+.wp-chip--warn {
+  border-color: color-mix(in srgb, var(--gold) 40%, transparent);
+  color: var(--gold);
+}
+
+/* Feedback ---------------------------------------------------------------- */
+
+.wp-banner {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.83rem;
+  line-height: 1.45;
+  border: 1px solid transparent;
+  animation: wp-banner-in 160ms ease-out;
+}
+
+.wp-banner--good {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
+}
+
+.wp-banner--bad {
+  background: rgba(244, 67, 54, 0.12);
+  border-color: rgba(244, 67, 54, 0.4);
+  color: var(--danger);
+}
+
+@keyframes wp-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Dashboard --------------------------------------------------------------- */
+
+.wp-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  /* Both columns run to the same floor, so the set library never ends in a
+     ragged edge with empty page beside it. */
+  align-items: stretch;
+}
+
+.wp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+/* The hub and its two panels fill the room: no strip of page left under the
+   cards on a tall window. On a short one the section keeps its content height
+   and the room scrolls instead of clipping. */
+.page--puzzles .wp-dashboard {
+  min-height: 100%;
+  /* Grows into the spare height, never shrinks below what the panels need, so
+     a short window scrolls rather than spilling out of the cards. */
+  grid-template-rows: auto minmax(min-content, 1fr);
+}
+
+/* Selection hub: one wide strip above the two panels that names the set the
+   next board session will use and how far its current cycle has run. */
+.wp-hub {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.wp-hub__main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.wp-hub__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  color: var(--text);
+}
+
+.wp-hub__cycle {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.wp-hub__meta,
+.wp-hub__progress {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-hub__progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.wp-hub__bar {
+  flex: 0 1 160px;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.wp-hub__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.wp-hub__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.wp-hub__count {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Cycle track: one bar per planned cycle. Finished cycles are solid accent,
+   the one in progress is outlined, the rest are dashed placeholders — so the
+   shape of the whole programme is readable at a glance. */
+.wp-cycles-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.wp-cycles__label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-cycles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.wp-cycle {
+  width: 18px;
+  height: 8px;
+  border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 3px;
+  background: transparent;
+}
+
+.wp-cycle.is-current {
+  border-style: solid;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.wp-cycle.is-done {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.wp-cycles-wrap--compact {
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.wp-cycles--compact .wp-cycle {
+  width: 12px;
+  height: 6px;
+  border-radius: 2px;
+}
+
+.wp-panel__head {
+  display: grid;
+  gap: 6px;
+}
+
+.wp-panel__head .wp-eyebrow {
+  margin: 0;
+}
+
+.wp-panel__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  color: var(--text);
+}
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+/* Seven tiers never divide evenly: the last card becomes a full-width row
+   so the group ends on a deliberate line instead of a stranded tile. */
+.tier-card:last-child:nth-child(3n + 1) {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tier-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--surface-2);
+  text-align: left;
+  transition:
+    background 300ms var(--ease),
+    border-color 300ms var(--ease),
+    transform 300ms var(--ease);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.tier-card:hover {
+  border-color: var(--line);
+}
+
+.tier-card.is-active {
+  border-color: var(--accent-strong);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.tier-card__name {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.tier-card__range {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.wp-field select,
+.wp-field input {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+.wp-field input {
+  width: 84px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wp__timer.is-low {
+  color: var(--danger);
+}
+
+.wp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 14px 8px;
+  border: 1px dashed var(--line);
+  border-radius: 22px;
+  text-align: center;
+}
+
+.wp-empty > strong {
+  font-size: 13.5px;
+}
+
+.wp-empty .empty-art {
+  width: 84px;
+  height: 84px;
+  border-radius: 21px;
+}
+
+.wp-empty .empty-art__grid {
+  inset: 7px;
+  border-radius: 15px;
+  background-size: 20px 20px;
+}
+
+.wp-empty .empty-art__piece {
+  font-size: 40px;
+}
+
+.wp-empty .wp-muted {
+  max-width: 40ch;
+}
+
+.wp-empty__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin: 2px 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.wp-empty__steps li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 9px;
+  border-radius: 11px;
+  background: var(--surface-1);
+}
+
+.wp-empty__steps span {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 50%;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.wp-empty__steps p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.wp-empty .secondary-btn {
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.set-list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+/* Last cycles of a set, newest first: the numbers the next cycle is chasing. */
+.set-row__history {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 7px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.set-row__history li {
+  display: flex;
+  gap: 8px;
+}
+
+.set-row__history strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--surface-raised);
+  border: 1px solid transparent;
+}
+
+.set-row__title {
+  margin: 0 0 3px;
+  font-size: 0.87rem;
+  font-weight: 600;
+}
+
+.set-row__meta {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.set-row__actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+
+/* History ----------------------------------------------------------------- */
+
+.wp-history-block h3 {
+  margin: 0 0 6px;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.wp-history {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-history th,
+.wp-history td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.wp-history th {
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+.wp-history tr:last-child td {
+  border-bottom: none;
+}
+
+/* Cycle progress ---------------------------------------------------------- */
+
+.wp__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.wp__progress-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wp__progress-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp__progress-remaining {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wp-dot {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-dot.is-solved {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.wp-dot.is-missed {
+  border-color: rgba(244, 67, 54, 0.5);
+  background: rgba(244, 67, 54, 0.14);
+  color: var(--danger);
+}
+
+.wp-dot.is-current {
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--text);
+}
+
+.wp__progress-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--surface-raised);
+}
+
+.wp__progress-solved {
+  background: var(--accent);
+}
+
+.wp__progress-missed {
+  background: rgba(244, 67, 54, 0.8);
+}
+
+/* Cycle results ----------------------------------------------------------- */
+
+.wp-results {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.wp-results__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 26px;
+  background:
+    radial-gradient(
+      120% 90% at 0% 0%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 60%
+    ),
+    var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.wp-results__score {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(3rem, 7vw, 4.6rem);
+  font-weight: 650;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-results__score span {
+  margin-left: 2px;
+  font-size: 0.42em;
+  color: var(--text-muted);
+}
+
+.wp-results__sub {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-results__delta {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  color: var(--accent);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.wp-results__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.wp-results__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.wp-results__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.wp-results__stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+
+.wp-results__stats span {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.wp-results__stats strong {
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wp-results__history h3 {
+  margin: 0 0 8px;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+@media (max-width: 980px) {
+  .wp {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wp-dashboard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wp-results {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wp__side {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wp-meter__fill,
+  .tier-card {
+    transition: none;
+  }
+
+  .wp-banner {
+    animation: none;
+  }
+}
