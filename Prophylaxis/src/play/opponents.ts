@@ -140,7 +140,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     name: 'Nina Yang',
     shortName: 'Nina Frosh',
     title: 'Freshman',
-    elo: 1150,
+    elo: 1200,
     style:
       'The developing all-rounder: balanced, a little cautious, still learning where the pieces belong. Natural moves, basic tactics, the occasional passive choice.',
     portraitPath: 'opponents/nina-freshman.webp',
