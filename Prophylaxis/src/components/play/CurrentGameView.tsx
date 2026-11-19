@@ -125,6 +125,9 @@ export function CurrentGameView({
     cp: 0,
     mate: null,
   });
+  /* The bar is a study aid, not part of the game: a player may hide it. While
+     hidden the search stops too, so no engine time is spent on a hidden gauge. */
+  const [showEval, setShowEval] = useState(true);
   const engineRef = useRef(engine);
   engineRef.current = engine;
   const engineStatus = engine.status;
@@ -176,7 +179,7 @@ export function CurrentGameView({
   useEffect(() => {
     /* `idle` is fine: the first request starts the worker. Only a failed engine
        leaves the bar at the score it already shows. */
-    if (engineStatus === 'error' || botThinking) return;
+    if (!showEval || engineStatus === 'error' || botThinking) return;
     let cancelled = false;
     const timer = window.setTimeout(() => {
       void engineRef.current
@@ -193,7 +196,7 @@ export function CurrentGameView({
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [shownFen, botThinking, engineStatus]);
+  }, [shownFen, botThinking, engineStatus, showEval]);
 
   const playerClockMs = session.playerColor === 'w' ? clock.whiteMs : clock.blackMs;
   const opponentClockMs = session.playerColor === 'w' ? clock.blackMs : clock.whiteMs;
@@ -335,14 +338,16 @@ export function CurrentGameView({
         <div className="play-board-wrap">
           {/* Flush against the board's first file: the bar is the board's left
               margin, not a floating chip. */}
-          <div className="play-eval-wrap">
-            <span className={`play-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}>
-              {formatEvaluation(evalScore.cp, evalScore.mate)}
-            </span>
-            <div className="play-eval" aria-hidden="true">
-              <div className="play-eval__fill" style={{ height: `${whitePercent}%` }} />
+          {showEval ? (
+            <div className="play-eval-wrap">
+              <span className={`play-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}>
+                {formatEvaluation(evalScore.cp, evalScore.mate)}
+              </span>
+              <div className="play-eval" aria-hidden="true">
+                <div className="play-eval__fill" style={{ height: `${whitePercent}%` }} />
+              </div>
             </div>
-          </div>
+          ) : null}
           <BoardSlot
             props={{
               /* While reviewing, the board shows the replayed snapshot and is
@@ -477,6 +482,16 @@ export function CurrentGameView({
             title="Flip board"
           >
             ⇅
+          </button>
+          <button
+            type="button"
+            className="play-nav__btn play-nav__flip"
+            onClick={() => setShowEval((current) => !current)}
+            aria-pressed={showEval}
+            aria-label={showEval ? 'Hide evaluation bar' : 'Show evaluation bar'}
+            title={showEval ? 'Hide evaluation bar' : 'Show evaluation bar'}
+          >
+            ±
           </button>
           <span className={`play-review__turn${reviewing ? ' is-reviewing' : ''}`}>
             {reviewing ? 'Reviewing' : 'Live'}

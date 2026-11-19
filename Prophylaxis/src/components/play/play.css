@@ -1945,6 +1945,13 @@
   margin-left: 2px;
 }
 
+/* The evaluation toggle reads as on/off: pressed keeps the bar, unpressed has
+   hidden it. */
+.play-nav__btn[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
 .play-review__counter {
   padding: 0 8px;
   font-family: var(--font-mono);
