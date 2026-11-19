@@ -115,12 +115,12 @@ function PlayerCard({
         <span className="gr-player__name" title={name}>
           {name}
         </span>
+        {elo ? (
+          <span className="gr-player__elo" title="Rating from the PGN">
+            {elo}
+          </span>
+        ) : null}
       </span>
-      {elo ? (
-        <span className="gr-player__elo" title="Rating from the PGN">
-          {elo}
-        </span>
-      ) : null}
     </div>
   );
 }

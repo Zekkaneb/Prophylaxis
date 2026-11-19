@@ -509,9 +509,10 @@
 
 .gr-player__id {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .gr-player__name {
@@ -524,9 +525,9 @@
   color: var(--text);
 }
 
-/* Rating as a badge, the same shape the predicted rating uses. */
+/* Rating as a badge, the same shape the predicted rating uses. It sits directly
+   after the name instead of being pushed to the far end of the bar. */
 .gr-player__elo {
-  margin-left: auto;
   flex: none;
   padding: 2px 8px;
   border-radius: 999px;
