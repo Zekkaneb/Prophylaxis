@@ -236,6 +236,7 @@ export function PlaySection() {
           <BotMatchView
             session={match.session}
             clock={match.clock}
+            engine={engine}
             onPause={match.pause}
             onResume={match.resume}
             onRestart={match.restart}

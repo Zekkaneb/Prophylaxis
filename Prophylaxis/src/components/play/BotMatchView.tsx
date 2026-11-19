@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BoardSlot } from '../../board/PersistentBoard';
+import type { StockfishController } from '../../engine/useStockfish';
+import { formatEvaluation, whiteAdvantagePercent } from '../../review/gameReviewService';
 import type { ClockSnapshot } from '../../play/clock.ts';
 import { formatClock, timeControlLabel } from '../../play/timeControls.ts';
 import { opponentMeta } from '../../play/opponents.ts';
@@ -11,6 +13,8 @@ import { usePlyBrowser } from './usePlyBrowser';
 export interface BotMatchViewProps {
   session: BotMatchSession;
   clock: ClockSnapshot;
+  /** Shared engine, used only to score the position the bar displays. */
+  engine: StockfishController;
   onPause: () => void;
   onResume: () => void;
   onRestart: () => void;
@@ -25,6 +29,12 @@ const SPEEDS: Array<{ id: MatchSpeed; label: string }> = [
   { id: 'fast', label: 'Fast' },
 ];
 
+/* The bar is a glance, not analysis: a short search between moves keeps it
+   current without competing with the bots' own searches. */
+const EVAL_DEPTH = 12;
+const EVAL_MOVETIME_MS = 220;
+const EVAL_DEBOUNCE_MS = 240;
+
 function resultText(session: BotMatchSession): string {
   if (!session.result) return '';
   if (session.result === '1/2-1/2') return 'Draw';
@@ -35,6 +45,7 @@ function resultText(session: BotMatchSession): string {
 export function BotMatchView({
   session,
   clock,
+  engine,
   onPause,
   onResume,
   onRestart,
@@ -44,6 +55,14 @@ export function BotMatchView({
 }: BotMatchViewProps) {
   const [orientation, setOrientation] = useState<'white' | 'black'>('white');
   const movesRef = useRef<HTMLDivElement | null>(null);
+  /** White-POV score of the position on the board, for the evaluation bar. */
+  const [evalScore, setEvalScore] = useState<{ cp: number; mate: number | null }>({
+    cp: 0,
+    mate: null,
+  });
+  const engineRef = useRef(engine);
+  engineRef.current = engine;
+  const engineStatus = engine.status;
   /* The match plays itself, so the browser is the only way to read back through
      it: the board follows unless the reader steps away from the latest ply. */
   /* Bot vs. bot has no human seat, so both sides use the opponent voice. */
@@ -54,6 +73,32 @@ export function BotMatchView({
     const element = movesRef.current?.querySelector('.play-moves__ply.is-selected');
     element?.scrollIntoView({ block: 'nearest' });
   }, [browser.ply, session.sans.length]);
+
+  /* The bar scores whatever the board shows, so stepping back through the match
+     reads the snapshot on screen. A bot that is searching owns the engine, so
+     the bar waits for it rather than queueing behind the move. */
+  const shownFen = browser.fen;
+  useEffect(() => {
+    if (engineStatus === 'error' || session.thinking !== null) return;
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void engineRef.current
+        .evaluateWithin(shownFen, EVAL_DEPTH, 1, EVAL_MOVETIME_MS)
+        .then((result) => {
+          if (cancelled) return;
+          setEvalScore({ cp: result.scoreCp, mate: result.mate });
+        })
+        .catch(() => {
+          /* A busy or failed search leaves the previous score on the bar. */
+        });
+    }, EVAL_DEBOUNCE_MS);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [shownFen, session.thinking, engineStatus]);
+
+  const whitePercent = whiteAdvantagePercent(evalScore.cp, evalScore.mate);
 
   const rows = useMemo(() => {
     const result: Array<{ number: number; white: string; black: string | null }> = [];
@@ -70,8 +115,13 @@ export function BotMatchView({
   const untimed = session.config.untimed;
   const finished = session.status === 'finished';
   const active = session.status === 'playing';
+  /* The board's orientation decides which plate sits above it. */
+  const topColor: PlayColor = orientation === 'white' ? 'b' : 'w';
+  const bottomColor: PlayColor = orientation === 'white' ? 'w' : 'b';
 
-  function seat(color: PlayColor) {
+  /** `slot` decides the plate styling, `color` the player in it: the two swap
+   *  places with the board, but the top plate always reads as the opponent. */
+  function seat(color: PlayColor, slot: 'top' | 'bottom') {
     const opponent = color === 'w' ? session.white : session.black;
     const ms = color === 'w' ? clock.whiteMs : clock.blackMs;
     /* Reviewing a snapshot? Then the plate follows the position on the board. */
@@ -80,7 +130,7 @@ export function BotMatchView({
     const reaction = session.reactions[color];
     return (
       <div
-        className={`play-seat ${color === 'w' ? 'play-seat--self' : 'play-seat--opponent'}${
+        className={`play-seat ${slot === 'bottom' ? 'play-seat--self' : 'play-seat--opponent'}${
           running ? ' is-active' : ''
         }`}
       >
@@ -127,21 +177,33 @@ export function BotMatchView({
   return (
     <div className="play-game bot-match">
       <div className="play-game__board">
-        {seat('b')}
+        {seat(topColor, 'top')}
         <div className="play-board-wrap">
-          <BoardSlot
-            props={{
-              fen: browser.fen,
-              orientation,
-              interactive: false,
-              highlightLastMove: true,
-              highlightCheck: true,
-              lastMove: browser.lastMove,
-              soundFeedback: false,
-            }}
-          />
+          <div className="bot-match__board">
+            <div className="bot-match__eval">
+              <span
+                className={`play-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}
+              >
+                {formatEvaluation(evalScore.cp, evalScore.mate)}
+              </span>
+              <div className="play-eval" aria-hidden="true">
+                <div className="play-eval__fill" style={{ height: `${whitePercent}%` }} />
+              </div>
+            </div>
+            <BoardSlot
+              props={{
+                fen: browser.fen,
+                orientation,
+                interactive: false,
+                highlightLastMove: true,
+                highlightCheck: true,
+                lastMove: browser.lastMove,
+                soundFeedback: false,
+              }}
+            />
+          </div>
         </div>
-        {seat('w')}
+        {seat(bottomColor, 'bottom')}
 
         <div className="play-review__nav play-game__nav" role="group" aria-label="Move browser">
           <button

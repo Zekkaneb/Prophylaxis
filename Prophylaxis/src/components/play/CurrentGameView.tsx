@@ -154,6 +154,11 @@ export function CurrentGameView({
   /* While browsing, the highlighted seat follows the snapshot on the board, not
      the live game behind it. */
   const shownTurn = reviewing ? browser.turn : session.turn;
+  /* The side at the bottom of the board owns the bottom plate. When the player
+     flips to the other colour, the two plates swap with it instead of sitting
+     next to the wrong side. */
+  const playerSide = session.playerColor === 'w' ? 'white' : 'black';
+  const seatsFlipped = playerSide !== session.orientation;
 
   const rows = useMemo(() => {
     const result: Array<{ number: number; white: string; black: string | null }> = [];
@@ -302,7 +307,7 @@ export function CurrentGameView({
       </aside>
 
       <div className="play-stage">
-        <div className="play-stage__stack">
+        <div className={`play-stage__stack${seatsFlipped ? ' is-seats-flipped' : ''}`}>
         <div
           className={`play-seat play-seat--opponent${
             playing && shownTurn === opponentColor ? ' is-active' : ''

@@ -686,6 +686,25 @@
   overflow: auto;
 }
 
+/* Flipped board: the plates follow the side they describe, so the bottom seat
+   is always the colour at the bottom of the board. The board and the transport
+   keep their places. */
+.play-stage__stack.is-seats-flipped .play-seat--self {
+  order: 1;
+}
+
+.play-stage__stack.is-seats-flipped .play-board-wrap {
+  order: 2;
+}
+
+.play-stage__stack.is-seats-flipped .play-seat--opponent {
+  order: 3;
+}
+
+.play-stage__stack.is-seats-flipped .play-review__nav {
+  order: 4;
+}
+
 /* Nameplates, board and transport share one board-width stack, so a plate is
    always exactly as wide as the board it belongs to. */
 .play-stage__stack {
@@ -761,6 +780,29 @@
   background: linear-gradient(180deg, #f7f4ec, #ddd7c8);
   transition: height 340ms var(--ease);
   will-change: height;
+}
+
+/* Bot-vs-bot: the same bar rides the board's left edge. It is an overlay, not a
+   flex sibling, so the board stays centred over the plates when they swap. */
+.bot-match .play-board-wrap {
+  overflow: visible;
+}
+
+.bot-match__board {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: stretch;
+}
+
+.bot-match__eval {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  bottom: 0;
+  width: 24px;
+  margin-right: 8px;
+  pointer-events: none;
 }
 
 /* The score sits directly on the bar — no chip, no border — parked at the
