@@ -129,31 +129,37 @@ move the board, and the end dialog always gets a closing line.
 `play/humanStrength.ts` calibrates the Elo-rated bot to USCF classical standards
 instead of shrinking the engine. There is no `UCI_Elo` anywhere: the position is
 searched with `MultiPV 10`, and the move is chosen from those engine-assessed
-lines by two continuous exponential curves over 400-2800 USCF.
+lines by a six-bucket **move-quality distribution** over 100-2800 USCF.
 
-With `s = (clamp(elo, 400, 2800) - 400) / 2400`:
+With `s = (clamp(elo, 100, 2800) - 100) / 2700`:
 
-- **Bad Move Index** `B = 0.04 + 0.64 * exp(-2.4s)` - how often the bot plays
-  anything but its best move: 68% at 400, 46.9% at 800, 35.8% at 1100, 27.5% at
-  1400, 18.3% at 1900, 9.8% at 2800. The curve is deliberately steep below 1500,
-  where the old one let a club player pass for a tournament one.
-- **Move Range Index** - how that error budget is split: blunders (`??`, 22%+
-  win drop) `0.005 + 0.55 * exp(-4.2s)`, mistakes (`?`, 12-22%)
-  `0.12 + 0.38 * exp(-1.9s)`, inaccuracies (`?!`, 5-12%) the rest, minimum 0.05;
-  the three are normalized to sum to 1. At 1100 that is 49.5% / 33.8% / 16.7% of
-  the errors, i.e. roughly 17.7% inaccuracies, 12.1% mistakes and 6% blunders
-  per move.
-- Depth `max(2, round(2 + 12 * s^1.3) + depthOffset)`: 2 at 400, 3 at 800, 4 at
-  1100, 6 at 1400, 14 at 2800 - an 1100 USCF bot looks 4-5 plies ahead instead of
-  the 7-8 that made it find 1600-level tactics. Temperature
-  `max(0.20, 1.35 * exp(-1.7s))` is unchanged.
+- **Blunder** (`??`, 20%+ win drop) `0.0005 + 0.56 * exp(-5.4 * s^1.15)`
+- **Mistake** (`?`, 10-20%) `0.008 + 0.28 * exp(-3.1s)`
+- **Inaccuracy** (`?!`, 4.5-10%)
+  `0.035 + 0.21 * sin(pi * s^0.75) * exp(-0.6s)`
+- **Good** (`✓`, 1.8-4.5%) `0.06 + 0.34 * sin(pi * s^0.85)`
+- **Excellent** (`⦿`, 0.4-1.8%) `0.03 + 0.30 * s^0.9`
+- **Best** (`*`, under 0.4%) `max(0.01, 1 - the other five)`
 
-The probability is scaled by phase (opening `<= 8` moves x0.35, middlegame
-x1.20, endgame x0.95) and time control (`classical` x1.0 / depth +0 / time x1,
-`rapid` x1.18 / -1 / x0.55, `blitz` x1.45 / -2 / x0.25, `bullet` x1.80 / -3 /
-x0.12). Under 30 seconds left with less than 5 seconds of increment the
-probability is x1.5 again, the blunder share x1.6 (shares re-normalized), depth
-stops at 3 and the turn is compressed to 250-850ms.
+The six sum to 1 at every rating. Phase and time control only scale the three
+error buckets; the displaced mass moves proportionally into good, excellent and
+best and the six are re-normalized, so a fast game makes the same player worse
+rather than differently rated. At 100 USCF a bot blunders 56% of the time; at
+2800 it is under 1%.
+
+Recapture awareness is one continuous curve,
+`0.18 + 0.79 * (1 - exp(-3.8s))`: 18% at 100 USCF, ~45% at 400, ~75% at 1000
+and ~95% at the top.
+
+Depth `max(2, round(2 + 12 * s^1.3) + depthOffset)`: 2 at 100, 5 at 1100, 14 at
+2800. Temperature `max(0.20, 1.35 * exp(-1.7s))`.
+
+The error rate is scaled by phase (opening `<= 8` moves x0.70 below 1400 USCF
+and x0.40 above, middlegame x1.20, endgame x0.95) and time control (`classical`
+x1.0 / depth +0 / time x1, `rapid` x1.18 / -1 / x0.55, `blitz` x1.45 / -2 /
+x0.25, `bullet` x1.80 / -3 / x0.12). Under 30 seconds left with less than 5
+seconds of increment the error buckets are x1.4 again, depth stops at 3 and the
+turn is compressed to 250-850ms.
 
 `planHumanSearch` decides depth, error budget and thinking time **before** the
 search, so Stockfish really spends it on `go depth <d> movetime <t>`: forced
@@ -162,19 +168,31 @@ moves and recaptures 350-850ms x time scale (at least 250ms), quiet turns
 checks 4500-10500ms, capped at 12% of the remaining clock so the bot never
 flags.
 
-`selectHumanBotMove` then applies, in order: a forced move immediately; a 93%
-recapture bias from 550 Elo; one roll against `badMoveProb` - when it fires, a
-second roll against the normalized shares picks the inaccuracy, mistake or
-blunder bucket, candidates are matched by win drop (dropping mate-in-one
-blunders from 1000 Elo up unless nothing else fits), and an empty bucket falls
-back down the chain (blunder -> mistake -> inaccuracy -> the lowest-ranked line
-in `MultiPV 10`, so a quiet position yields the worst move the engine saw rather
-than the second-best one); otherwise only moves under a 5% win drop are
-considered and weighted `exp(-cpLoss / (temperature * 120))`, with the #1 line's
-weight multiplied by `0.35 + 0.65 * elo / 1500` below 1500 USCF (0.52 at 400,
-0.83 at 1100, no damping from 1500 up), so a 2800 leans on the #1 move while a
-sub-1500 bot drifts to its #2-#4 human choices instead of echoing Stockfish. Personality opponents keep their own style,
-repertoire and thinking planner.
+`selectHumanBotMove` applies, in order: a forced move immediately; a recapture
+at the rating's own rate; then one roll against the six quality probabilities.
+The matching candidates are filtered by **intent**, which is what removed the
+alien rank-32 blunders:
+
+- below 600 USCF (beginner blindness) any candidate in the band is allowed - an
+  unprovoked piece drop, a step onto an attacked square, a missed recapture -
+  and an empty band can ask the caller to probe off-list moves;
+- 600-1500 (tactical tunnel vision) allows only a greedy capture that loses
+  material (18%+), a check or forward attack, a pawn pushed at the king, or one
+  of the first six shallow (`depth 3`) lines;
+- 1500+ (deep calculation slip) allows only one of the first four shallow lines
+  that the depth-9 reference pass refutes.
+
+An empty band falls to the milder ones (blunder -> mistake -> inaccuracy -> good
+-> excellent -> best) instead of forcing a bizarre move; if no band has anything
+the candidate nearest the rolled band's centre wins. Picks are weighted
+`exp(-cpLoss / (temperature * 120))`, the #1 line is damped below 1500 USCF
+(`0.35 + 0.65 * elo / 1500`), and a move allowing mate in one is refused from
+1000 Elo up.
+
+Personalities keep their own style, repertoire and thinking planner, but their
+theory is capped by rating in `usePlayGame`: 4 plies up to 1000 USCF, 6 up to
+1500, 8 up to 2000 and 12 above, with the early book-exit roll retained below
+1600 (one move in five).
 
 ## Verification
 

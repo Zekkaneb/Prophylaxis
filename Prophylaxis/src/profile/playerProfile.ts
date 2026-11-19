@@ -27,7 +27,7 @@ export const PLAYER_PROFILE_KEY = 'opening-lab.player-profile.v1';
 /** Long enough for a full name, short enough to sit in a nameplate. */
 export const PLAYER_NAME_MAX = 32;
 
-export const PLAYER_ELO_RANGE = { min: 400, max: 3000 } as const;
+export const PLAYER_ELO_RANGE = { min: 100, max: 3000 } as const;
 
 export const DEFAULT_PLAYER_PROFILE: PlayerProfile = Object.freeze({
   firstName: 'Johnfer',

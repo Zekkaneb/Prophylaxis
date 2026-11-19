@@ -60,7 +60,7 @@ export function NewGameView({
   const [opponentId, setOpponentId] = useState<string>(PERSONALITY_OPPONENTS[0]?.id ?? 'freshman');
   const [generalElo, setGeneralElo] = useState<number>(GENERAL_BOT.elo);
   const generalCalibration = humanCalibration(generalElo);
-  const generalBadPct = Math.round(generalCalibration.badMoveIndex * 100);
+  const generalErrorPct = Math.round(generalCalibration.errorRate * 100);
   const [color, setColor] = useState<ColorChoice>('random');
   const [timeId, setTimeId] = useState<string>('5+0');
   const [customMinutes, setCustomMinutes] = useState('5');
@@ -405,7 +405,7 @@ export function NewGameView({
                     <span>{GENERAL_BOT_ELO.max}</span>
                   </div>
                   <p className="play-bot-range__tier">
-                    {generalCalibration.elo} USCF · ~{generalBadPct}% bad moves ·{' '}
+                    {generalCalibration.elo} USCF · ~{generalErrorPct}% errors ·{' '}
                     {generalCalibration.depth}-ply scan
                   </p>
                 </div>

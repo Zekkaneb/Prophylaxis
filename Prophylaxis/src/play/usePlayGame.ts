@@ -29,8 +29,11 @@ import { buildRepertoireBook, pickRepertoireMove, type RepertoireBook } from './
 import { replaySans } from './replay.ts';
 import { chooseCandidate, chooseBlunder, depthForElo } from './strength.ts';
 import {
+  BEGINNER_ELO,
   HUMAN_MULTI_PV,
   PROBE_MULTI_PV,
+  SHALLOW_DEPTH,
+  SHALLOW_MULTI_PV,
   bucketFor,
   lastCaptureOf,
   planHumanSearch,
@@ -38,6 +41,7 @@ import {
   referenceCandidateScores,
   selectHumanBotMove,
   timeControlCategory,
+  type Bucket,
   type HumanMoveChoice,
 } from './humanStrength.ts';
 import { chooseRandomLegalMove } from './blunders.ts';
@@ -147,9 +151,31 @@ interface BotTimers {
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /** Below this rating a bot's repertoire is remembered imperfectly. */
-const BOOK_ABANDON_ELO = 1300;
+const BOOK_ABANDON_ELO = 1600;
 /** Chance of leaving book early at those ratings: one move in five. */
 const BOOK_ABANDON_CHANCE = 0.2;
+
+/**
+ * Deepest ply of prepared theory a personality may keep following, by rating.
+ *
+ * A repertoire is a memory, and memory is part of strength: an 1150 who recites
+ * twelve moves of grandmaster theory is not an 1150 any more. The cap is checked
+ * against the number of plies already played, and it gates every theory source
+ * (repertoire, Nina's plan, the King's Indian plan), not just the book table.
+ */
+export const BOOK_PLY_CAP = {
+  beginner: 4,
+  club: 6,
+  expert: 8,
+  master: 12,
+} as const;
+
+export function bookPlyLimit(elo: number): number {
+  if (elo <= 1000) return BOOK_PLY_CAP.beginner;
+  if (elo <= 1500) return BOOK_PLY_CAP.club;
+  if (elo <= 2000) return BOOK_PLY_CAP.expert;
+  return BOOK_PLY_CAP.master;
+}
 
 /** Used when a book move has no measurable engine features attached. */
 const NEUTRAL_FEATURES: MoveFeatures = {
@@ -446,6 +472,8 @@ export function usePlayGame(engine: StockfishController) {
     const botColor = game.turn();
     const style = styleRef.current;
     const elo = opponentRef.current?.elo ?? 1500;
+    /** Theory is only followed while this rating would still remember it. */
+    const inBookWindow = sansRef.current.length < bookPlyLimit(elo);
     /** A search that resolves after a rematch must not move in the new game. */
     const searchGameId = gameIdRef.current;
     let uci: string | null = null;
@@ -453,6 +481,8 @@ export function usePlayGame(engine: StockfishController) {
     let plan: ThinkingPlan | null = null;
     /** Human thinking time the calibrated sampler asked for, ms. */
     let humanWaitMs = 900;
+    /** Shallow-search order (best first) for the calibrated selector. */
+    let shallowRank: string[] = [];
 
     const clockSnapshot = clockRef.current?.snapshot(Date.now());
     const remainingMs = clockSnapshot
@@ -471,8 +501,11 @@ export function usePlayGame(engine: StockfishController) {
 
     try {
       if (style) {
-        /* Repertoire first: an opening move costs no search at all. */
-        const bookMoves = legalBookMoves(personalityBookFor(style.id, botColor), game);
+        /* Repertoire first: an opening move costs no search at all — but only
+           for as many plies as this rating would really remember. */
+        const bookMoves = inBookWindow
+          ? legalBookMoves(personalityBookFor(style.id, botColor), game)
+          : [];
         const book = chooseNinaBookMove({
           moves: bookMoves,
           style,
@@ -512,10 +545,10 @@ export function usePlayGame(engine: StockfishController) {
       /* Theory first: the prepared move above, then the character's
          principle-based system, and only then ordinary engine play. */
       const nina =
-        !uci && style
+        !uci && style && inBookWindow
           ? ninaPlan(fen, sansRef.current, style, openingMemoryRef.current.forgotten)
           : null;
-      const kid = !uci && style ? kidPlan(fen, sansRef.current, style) : null;
+      const kid = !uci && style && inBookWindow ? kidPlan(fen, sansRef.current, style) : null;
       const source = openingSource({
         bookMove: Boolean(uci),
         ninaPlan: Boolean(nina),
@@ -578,6 +611,22 @@ export function usePlayGame(engine: StockfishController) {
             setBotThinking(false);
             return;
           }
+
+          /* Shallow pass: the order a player ranks the moves in after a quick
+             look. At club level an error has to be one of the first six of
+             these; a 1500+ slip one of the first four. It is a depth-3 search
+             over six lines, so it costs a fraction of the main one. */
+          const shallow = await engineRef.current.evaluateWithin(
+            fen,
+            SHALLOW_DEPTH,
+            SHALLOW_MULTI_PV,
+            Math.max(150, Math.min(500, Math.round(humanSearch!.thinkTimeMs * 0.25))),
+          );
+          if (statusRef.current !== 'playing' || gameIdRef.current !== searchGameId) {
+            setBotThinking(false);
+            return;
+          }
+          shallowRank = shallow.candidates.map((candidate) => candidate.uci);
         }
 
         /* Personalities roll once per turn for a human-style mistake. The
@@ -714,7 +763,7 @@ export function usePlayGame(engine: StockfishController) {
           /* USCF-calibrated human selection: softmax over the engine's ten
              lines, the recapture and anti-catastrophe heuristics, and the
              tier's own mistake rate. Severity is judged on reference scores. */
-          const select = (allowProbe: boolean, forcedBucket?: 'mistake' | 'blunder') =>
+          const select = (allowProbe: boolean, forcedBucket?: Bucket) =>
             selectHumanBotMove({
               fen,
               elo,
@@ -722,11 +771,14 @@ export function usePlayGame(engine: StockfishController) {
               lastMove: lastCaptureOf(game),
               plan: humanSearch!,
               reference: reference ?? undefined,
+              shallowRank,
               allowProbe,
               forcedBucket,
             });
 
-          let choice: HumanMoveChoice = select(true);
+          /* Only a beginner gets the off-list probe: from 600 up an error has
+             to be a move the player meant, and the intent filter handles it. */
+          let choice: HumanMoveChoice = select(elo < BEGINNER_ELO);
 
           /* The engine's own ten lines are all reasonable in a quiet position,
              so an error roll can find nothing bad enough to play. A real
@@ -751,6 +803,7 @@ export function usePlayGame(engine: StockfishController) {
               ? await probeErrorMove(engineRef.current, fen, {
                   referenceScores: reference,
                   target,
+                  elo,
                   pool,
                   exclude: [...known],
                 })

@@ -310,7 +310,7 @@ export const ALL_OPPONENTS: readonly OpponentProfile[] = [
   GENERAL_BOT,
 ];
 
-export const GENERAL_BOT_ELO = { min: 600, max: 2400, step: 50 } as const;
+export const GENERAL_BOT_ELO = { min: 100, max: 2800, step: 50 } as const;
 
 export function getOpponent(id: string): OpponentProfile | undefined {
   return ALL_OPPONENTS.find((opponent) => opponent.id === id);

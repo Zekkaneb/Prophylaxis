@@ -262,8 +262,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.usesRepertoire, true);
   assert.equal(ALL_OPPONENTS.length, 14);
   assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 14);
-  assert.equal(GENERAL_BOT_ELO.min, 600);
-  assert.equal(GENERAL_BOT_ELO.max, 2400);
+  assert.equal(GENERAL_BOT_ELO.min, 100);
+  assert.equal(GENERAL_BOT_ELO.max, 2800);
 });
 
 test('looks opponents up by id and clamps custom strength', () => {

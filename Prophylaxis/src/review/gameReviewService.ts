@@ -514,23 +514,29 @@ export interface ClassificationResult {
 /**
  * Severity bands, in win-probability points.
  *
- * Each band value is its *lower* edge: below `good` a move is Best/Excellent,
- * `good`–`inaccuracy` is Good, and so on.
+ * Each value is its band's *lower* edge, matching the six-tier model the
+ * Elo-rated bots are calibrated on (`qualityShares` in `play/humanStrength.ts`):
+ * Best < 0.4, Excellent 0.4-1.8, Good 1.8-4.5, Inaccuracy 4.5-10, Mistake
+ * 10-20, Blunder 20+.
  *
- * Tuned to be forgiving at the top and strict at the bottom: a near-best move
- * has to give up real winning chances (5 points) before it stops reading as
- * Excellent, but a genuine blunder is still caught at 28. The gap between the
- * Excellent band and Blunder is deliberately wide so the labels mean something.
+ * Best is deliberately rare — under half a percent of win probability given up
+ * — so the five tiers below it carry the shape of a game. Review and play then
+ * speak the same language: a move the bot played as an Excellent is labelled an
+ * Excellent when the game is analysed.
  */
 export const WIN_THRESHOLDS = {
-  /** Best / Excellent: winDrop < 5 — "practically the top move". */
-  good: 5,
-  /** Good: 5 ≤ winDrop < 10. */
+  /** Best: winDrop < 0.4 — exactly what the engine wanted. */
+  best: 0.4,
+  /** Excellent: 0.4 ≤ winDrop < 1.8. */
+  excellent: 1.8,
+  /** Good: 1.8 ≤ winDrop < 4.5. */
+  good: 4.5,
+  /** Inaccuracy: 4.5 ≤ winDrop < 10. */
   inaccuracy: 10,
-  /** Inaccuracy: 10 ≤ winDrop < 18. */
-  mistake: 18,
-  /** Mistake: 18 ≤ winDrop < 28. */
-  blunder: 28,
+  /** Mistake: 10 ≤ winDrop < 20. */
+  mistake: 20,
+  /** Blunder: 20 ≤ winDrop. */
+  blunder: 20,
   missedWinDrop: 15,
   missedWinStillWinning: 68,
   missDrop: 20,
@@ -875,7 +881,7 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
     return result('miss');
   }
 
-  // Plain severity band: 28 points of win probability is a blunder even when
+  // Plain severity band: 20 points of win probability is a blunder even when
   // none of the tactical rules above fired. Checked after the missed knockout
   // so a knockout missed from a still-won position stays a miss.
   if (winDrop >= WIN_THRESHOLDS.blunder) {
@@ -906,8 +912,10 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
   }
 
   if (winDrop >= WIN_THRESHOLDS.good) return result('good');
-  // Under the good band nothing real was given up; the exact top move is best.
-  return result(playedTopMove ? 'best' : 'excellent');
+  if (winDrop >= WIN_THRESHOLDS.excellent) return result('excellent');
+  /* Under the Excellent band nothing real was given up: Best is the rarest
+     label in the game and means the move matched the engine's own choice. */
+  return result('best');
 }
 
 /* -------------------------------------------------------------------------- */
