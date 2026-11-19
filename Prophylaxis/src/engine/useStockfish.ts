@@ -85,6 +85,10 @@ interface PendingRequest {
   awaitingReady: boolean;
   /** Sends `position fen` + `go`; held back until the MultiPV option is live. */
   start: () => void;
+  /** Streams the evaluation so far while the search deepens, when set. */
+  onProgress: ((evaluation: EngineEvaluation) => void) | null;
+  /** Timestamp of the last streamed update, so updates stay coarse. */
+  lastProgressAt: number;
 }
 
 const WORKER_PATH = 'stockfish/sf19/stockfish.js';
@@ -126,6 +130,12 @@ const SHALLOW_DEPTH = 6;
 const READY_TIMEOUT_MS = 20_000;
 const SEARCH_TIMEOUT_MS = 60_000;
 const MATE_SCORE = 100_000;
+/**
+ * Minimum gap between streamed evaluations. The engine reports every iteration
+ * (and every PV refresh inside one), which is far more often than a person can
+ * read or React should repaint.
+ */
+const PROGRESS_INTERVAL_MS = 150;
 
 function terminalEvaluation(fen: string): EngineEvaluation | null {
   const probe = new Chess(fen);
@@ -242,6 +252,20 @@ export interface StockfishController {
     multiPv: number,
     movetimeMs: number,
   ) => Promise<EngineEvaluation>;
+  /**
+   * Analyses one position in the background, reporting the evaluation so far
+   * as the search deepens. Settles when the search reaches `depth`, when
+   * `stop()` cuts it short, or on timeout; the last report is always the
+   * deepest one, so a caller may ignore the promise and only use `onProgress`.
+   */
+  analysePosition: (
+    fen: string,
+    options?: {
+      depth?: number;
+      multiPv?: number;
+      onProgress?: (evaluation: EngineEvaluation) => void;
+    },
+  ) => Promise<EngineEvaluation>;
   /** Asks the engine to stop the current search early. */
   stop: () => void;
   /** Kills the worker and resets the controller (a later call re-creates it). */
@@ -338,6 +362,16 @@ export function useStockfish(): StockfishController {
 
           request.lines.set(index, entry);
 
+          // Passive analysis: hand back what the engine knows so far so the
+          // caller can repaint while the search is still deepening.
+          if (request.onProgress && entry.pv.length > 0) {
+            const now = Date.now();
+            if (now - request.lastProgressAt >= PROGRESS_INTERVAL_MS) {
+              request.lastProgressAt = now;
+              request.onProgress(buildEvaluation(request));
+            }
+          }
+
           // Keep the first PV1 report at depth 6: shallow evaluations are the
           // "what a human/quick scan sees" baseline used by the blunder rules.
           if (index === 1 && entry.depth === SHALLOW_DEPTH && !request.shallow) {
@@ -391,7 +425,13 @@ export function useStockfish(): StockfishController {
   }, [failPending]);
 
   const requestEvaluation = useCallback(
-    (fen: string, depth: number, multiPv: number = MULTI_PV, movetimeMs = 0): Promise<EngineEvaluation> => {
+    (
+      fen: string,
+      depth: number,
+      multiPv: number = MULTI_PV,
+      movetimeMs = 0,
+      onProgress: ((evaluation: EngineEvaluation) => void) | null = null,
+    ): Promise<EngineEvaluation> => {
       const terminal = terminalEvaluation(fen);
       if (terminal) return Promise.resolve(terminal);
 
@@ -441,6 +481,8 @@ export function useStockfish(): StockfishController {
               timer,
               awaitingReady: changingMultiPv,
               start,
+              onProgress,
+              lastProgressAt: 0,
             };
 
             /* A changed option is confirmed with isready/readyok before the
@@ -456,6 +498,30 @@ export function useStockfish(): StockfishController {
   const evaluatePosition = useCallback(
     (fen: string, depth: number = DEFAULT_DEPTH, multiPv: number = MULTI_PV): Promise<EngineEvaluation> => {
       const run = () => requestEvaluation(fen, depth, multiPv);
+      const result = chainRef.current.then(run, run);
+      chainRef.current = result.then(
+        () => undefined,
+        () => undefined,
+      );
+      return result;
+    },
+    [requestEvaluation],
+  );
+
+  const analysePosition = useCallback(
+    (
+      fen: string,
+      {
+        depth = DEFAULT_DEPTH,
+        multiPv = MULTI_PV,
+        onProgress,
+      }: {
+        depth?: number;
+        multiPv?: number;
+        onProgress?: (evaluation: EngineEvaluation) => void;
+      } = {},
+    ): Promise<EngineEvaluation> => {
+      const run = () => requestEvaluation(fen, depth, multiPv, 0, onProgress ?? null);
       const result = chainRef.current.then(run, run);
       chainRef.current = result.then(
         () => undefined,
@@ -498,5 +564,5 @@ export function useStockfish(): StockfishController {
 
   useEffect(() => terminate, [terminate]);
 
-  return { status, error, evaluatePosition, evaluateWithin, stop, terminate };
+  return { status, error, evaluatePosition, evaluateWithin, analysePosition, stop, terminate };
 }

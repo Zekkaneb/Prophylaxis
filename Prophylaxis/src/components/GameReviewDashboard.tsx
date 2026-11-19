@@ -71,8 +71,12 @@ export interface GameReviewDashboardProps {
   onInitialConsumed?: () => void;
 }
 
-/** Shallow, quick search that follows the position while you step through a game. */
-const LIVE_DEPTH = 12;
+/*
+ * Depth cap for the passive search that follows the position while you step
+ * through a game. The list fills in from the first iteration and then keeps
+ * deepening in the background; the cap only decides when it stops growing.
+ */
+const LIVE_DEPTH = 20;
 
 interface RetryState {
   fen: string;
@@ -179,6 +183,7 @@ export default function GameReviewDashboard({
   const [bookReady, setBookReady] = useState(false);
   const [candidates, setCandidates] = useState<EngineCandidate[]>([]);
   const [candidatesPending, setCandidatesPending] = useState(false);
+  const [candidateDepth, setCandidateDepth] = useState(0);
   const liveToken = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -248,29 +253,53 @@ export default function GameReviewDashboard({
   );
 
   /*
-   * Live candidate lines (MultiPV 3): the engine keeps searching the position
-   * on screen, so stepping through the game shows what it likes right now.
-   * Results are token-checked so a fast ←/→ never paints an older position.
+   * Passive analysis of the position on screen (MultiPV 3). The engine keeps
+   * deepening while the position is displayed and streams what it has so far,
+   * so the list fills in immediately and its numbers keep improving until
+   * either the depth cap or the next ←/→. Nothing here waits on the engine
+   * being warm: the first call boots the worker, and only an engine failure
+   * suppresses the panel. Results are token-checked, so a fast ←/→ never
+   * paints an older position.
    */
+  const engineFailed = stockfish.status === 'error';
+
   useEffect(() => {
-    if (phase !== 'review' || retry || !active || stockfish.status !== 'ready') return;
+    if (phase !== 'review' || retry || !active || engineFailed) return;
     const token = liveToken.current + 1;
     liveToken.current = token;
+    /* Drop the old lines before asking: a PV is only readable against the
+       position it was searched from, and the new search needs a moment. */
+    setCandidates([]);
+    setCandidateDepth(0);
     setCandidatesPending(true);
     const timer = window.setTimeout(() => {
-      stockfish
-        .evaluatePosition(currentFen, LIVE_DEPTH, 3)
+      void stockfish
+        .analysePosition(currentFen, {
+          depth: LIVE_DEPTH,
+          multiPv: 3,
+          onProgress: (evaluation) => {
+            if (liveToken.current !== token) return;
+            setCandidates(evaluation.candidates);
+            setCandidateDepth(evaluation.depth);
+          },
+        })
         .then((evaluation) => {
           if (liveToken.current !== token) return;
           setCandidates(evaluation.candidates);
+          setCandidateDepth(evaluation.depth);
           setCandidatesPending(false);
         })
         .catch(() => {
           if (liveToken.current === token) setCandidatesPending(false);
         });
     }, 220);
-    return () => window.clearTimeout(timer);
-  }, [phase, retry, active, currentFen, stockfish.status, stockfish.evaluatePosition]);
+    return () => {
+      window.clearTimeout(timer);
+      /* Hand the worker back: otherwise a deepening search on the old position
+         holds it until its depth cap and the next move waits for nothing. */
+      stockfish.stop();
+    };
+  }, [phase, retry, active, currentFen, engineFailed, stockfish.analysePosition, stockfish.stop]);
 
   const inspected = currentPly > 0 ? evaluations[currentPly - 1] : null;
   const inspectedMeta = inspected ? classificationMeta(inspected.classification) : null;
@@ -1102,7 +1131,9 @@ export default function GameReviewDashboard({
             <div className="gr-card__head">
               <h3 className="gr-card__title">Top moves</h3>
               <span className={`gr-candidates__status${candidatesPending ? ' is-busy' : ''}`}>
-                {candidatesPending ? 'Searching…' : `depth ${LIVE_DEPTH}`}
+                {candidatesPending
+                  ? `Searching… depth ${candidateDepth || '–'}`
+                  : `depth ${candidateDepth || LIVE_DEPTH}`}
               </span>
             </div>
             {candidates.length === 0 ? (

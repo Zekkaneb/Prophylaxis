@@ -1246,7 +1246,11 @@ export function formatPvLine(fen: string, pv: readonly string[], maxPlies = 10):
 
   const parts: string[] = [];
   for (const uci of pv.slice(0, maxPlies)) {
-    const [turn, , , , , fullmove] = game.fen().split(' ');
+    /* FEN is `pieces turn castling en-passant halfmove fullmove`, so the side to
+       move and the move number are fields 1 and 5 — not 0 and 5. Reading them
+       one slot off labelled every line "1..." and dropped the numbers after
+       the first move. */
+    const [, turn, , , , fullmove] = game.fen().split(' ');
     try {
       const move = game.move({
         from: uci.slice(0, 2),
