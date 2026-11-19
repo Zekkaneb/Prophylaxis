@@ -120,7 +120,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     name: 'Faadi Granillo Garcia',
     shortName: 'Faadi',
     title: 'Prime',
-    elo: 1100,
+    elo: 700,
     style:
       'The wildcard: loose, instinctive and happy to improvise. Chaotic tactics, sudden attacks, passive moments — and a comeback he is certain is coming.',
     portraitPath: 'opponents/faadi.webp',
@@ -140,7 +140,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     name: 'Nina Yang',
     shortName: 'Nina Frosh',
     title: 'Freshman',
-    elo: 1150,
+    elo: 1200,
     style:
       'The developing all-rounder: balanced, a little cautious, still learning where the pieces belong. Natural moves, basic tactics, the occasional passive choice.',
     portraitPath: 'opponents/nina-freshman.webp',
