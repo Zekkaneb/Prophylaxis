@@ -32,7 +32,7 @@ export const PLAYER_ELO_RANGE = { min: 400, max: 3000 } as const;
 export const DEFAULT_PLAYER_PROFILE: PlayerProfile = Object.freeze({
   firstName: '',
   lastName: '',
-  elo: 1200,
+  elo: 0,
 });
 
 /** Collapses whitespace, trims, and caps the length. */
