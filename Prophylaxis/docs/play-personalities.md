@@ -153,10 +153,16 @@ error buckets grow by up to 1.5x toward the floor and the blunder share by up to
 is then suboptimal on ~58% of turns with 20-25% outright blunders; a 300 bot
 blunders roughly half the time.
 
-Recapture awareness is one curve that joins two:
-`0.12 + 0.70 * (1 - exp(-3.0s))` below 700 USCF (12% at 100, ~32% at 400, ~46%
-at 700), blended linearly into `0.18 + 0.79 * (1 - exp(-3.8s))` by 1000 (~75%)
-and ~95% at the top.
+Recapture awareness is one monotone curve,
+`0.50 + 0.49 * (1 - exp(-4.2 * s^0.55))`: 50% at 100 USCF, ~85% at 400, ~91% at
+700, ~94% at 1000 and ~98% at the top. A direct equal trade is therefore almost
+always taken back from 400 up, and the ~1-in-10 the curve leaves open is the
+hidden defender or the intermediate move. The curve depends on the *trade*,
+classified by `recaptureTrade`: a **costly** recapture (winning back less than
+was just lost, such as a queen retaking a pawn) keeps only
+`COSTLY_RECAPTURE_SHARE` (45%) of that chance - the trade a weaker bot really
+does miscalculate - while a favourable recapture (their queen took our pawn) is
+automatic.
 
 Depth `max(2, round(2 + 12 * s^1.3) + depthOffset)`: 5 at 1100, 14 at 2800. The
 sub-1000 node cap is a depth cap in this engine path: 2 plies below 500 USCF and
@@ -196,22 +202,42 @@ checks 4500-10500ms, capped at 12% of the remaining clock so the bot never
 flags.
 
 `selectHumanBotMove` applies, in order: a forced move immediately; a recapture
-at the rating's own rate; then one roll against the six quality probabilities.
-The matching candidates are filtered by **intent**, which is what removed the
-alien rank-32 blunders:
+at the rating's own rate for the trade it actually is; then one roll against the
+six quality probabilities. The matching candidates are filtered by **intent**,
+which is what removed the alien rank-32 blunders:
 
-- below 600 USCF (beginner blindness) any candidate in the band is allowed - an
-  unprovoked piece drop, a step onto an attacked square, a missed recapture -
-  and an empty band can ask the caller to probe off-list moves;
+- from 400 USCF up a **free hang** is never played as an error. `freeHangAfter`
+  refuses a move that leaves a queen, rook, bishop or knight attacked with
+  nothing defending it, so a blunder roll in a calm position cannot be spent on
+  a piece dropped in the middle of nowhere. The escapes are answering a check,
+  giving check (a forcing sacrifice), and a piece that was already loose before
+  the move. A piece something defends is an exchange rather than a free hang,
+  which is exactly the 800-1200 error: taking material while walking into a pin,
+  a fork or a trap;
+- below 600 USCF (beginner blindness) any other candidate in the band is
+  allowed - a step onto an attacked square, a missed recapture - and an empty
+  band can ask the caller to probe off-list moves;
 - 600-1500 (tactical tunnel vision) allows only a greedy capture that loses
-  material (18%+), a check or forward attack, a pawn pushed at the king, or one
-  of the first six shallow (`depth 3`) lines;
+  material (18%+), a check or forward attack, a pawn pushed at the king, an
+  ambitious queen sortie, a move into contested central tension, or one of the
+  first six shallow (`depth 3`) lines;
 - 1500+ (deep calculation slip) allows only one of the first four shallow lines
   that the depth-9 reference pass refutes.
 
+Inside an error band the weights are multiplied by a temptation factor before
+being re-normalized: x2.4 for a capture or a check, x1.5 for a heavy attack, a
+queen sortie or central tension, x0.35 for a quiet unforced move. A blunder roll
+in a calm position therefore lands on an active mistake - a premature pawn push,
+an aggressive queen sortie, a miscalculated exchange - rather than a dull piece
+drop.
+
 An empty band falls to the milder ones (blunder -> mistake -> inaccuracy -> good
 -> excellent -> best) instead of forcing a bizarre move; if no band has anything
-the candidate nearest the rolled band's centre wins. Picks are weighted
+the candidate nearest the rolled band's centre wins, skipping free hangs. The
+off-list probe (`probeErrorMove`) is only offered below 600 USCF; from 400 up it
+skips free hangs and orders candidates by `temptationRank` - captures and checks
+first, central tension next, quiet edge pawns last - so a band is filled by a
+tempting miss rather than a random `a2a3`. Picks are weighted
 `exp(-cpLoss / (temperature * 120))`, the #1 line is damped below 1500 USCF
 (`0.35 + 0.65 * elo / 1500`), and a move allowing mate in one is refused from
 1000 Elo up.

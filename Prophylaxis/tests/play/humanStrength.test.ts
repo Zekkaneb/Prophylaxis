@@ -9,11 +9,13 @@ import {
   BEGINNER_TOP_WEIGHT,
   BEGINNER_VULNERABILITY_ELO,
   BUCKET_ORDER,
+  COSTLY_RECAPTURE_SHARE,
   DEEP_SLIP_ELO,
   ELO_MAX,
   ELO_MIN,
   ERROR_TEMPERATURE_BOOST,
   ERROR_TEMPERATURE_BOOST_LOW,
+  HANG_GUARD_ELO,
   HUMAN_MULTI_PV,
   PHASE_DISTINCT_ELO,
   PHASE_LEVELS_META,
@@ -26,6 +28,7 @@ import {
   clampElo,
   describePhaseProfile,
   errorTemperatureBoost,
+  freeHangAfter,
   getEffectivePhaseElo,
   hasHumanIntent,
   humanCalibration,
@@ -38,13 +41,16 @@ import {
   pickCategory,
   planHumanSearch,
   positionKind,
+  probeMoveCandidates,
   qualityShares,
   recaptureChance,
+  recaptureTrade,
   rollPhaseProfile,
   scaleErrors,
   selectHumanBotMove,
   suppressTopLines,
   skillOf,
+  temptationRank,
   timeControlCategory,
   timeControlScaling,
   topLineDamping,
@@ -292,12 +298,23 @@ test('thinking time is randomized per position and time control', () => {
 });
 
 test('an obvious recapture follows the rating curve, not a switch', () => {
-  assert.ok(Math.abs(recaptureChance(100) - 0.12) < 1e-9);
-  assert.ok(Math.abs(recaptureChance(400) - 0.32) < 0.02);
-  assert.ok(Math.abs(recaptureChance(700) - 0.46) < 0.02);
-  assert.ok(Math.abs(recaptureChance(1000) - 0.75) < 0.03);
-  assert.ok(recaptureChance(2400) > 0.9);
+  assert.ok(Math.abs(recaptureChance(100) - 0.5) < 1e-9);
+  assert.ok(Math.abs(recaptureChance(400) - 0.85) < 0.02);
+  assert.ok(Math.abs(recaptureChance(700) - 0.912) < 0.02);
+  assert.ok(Math.abs(recaptureChance(1000) - 0.941) < 0.02);
+  assert.ok(recaptureChance(2400) > 0.95);
   assert.ok(recaptureChance(2800) < 1);
+
+  /* A direct equal trade is close to automatic through the beginner bands. */
+  for (let elo = 400; elo <= 1200; elo += 100) {
+    assert.ok(recaptureChance(elo, 'equal') > 0.84, `equal recapture too rare at ${elo}`);
+  }
+  /* Winning back less than was lost keeps only a share of that chance. */
+  assert.ok(
+    Math.abs(recaptureChance(700, 'costly') - recaptureChance(700) * COSTLY_RECAPTURE_SHARE) <
+      1e-9,
+  );
+  assert.ok(recaptureChance(700, 'favourable') > recaptureChance(700, 'costly'));
 
   let previous = 0;
   for (let elo = ELO_MIN; elo <= ELO_MAX; elo += 100) {
@@ -713,4 +730,80 @@ test('the beginner tier and the time-control bands are the documented ones', () 
   });
   assert.equal(timeControlScaling('bullet').tcMult, 1.8);
   assert.equal(timeControlScaling('blitz').depthOffset, -2);
+});
+
+test('a recapture is classified by what it wins back', () => {
+  const pawnTaken = { to: 'e4', captured: 'p' };
+  /* Their pawn took our pawn: an equal trade. */
+  assert.equal(recaptureTrade(RECAPTURE_FEN, pawnTaken, 'd5e4'), 'equal');
+  /* Their queen took our pawn: taking it back is automatic. */
+  assert.equal(
+    recaptureTrade('4k3/8/8/8/4q3/8/8/4K3 w - - 0 1', pawnTaken, 'd3e4'),
+    'favourable',
+  );
+  /* Their pawn took our queen: taking it back is the miscalculation. */
+  assert.equal(
+    recaptureTrade('4k3/8/8/8/4p3/8/8/4K3 w - - 0 1', { to: 'e4', captured: 'q' }, 'd3e4'),
+    'costly',
+  );
+});
+
+test('a free hang is refused above 400 USCF but allowed for a beginner', () => {
+  /* Ng1-f3 steps next to the g4 pawn with nothing defending f3. */
+  const HANG_FEN = '4k3/8/8/8/6p1/8/1P6/4K1N1 w - - 0 1';
+  assert.equal(HANG_GUARD_ELO, 400);
+  assert.equal(freeHangAfter(HANG_FEN, 'g1f3'), true);
+  assert.equal(freeHangAfter(HANG_FEN, 'e1d1'), false);
+  /* A defended f3 is an exchange, not a free hang. */
+  assert.equal(freeHangAfter('4k3/8/8/8/6p1/8/4P3/4K1N1 w - - 0 1', 'g1f3'), false);
+
+  const candidates = [candidate('e1d1', 0), candidate('g1f3', -400)];
+  const play = (elo: number) =>
+    selectHumanBotMove({
+      fen: HANG_FEN,
+      elo,
+      candidates,
+      plan: plan(elo, { fen: HANG_FEN }),
+      forcedBucket: 'blunder',
+      random: () => 0.99,
+    });
+
+  const beginner = play(300);
+  assert.equal(beginner.uci, 'g1f3');
+  assert.equal(beginner.kind, 'blunder');
+
+  /* At 700 the roll cannot be spent on the free hang, so it falls through. */
+  const rated = play(700);
+  assert.equal(rated.uci, 'e1d1');
+  assert.notEqual(rated.kind, 'blunder');
+});
+
+test('central tension and a queen sortie count as a human idea', () => {
+  /* Nb1-c3 lands on the square the d4 pawn covers. */
+  const centreFen = '4k3/8/8/8/3p4/8/8/1N2K3 w - - 0 20';
+  const contest = moveIntent(centreFen, 'b1c3');
+  assert.equal(contest?.centralTension, true);
+  assert.equal(hasHumanIntent(contest!, 30), true);
+
+  /* Qd1-d5 is the ambitious sortie into the pawn's reach. */
+  const sortieFen = '4k3/8/2p5/8/8/8/8/3QK3 w - - 0 20';
+  const sortie = moveIntent(sortieFen, 'd1d5');
+  assert.equal(sortie?.queenSortie, true);
+  assert.equal(hasHumanIntent(sortie!, 30), true);
+
+  /* Both are still free hangs, so above 400 neither is rolled as an error. */
+  assert.equal(freeHangAfter(centreFen, 'b1c3'), true);
+  assert.equal(freeHangAfter(sortieFen, 'd1d5'), true);
+});
+
+test('the probe leads with captures and ranks a quiet edge push last', () => {
+  /* c4xd5 is the only capture on the board. */
+  const fen = '4k3/8/8/3p4/2P5/8/P6P/4K3 w - - 0 20';
+  const moves = probeMoveCandidates(fen, [], 4);
+  assert.equal(moves[0], 'c4d5');
+  assert.equal(temptationRank(fen, 'c4d5'), 0);
+  assert.equal(temptationRank(fen, 'e1d1'), 2);
+  assert.ok(moves.length > 0 && moves.length <= 4);
+  /* Nothing unmotivated > #1 in the queue. */
+  if (moves.includes('a2a3')) assert.ok(moves.indexOf('a2a3') > 0);
 });

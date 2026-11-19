@@ -14,14 +14,21 @@ import { Chess, type Square } from 'chess.js';
  * error buckets; the displaced mass moves proportionally into good, excellent
  * and best, so a fast game makes a player worse rather than differently rated.
  *
- * Two more rating curves keep the errors human:
+ * Three more rules keep the errors human:
  *
- * - `recaptureChance` rises from 18% at 100 USCF to ~95% at 2800, replacing the
- *   old two-step switch;
+ * - `recaptureChance` now separates the two things a beginner does at the board.
+ *   An **equal trade** is taken back 85-91% of the time from 400-700 USCF and
+ *   ~94% at 1000, so basic exchanges (`Nxf3`, `Bxf6`) are understood; a
+ *   **costly** recapture — winning back less than was lost — keeps a much lower
+ *   rate, because that is the exchange a weaker player miscalculates;
+ * - `freeHangAfter` is a hard floor above 400 USCF: a quiet move that leaves a
+ *   major piece attacked with no defender is never rolled as an error. The
+ *   bot's misses come from over-ambition — a capture into a trap, a queen
+ *   sortie, a pawn push — not from a piece dropped in the middle of nowhere;
  * - the severity buckets are filled by **intent** — a greedy capture, a check or
- *   forward attack, or a shallow-search favourite — never by sampling ranks
- *   21-32 of a wide search. A bot that errs plays a move a person would play
- *   and miss the point, not a move no one would consider.
+ *   forward attack, central tension, or a shallow-search favourite — never by
+ *   sampling ranks 21-32 of a wide search. A bot that errs plays a move a
+ *   person would play and miss the point, not a move no one would consider.
  *
  * The engine itself always calculates: every rating searches at its own depth
  * over `MultiPV 10` lines, and the choice among those lines is what changes.
@@ -62,6 +69,28 @@ export const TUNNEL_VISION_ELO = 600;
 
 /** From here a slip must survive a deep calculation, not just a shallow look. */
 export const DEEP_SLIP_ELO = 1500;
+
+/**
+ * From here a free hang of a major piece is never an error.
+ *
+ * Below this rating leaving a knight on a square nobody defends really is the
+ * mistake; above it the model insists on a move with a human point.
+ */
+export const HANG_GUARD_ELO = 400;
+
+/**
+ * Discount on a "recapture" that wins back less than it costs.
+ *
+ * Taking back an equal trade is close to automatic from 400 USCF up; taking
+ * back with a queen to win a pawn is the tempting miscalculation the curve is
+ * meant to leave open, so it keeps only this share of the chance.
+ */
+export const COSTLY_RECAPTURE_SHARE = 0.45;
+
+/** Weight multipliers that make an error look tempting rather than accidental. */
+export const TEMPTATION_BOOST = 2.4;
+export const TEMPTATION_BOOST_MILD = 1.5;
+export const TEMPTATION_DAMPING = 0.35;
 
 /** How many shallow lines count as "attractive" per tier. */
 export const SHALLOW_TOP_RANKS_TUNNEL = 6;
@@ -285,29 +314,53 @@ export function qualityShares(elo: number, errorMultiplier = 1): QualityShares {
   return scaleErrors({ blunder, mistake, inaccuracy, good, excellent, best }, errorMultiplier);
 }
 
+const PIECE_VALUE: Record<string, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
+
+/** How the recapture compares with what was just lost. */
+export type TradeKind = 'equal' | 'favourable' | 'costly';
+
+/**
+ * Classifies the recapture on the square the opponent just captured on.
+ *
+ * `taken` is the piece now standing there (the opponent's capturing piece) and
+ * `lost` is the piece it took from us: a 400 USCF player takes a queen back
+ * without thinking and miscalculates taking a pawn back with a queen.
+ */
+export function recaptureTrade(
+  fen: string,
+  lastCapture: LastCapture,
+  uci?: string,
+): TradeKind {
+  const lost = PIECE_VALUE[lastCapture.captured ?? 'p'] ?? 0;
+  if (!uci) return 'equal';
+
+  const taken = new Chess(fen).get(uci.slice(2, 4) as Square);
+  if (!taken) return 'equal';
+
+  const takenValue = PIECE_VALUE[taken.type] ?? 0;
+  if (takenValue > lost) return 'favourable';
+  if (takenValue === lost) return 'equal';
+  return 'costly';
+}
+
 /**
  * Chance an obvious recapture is actually taken.
  *
- * Below 900 USCF the beginner curve is used and blended into the standard one
- * by 1000, so the two never meet in a step:
+ * One monotone curve over the whole range, calibrated so the two things asked
+ * of a beginner stay separate:
  *
- * - beginner `0.12 + 0.70 * (1 - exp(-3.0s))` — 12% at 100, ~32% at 400,
- *   ~46% at 700, so a 700 USCF bot misses an obvious recapture about half the
- *   time;
- * - standard `0.18 + 0.79 * (1 - exp(-3.8s))` — ~75% at 1000, ~95% at the top.
+ * - an equal trade `0.50 + 0.49 * (1 - exp(-4.2 * s^0.55))` — 50% at the floor,
+ *   ~85% at 400, ~91% at 700, ~94% at 1000 and ~98% at the top, so a 400-700
+ *   bot almost always takes a direct trade back but still gets tricked by a
+ *   hidden defender or an intermediate move about one time in ten;
+ * - a `costly` recapture keeps `COSTLY_RECAPTURE_SHARE` of that chance, so a
+ *   queen taking back a pawn is a real, occasional beginner error;
+ * - a `favourable` recapture (their queen took our pawn) is automatic.
  */
-export function recaptureChance(elo: number): number {
+export function recaptureChance(elo: number, trade: TradeKind = 'equal'): number {
   const s = skillOf(elo);
-  const beginner = 0.12 + 0.7 * (1 - Math.exp(-3 * s));
-  const standard = 0.18 + 0.79 * (1 - Math.exp(-3.8 * s));
-
-  const target = clampElo(elo);
-  if (target <= 700) return beginner;
-  if (target >= BEGINNER_VULNERABILITY_ELO) return standard;
-
-  /* 700-1000: linear blend, so the curve stays monotone across the join. */
-  const t = (target - 700) / (BEGINNER_VULNERABILITY_ELO - 700);
-  return beginner + (standard - beginner) * t;
+  const base = 0.5 + 0.49 * (1 - Math.exp(-4.2 * Math.pow(s, 0.55)));
+  return trade === 'costly' ? base * COSTLY_RECAPTURE_SHARE : base;
 }
 
 /**
@@ -743,6 +796,10 @@ export interface MoveIntent {
   attacksHeavy: boolean;
   /** A pawn steps closer to the enemy king. */
   pawnTowardKing: boolean;
+  /** The move lands on a contested central square. */
+  centralTension: boolean;
+  /** An ambitious queen move into the enemy half, onto an attacked square. */
+  queenSortie: boolean;
 }
 
 function heavySquaresOf(game: Chess, color: 'w' | 'b'): Set<string> {
@@ -781,6 +838,32 @@ function kingSquareOf(game: Chess, color: 'w' | 'b'): string | null {
 function squareDistance(from: string, to: string): number {
   return Math.abs(from.charCodeAt(0) - to.charCodeAt(0)) + Math.abs(Number(from[1]) - Number(to[1]));
 }
+
+/** The d4-e5 box: where pieces come into contact. */
+const CENTRAL_BOX = /^[c-f][3-6]$/;
+
+/**
+ * True when a move lands on a central square that either side already controls.
+ *
+ * This is "direct central tension" in the model's terms: the kind of move a
+ * club player makes because the point looks important, and then loses material
+ * on. Landing on an empty, unopposed centre square is development, not tension.
+ */
+function contestedCentre(
+  game: Chess,
+  to: string,
+  mover: 'w' | 'b',
+  opponent: 'w' | 'b',
+): boolean {
+  if (!CENTRAL_BOX.test(to)) return false;
+  return (
+    game.attackers(to as Square, opponent).length > 0 ||
+    game.attackers(to as Square, mover).length > 0
+  );
+}
+
+/** Pieces whose unprovoked loss reads as a blunder rather than a slip. */
+const MAJOR_PIECES = new Set(['n', 'b', 'r', 'q']);
 
 /**
  * What a move is *trying* to do, read off the board.
@@ -830,22 +913,75 @@ export function moveIntent(fen: string, uci: string): MoveIntent | null {
     kingBefore !== null &&
     kingAfter !== null &&
     squareDistance(move.to, kingAfter) < squareDistance(move.from, kingBefore);
+  const centralTension = contestedCentre(game, move.to, mover, opponent);
+  const queenSortie =
+    move.piece === 'q' &&
+    enemyHalf &&
+    game.attackers(move.to, opponent).length > 0;
 
   return {
     capture: Boolean(move.captured),
     check: game.inCheck(),
     attacksHeavy,
     pawnTowardKing,
+    centralTension,
+    queenSortie,
   };
 }
 
 /**
  * True when the error is one a person could actually commit: a capture that
- * fails tactically, a check or a forward attack, or a pawn pushed at the king.
+ * fails tactically, a check or a forward attack, a pawn pushed at the king, an
+ * ambitious queen sortie, or a move into central tension that loses material.
  */
 export function hasHumanIntent(intent: MoveIntent, winDrop: number): boolean {
   if (intent.capture && winDrop >= 18) return true;
+  if (intent.centralTension && winDrop >= 18) return true;
+  if (intent.queenSortie && winDrop >= 18) return true;
   return intent.check || intent.attacksHeavy || intent.pawnTowardKing;
+}
+
+/** Major pieces the given side has left attacked with no defender at all. */
+export function looseMajorSquares(game: Chess, color: 'w' | 'b'): string[] {
+  const opponent = color === 'w' ? 'b' : 'w';
+  const squares: string[] = [];
+  for (const row of game.board()) {
+    for (const piece of row) {
+      if (!piece || piece.color !== color || !MAJOR_PIECES.has(piece.type)) continue;
+      if (game.attackers(piece.square as Square, opponent).length === 0) continue;
+      if (game.attackers(piece.square as Square, color).length > 0) continue;
+      squares.push(piece.square);
+    }
+  }
+  return squares;
+}
+
+/**
+ * True when the move leaves a major piece hanging where nobody defends it.
+ *
+ * This is the line the model refuses above `HANG_GUARD_ELO`: a rated player's
+ * mistake is an idea that fails, not a piece dropped in the middle of nowhere.
+ * The escapes are the ones a person really has:
+ *
+ * - the bot is in check, so it has to answer the check before anything else;
+ * - the move gives check, which is a forcing sacrifice rather than a passive
+ *   hang;
+ * - the piece was already loose before the move, so this move did not create it.
+ *
+ * A piece something defends is not a free hang either: that is an exchange,
+ * which is exactly how the 800-1200 errors are supposed to happen — taking a
+ * pawn or piece while walking into a pin, a fork or a trap.
+ */
+export function freeHangAfter(fen: string, uci: string): boolean {
+  const before = new Chess(fen);
+  if (before.inCheck()) return false;
+
+  const mover = before.turn();
+  const alreadyLoose = new Set(looseMajorSquares(before, mover));
+  const after = applyUci(fen, uci);
+  if (!after || after.inCheck()) return false;
+
+  return looseMajorSquares(after, mover).some((square) => !alreadyLoose.has(square));
 }
 
 /* --------------------------------------------------------------------------
@@ -1096,24 +1232,32 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
   const playable = entries.filter((entry) => !entry.mated);
   const pool = playable.length > 0 ? playable : entries;
 
-  /* 2. Obvious recapture, at the rating's own rate. */
+  /* 2. Obvious recapture, at the rating's own rate. An equal trade is taken
+     back almost always from 400 USCF up, and the ~1-in-10 the curve leaves
+     open is the hidden defender or the intermediate move. A *costly*
+     recapture — winning back less than was lost — is the exchange a weaker
+     player miscalculates, so it keeps only a share of that chance. */
   const lastCapture = input.lastMove;
   if (lastCapture?.captured && bestRef.uci.slice(2, 4) === lastCapture.to) {
-    if (random() < recaptureChance(elo)) {
+    const trade = recaptureTrade(input.fen, lastCapture, bestRef.uci);
+    if (random() < recaptureChance(elo, trade)) {
       return finish(bestRef.uci, 'recapture', 0, 0, [
         { uci: bestRef.uci, weight: 1, cpLoss: 0, winDrop: 0 },
       ]);
     }
   }
 
-  const finishedAt = (
-    kind: HumanMoveKind,
-    from: readonly (typeof entries)[number][],
-    boost = 1,
-  ) => {
-    const weights = softmaxWeights(from, temperature * boost);
-    const chosen = pick(weights, random) ?? weights[0];
-    return finish(chosen.uci, kind, chosen.cpLoss, chosen.winDrop, weights);
+  /* Above 400 USCF a free hang is never rolled: dropping a queen, rook, bishop
+     or knight on a square nobody defends is not a mistake a rated player makes
+     at random. Errors have to be *tempting* instead — a capture into a trap, a
+     queen sortie, central tension. Check replies and checking sacrifices stay
+     legal; see `freeHangAfter`. */
+  const hangGuarded = elo >= HANG_GUARD_ELO;
+  const hangs = new Map<string, boolean>();
+  const isFreeHang = (uci: string): boolean => {
+    if (!hangGuarded) return false;
+    if (!hangs.has(uci)) hangs.set(uci, freeHangAfter(input.fen, uci));
+    return hangs.get(uci) === true;
   };
 
   const safeForElo = (entry: (typeof entries)[number]) =>
@@ -1123,7 +1267,8 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
 
   /* At 600+ an error has to look intended. Below 600 anything goes: that is
      beginner blindness — dropping a piece for no reason, stepping into an
-     attacked square, forgetting the recapture. */
+     attacked square, forgetting the recapture. The free-hang floor above 400
+     trims that band without touching the intent rule. */
   const requiresIntent = elo >= TUNNEL_VISION_ELO;
   const deepOnly = elo >= DEEP_SLIP_ELO;
   const intents = new Map<string, MoveIntent | null>();
@@ -1133,7 +1278,50 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
     return intents.get(uci) ?? null;
   };
 
+  /**
+   * How much a candidate looks like a move a human would actually try.
+   *
+   * Inside an error band this is what stops the model spending a 700's blunder
+   * budget on a quiet `Kh1`: a capture or a check is the move that tempts, a
+   * queen sortie or a central push is the move that looks active, and a quiet
+   * unforced move is the one nobody plays on purpose.
+   */
+  const temptation = (uci: string): number => {
+    const intent = intentFor(uci);
+    if (!intent) return 1;
+    if (intent.capture || intent.check) return TEMPTATION_BOOST;
+    if (intent.attacksHeavy || intent.centralTension || intent.queenSortie) {
+      return TEMPTATION_BOOST_MILD;
+    }
+    return intent.pawnTowardKing ? 1 : TEMPTATION_DAMPING;
+  };
+
+  const temptingWeights = (weights: readonly WeightedMove[]): WeightedMove[] => {
+    const boosted = weights.map((entry) => ({
+      ...entry,
+      weight: entry.weight * temptation(entry.uci),
+    }));
+    const total = boosted.reduce((sum, entry) => sum + entry.weight, 0);
+    if (!(total > 0)) return weights.map((entry) => ({ ...entry }));
+    return boosted.map((entry) => ({ ...entry, weight: entry.weight / total }));
+  };
+
+  const finishedAt = (
+    kind: HumanMoveKind,
+    from: readonly (typeof entries)[number][],
+    boost = 1,
+  ) => {
+    const raw = softmaxWeights(from, temperature * boost);
+    const weights =
+      kind === 'good' || kind === 'excellent' || kind === 'best'
+        ? raw
+        : temptingWeights(raw);
+    const chosen = pick(weights, random) ?? weights[0];
+    return finish(chosen.uci, kind, chosen.cpLoss, chosen.winDrop, weights);
+  };
+
   const errorAllowed = (entry: (typeof entries)[number]): boolean => {
+    if (isFreeHang(entry.uci)) return false;
     if (!requiresIntent) return true;
     const rank = entry.shallowRank;
 
@@ -1190,9 +1378,11 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
   }
 
   /* Nothing in the chain fits the board: take the candidate whose reference win
-     drop sits closest to the bucket the roll asked for. */
+     drop sits closest to the bucket the roll asked for, but never a free hang. */
   const centre = BUCKET_CENTRES[category];
-  const closest = usable.reduce((a, b) =>
+  const fallbackPool = usable.filter((entry) => !isFreeHang(entry.uci));
+  const from = fallbackPool.length > 0 ? fallbackPool : usable;
+  const closest = from.reduce((a, b) =>
     Math.abs(b.winDrop - centre) < Math.abs(a.winDrop - centre) ? b : a,
   );
   return finishedAt(bucketFor(closest.winDrop), [closest]);
@@ -1243,15 +1433,35 @@ export async function referenceCandidateScores(
   return scores;
 }
 
-const PIECE_VALUE: Record<string, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
+/** Pawn moves from the a-, b-, g- and h-file: the least motivated errors. */
+const EDGE_FILES = new Set(['a', 'b', 'g', 'h']);
 
 /**
- * Moves a beginner might actually play while missing the point.
+ * 0 = a capture or a check, 1 = central tension or a heavy attack, 2 = other.
  *
- * In order: a capture that loses material, a piece stepped onto an attacked
- * square, a pawn push, then any natural-looking quiet move (checks first, then
- * central squares). Only used below 600 USCF, where the error is not a misread
- * idea but a piece left hanging.
+ * Used to order the probe: an error that looks tempting is tried before a move
+ * nobody would seriously consider.
+ */
+export function temptationRank(fen: string, uci: string): number {
+  const intent = moveIntent(fen, uci);
+  if (!intent) return 3;
+  if (intent.capture || intent.check) return 0;
+  if (intent.centralTension || intent.attacksHeavy || intent.queenSortie) return 1;
+  return 2;
+}
+
+/**
+ * Moves a human might actually play while missing the point.
+ *
+ * Groups are offered in the order a tempting move is worth trying: a capture
+ * (the greedy grab that fails tactically), a check, a move into central
+ * tension, a piece stepped onto an attacked square, a pawn push, then any
+ * natural-looking quiet move. Edge pawns sit at the back of the pawn group,
+ * because an unmotivated `a2a3` is the least human error on the board.
+ *
+ * Below 600 USCF this is the beginner's blindness — the error is not a misread
+ * idea but a piece left hanging. Above it, `probeErrorMove` filters the free
+ * hangs out and orders what is left by `temptationRank`.
  *
  * A move that allows mate in one is never offered: that is a bug, not a blunder.
  */
@@ -1276,20 +1486,36 @@ export function probeMoveCandidates(
   const centreDistance = (square: string) =>
     Math.abs(square.charCodeAt(0) - 97 - 3.5) + Math.abs(Number(square[1]) - 1 - 3.5);
   const byWeight = (a: (typeof legal)[number], b: (typeof legal)[number]) => weight(b) - weight(a);
+  const checking = (move: (typeof legal)[number]) => /[+#]/.test(move.san);
+  const edgePawn = (move: (typeof legal)[number]) =>
+    move.piece === 'p' && EDGE_FILES.has(move.to[0]) ? 1 : 0;
   const byNaturalness = (a: (typeof legal)[number], b: (typeof legal)[number]) =>
-    Number(b.san.includes('+')) - Number(a.san.includes('+')) ||
+    Number(checking(b)) - Number(checking(a)) ||
+    edgePawn(a) - edgePawn(b) ||
     centreDistance(a.to) - centreDistance(b.to) ||
     weight(b) - weight(a);
 
   const groups = [
-    legal.filter((move) => Boolean(move.captured) && exposed(move)).sort(byWeight),
+    /* A capture is the move a player at any level wants to play, and a
+       miscalculated trade is what an error is supposed to look like. */
+    legal.filter((move) => Boolean(move.captured)).sort(byWeight),
+    legal.filter((move) => !move.captured && checking(move)).sort(byNaturalness),
+    legal
+      .filter(
+        (move) =>
+          !move.captured &&
+          !checking(move) &&
+          contestedCentre(game, move.to, mover, opponent),
+      )
+      .sort(byNaturalness),
     legal.filter((move) => !move.captured && exposed(move)).sort(byWeight),
     legal.filter((move) => !move.captured && move.piece === 'p').sort(byNaturalness),
     legal.filter((move) => !move.captured && !exposed(move)).sort(byNaturalness),
   ];
 
   /* Round-robin across the groups: taking one group at a time lets six pawn
-     pushes fill the list and hides the piece move that actually loses. */
+     pushes fill the list and hides the piece move that actually loses. The
+     groups themselves are already in temptation order. */
   const cursors = groups.map(() => 0);
   const picked: string[] = [];
   let progressed = true;
@@ -1338,10 +1564,11 @@ export interface ProbeErrorResult {
  * Scores a few off-list moves and returns the first whose reference win drop
  * lands in the requested window.
  *
- * From 600 USCF the pool is taken in rank order, head first: a rated player's
- * error is an idea they liked, so the plausible moves are tried before the
- * tail. Only below 600 is the pool spread across ranks 21-32, where a beginner's
- * unprovoked piece drop lives.
+ * Below 600 USCF the pool is spread across ranks 21-32, where a beginner's
+ * unprovoked piece drop lives. From 400 up a free hang is skipped outright, and
+ * the remaining candidates are ordered by `temptationRank` — captures and
+ * checks first, quiet edge pushes last — so the miss is over-ambition or a
+ * miscalculated trade rather than a move nobody would consider.
  */
 export async function probeErrorMove(
   engine: ReferenceEngine,
@@ -1364,7 +1591,9 @@ export async function probeErrorMove(
   const bestBotPov = Math.max(...scores.map((cp) => sign * cp));
   const bestWin = winProbability(bestBotPov);
   const window = PROBE_WINDOWS[options.target];
-  const beginner = (options.elo ?? ELO_MIN) < BEGINNER_ELO;
+  const elo = options.elo ?? ELO_MIN;
+  const beginner = elo < BEGINNER_ELO;
+  const guarded = elo >= HANG_GUARD_ELO;
 
   const exclude = options.exclude ?? [...options.referenceScores.keys()];
   const known = new Set(exclude);
@@ -1376,8 +1605,19 @@ export async function probeErrorMove(
     limit + 6,
   );
 
+  /* Above 400 the order is temptation, not rank: try the grab, the check and
+     the central push before the quiet moves. Below 600 (but above 400) that
+     is the whole difference between a plausible miss and a random pawn push. */
+  const ordered = beginner
+    ? moves
+    : moves
+        .map((uci, index) => ({ uci, index, rank: temptationRank(fen, uci) }))
+        .sort((a, b) => a.rank - b.rank || a.index - b.index)
+        .map((entry) => entry.uci);
+
   let worst: ProbeErrorResult | null = null;
-  for (const uci of moves) {
+  for (const uci of ordered) {
+    if (guarded && freeHangAfter(fen, uci)) continue;
     const child = applyUci(fen, uci);
     if (!child) continue;
     const evaluation = await engine.evaluatePosition(
