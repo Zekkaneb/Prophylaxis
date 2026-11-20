@@ -993,17 +993,17 @@
      column, so the shell never has to be taller than the room. */
   flex: 0 1 auto;
   min-height: 0;
-  /* The lane hangs to the left of the board, outside the row's content box. A
-     scroll container clips at its padding box, so the row reserves the lane's
-     width as padding (and pulls the same width back with a negative margin):
-     the board does not move, and the pill is no longer clipped away by the
-     row's own overflow. */
-  margin-left: calc(-1 * (var(--eval-lane) + var(--eval-gap)));
-  padding-left: calc(var(--eval-lane) + var(--eval-gap));
-  /* The corner grip hangs 9px past the board's right edge; reserve that too so
+  /* The whole lane band hangs to the left of the board, outside the row's
+     content box. A scroll container clips at its padding box, so the row
+     reserves that band as padding (and pulls the same width back with a
+     negative margin): the board does not move, and the pill is never clipped
+     away by the row's own overflow. */
+  margin-left: calc(-1 * var(--eval-pad));
+  padding-left: var(--eval-pad);
+  /* The corner grip hangs 6px past the board's right edge; reserve that too so
      it never adds a horizontal scrollbar. */
-  margin-right: -9px;
-  padding-right: 9px;
+  margin-right: -6px;
+  padding-right: 6px;
   display: flex;
   align-items: safe center;
   justify-content: safe center;
@@ -1017,21 +1017,13 @@
 
 /* --------------------------- evaluation bar ------------------------------ */
 
-/* The bar keeps the board, not the column: it is spaced off the board's left
-   edge by `--eval-gap`, growing to at most `--eval-air` when a scaled-down
-   board leaves a wide band. Centring it across the whole band floated it in the
-   middle of an empty gutter, away from the board it describes. */
+/* The pill is centred in the lane band the column reserves on each side of the
+   board (`--eval-pad`), so it keeps the same air on its left as it keeps from
+   the first file — it reads as its own gauge in the gutter rather than a strip
+   glued to the board's coordinates. The band is symmetric, so the board stays
+   centred in the column. */
 .gr-eval-wrap {
-  left: max(
-    calc(-1 * (var(--eval-lane) + var(--eval-gap))),
-    calc(
-      50% - var(--board-px) / 2 - var(--eval-lane)
-        - min(
-          var(--eval-air),
-          calc(var(--eval-gap) + max(0px, (100% - var(--board-px)) / 4))
-        )
-    )
-  );
+  left: calc(-1 * (var(--eval-lane) + (var(--eval-pad) - var(--eval-lane)) / 2));
   width: var(--eval-lane);
   /* Its own layer, above the board's fixed paint layer (1) and above the resize
      handles (3), with nothing allowed to clip it: the pill is drawn whole from

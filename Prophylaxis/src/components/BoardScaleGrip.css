@@ -58,52 +58,53 @@
   outline-offset: -2px;
 }
 
-/* The corner is the visible affordance: a grip with the diagonal, hanging just
-   outside the board's frame so no square is covered and nothing can sit on
-   top of it. */
+/* The corner is the one visible affordance: a muted diagonal arrow hanging just
+   outside the board's frame. No card, no border, no blur — the arrow itself is
+   the control, so nothing floats over a square and nothing can hide it. The
+   24px box is the touch target; the 15px glyph is what shows. */
 .board-grip--corner {
-  right: -9px;
-  bottom: -9px;
-  z-index: 5;
+  right: -6px;
+  bottom: -6px;
+  z-index: 6;
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
-  border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
-  border-radius: 9px 0 9px 9px;
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  width: 24px;
+  height: 24px;
+  color: color-mix(in srgb, var(--text-muted) 62%, transparent);
   cursor: nwse-resize;
-  backdrop-filter: blur(6px);
-  transition:
-    border-color 160ms var(--ease),
-    color 160ms var(--ease),
-    background 160ms var(--ease);
+  transition: color 160ms var(--ease);
 }
 
 .board-grip--corner svg {
-  width: 11px;
-  height: 11px;
+  width: 15px;
+  height: 15px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.6;
+  stroke-width: 1.5;
   stroke-linecap: round;
 }
 
 .board-grip--corner:hover,
 .board-grip--corner:focus-visible {
-  border-color: var(--accent);
   color: var(--accent);
 }
 
 .board-grip--corner:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
-  outline-offset: 2px;
+  border-radius: 4px;
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 1px;
 }
 
 .board-grip.is-dragging {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-ink);
+}
+
+/* The arrow shows the drag itself; no filled square over the board's corner. */
+.board-grip--corner.is-dragging {
+  background: transparent;
+  color: var(--accent);
 }
 
 @media (prefers-reduced-motion: reduce) {

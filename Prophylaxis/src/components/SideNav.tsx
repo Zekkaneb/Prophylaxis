@@ -25,8 +25,13 @@ const TABS: TabDef[] = [
   { id: 'review', label: 'Review', href: '#/review', glyph: '⌕' },
 ];
 
-/** Tabs that render a board: only those get the size control. */
-const BOARD_TABS: TabId[] = ['courses', 'drill', 'play', 'review', 'puzzles'];
+/**
+ * Tabs that render a board and have no size control of their own, so the rail
+ * carries one. Review is not here: its board is sized from the transport under
+ * it and by dragging the arrow on its bottom-right corner, and the rail's
+ * popover was a second, redundant set of the same controls.
+ */
+const BOARD_TABS: TabId[] = ['courses', 'drill', 'play', 'puzzles'];
 
 /** Typing is instant; the filter commit waits for a pause. */
 const SEARCH_DEBOUNCE_MS = 140;
