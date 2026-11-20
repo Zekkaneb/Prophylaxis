@@ -1021,10 +1021,8 @@
   /* A rounded pill, centred in its lane. */
   border-radius: 999px;
   border: 1px solid var(--line-soft);
-  /* The unplayed stretch is the room's own floor, not a lighter grey slab: a
-     pale track reads as a second bar lying over the gauge and hiding it. Only
-     the played share is painted. */
-  background: color-mix(in srgb, var(--bg) 55%, #000);
+  /* The unplayed share keeps the bar's own track grey — that is the gauge's
+     black side, and the cream fill is read against it. */
   overflow: hidden;
 }
 

@@ -927,19 +927,16 @@ export default function GameReviewDashboard({
                 <div
                   className={`gr-eval-wrap${orientation === 'black' ? ' is-flipped' : ''}`}
                 >
-                  <div className="gr-eval">
-                    <div
-                      className="gr-eval__fill"
-                      style={{ height: `${whitePercent}%` }}
-                      aria-hidden="true"
-                    />
-                    {/* Inside the bar, so the score is centred on it and can
-                        never spill past its edges. */}
-                    <span
-                      className={`gr-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}
-                    >
-                      {scoreLabel}
-                    </span>
+                  {/* The score sits on the lane, not inside the bar: a bar
+                      clips its own overflow, and the number is wider than the
+                      gauge. */}
+                  <span
+                    className={`gr-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}
+                  >
+                    {scoreLabel}
+                  </span>
+                  <div className="gr-eval" aria-hidden="true">
+                    <div className="gr-eval__fill" style={{ height: `${whitePercent}%` }} />
                   </div>
                 </div>
               )}

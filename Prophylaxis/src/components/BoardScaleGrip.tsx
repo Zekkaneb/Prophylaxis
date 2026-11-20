@@ -2,26 +2,27 @@ import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { BOARD_SCALE_MAX, BOARD_SCALE_MIN, useAppearance } from '../theme/ThemeProvider';
 import './BoardScaleGrip.css';
 
+type Axis = 'corner' | 'x' | 'y';
+
 const clampScale = (value: number) =>
   Math.min(BOARD_SCALE_MAX, Math.max(BOARD_SCALE_MIN, value));
 
 const roundScale = (value: number) => Math.round(value * 100) / 100;
 
 /**
- * Corner grip for the board: drag it and the board grows or shrinks with the
- * pointer, the same global `boardScale` the − / + / Fit controls drive.
- *
- * The size is converted through the board's real pixel size, not the drag
- * distance alone, so a drag moves the corner under the cursor at every scale.
- * Arrow keys do the same job in 5% steps for keyboard users.
+ * Edge resize handles for the board, the way a resizable panel behaves: drag
+ * the right edge, the bottom edge or the corner and the board follows the
+ * pointer. All three write the one global `boardScale` the − / + / Fit controls
+ * drive, converted through the board's real pixel size so the edge stays under
+ * the cursor. Arrow keys step the focused handle by 5%.
  */
 export default function BoardScaleGrip() {
   const { boardScale, setBoardScale } = useAppearance();
   const drag = useRef<{ x: number; y: number; scale: number; size: number } | null>(null);
-  const [dragging, setDragging] = useState(false);
+  const [active, setActive] = useState<Axis | null>(null);
 
-  const begin = (event: PointerEvent<HTMLButtonElement>) => {
-    const slot = event.currentTarget.parentElement?.querySelector<HTMLElement>('.board-slot');
+  const begin = (axis: Axis) => (event: PointerEvent<HTMLButtonElement>) => {
+    const slot = event.currentTarget.closest('.gr-board-wrap')?.querySelector<HTMLElement>('.board-slot');
     const size = slot?.getBoundingClientRect().width ?? 0;
     if (!size) return;
 
@@ -33,15 +34,16 @@ export default function BoardScaleGrip() {
       // works from the events that follow.
     }
     drag.current = { x: event.clientX, y: event.clientY, scale: boardScale, size };
-    setDragging(true);
+    setActive(axis);
   };
 
-  const resize = (event: PointerEvent<HTMLButtonElement>) => {
+  const resize = (axis: Axis) => (event: PointerEvent<HTMLButtonElement>) => {
     const state = drag.current;
     if (!state) return;
 
-    // The corner moves on both axes: their mean is the size change in pixels.
-    const delta = (event.clientX - state.x + (event.clientY - state.y)) / 2;
+    const dx = event.clientX - state.x;
+    const dy = event.clientY - state.y;
+    const delta = axis === 'x' ? dx : axis === 'y' ? dy : (dx + dy) / 2;
     setBoardScale(roundScale(clampScale((state.scale * (state.size + delta)) / state.size)));
   };
 
@@ -49,7 +51,7 @@ export default function BoardScaleGrip() {
     if (!drag.current) return;
 
     drag.current = null;
-    setDragging(false);
+    setActive(null);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -68,22 +70,41 @@ export default function BoardScaleGrip() {
     setBoardScale(roundScale(clampScale(boardScale + grow)));
   };
 
-  return (
+  const handle = (axis: Axis, className: string, label: string) => (
     <button
       type="button"
-      className={`board-grip${dragging ? ' is-dragging' : ''}`}
-      onPointerDown={begin}
-      onPointerMove={resize}
+      className={`board-grip ${className}${active === axis ? ' is-dragging' : ''}`}
+      onPointerDown={begin(axis)}
+      onPointerMove={resize(axis)}
       onPointerUp={end}
       onPointerCancel={end}
       onLostPointerCapture={end}
       onKeyDown={step}
-      aria-label="Resize the board"
-      title="Drag to resize the board (arrow keys step it)"
-    >
-      <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
-        <path d="M9 1 1 9M9 5 5 9" />
-      </svg>
-    </button>
+      aria-label={label}
+      title={label}
+    />
+  );
+
+  return (
+    <div className="board-grips" aria-label="Board size" role="group">
+      {handle('x', 'board-grip--right', 'Drag to resize the board width')}
+      {handle('y', 'board-grip--bottom', 'Drag to resize the board height')}
+      <button
+        type="button"
+        className={`board-grip board-grip--corner${active === 'corner' ? ' is-dragging' : ''}`}
+        onPointerDown={begin('corner')}
+        onPointerMove={resize('corner')}
+        onPointerUp={end}
+        onPointerCancel={end}
+        onLostPointerCapture={end}
+        onKeyDown={step}
+        aria-label="Drag to resize the board"
+        title="Drag to resize the board (arrow keys step it)"
+      >
+        <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
+          <path d="M9 1 1 9M9 5 5 9" />
+        </svg>
+      </button>
+    </div>
   );
 }

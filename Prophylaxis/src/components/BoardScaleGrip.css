@@ -1,51 +1,96 @@
-/* Square the board's own bottom-right corner: the grip is placed with the same
-   `--board-px` the slot is sized with, so it rides the corner at every scale
-   instead of the column's edge. */
+/* The board's own box carries the handles, so they ride its edges at every
+   scale instead of the column's. */
+.board-grips {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
 .board-grip {
   position: absolute;
-  right: calc(50% - var(--board-px) / 2 + 6px);
-  bottom: 6px;
-  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  pointer-events: auto;
+  /* Pointer drags must not pan the board row or select page text. */
+  touch-action: none;
+}
+
+/* Right and bottom edges: invisible until pointed at, so the board keeps its
+   clean edge. */
+.board-grip--right,
+.board-grip--bottom {
+  transition: background 160ms var(--ease);
+}
+
+.board-grip--right {
+  top: 0;
+  right: 0;
+  bottom: 12px;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+.board-grip--bottom {
+  left: 0;
+  right: 12px;
+  bottom: 0;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+.board-grip--right:hover,
+.board-grip--bottom:hover {
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+.board-grip--right:focus-visible,
+.board-grip--bottom:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* The corner is the visible affordance: a small grip with the diagonal. */
+.board-grip--corner {
+  right: 0;
+  bottom: 0;
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
+  width: 26px;
+  height: 26px;
   border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
-  border-radius: 8px;
+  border-radius: 9px 0 9px 9px;
   background: color-mix(in srgb, var(--surface) 82%, transparent);
-  color: var(--text-muted);
   cursor: nwse-resize;
   backdrop-filter: blur(6px);
   transition:
     border-color 160ms var(--ease),
     color 160ms var(--ease),
     background 160ms var(--ease);
-  /* Pointer drags must not pan the board row or select page text. */
-  touch-action: none;
 }
 
-.board-grip svg {
-  width: 10px;
-  height: 10px;
+.board-grip--corner svg {
+  width: 11px;
+  height: 11px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
   stroke-linecap: round;
 }
 
-.board-grip:hover,
-.board-grip:focus-visible {
+.board-grip--corner:hover,
+.board-grip--corner:focus-visible {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.board-grip:focus-visible {
+.board-grip--corner:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
   outline-offset: 2px;
 }
 
-/* While dragging, the grip stays out of the way of the pointer path. */
 .board-grip.is-dragging {
   background: var(--accent);
   border-color: var(--accent);
