@@ -1001,6 +1001,10 @@
     calc(50% - var(--board-px) / 2 - var(--eval-lane) - var(--eval-gap))
   );
   width: var(--eval-lane);
+  /* The board is painted by a fixed, z-indexed layer, so the lane has to sit
+     above it: whatever edge of the board ends up beside the bar, the bar stays
+     whole rather than being clipped by the board's own frame. */
+  z-index: 2;
 }
 
 .gr-eval {
