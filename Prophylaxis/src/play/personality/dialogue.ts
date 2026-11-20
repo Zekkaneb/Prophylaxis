@@ -413,7 +413,7 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
       'I might have messed up.',
       "I'm so good that you can't handle it",
     ],
-    strong: ['Okay, sure.', 'I’ll take it.'],
+    strong: ['Okay, sure.', 'I’m a demon.'],
     brilliant: [
       'Bro this is abuse.',
       'Nah, you’re doing too much.',
@@ -428,7 +428,7 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     attack: ['I’m gonna tickle you.'],
     'attack-fail': ['I did not see that'],
     sacrifice: ['...'],
-    'material-won': ['Oh. Free stuff.', 'Okay, sure.'],
+    'material-won': ["I'm a genius", 'Okay, sure.'],
     'material-lost': ["You're a terrorist.", 'Hm. That seems bad for me.'],
     win: ["I don't even play chess.", 'Gimme my money'],
     loss: ['Bro...', 'Yeah, never playing this again.', 'Play me in Rock Paper Scissors Shoot', 'Uno is more skilled'],
@@ -501,9 +501,6 @@ const CADENCE: Partial<
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except
      the game ending. */
-  emmanuel: { ordinaryGap: 3, repeatGap: 10 },
-};
-
 export interface ReactOptions {
   ply: number;
   state: DialogueState;
