@@ -27,6 +27,7 @@ import ChessBoardWrapper, {
   type ChessBoardWrapperHandle,
   type ChessBoardWrapperProps,
 } from '../components/ChessBoardWrapper';
+import BoardScaleGrip from '../components/BoardScaleGrip';
 import './PersistentBoard.css';
 
 interface BoardStore {
@@ -227,6 +228,10 @@ function PersistentBoard({ store }: { store: BoardStore }) {
       <div className="board-layer__clip" ref={clipRef} style={{ visibility: 'hidden' }}>
         <div className="board-layer__board" ref={frameRef}>
           <ChessBoardWrapper ref={handle} {...props} />
+          {/* The board's own corner arrow: in the layer, with the board, so it
+              rides the frame's corner on every screen and can never be buried
+              under a view's wrapper. */}
+          <BoardScaleGrip />
         </div>
       </div>
     </div>

@@ -58,13 +58,15 @@
   outline-offset: -2px;
 }
 
-/* The corner is the one visible affordance: a muted diagonal arrow hanging just
-   outside the board's frame. No card, no border, no blur — the arrow itself is
-   the control, so nothing floats over a square and nothing can hide it. The
-   24px box is the touch target; the 15px glyph is what shows. */
+/* The corner is the one visible affordance: a muted diagonal arrow sitting on
+   the frame's bottom-right corner. No card, no border, no blur — the arrow
+   itself is the control, so nothing floats over a square and nothing can hide
+   it. The 24px box is the touch target; the 15px glyph is what shows. It sits
+   inside the frame's edge because the handles are rendered in the board's own
+   clipped layer, where an overhang would be cut away. */
 .board-grip--corner {
-  right: -6px;
-  bottom: -6px;
+  right: 2px;
+  bottom: 2px;
   z-index: 6;
   display: grid;
   place-items: center;

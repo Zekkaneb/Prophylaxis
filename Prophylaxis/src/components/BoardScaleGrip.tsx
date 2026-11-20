@@ -15,6 +15,10 @@ const roundScale = (value: number) => Math.round(value * 100) / 100;
  * pointer. All three write the one global `boardScale` the − / + / Fit controls
  * drive, converted through the board's real pixel size so the edge stays under
  * the cursor. Arrow keys step the focused handle by 5%.
+ *
+ * Rendered inside the persistent board layer, beside the board itself, so every
+ * view that shows a board gets the same corner arrow — one instance, above the
+ * board it resizes, impossible to clip or bury under a view's own panels.
  */
 export default function BoardScaleGrip() {
   const { boardScale, setBoardScale } = useAppearance();
@@ -22,8 +26,10 @@ export default function BoardScaleGrip() {
   const [active, setActive] = useState<Axis | null>(null);
 
   const begin = (axis: Axis) => (event: PointerEvent<HTMLButtonElement>) => {
-    const slot = event.currentTarget.closest('.gr-board-wrap')?.querySelector<HTMLElement>('.board-slot');
-    const size = slot?.getBoundingClientRect().width ?? 0;
+    /* The handles live in the persistent board layer, so they measure the board
+       that layer is painting — the same box every view reserved for it. */
+    const board = event.currentTarget.closest<HTMLElement>('.board-layer__board');
+    const size = board?.getBoundingClientRect().width ?? 0;
     if (!size) return;
 
     event.preventDefault();
