@@ -989,15 +989,16 @@
 
 /* --------------------------- evaluation bar ------------------------------ */
 
-/* The bar floats in the band left of the board, centred in it: the same air
-   between it and the column's edge as between it and the board. The wrap is the
-   full column content box, so 100% is that box: the board's own centring
-   leftover widens the band, and the bar takes half of it. Clamped for a zoomed
-   board that overflows, which must keep the bar pinned beside it. */
+/* The bar is pinned to the board's own left edge, at every scale: the slot is
+   centred in the wrap, so the board's left edge is `50% - board/2`. A clamped
+   band would drift away from the board as soon as the scale dropped below
+   100%, which read as a gauge floating in the column rather than the board's.
+   The clamp only bites above 100%, where the board overflows the column and
+   the bar has to stay pinned at its padding edge. */
 .gr-eval-wrap {
   left: max(
     calc(-1 * (var(--eval-lane) + var(--eval-gap))),
-    calc((100% - var(--board-px)) / 4 - var(--eval-lane) - var(--eval-gap))
+    calc(50% - var(--board-px) / 2 - var(--eval-lane) - var(--eval-gap))
   );
   width: var(--eval-lane);
 }

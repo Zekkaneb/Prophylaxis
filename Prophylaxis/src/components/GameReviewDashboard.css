@@ -481,7 +481,10 @@
   align-items: center;
   gap: 10px;
   min-width: 0;
-  width: 100%;
+  /* As wide as the board it belongs to, so a scaled-down board takes its
+     nameplates and transport with it instead of leaving them column-wide. */
+  width: min(var(--board-px), 100%);
+  margin-inline: auto;
   padding: 7px 10px;
   border: 1px solid var(--border);
   border-radius: 12px;
