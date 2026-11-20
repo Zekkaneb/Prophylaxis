@@ -951,6 +951,11 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  /* Above the board's own paint layer (body-level, z-index 1): the eval pill
+     and the resize handles live in this column, and they must draw over the
+     board rather than behind it. */
+  position: relative;
+  z-index: 2;
   /* Plates, board and transport are one unit, centred in the column: a scaled
      down board keeps the transport under it instead of stranding it at the
      floor with dead space in between. */
@@ -988,6 +993,17 @@
      column, so the shell never has to be taller than the room. */
   flex: 0 1 auto;
   min-height: 0;
+  /* The lane hangs to the left of the board, outside the row's content box. A
+     scroll container clips at its padding box, so the row reserves the lane's
+     width as padding (and pulls the same width back with a negative margin):
+     the board does not move, and the pill is no longer clipped away by the
+     row's own overflow. */
+  margin-left: calc(-1 * (var(--eval-lane) + var(--eval-gap)));
+  padding-left: calc(var(--eval-lane) + var(--eval-gap));
+  /* The corner grip hangs 9px past the board's right edge; reserve that too so
+     it never adds a horizontal scrollbar. */
+  margin-right: -9px;
+  padding-right: 9px;
   display: flex;
   align-items: safe center;
   justify-content: safe center;

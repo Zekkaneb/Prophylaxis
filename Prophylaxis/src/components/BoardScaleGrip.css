@@ -58,10 +58,13 @@
   outline-offset: -2px;
 }
 
-/* The corner is the visible affordance: a small grip with the diagonal. */
+/* The corner is the visible affordance: a grip with the diagonal, hanging just
+   outside the board's frame so no square is covered and nothing can sit on
+   top of it. */
 .board-grip--corner {
-  right: 0;
-  bottom: 0;
+  right: -9px;
+  bottom: -9px;
+  z-index: 5;
   display: grid;
   place-items: center;
   width: 26px;

@@ -763,7 +763,11 @@ kbd {
   max-width: 1480px;
   margin: 0 auto;
   padding: 44px clamp(18px, 3.6%, 52px) 100px;
-  animation: view-rise 340ms var(--ease) both;
+  /* `backwards`, not `both`: a forwards fill keeps the closing transform on the
+     element, which makes every view a stacking context — and the board's own
+     paint layer, mounted on the body above it, then covers the view's board
+     chrome (eval pill, resize handle). */
+  animation: view-rise 340ms var(--ease) backwards;
 }
 
 @keyframes view-rise {
@@ -773,7 +777,10 @@ kbd {
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    /* `none`, not an identity transform: a kept transform (fill-mode: both)
+       makes every view a stacking context, and the board layer — mounted on the
+       body above it — then paints over the view's own board chrome. */
+    transform: none;
   }
 }
 
