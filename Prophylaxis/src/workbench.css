@@ -975,6 +975,8 @@
 .gr-board-wrap {
   display: flex;
   justify-content: safe center;
+  /* The lane is drawn outside the board's box; nothing here may clip it. */
+  overflow: visible;
 }
 
 /* The one pan surface: a board zoomed past 100% scrolls here, both ways, and
@@ -1015,10 +1017,13 @@
     )
   );
   width: var(--eval-lane);
-  /* The board is painted by a fixed, z-indexed layer, so the lane has to sit
-     above it: whatever edge of the board ends up beside the bar, the bar stays
-     whole rather than being clipped by the board's own frame. */
-  z-index: 2;
+  /* Its own layer, above the board's fixed paint layer (1) and above the resize
+     handles (3), with nothing allowed to clip it: the pill is drawn whole from
+     its top cap to its bottom cap whichever way the board is scaled. */
+  z-index: 4;
+  isolation: isolate;
+  overflow: visible;
+  clip-path: none;
 }
 
 .gr-eval {
