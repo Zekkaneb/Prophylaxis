@@ -4,6 +4,7 @@ import type { Move } from 'chess.js';
 import { START_FEN } from './ChessBoardWrapper';
 import EmptyBoardArt from './EmptyBoardArt';
 import { BoardSlot, useBoardHandle } from '../board/PersistentBoard';
+import BoardScaleBar from './BoardScaleBar';
 import { db, type MoveEvaluation, type SavedReview } from '../db';
 import { useStockfish, type EngineCandidate } from '../engine/useStockfish';
 import { getPlayedGame } from '../play/gameStore';
@@ -176,6 +177,8 @@ export default function GameReviewDashboard({
   const [retry, setRetry] = useState<RetryState | null>(null);
   /* Manual board orientation: X or the flip button turns the board around. */
   const [flipped, setFlipped] = useState(false);
+  /* The eval bar is a study aid, so it can be hidden from the transport bar. */
+  const [showEvalBar, setShowEvalBar] = useState(true);
   const [keyMomentsOnly, setKeyMomentsOnly] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [toast, setToast] = useState<{ message: string; tone: 'success' | 'error' } | null>(null);
@@ -766,8 +769,18 @@ export default function GameReviewDashboard({
 
   /* -------------------------------- Review ------------------------------- */
 
-  const whitePercent = whiteAdvantagePercent(currentEval.cp, currentEval.mate);
-  const scoreLabel = formatEvaluation(currentEval.cp, currentEval.mate);
+  /*
+   * The bar follows the engine's live best line, not the score stored for the
+   * move that was played: while the passive search keeps deepening, PV1's score
+   * moves with it, so the bar tracks what Stockfish currently believes instead
+   * of freezing at the once-graded value. It falls back to the saved evaluation
+   * whenever the live list is empty — the first moments after a step, and once
+   * the search has finished.
+   */
+  const liveEval = !retry && candidates.length > 0 ? candidates[0] : null;
+  const barEval = liveEval ? { cp: liveEval.scoreCp, mate: liveEval.mate } : currentEval;
+  const whitePercent = whiteAdvantagePercent(barEval.cp, barEval.mate);
+  const scoreLabel = formatEvaluation(barEval.cp, barEval.mate);
   const badgeSquare = inspected ? inspected.uci.slice(2, 4) : null;
 
   /* The board faces White unless a retry flips it to the side to move; the
@@ -909,16 +922,18 @@ export default function GameReviewDashboard({
               />
 
               <div className="gr-board-wrap">
-              <div className="gr-eval-wrap">
-                <span
-                  className={`gr-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}
-                >
-                  {scoreLabel}
-                </span>
-                <div className="gr-eval" aria-hidden="true">
-                  <div className="gr-eval__fill" style={{ height: `${whitePercent}%` }} />
+              {showEvalBar && (
+                <div className="gr-eval-wrap">
+                  <span
+                    className={`gr-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}
+                  >
+                    {scoreLabel}
+                  </span>
+                  <div className="gr-eval" aria-hidden="true">
+                    <div className="gr-eval__fill" style={{ height: `${whitePercent}%` }} />
+                  </div>
                 </div>
-              </div>
+              )}
               <BoardSlot
                 props={{
                   fen: retry ? retry.fen : currentFen,
@@ -948,8 +963,12 @@ export default function GameReviewDashboard({
                 elo={playerAtBottom === 'white' ? active.white_elo : active.black_elo}
                 active={!retry && inspected?.color === (playerAtBottom === 'white' ? 'w' : 'b')}
               />
+            </div>
+          </div>
 
-              {retry ? (
+          {/* The transport sits below the board's own scroll window, so a board
+              scaled past its column can never push the controls out of reach. */}
+          {retry ? (
                 <div className="gr-retry">
                   <p className="gr-retry__prompt">
                     Retry: {retry.color === 'w' ? 'White' : 'Black'} to play — find a better
@@ -1023,10 +1042,21 @@ export default function GameReviewDashboard({
                   >
                     ⇅
                   </button>
+                  <button
+                    type="button"
+                    className="button button--ghost button--small gr-nav__eval"
+                    onClick={() => setShowEvalBar((value) => !value)}
+                    aria-pressed={showEvalBar}
+                    aria-label={showEvalBar ? 'Hide evaluation bar' : 'Show evaluation bar'}
+                    title={showEvalBar ? 'Hide evaluation bar' : 'Show evaluation bar'}
+                  >
+                    ±
+                  </button>
+                  {/* The same global board scale as the top bar, next to the
+                      navigation it changes the look of. */}
+                  <BoardScaleBar />
                 </div>
               )}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1146,7 +1176,7 @@ export default function GameReviewDashboard({
               <ol className="gr-candidates__list">
                 {candidates.map((candidate) => (
                   <li
-                    key={candidate.uci}
+                    key={`${candidate.rank}-${candidate.uci}`}
                     className={`gr-candidate${candidate.rank === 1 ? ' is-best' : ''}`}
                   >
                     <span

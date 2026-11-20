@@ -410,6 +410,13 @@
   padding-block: 0 8px;
 }
 
+/* The review keeps the user's board scale at every width, so the scaler in the
+   transport works on a phone too. A board bigger than its column pans inside
+   the board row instead of resizing anything around it. */
+.gr.gr-review {
+  --board-px: calc(min(100%, calc(100dvh - var(--board-chrome))) * var(--board-zoom));
+}
+
 /* Container | board | container, exactly like the course workspace. */
 .gr-review {
   display: grid;
@@ -451,12 +458,6 @@
   margin-left: auto;
 }
 
-.gr-board-row {
-  /* Oversized boards pan here rather than pushing the side panel around. */
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
 /* Player bars: the name and rating of whoever owns the pieces on that side of
    the board, so Black sits above the board when White is at the bottom. */
 
@@ -465,9 +466,13 @@
   flex-direction: column;
   gap: 8px;
   /* The shell follows the board instead of sizing it: the board's size comes
-     from the global scale, so this only decides how much room it gets. */
+     from the global scale, so this only decides how much room it gets. It
+     fills the column so the row can take all the height and the transport can
+     keep its own. */
   width: 100%;
   min-width: 0;
+  height: 100%;
+  min-height: 0;
   margin-inline: 0 auto;
 }
 
@@ -568,8 +573,9 @@
 .gr-board-row {
   display: flex;
   gap: 10px;
-  align-items: flex-start;
-  /* Bar + board are centred in the middle column. */
+  /* Centred, but `safe` keeps the top reachable once the board is taller than
+     the row it pans in. */
+  align-items: safe center;
   justify-content: center;
 }
 
@@ -663,6 +669,43 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--surface);
+  /* Sits under the board row, so it matches the board's width on a scaled-down
+     board and the column's width on a scaled-up one. */
+  width: min(var(--board-px), 100%);
+  margin-inline: auto;
+  flex: none;
+}
+
+/* The board scaler borrows the transport's own surface instead of drawing a
+   second pill inside it. */
+.gr-nav .board-zoom {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: 4px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+}
+
+.gr-nav .board-zoom__slider {
+  width: 76px;
+}
+
+/* A phone cannot fit seven buttons and a slider on one line: the scaler keeps
+   its own row at the right edge instead of clipping the transport. */
+@media (max-width: 900px) {
+  .gr-nav {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .gr-nav .board-zoom {
+    flex: 1 0 100%;
+    justify-content: flex-end;
+    margin-left: 0;
+    padding-top: 4px;
+    border-top: 1px solid var(--line-soft);
+  }
 }
 
 /* Square transport buttons: the four arrows read as one control, the count
@@ -680,6 +723,21 @@
   margin-left: 8px;
 }
 
+.gr-nav__eval {
+  margin-left: 2px;
+}
+
+/* The evaluation toggle reads as on/off, the same way the play transport shows
+   it: pressed keeps the bar, unpressed has hidden it. */
+.gr-nav .button[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--text);
+}
+
+.gr-nav .button[aria-pressed='false'] {
+  color: var(--text-muted);
+}
+
 .gr-nav__count {
   margin-left: auto;
   padding-right: 8px;
@@ -693,6 +751,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: min(var(--board-px), 100%);
+  margin-inline: auto;
   padding: 12px 14px;
   border-radius: 11px;
   background: color-mix(in srgb, var(--accent) 8%, transparent);

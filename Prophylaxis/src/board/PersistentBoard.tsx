@@ -129,6 +129,10 @@ function PersistentBoard({ store }: { store: BoardStore }) {
              size (a folding side rail shifts a height-limited board), so watch
              one level up as well. */
           if (slot.parentElement) slotObserver.observe(slot.parentElement);
+          /* The clip is the slot ∩ its scroll host, so the host resizing (a
+             board column giving width back to the transport, say) moves the
+             window even when the board itself keeps its size. */
+          if (host) slotObserver.observe(host);
         }
       }
       if (!slot || !slot.isConnected) {

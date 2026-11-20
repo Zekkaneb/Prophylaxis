@@ -924,16 +924,15 @@
   height: 100%;
   min-height: 0;
   display: flex;
-  align-items: safe center;
-  justify-content: safe center;
+  flex-direction: column;
   /* The band on each side is the same: gap + bar + gap on the left, an equal
      band on the right, and the board centred between them. */
   padding-left: calc(var(--eval-lane) + var(--eval-gap) * 2);
   padding-right: calc(var(--eval-lane) + var(--eval-gap) * 2);
 
-  /* The one pan surface: a board zoomed past 100% scrolls here, both ways,
-     instead of spilling over the rails or being cut off. */
-  overflow: auto;
+  /* The column never scrolls: the board row below is the one pan surface, so
+     the transport under it stays exactly where it was put. */
+  overflow: hidden;
 }
 
 /* The board sits centred inside its own stack, so the stack can span the whole
@@ -948,11 +947,22 @@
   justify-content: safe center;
 }
 
-/* The column owns the scrolling, so the row above it must not clip or centre
-   an oversized board out of reach. */
+/* The one pan surface: a board zoomed past 100% scrolls here, both ways, and
+   never reaches the transport below it. The scrollbar itself is hidden — it is
+   chrome, and it used to appear the moment the board was scaled past its
+   column. Wheel, trackpad and touch scrolling still pan. */
 .gr-board-row {
-  overflow: visible;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: safe center;
   justify-content: safe center;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.gr-board-row::-webkit-scrollbar {
+  display: none;
 }
 
 /* --------------------------- evaluation bar ------------------------------ */
