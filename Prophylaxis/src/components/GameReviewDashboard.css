@@ -695,10 +695,6 @@
   background: transparent;
 }
 
-.gr-nav .board-zoom__slider {
-  width: 76px;
-}
-
 /* A phone cannot fit seven buttons and a slider on one line: the scaler keeps
    its own row at the right edge instead of clipping the transport. */
 @media (max-width: 900px) {
@@ -758,23 +754,16 @@
   white-space: nowrap;
 }
 
-/* A smaller board means a narrower transport, not a clipped one: the scaler
-   loses its slider first, then Fit and the percentage, then the counter. The
-   board stays fully controllable through the −/+ steps and the top-bar panel. */
-@container transport (max-width: 520px) {
-  .gr-nav .board-zoom__slider {
-    display: none;
-  }
-}
-
-@container transport (max-width: 460px) {
-  .gr-nav .board-zoom__fit,
+/* A smaller board means a narrower transport, not a clipped one. Fit stays —
+   it is the way back to 100% — so the percentage goes first, then the counter;
+   only a transport too narrow for Fit loses it. */
+@container transport (max-width: 500px) {
   .gr-nav .board-zoom__value {
     display: none;
   }
 
   .gr-nav .button {
-    width: 30px;
+    width: 32px;
     height: 28px;
   }
 
@@ -783,8 +772,14 @@
   }
 }
 
-@container transport (max-width: 380px) {
+@container transport (max-width: 420px) {
   .gr-nav__count {
+    display: none;
+  }
+}
+
+@container transport (max-width: 360px) {
+  .gr-nav .board-zoom__fit {
     display: none;
   }
 }

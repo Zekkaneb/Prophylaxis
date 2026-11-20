@@ -1,0 +1,59 @@
+/* Square the board's own bottom-right corner: the grip is placed with the same
+   `--board-px` the slot is sized with, so it rides the corner at every scale
+   instead of the column's edge. */
+.board-grip {
+  position: absolute;
+  right: calc(50% - var(--board-px) / 2 + 6px);
+  bottom: 6px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  color: var(--text-muted);
+  cursor: nwse-resize;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 160ms var(--ease),
+    color 160ms var(--ease),
+    background 160ms var(--ease);
+  /* Pointer drags must not pan the board row or select page text. */
+  touch-action: none;
+}
+
+.board-grip svg {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.board-grip:hover,
+.board-grip:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.board-grip:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  outline-offset: 2px;
+}
+
+/* While dragging, the grip stays out of the way of the pointer path. */
+.board-grip.is-dragging {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-grip {
+    transition: none;
+  }
+}

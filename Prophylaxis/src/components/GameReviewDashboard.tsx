@@ -5,6 +5,7 @@ import { START_FEN } from './ChessBoardWrapper';
 import EmptyBoardArt from './EmptyBoardArt';
 import { BoardSlot, useBoardHandle } from '../board/PersistentBoard';
 import BoardScaleBar from './BoardScaleBar';
+import BoardScaleGrip from './BoardScaleGrip';
 import { db, type MoveEvaluation, type SavedReview } from '../db';
 import { useStockfish, type EngineCandidate } from '../engine/useStockfish';
 import { getPlayedGame } from '../play/gameStore';
@@ -957,6 +958,9 @@ export default function GameReviewDashboard({
                   onMove: handleRetryMove,
                 }}
               />
+              {/* Sized by dragging the board's own corner; the transport keeps
+                  the − / + / Fit steps for taps and the keyboard. */}
+              <BoardScaleGrip />
               </div>
 
               <PlayerCard

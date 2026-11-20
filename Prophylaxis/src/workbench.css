@@ -887,11 +887,12 @@
      vertical reserve Review has, at any window height. */
   --board-chrome: 136px;
   /* The evaluation bar's own lane, left of the board's first file, wide enough
-     for a horizontal score inside the bar. `--eval-gap` is the breathing space
-     on each side of the bar, so it sits centred in the band between the
-     column's edge and the board instead of hugging either of them. */
-  --eval-lane: 28px;
+     for a horizontal score inside the bar (`+0.3`, `-12.4`). `--eval-gap` is
+     the least air the bar keeps from either side of the band, and `--eval-pad`
+     is the whole band the column reserves for it. */
+  --eval-lane: 30px;
   --eval-gap: 4px;
+  --eval-pad: calc(var(--eval-lane) + var(--eval-gap) * 2);
   height: 100%;
   min-height: 0;
   align-items: stretch;
@@ -949,8 +950,8 @@
   flex-direction: column;
   /* The band on each side is the same: gap + bar + gap on the left, an equal
      band on the right, and the board centred between them. */
-  padding-left: calc(var(--eval-lane) + var(--eval-gap) * 2);
-  padding-right: calc(var(--eval-lane) + var(--eval-gap) * 2);
+  padding-left: var(--eval-pad);
+  padding-right: var(--eval-pad);
 
   /* The column never scrolls: the board row below is the one pan surface, so
      the transport under it stays exactly where it was put. */
@@ -989,16 +990,17 @@
 
 /* --------------------------- evaluation bar ------------------------------ */
 
-/* The bar is pinned to the board's own left edge, at every scale: the slot is
-   centred in the wrap, so the board's left edge is `50% - board/2`. A clamped
-   band would drift away from the board as soon as the scale dropped below
-   100%, which read as a gauge floating in the column rather than the board's.
-   The clamp only bites above 100%, where the board overflows the column and
-   the bar has to stay pinned at its padding edge. */
+/* The bar is centred in the band between the column's edge and the board, at
+   every scale. The slot is centred in the wrap, so the board's left edge is
+   `50% - board/2` and the band runs from the column's padding edge to it; the
+   bar takes the middle of that band. Clamped so a board wider than its column
+   still keeps the bar fully on screen. */
 .gr-eval-wrap {
   left: max(
     calc(-1 * (var(--eval-lane) + var(--eval-gap))),
-    calc(50% - var(--board-px) / 2 - var(--eval-lane) - var(--eval-gap))
+    calc(
+      25% - var(--board-px) / 4 - var(--eval-pad) / 2 - var(--eval-lane) / 2
+    )
   );
   width: var(--eval-lane);
   /* The board is painted by a fixed, z-indexed layer, so the lane has to sit
@@ -1075,6 +1077,14 @@
 .gr-eval-wrap.is-flipped .gr-eval__label.is-black {
   top: auto;
   bottom: 8px;
+}
+
+/* A phone's lane is 20px, narrower than any score: the number would spill out
+   of the bar, so it stays in evaluation card and graph readout instead. */
+@media (max-width: 700px) {
+  .gr-eval__label {
+    display: none;
+  }
 }
 
 /* Both review rails still reserved the old top bar's height (100dvh - 82px),

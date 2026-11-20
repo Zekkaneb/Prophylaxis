@@ -41,13 +41,6 @@
   text-transform: uppercase;
 }
 
-.board-zoom__slider {
-  width: 92px;
-  height: 16px;
-  accent-color: var(--accent);
-  cursor: pointer;
-}
-
 .board-zoom__value {
   min-width: 34px;
   color: var(--text-muted);
@@ -57,22 +50,14 @@
 }
 
 @media (max-width: 1180px) {
-  .board-zoom__slider {
-    width: 64px;
-  }
-
   .board-zoom__value {
     display: none;
   }
 }
 
 /* Narrow screens keep the control (it is the only one now) but drop the
-   slider, leaving −, the readout, + and Fit. */
+   readout's reserved width, leaving −, +, Fit and the number. */
 @media (max-width: 900px) {
-  .board-zoom__slider {
-    display: none;
-  }
-
   .board-zoom__value {
     display: block;
     min-width: 0;
