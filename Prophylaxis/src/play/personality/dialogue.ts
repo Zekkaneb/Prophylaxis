@@ -405,16 +405,15 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
   emmanuel: {
     book: ['I am 8,000 elo by the way.', 'I have no idea what I’m doing, by the way.'],
     deviation: [
-      'Why would you do that?',
       'Hmm.',
     ],
     mistake: [
       'Oh. That’s probably bad.',
       'Wait, what did I just do?',
       'I might have messed up.',
-      'That was not the plan. There was no plan.',
+      "I'm so good that you can't handle it",
     ],
-    strong: ['Okay, sure.', 'Huh. That worked.', 'I’ll take it.'],
+    strong: ['Okay, sure.', 'I’ll take it.'],
     brilliant: [
       'Bro this is abuse.',
       'Nah, you’re doing too much.',
@@ -423,17 +422,16 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     winning: ['You so petite'],
     losing: ['Yeah, you got it gang.', 'Bro.'],
     defense: [
-      'You do that, I’m gonna tickle you.'
-      'Bro, relax.',
+      'I’m gonna tickle you.',
       'I might have to pants you.'
     ],
-    attack: ['Alright, I’ll try something.', 'Let’s see what happens.'],
+    attack: ['I’m gonna tickle you.'],
     'attack-fail': ['I did not see that'],
-    sacrifice: ['I did not mean to do that.'],
+    sacrifice: ['...'],
     'material-won': ['Oh. Free stuff.', 'Okay, sure.'],
     'material-lost': ["You're a terrorist.", 'Hm. That seems bad for me.'],
     win: ["I don't even play chess.", 'Gimme my money'],
-    loss: ['Bro...', 'Yeah, never playing this again.', 'Play me in Rock Paper Scissors Right Now', 'Uno is more skilled'],
+    loss: ['Bro...', 'Yeah, never playing this again.', 'Play me in Rock Paper Scissors Shoot', 'Uno is more skilled'],
     draw: ['Good game.', 'That was something.'],
   },
   /* The earlier Bryan inherits his voice verbatim — the same object, the same
