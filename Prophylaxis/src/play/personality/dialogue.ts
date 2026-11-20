@@ -497,7 +497,8 @@ const CADENCE: Partial<
   mabinti: { ordinaryGap: 5, repeatGap: 12 },
   /* Edward barely talks: a remark every five full moves at most, and the same
      event only once in a long while. */
-  edward: { ordinaryGap: 10, repeatGap: 22 };
+  edward: { ordinaryGap: 10, repeatGap: 22 },
+};
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except
      the game ending. */
