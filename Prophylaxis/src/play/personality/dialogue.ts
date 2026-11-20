@@ -402,11 +402,10 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
      (he does not have one) and never a claim about the evaluation (he could not
      read it). A lost position gets the same shrug as a won one. */
   emmanuel: {
-    book: ['Alright, let’s get this over with.', 'Okay, what are we doing?', 'I have no idea what I’m doing, by the way.'],
+    book: ['I am 8,000 elo by the way.', 'I have no idea what I’m doing, by the way.'],
     deviation: [
       'Why would you do that?',
-      'Interesting. I don’t know what that means.',
-      'Okay, sure.',
+      'Hmm.',
     ],
     mistake: [
       'Oh. That’s probably bad.',
@@ -420,22 +419,21 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
       'Nah, you’re doing too much.',
       'Why are you attacking me like that?',
     ],
-    winning: ['Wait, I’m actually cooking?', 'No way that worked.', 'Okay, I see myself.'],
-    losing: ['Yeah, I’m not winning this.', 'Bro, I’m getting cooked.', 'This is unfortunate.'],
+    winning: ['You so petite'],
+    losing: ['Yeah, you got it gang.', 'Bro.'],
     defense: [
-      'You do that, I’m gonna tickle you.',
+      'You do that, I’m gonna tickle you.'
       'Bro, relax.',
-      'This is getting personal.',
-      'I’m just gonna move this guy back.',
+      'I might have to pants you.'
     ],
     attack: ['Alright, I’ll try something.', 'Let’s see what happens.'],
-    'attack-fail': ['Yeah, that went how I expected.', 'Okay. We move on.'],
-    sacrifice: ['I did not mean to do that.', 'Well. That is a piece, I guess.'],
+    'attack-fail': ['I did not see that'],
+    sacrifice: ['I did not mean to do that.'],
     'material-won': ['Oh. Free stuff.', 'Okay, sure.'],
-    'material-lost': ['Yeah, that’s gone.', 'Hm. That seems bad for me.'],
-    win: ['Wait, I actually won?', 'Bro... okay.', 'That was something.'],
-    loss: ['Bro...', 'Yeah, never playing this again.', 'That was something.'],
-    draw: ['A draw. Sure.', 'That was something.', 'Yeah, I’ll take that.'],
+    'material-lost': ["You're a terrorist.", 'Hm. That seems bad for me.'],
+    win: ["I don't even play chess.", 'Gimme my money'],
+    loss: ['Bro...', 'Yeah, never playing this again.', 'Play me in Rock Paper Scissors Right Now', 'Uno is more skilled'],
+    draw: ['Good game.', 'That was something.'],
   },
   /* The earlier Bryan inherits his voice verbatim — the same object, the same
      lines — and adds only what a defender says. A separate object so Junior and
@@ -504,7 +502,7 @@ const CADENCE: Partial<
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except
      the game ending. */
-  emmanuel: { ordinaryGap: 8, repeatGap: 18 },
+  emmanuel: { ordinaryGap: 3, repeatGap: 10 },
 };
 
 export interface ReactOptions {
