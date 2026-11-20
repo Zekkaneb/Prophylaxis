@@ -892,7 +892,10 @@
      is the whole band the column reserves for it. */
   --eval-lane: 30px;
   --eval-gap: 4px;
-  --eval-pad: calc(var(--eval-lane) + var(--eval-gap) * 2);
+  /* The most air the bar takes from the board when the board is scaled down and
+     the column has slack: it stays beside the board instead of drifting. */
+  --eval-air: 10px;
+  --eval-pad: calc(var(--eval-lane) + var(--eval-air) + var(--eval-gap));
   height: 100%;
   min-height: 0;
   align-items: stretch;
@@ -990,16 +993,19 @@
 
 /* --------------------------- evaluation bar ------------------------------ */
 
-/* The bar is centred in the band between the column's edge and the board, at
-   every scale. The slot is centred in the wrap, so the board's left edge is
-   `50% - board/2` and the band runs from the column's padding edge to it; the
-   bar takes the middle of that band. Clamped so a board wider than its column
-   still keeps the bar fully on screen. */
+/* The bar keeps the board, not the column: it is spaced off the board's left
+   edge by `--eval-gap`, growing to at most `--eval-air` when a scaled-down
+   board leaves a wide band. Centring it across the whole band floated it in the
+   middle of an empty gutter, away from the board it describes. */
 .gr-eval-wrap {
   left: max(
     calc(-1 * (var(--eval-lane) + var(--eval-gap))),
     calc(
-      25% - var(--board-px) / 4 - var(--eval-pad) / 2 - var(--eval-lane) / 2
+      50% - var(--board-px) / 2 - var(--eval-lane)
+        - min(
+          var(--eval-air),
+          calc(var(--eval-gap) + max(0px, (100% - var(--board-px)) / 4))
+        )
     )
   );
   width: var(--eval-lane);
@@ -1012,9 +1018,14 @@
 .gr-eval {
   flex: 0 0 var(--eval-lane);
   width: var(--eval-lane);
-  /* A rounded pill, sitting flush against the board's left edge. */
+  /* A rounded pill, centred in its lane. */
   border-radius: 999px;
   border: 1px solid var(--line-soft);
+  /* The unplayed stretch is the room's own floor, not a lighter grey slab: a
+     pale track reads as a second bar lying over the gauge and hiding it. Only
+     the played share is painted. */
+  background: color-mix(in srgb, var(--bg) 55%, #000);
+  overflow: hidden;
 }
 
 .gr-eval__fill {
