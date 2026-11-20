@@ -11,7 +11,8 @@
     "test:pgn": "node --test learn/tests/",
     "test:puzzles": "node --test tests/puzzles/",
     "test:play": "node --test tests/play/",
-    "test": "npm run test:pgn && npm run test:puzzles && npm run test:play",
+    "test:review": "node --import ./tests/review/register.mjs --test tests/review/",
+    "test": "npm run test:pgn && npm run test:puzzles && npm run test:play && npm run test:review",
     "ingest:puzzles": "node scripts/ingest-lichess-puzzles.mjs",
     "fixtures:puzzles": "node scripts/make-lichess-fixture.mjs",
     "preview": "vite preview"

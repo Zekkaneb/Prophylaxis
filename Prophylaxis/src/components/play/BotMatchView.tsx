@@ -180,7 +180,9 @@ export function BotMatchView({
         {seat(topColor, 'top')}
         <div className="play-board-wrap">
           <div className="bot-match__board">
-            <div className="bot-match__eval">
+            <div
+              className={`bot-match__eval${orientation === 'black' ? ' is-flipped' : ''}`}
+            >
               <span
                 className={`play-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}
               >

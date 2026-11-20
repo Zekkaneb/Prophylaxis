@@ -519,22 +519,19 @@ export interface ClassificationResult {
  * Best < 0.4, Excellent 0.4-1.8, Good 1.8-4.5, Inaccuracy 4.5-10, Mistake
  * 10-20, Blunder 20+.
  *
- * Best is deliberately rare — under half a percent of win probability given up
- * — so the five tiers below it carry the shape of a game. Review and play then
- * speak the same language: a move the bot played as an Excellent is labelled an
- * Excellent when the game is analysed.
+ * Best is not a band: it is an identity test (the move must be the engine's own
+ * first choice), so there is no win-drop threshold for it. Everything that is
+ * not #1 lands in the bands below, which is what makes the label trustworthy.
+ * Review and play then speak the same language: a move the bot played as an
+ * Excellent is labelled an Excellent when the game is analysed.
  */
 export const WIN_THRESHOLDS = {
-  /** Best: winDrop < 0.4 — exactly what the engine wanted. */
-  best: 0.4,
-  /** Excellent: 0.4 ≤ winDrop < 1.8. */
-  excellent: 1.8,
-  /** Good: 1.8 ≤ winDrop < 4.5. */
-  good: 4.5,
-  /** Inaccuracy: 4.5 ≤ winDrop < 10. */
-  inaccuracy: 10,
-  /** Mistake: 10 ≤ winDrop < 20. */
-  mistake: 20,
+  /** Good starts here: 2% of win probability given up. */
+  good: 2,
+  /** Inaccuracy starts here: 5%. */
+  inaccuracy: 5,
+  /** Mistake starts here: 10%. */
+  mistake: 10,
   /** Blunder: 20 ≤ winDrop. */
   blunder: 20,
   missedWinDrop: 15,
@@ -626,10 +623,16 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
   const defending =
     moverDeficit >= CONTEXT_ESCALATION.deficitCp || winBefore < CONTEXT_ESCALATION.pressureWin;
 
-  const playedTopMove =
-    before.bestMove !== null && before.bestMove.toLowerCase() === uci.toLowerCase();
-
-  const pvGap = secondScore === null ? Number.POSITIVE_INFINITY : bestScore - secondScore;
+  /*
+   * `Best` is a claim about identity, not closeness: the played move has to be
+   * the engine's own first choice. A #2 line that gives up 0.1% of win
+   * probability is not "what the engine wanted", so it can never be Best — the
+   * bands below hand it Excellent instead. MultiPV's top line is the reference;
+   * `bestMove` is the fallback for callers that only kept one line.
+   */
+  const topEngineMove = before.candidates[0]?.uci ?? before.bestMove;
+  const isTopEngineMove =
+    topEngineMove !== null && topEngineMove.toLowerCase() === uci.toLowerCase();
 
   // Win-probability gap between the played/top move and the runner-up engine
   // move, in points: how much better this move is than the alternative. Used
@@ -672,7 +675,10 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
     escalated = false,
   ): ClassificationResult => {
     const accuracy = moveAccuracyScore(accuracyInput(classification, escalated));
-    if (import.meta.env.DEV) {
+    /* Vite replaces `import.meta.env` at build time; the cast keeps this
+       function callable from plain Node (the unit tests import it directly). */
+    const viteDev = (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV;
+    if (viteDev) {
       // Temporary trace: shows exactly how the engine score was re-oriented.
       // `raw*` is side-to-move POV as Stockfish sent it, `white*` is the
       // stored White-POV score, `mover*` is what the rules compare.
@@ -767,7 +773,7 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
      only move that rescues the game (≥45%), and the runner-up stays lost —
      so the save really was the single resource. */
   const clutchPosition = winBefore <= 20 || bestScore <= -300;
-  if (clutchPosition && playedTopMove && secondBestWinGap >= 25 && winAfter >= 45) {
+  if (clutchPosition && isTopEngineMove && secondBestWinGap >= 25 && winAfter >= 45) {
     return result('clutch');
   }
 
@@ -808,15 +814,9 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
    * is clearly better than the runner-up line, or is one of the two lines the
    * engine actually considered.
    */
-  const playedSecondMove =
-    before.secondBestMove !== null &&
-    before.secondBestMove.toLowerCase() === uci.toLowerCase();
-
   const sacrificeSound =
-    pieceSacrifice && winBefore < 92 && winAfter >= 40 && winDrop <= 3;
-  const sacrificeApproved =
-    winDrop <= 2 || secondBestWinGap >= 6 || playedTopMove || playedSecondMove;
-  const brilliantSacrifice = sacrificeSound && sacrificeApproved;
+    isTopEngineMove && pieceSacrifice && winBefore <= 90 && winAfter >= 45;
+  const brilliantSacrifice = sacrificeSound && winDrop <= 3;
 
   /*
    * Brilliant, route 2 — the deep engine-only move. Unchanged: depth 6 thinks
@@ -824,27 +824,22 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
    * only move that holds the position.
    */
   const brilliantDeep =
-    playedTopMove && shallowWinDrop >= 12 && winDrop <= 2 && secondBestWinGap >= 15;
+    isTopEngineMove && shallowWinDrop >= 12 && winDrop <= 2 && secondBestWinGap >= 15;
 
   if (!recapture && (brilliantSacrifice || brilliantDeep)) {
     return result('brilliant');
   }
 
   /* Great is the same "only move" idea at a lower bar — but never for a
-     routine recapture, which is just bookkeeping. */
+     routine recapture, which is just bookkeeping, and only for the engine's
+     own first choice: a #2 that happens to hold the position is not unique. */
   const followUpToBrilliant = prevPlayerMoveClass === 'brilliant';
 
-  /* After a Brilliant the next move is usually the only continuation, so the
-     uniqueness bar is lowered: a near-perfect move with a 10-point gap over
-     the runner-up is enough to keep the combination rewarded. */
-  const followUpGreat =
-    followUpToBrilliant && winDrop <= 2 && secondBestWinGap >= 10;
+  /* The runner-up has to be a real alternative the engine considered, and it
+     has to be at least ten points of win probability worse. */
+  const onlyMove = secondScore !== null && secondBestWinGap >= 10;
 
-  if (!recapture && followUpGreat) return result('great');
-
-  if (!recapture && playedTopMove && secondScore !== null && pvGap >= 150 && winDrop <= 5) {
-    return result('great');
-  }
+  if (!recapture && isTopEngineMove && onlyMove) return result('great');
 
   // ---- Blunders first: a hung piece must never be filed as a mere miss ----
 
@@ -912,10 +907,12 @@ export function classifyMove(input: ClassificationInput): ClassificationResult {
   }
 
   if (winDrop >= WIN_THRESHOLDS.good) return result('good');
-  if (winDrop >= WIN_THRESHOLDS.excellent) return result('excellent');
-  /* Under the Excellent band nothing real was given up: Best is the rarest
-     label in the game and means the move matched the engine's own choice. */
-  return result('best');
+
+  /* Under 5% of win probability nothing real was given up. Best is reserved for
+     the engine's own first move; every other move — however small the gap — is
+     an Excellent, which is what keeps Best meaningful. */
+  if (isTopEngineMove) return result('best');
+  return result('excellent');
 }
 
 /* -------------------------------------------------------------------------- */

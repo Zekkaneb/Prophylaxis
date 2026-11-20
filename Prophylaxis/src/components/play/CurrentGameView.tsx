@@ -344,7 +344,11 @@ export function CurrentGameView({
           {/* Flush against the board's first file: the bar is the board's left
               margin, not a floating chip. */}
           {showEval ? (
-            <div className="play-eval-wrap">
+            <div
+              className={`play-eval-wrap${
+                session.orientation === 'black' ? ' is-flipped' : ''
+              }`}
+            >
               <span className={`play-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}>
                 {formatEvaluation(evalScore.cp, evalScore.mate)}
               </span>

@@ -846,6 +846,28 @@
   color: var(--text);
 }
 
+/* A flipped board flips the bar with it: White's share grows from the top when
+   White's army is the one at the top, and the score keeps its end of the bar.
+   The modifier sits on the lane, because the score label is its sibling, not a
+   child of the bar. */
+.play-eval-wrap.is-flipped .play-eval__fill,
+.bot-match__eval.is-flipped .play-eval__fill {
+  top: 0;
+  bottom: auto;
+}
+
+.play-eval-wrap.is-flipped .play-eval__label.is-white,
+.bot-match__eval.is-flipped .play-eval__label.is-white {
+  top: 8px;
+  bottom: auto;
+}
+
+.play-eval-wrap.is-flipped .play-eval__label.is-black,
+.bot-match__eval.is-flipped .play-eval__label.is-black {
+  top: auto;
+  bottom: 8px;
+}
+
 /* Transport under the board, at board width. */
 .play-stage__nav {
   flex: none;
@@ -1029,6 +1051,25 @@
   bottom: auto;
   /* On the bare, dark track. */
   color: var(--text);
+}
+
+/* Flipped board, flipped gauge: White's share grows from the top, and each
+   score label moves to the end of the bar its side now occupies. The modifier
+   sits on the lane, because the score label is its sibling, not a child of the
+   bar. */
+.gr-eval-wrap.is-flipped .gr-eval__fill {
+  top: 0;
+  bottom: auto;
+}
+
+.gr-eval-wrap.is-flipped .gr-eval__label.is-white {
+  top: 8px;
+  bottom: auto;
+}
+
+.gr-eval-wrap.is-flipped .gr-eval__label.is-black {
+  top: auto;
+  bottom: 8px;
 }
 
 /* Both review rails still reserved the old top bar's height (100dvh - 82px),

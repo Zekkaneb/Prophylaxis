@@ -923,7 +923,9 @@ export default function GameReviewDashboard({
 
               <div className="gr-board-wrap">
               {showEvalBar && (
-                <div className="gr-eval-wrap">
+                <div
+                  className={`gr-eval-wrap${orientation === 'black' ? ' is-flipped' : ''}`}
+                >
                   <span
                     className={`gr-eval__label${whitePercent >= 50 ? ' is-white' : ' is-black'}`}
                   >
