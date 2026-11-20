@@ -47,7 +47,6 @@ const BANKS: Record<
     | 'edward'
     | 'brandon-freshman'
     | 'mabinti'
-    | 'emmanuel'
   >,
   Bank
 > = {
