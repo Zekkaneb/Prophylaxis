@@ -465,13 +465,14 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* The shell follows the board instead of sizing it: the board's size comes
-     from the global scale, so this only decides how much room it gets. It
-     fills the column so the row can take all the height and the transport can
-     keep its own. */
+  /* The shell follows its content: plates, board and transport are one unit
+     that the column centres, so scaling the board down closes the gap around
+     it instead of pinning the transport to the floor. It may still shrink
+     (scaled past 100%) so the board row can pan. */
   width: 100%;
   min-width: 0;
-  height: 100%;
+  flex: 0 1 auto;
+  max-height: 100%;
   min-height: 0;
   margin-inline: 0 auto;
 }
@@ -677,11 +678,10 @@
   width: min(var(--board-px), 100%);
   margin-inline: auto;
   flex: none;
-  /* The transport is exactly as wide as the board, so it has to be its own
-     container: the rules below fold it down as the scaled board narrows rather
-     than letting its buttons spill out of the surface. */
-  container-type: inline-size;
-  container-name: transport;
+  /* No control ever disappears: when the board is narrow the transport folds
+     onto a second line instead of clipping or hiding its buttons. */
+  flex-wrap: wrap;
+  row-gap: 4px;
 }
 
 /* The board scaler borrows the transport's own surface instead of drawing a
@@ -754,35 +754,7 @@
   white-space: nowrap;
 }
 
-/* A smaller board means a narrower transport, not a clipped one. Fit stays —
-   it is the way back to 100% — so the percentage goes first, then the counter;
-   only a transport too narrow for Fit loses it. */
-@container transport (max-width: 500px) {
-  .gr-nav .board-zoom__value {
-    display: none;
-  }
 
-  .gr-nav .button {
-    width: 32px;
-    height: 28px;
-  }
-
-  .gr-nav__flip {
-    margin-left: 2px;
-  }
-}
-
-@container transport (max-width: 420px) {
-  .gr-nav__count {
-    display: none;
-  }
-}
-
-@container transport (max-width: 360px) {
-  .gr-nav .board-zoom__fit {
-    display: none;
-  }
-}
 
 .gr-retry {
   display: flex;

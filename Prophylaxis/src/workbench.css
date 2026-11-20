@@ -951,6 +951,10 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  /* Plates, board and transport are one unit, centred in the column: a scaled
+     down board keeps the transport under it instead of stranding it at the
+     floor with dead space in between. */
+  justify-content: center;
   /* The band on each side is the same: gap + bar + gap on the left, an equal
      band on the right, and the board centred between them. */
   padding-left: var(--eval-pad);
@@ -978,7 +982,9 @@
    chrome, and it used to appear the moment the board was scaled past its
    column. Wheel, trackpad and touch scrolling still pan. */
 .gr-board-row {
-  flex: 1 1 auto;
+  /* Takes the board's height and gives it back when the board outgrows the
+     column, so the shell never has to be taller than the room. */
+  flex: 0 1 auto;
   min-height: 0;
   display: flex;
   align-items: safe center;
@@ -1116,8 +1122,11 @@
 .gr-active {
   flex: none;
   overflow-y: auto;
-  min-height: 0;
-  max-height: 58%;
+  /* Tall enough for the position card, the opening strip and two engine lines:
+     the Top moves list is never cut mid-row, and the moves card takes the rest
+     of the rail below it. */
+  min-height: 310px;
+  max-height: 62%;
 }
 
 .gr-moves-card {

@@ -1,8 +1,14 @@
 /* The board's own box carries the handles, so they ride its edges at every
    scale instead of the column's. */
+/* Anchored to the board's own box, not the column: `--board-px` is the slot's
+   size, so a scaled-down board keeps its handles on its corners instead of
+   leaving them out in the empty column. */
 .board-grips {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: max(0px, calc(50% - var(--board-px) / 2));
+  width: min(var(--board-px), 100%);
   z-index: 3;
   pointer-events: none;
 }
