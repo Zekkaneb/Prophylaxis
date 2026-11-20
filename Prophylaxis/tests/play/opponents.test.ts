@@ -44,7 +44,7 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
     ],
   );
 
-  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 13);
+  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 14);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.doesNotMatch(opponent.name, /\(/, 'the name carries no parenthetical suffix');
     assert.ok(opponent.title, `${opponent.id} has a subtext`);
@@ -95,7 +95,7 @@ test('categories are explicitly configured, complete and free of Big 4', () => {
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'strong').map(
       (opponent) => opponent.id,
     ),
-    ['nina', 'brandon-freshman', 'bryan', 'senior'],
+    ['nina', 'mabinti', 'brandon-freshman', 'bryan', 'senior'],
   );
 
   /* Two 2000s, two different groups: membership is a field, never the rating. */
@@ -140,6 +140,7 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
       'opponents/nina-freshman.webp',
       'opponents/bryan-sophomore.webp',
       'opponents/nina.webp',
+      'opponents/mabinti.webp',
       'opponents/brandon-freshman.webp',
       'opponents/bryan-junior.webp',
       'opponents/senior.webp',
@@ -260,8 +261,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
   assert.equal(GENERAL_BOT.usesRepertoire, true);
-  assert.equal(ALL_OPPONENTS.length, 14);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 14);
+  assert.equal(ALL_OPPONENTS.length, 15);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 15);
   assert.equal(GENERAL_BOT_ELO.min, 100);
   assert.equal(GENERAL_BOT_ELO.max, 2800);
 });

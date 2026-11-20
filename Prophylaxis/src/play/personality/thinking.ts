@@ -198,6 +198,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* Straightforward decisions, and only a genuinely complicated position
          earns a longer look. A beginner does not sit and calculate. */
       return 0.8 + (profile.tactical ? 0.18 : 0.05) * profile.complexity;
+    case 'mabinti':
+      /* An ordinary look at an ordinary position, and a little more when there
+         is actually something to work out. No speciality either way. */
+      return 1.0 + (profile.tactical ? 0.14 : 0.05) * profile.complexity;
   }
 }
 
@@ -237,6 +241,9 @@ function deliberationFactor(style: PersonalityStyle): number {
     case 'edward':
       /* An ordinary beat: he is not slow, he is simply not sure. */
       return 0.9;
+    case 'mabinti':
+      /* Ordinary deliberation, unhurried but never slow. */
+      return 1.0;
   }
 }
 

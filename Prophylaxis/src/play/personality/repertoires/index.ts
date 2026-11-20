@@ -15,6 +15,7 @@ import { BRANDON_BOOK } from './brandonBook.ts';
 import { NINA_BOOK } from './ninaBook.ts';
 import { FAADI_REPERTOIRE } from './faadi.ts';
 import { EDWARD_REPERTOIRE } from './edward.ts';
+import { MABINTI_REPERTOIRE } from './mabinti.ts';
 import {
   BRANDON_FRESHMAN_MAINLINES,
   BRANDON_FRESHMAN_SHARED_BLACK_PREFIX,
@@ -60,6 +61,7 @@ export const PERSONALITY_REPERTOIRES: Record<
   senior: SENIOR_REPERTOIRE,
   faadi: FAADI_REPERTOIRE,
   edward: EDWARD_REPERTOIRE,
+  mabinti: MABINTI_REPERTOIRE,
 };
 
 export interface PersonalityBooks {

@@ -41,7 +41,12 @@ type Bank = Record<DialogueEvent, readonly string[]>;
 const BANKS: Record<
   Exclude<
     PersonalityId,
-    'bryan-prime' | 'bryan-sophomore' | 'nina-freshman' | 'edward' | 'brandon-freshman'
+    | 'bryan-prime'
+    | 'bryan-sophomore'
+    | 'nina-freshman'
+    | 'edward'
+    | 'brandon-freshman'
+    | 'mabinti'
   >,
   Bank
 > = {
@@ -346,6 +351,50 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     loss: ['Good game.', "That wasn't good.", 'It is not fine.'],
     draw: ['Wow.'],
   },
+  /* Mabinti Mansaray: warm, outgoing and genuinely delighted to be playing.
+     Everything she says is an ordinary spoken sentence — no phonetic spelling,
+     no accent written into the words, no catchphrase on repeat. Her enthusiasm
+     lives in the exclamations, the "right guys?" she throws at the room, and
+     the fact that a lost position is still fun. She reacts to what actually
+     happened, so the cheer never pretends a bad position is a good one. */
+  mabinti: {
+    book: ['Alright guys, let’s do this!', 'Okay, I’m ready. Right guys?'],
+    deviation: [
+      'Hmmmm, what do we have here?',
+      'Okay, let’s think about this.',
+      'Wait, wait. I have an idea!',
+    ],
+    mistake: [
+      'Ahhhhhh, I blundereddd!',
+      'Noooo, I missed that!',
+      'Oh my goodness, how did I miss that?',
+    ],
+    strong: ['YES! That’s what I’m talking about!', 'Ohhh, I like this!', 'Yes, you are right!'],
+    brilliant: [
+      'Ohhh, that’s actually really good!',
+      'Yes, you are right! I need to be careful.',
+      'Okay, I see what you’re doing.',
+    ],
+    winning: [
+      'We’re cooking, right guys?',
+      'YESSS! I like this position!',
+      'Okay, we’re doing pretty well!',
+    ],
+    losing: [
+      'It’s okay guys, we’re still in this!',
+      'Alright, alright, we can recover.',
+      'This is getting interesting!',
+    ],
+    defense: ['Okay, let’s deal with this first.', 'Okay guys, we defend this one.', 'Hold on, hold on.'],
+    attack: ['Here we go, right guys?', 'Ohhh, I like this idea!', 'Okay, let’s try it!'],
+    'attack-fail': ['Ahhhhhh, that didn’t work!', 'Okay, okay, we can recover.', 'Noooo, not that one!'],
+    sacrifice: ['Wait, wait. Trust me on this one!', 'Ohhh, I like this! Right guys?'],
+    'material-won': ['YES! Thank you very much!', 'Ohhh, that’s nice!'],
+    'material-lost': ['Oh my goodness, how did I miss that?', 'Noooo, that one hurts!'],
+    win: ['YESSS! What a game!', 'That was fun, guys!', 'We did it, right guys?'],
+    loss: ['Ahhh, well played! That was a good one!', 'That was fun, guys!', 'Okay, next one is ours!'],
+    draw: ['That was fun, guys!', 'A draw? Alright, I’ll take it!', 'Good game, right guys?'],
+  },
   /* The earlier Bryan inherits his voice verbatim — the same object, the same
      lines — and adds only what a defender says. A separate object so Junior and
      Prime cannot pick up these lines through the shared bank. */
@@ -403,6 +452,10 @@ const CADENCE: Partial<
   Record<PersonalityId, { ordinaryGap: number; repeatGap: number }>
 > = {
   faadi: { ordinaryGap: 4, repeatGap: 10 },
+  /* She talks to the room, so she speaks a little more often than the default —
+     but the same repeat gap and never-repeat-a-line pool still apply, so the
+     enthusiasm cannot become a loop. */
+  mabinti: { ordinaryGap: 5, repeatGap: 12 },
   /* Edward barely talks: a remark every five full moves at most, and the same
      event only once in a long while. */
   edward: { ordinaryGap: 10, repeatGap: 22 },

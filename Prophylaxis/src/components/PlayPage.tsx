@@ -1,4 +1,5 @@
 import PlaySection from './play/PlaySection';
+import { PERSONALITY_OPPONENTS } from '../play/opponents.ts';
 
 /**
  * Playing tab: New Game / Current Game / Game History.
@@ -19,8 +20,10 @@ export default function PlayPage({
           <p className="eyebrow">Playing room</p>
           <h1>Play a game</h1>
           <p className="subheading">
-            Thirteen personalities, two bots, and a clock that behaves like a real one — all
-            local, all saved here.
+            {/* The count comes from the catalogue, so adding an opponent can
+                never leave this line out of date. */}
+            {PERSONALITY_OPPONENTS.length} personalities, two bots, and a clock that behaves
+            like a real one — all local, all saved here.
           </p>
         </div>
       </header>

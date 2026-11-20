@@ -24,7 +24,8 @@ export type PersonalityId =
   | 'bryan-prime'
   | 'faadi'
   | 'edward'
-  | 'brandon-freshman';
+  | 'brandon-freshman'
+  | 'mabinti';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -300,6 +301,34 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     activePieces: 40,
     depthCap: 10,
     openingBias: { solid: 22, developing: 20, positional: 8, sharp: -20, initiative: -14 },
+  },
+  /* Mabinti Mansaray (Junior), 1550 — the enthusiast.
+
+     Balanced and principled: no dial is a speciality and none is a weakness.
+     Positional understanding, defence, king safety and material care all sit
+     above the midpoint, aggression and risk just below it, and complexity sits
+     at 45 because she would rather keep the position clean than sharp. She
+     takes an initiative when one is there (initiative 50) without forcing it.
+     Her strength is not here: accuracy comes from the 1550 rating like every
+     other profile, so she neither underestimates tactics nor plays above the
+     rating she is advertised at. */
+  mabinti: {
+    ...BASE,
+    id: 'mabinti',
+    aggression: 50,
+    risk: 45,
+    positional: 70,
+    tactical: 65,
+    defensive: 65,
+    initiative: 50,
+    simplification: 55,
+    complexity: 45,
+    kingSafety: 75,
+    material: 65,
+    /* She will give material for something she has counted, never as a habit. */
+    sacrifice: 35,
+    activePieces: 65,
+    openingBias: { positional: 18, solid: 16, developing: 12, initiative: 8, sharp: -8 },
   },
   /* Brandon Tran before Prime, 1600: the same funky attacker with less behind
      it. Ambition stays near Prime's ceiling (initiative 95, complexity 95, a

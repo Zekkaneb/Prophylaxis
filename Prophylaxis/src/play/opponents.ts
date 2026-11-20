@@ -181,6 +181,27 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'NY',
     usesRepertoire: false,
   },
+  /* Mabinti Mansaray, the Strong group's balanced player: 1550, the same
+     rating as Nina but a completely different character — principled rather
+     than initiative-first. `mabinti` is her own id: it never resolves to
+     another character's card, saved games or PGN. */
+  {
+    id: 'mabinti',
+    kind: 'personality',
+    category: 'strong',
+    name: 'Mabinti Mansaray',
+    shortName: 'Mabinti',
+    title: 'Junior',
+    elo: 1550,
+    style:
+      'The enthusiast: balanced, principled chess — sound development, a solid centre and sensible defence, with an initiative when one appears and no taste for unnecessary complications.',
+    portraitPath: 'opponents/mabinti.webp',
+    /* The portrait is painted close in the source file, so the shared 1.2 zoom
+       would crop her braids twice. */
+    portraitScale: 1,
+    initials: 'MM',
+    usesRepertoire: false,
+  },
   /* Brandon before Prime: the same person and the same portrait, one rung down
      the ladder. He belongs to the Strong group at 1600, between Nina and Bryan
      Junior, because his chess is promising rather than polished. The shared

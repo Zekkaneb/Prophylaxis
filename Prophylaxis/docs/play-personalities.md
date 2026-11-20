@@ -13,6 +13,43 @@ plays the user's imported courses and never reads anything on this page.
 | Junior | The Strategist | 2150 | Catalan (supplied) | Pirc (supplied) | King's Indian, principles |
 | Senior | The Tactician | 2250 | Catalan (supplied) | Pirc (supplied) | Grünfeld (supplied) |
 
+## Mabinti Mansaray (Junior) — 1550, Strong
+
+| | |
+|---|---|
+| id | `mabinti` |
+| Name / subtext | Mabinti Mansaray · Junior |
+| Rating | 1550, Strong group |
+| White | Queen's Gambit: 1.d4, 2.c4, normal development |
+| Black vs 1.e4 | 1...e5, classical development (Ruy Lopez, Italian, Scotch) |
+| Black vs 1.d4 | 1...d5, Queen's Gambit Declined / Semi-Slav set-up |
+| Profile file | `src/play/personality/styles.ts` (`mabinti`) |
+| Repertoire | `src/play/personality/repertoires/mabinti.ts` |
+| Dialogue | `DIALOGUE_BANKS.mabinti` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/mabinti.webp` (monogram `MM` if missing) |
+
+The enthusiast: balanced and principled. Positional understanding, defence,
+king safety and material care all sit above the midpoint (70/65/75/65),
+aggression and risk just below it (50/45), and complexity at 45 because she
+would rather keep a position clean than sharp. No dial is a speciality and none
+is a weakness. Strength is the rating's own: accuracy, the candidate-gap
+tolerance and the blunder curve all come from 1550, and she is capped at the
+standard search depth — she is not artificially weak in tactics or positional
+play.
+
+Her repertoire is deliberately short and ordinary, so the book runs out where a
+1550's knowledge does and Stockfish plus her tendencies take over. Opening
+familiarity is not a strength dial: outside her lines she improvises legally,
+and a repertoire lookup can never produce an illegal move (`book.ts` re-checks
+every stored move against legal move generation).
+
+Dialogue is trigger-driven by the existing event layer (`events.ts`) and paced by
+`maybeReact`: her cadence is slightly quicker than the default
+(`ordinaryGap: 5`, `repeatGap: 12`) because she talks to the room, but the
+never-repeat-a-line pool and the repeat gap still apply. Her voice is warmth and
+punctuation, never phonetic spelling or an accent written into words, and no line
+mentions an engine, an evaluation or a search.
+
 The Elo values are target approximations for the bot's playing strength, not
 FIDE or Chess.com ratings. Every character — and the General Bot — searches to
 the same depth (`SEARCH_DEPTH = 16`, capped by the clock's movetime), so the

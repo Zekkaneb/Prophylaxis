@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useStockfish } from '../../engine/useStockfish';
-import { opponentStage, profileFromRecord } from '../../play/opponents.ts';
+import {
+  PERSONALITY_OPPONENTS,
+  opponentStage,
+  profileFromRecord,
+} from '../../play/opponents.ts';
 import { formatClock } from '../../play/timeControls.ts';
 import { usePlayGame } from '../../play/usePlayGame';
 import { useBotMatch } from '../../play/useBotMatch';
@@ -218,7 +222,7 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
               soon as you start.
             </p>
             <ul className="empty-points" aria-label="Game features">
-              <li>Thirteen personalities</li>
+              <li>{PERSONALITY_OPPONENTS.length} personalities</li>
               <li>Real clocks</li>
               <li>Saved on this device</li>
             </ul>

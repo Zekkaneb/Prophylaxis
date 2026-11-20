@@ -93,8 +93,8 @@ test('Nina Yang (Freshman) is registered once, at 1150, in the beginners group',
   assert.equal(opponentMeta(FRESHMAN), 'Freshman · 1150 Elo');
   assert.match(FRESHMAN.style, /balanced/i);
 
-  assert.equal(PERSONALITY_OPPONENTS.length, 13);
-  assert.equal(ALL_OPPONENTS.length, 14);
+  assert.equal(PERSONALITY_OPPONENTS.length, 14);
+  assert.equal(ALL_OPPONENTS.length, 15);
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'nina-freshman').length,
     1,
