@@ -202,6 +202,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* An ordinary look at an ordinary position, and a little more when there
          is actually something to work out. No speciality either way. */
       return 1.0 + (profile.tactical ? 0.14 : 0.05) * profile.complexity;
+    case 'emmanuel':
+      /* A quick glance. A busy board does not earn him a longer think, because he
+         would not know what to do with the extra time. */
+      return 0.7 + (profile.tactical ? 0.06 : 0.02) * profile.complexity;
   }
 }
 
@@ -244,6 +248,10 @@ function deliberationFactor(style: PersonalityStyle): number {
     case 'mabinti':
       /* Ordinary deliberation, unhurried but never slow. */
       return 1.0;
+    case 'emmanuel':
+      /* He moves when he has picked something, not when he is sure — and never
+         with any ceremony about it. */
+      return 0.75;
   }
 }
 

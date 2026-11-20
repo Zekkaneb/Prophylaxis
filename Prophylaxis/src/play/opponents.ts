@@ -27,7 +27,12 @@ export type OpponentKind = 'personality' | 'general';
  * function of its rating. Senior and Bryan (Prime) both sit at 2000 and belong
  * to different groups on purpose.
  */
-export type OpponentCategory = 'beginners' | 'intermediate' | 'strong' | 'big-3';
+export type OpponentCategory =
+  | 'easy'
+  | 'beginners'
+  | 'intermediate'
+  | 'strong'
+  | 'big-3';
 
 export interface OpponentCategoryGroup {
   id: OpponentCategory;
@@ -36,6 +41,9 @@ export interface OpponentCategoryGroup {
 }
 
 export const OPPONENT_CATEGORIES: readonly OpponentCategoryGroup[] = [
+  /* Below the beginners: the opponent who is not studying the game at all, for
+     a first game that can be won without knowing an opening. */
+  { id: 'easy', label: 'Easy', hint: 'Learning the pieces, taking it easy' },
   { id: 'beginners', label: 'Beginners', hint: 'Room to recover from a mistake' },
   { id: 'intermediate', label: 'Intermediate', hint: 'Sharper tactics, real conversion' },
   { id: 'strong', label: 'Strong', hint: 'Deep calculation, few concessions' },
@@ -295,6 +303,29 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
      lists him. His id is `edward`, not a re-used `senior`, so saved games and
      PGNs can never resolve him to Johnfer Quispe (Senior) — the two share the
      word "Senior" and nothing else. */
+  /* Emmanuel Domah (Senior), 400 — the Reluctant Player.
+
+     The group below Beginners, and the only card in it: he is not a beginner
+     who studies, he is someone who turned up. `emmanuel` is his own id, so a
+     saved game can never resolve him to Edward Chen, the other "Senior".
+     No repertoire: `PERSONALITY_REPERTOIRES` deliberately has no entry for him. */
+  {
+    id: 'emmanuel',
+    kind: 'personality',
+    category: 'easy',
+    name: 'Emmanuel Domah',
+    shortName: 'Emmanuel',
+    title: 'Senior',
+    elo: 400,
+    style:
+      'The reluctant player: here for the vibes. Knows the rules, not the plans — loose pieces, missed threats, the odd accidental good move, and no theory to fall back on.',
+    portraitPath: 'opponents/emmanuel.webp',
+    /* He is the one portrait framed taller than it is wide, and it is already
+       painted tight: the shared 1.2 zoom would crop the beanie and the hood. */
+    portraitScale: 1,
+    initials: 'ED',
+    usesRepertoire: false,
+  },
   {
     id: 'edward',
     kind: 'personality',

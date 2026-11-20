@@ -216,7 +216,8 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
     /* Personalities roll once per turn for a human-style mistake. The calibrated
        path carries its own mistake model inside `selectHumanBotMove`. */
     const rolled =
-      style && shouldTakeBlunder(elo, random, hasPreparedOpening(source))
+      style &&
+      shouldTakeBlunder(elo, random, hasPreparedOpening(source), style.mistakeChance)
         ? chooseBlunder(evaluation.candidates, botColor, elo, random)
         : null;
     /* Faadi still sees a free piece: his wildcard error is an idea he missed,

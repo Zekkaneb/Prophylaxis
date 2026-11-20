@@ -165,6 +165,13 @@ test('personality bots never read the General Bot repertoire', () => {
   assert.equal(GENERAL_BOT.usesRepertoire, true);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.equal(opponent.usesRepertoire, false);
+    /* Emmanuel Domah is the one personality with no opening book at all: an
+       empty White book is the implementation of "no repertoire", never a gap. */
+    if (opponent.id === 'emmanuel') {
+      assert.equal(personalityBookFor(opponent.id, 'w').size, 0);
+      assert.equal(personalityBookFor(opponent.id, 'b').size, 0);
+      continue;
+    }
     assert.equal(personalityBookFor(opponent.id, 'w').size > 0, true);
   }
 

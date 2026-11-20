@@ -67,7 +67,7 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
 test('categories are explicitly configured, complete and free of Big 4', () => {
   assert.deepEqual(
     OPPONENT_CATEGORIES.map((group) => group.label),
-    ['Beginners', 'Intermediate', 'Strong', 'The Big 3'],
+    ['Easy', 'Beginners', 'Intermediate', 'Strong', 'The Big 3'],
   );
   assert.ok(
     !OPPONENT_CATEGORIES.some((group) => /big\s*4/i.test(group.label)),
@@ -79,6 +79,13 @@ test('categories are explicitly configured, complete and free of Big 4', () => {
     assert.ok(declared.has(opponent.category), `${opponent.id} sits in a real group`);
   }
 
+  /* Easy is its own group: the card below Beginners, and only that card. */
+  assert.deepEqual(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'easy').map(
+      (opponent) => opponent.id,
+    ),
+    ['emmanuel'],
+  );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'beginners').map(
       (opponent) => opponent.id,
@@ -147,6 +154,7 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
       'opponents/brandon.webp',
       'opponents/junior.webp',
       'opponents/bryan-prime.webp',
+      'opponents/emmanuel.webp',
       'opponents/edward.webp',
     ],
   );
@@ -261,8 +269,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
   assert.equal(GENERAL_BOT.usesRepertoire, true);
-  assert.equal(ALL_OPPONENTS.length, 15);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 15);
+  assert.equal(ALL_OPPONENTS.length, 16);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 16);
   assert.equal(GENERAL_BOT_ELO.min, 100);
   assert.equal(GENERAL_BOT_ELO.max, 2800);
 });

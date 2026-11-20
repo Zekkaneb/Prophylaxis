@@ -55,7 +55,12 @@ export function shouldTakeBlunder(
   elo: number,
   random: () => number,
   theoryAvailable: boolean,
+  /**
+   * A character's own slip rate, for a profile the rating curve cannot express
+   * (it floors out at 45%). Omitted by every other caller, so the curve stands.
+   */
+  chance: number = blunderChance(elo),
 ): boolean {
   if (theoryAvailable) return false;
-  return random() < blunderChance(elo);
+  return random() < chance;
 }

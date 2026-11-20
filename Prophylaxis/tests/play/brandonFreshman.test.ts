@@ -171,8 +171,8 @@ test('Prime is untouched and the two Brandons stay separately selectable', () =>
   ).map((opponent) => opponent.id);
   assert.ok(strong.includes('brandon-freshman'));
   assert.ok(strong.indexOf('brandon-freshman') < strong.indexOf('bryan'));
-  assert.equal(ALL_OPPONENTS.length, 15);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 15);
+  assert.equal(ALL_OPPONENTS.length, 16);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 16);
 });
 
 test('saved games resolve each Brandon to his own version', () => {

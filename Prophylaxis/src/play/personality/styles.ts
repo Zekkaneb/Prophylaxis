@@ -25,7 +25,8 @@ export type PersonalityId =
   | 'faadi'
   | 'edward'
   | 'brandon-freshman'
-  | 'mabinti';
+  | 'mabinti'
+  | 'emmanuel';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -56,6 +57,15 @@ export interface PersonalityStyle {
    * opponent's search changes.
    */
   depthCap?: number;
+  /**
+   * Optional per-character chance of the deliberate slip, replacing the rating's
+   * own curve (`blunderChance(elo)`).
+   *
+   * The curve bottoms out at 45% for anything rated 800 or below, which is why a
+   * character who genuinely cannot play needs to say so here: unset means "use
+   * the rating's curve", so no other opponent's mistake rate moves.
+   */
+  mistakeChance?: number;
   /** Opening tags this character gravitates to (and away from). */
   openingBias: Partial<Record<OpeningTag, number>>;
 }
@@ -329,6 +339,42 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 35,
     activePieces: 65,
     openingBias: { positional: 18, solid: 16, developing: 12, initiative: 8, sharp: -8 },
+  },
+  /* Emmanuel Domah (Senior), 400 — the Reluctant Player.
+
+     The weakest profile in the roster, and honest about why. Nothing here is a
+     speciality: positional and tactical awareness are both 15, king safety 35
+     because he does not look at his own king, material 45 because he takes a
+     piece when it is obviously there and forgets the rest. Three things make
+     him weak, and all of them are strength dials rather than flavour:
+     `depthCap: 6` (he sees a couple of moves and not the reply), an accuracy at
+     the floor of the rating scale (so evaluation barely outranks whatever looks
+     natural to him), and `mistakeChance: 0.55` — the highest deliberate-slip
+     rate the shared mistake pool is designed to allow, where the 800-rated
+     beginner sits at 0.45. His slips are still engine-priced moves capped by
+     the beginner severity, never random legal moves.
+
+     He has no opening bias because he has no opening book: `openingBias` is
+     empty on purpose, and every first move comes from the same search-and-slip
+     path as move forty. */
+  emmanuel: {
+    ...BASE,
+    id: 'emmanuel',
+    aggression: 40,
+    risk: 35,
+    positional: 15,
+    tactical: 15,
+    defensive: 30,
+    initiative: 30,
+    simplification: 40,
+    complexity: 30,
+    kingSafety: 35,
+    material: 45,
+    sacrifice: 15,
+    activePieces: 25,
+    depthCap: 6,
+    mistakeChance: 0.55,
+    openingBias: {},
   },
   /* Brandon Tran before Prime, 1600: the same funky attacker with less behind
      it. Ambition stays near Prime's ceiling (initiative 95, complexity 95, a

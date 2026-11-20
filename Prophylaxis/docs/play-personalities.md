@@ -13,6 +13,53 @@ plays the user's imported courses and never reads anything on this page.
 | Junior | The Strategist | 2150 | Catalan (supplied) | Pirc (supplied) | King's Indian, principles |
 | Senior | The Tactician | 2250 | Catalan (supplied) | Pirc (supplied) | Grünfeld (supplied) |
 
+## Emmanuel Domah (Senior) — 400, Easy
+
+| | |
+|---|---|
+| id | `emmanuel` |
+| Name / subtext | Emmanuel Domah · Senior |
+| Rating | 400, Easy group (below Beginners) |
+| Opening | none — no book, no theory, no bias |
+| Profile file | `src/play/personality/styles.ts` (`emmanuel`) |
+| Dialogue | `DIALOGUE_BANKS.emmanuel` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/emmanuel.webp` (monogram `ED` if missing) |
+
+The reluctant player. He is not a beginner who is studying: he turned up, he
+knows how the pieces move, and he is not going to pretend otherwise. Every dial
+is low and none of them is a plan — positional and tactical awareness at 15,
+king safety 35, material 45, active pieces 25 — so his taste barely outranks the
+engine's evaluation of the position.
+
+His strength is three strength dials, not a label:
+
+- `depthCap: 6` — the shallowest search in the roster (the 800-rated beginner
+  searches 10), so he sees a couple of moves and misses the reply.
+- **accuracy at the floor** of the rating scale (0.85), which every profile
+  below 1300 shares.
+- `mistakeChance: 0.55` — a per-character override of the shared mistake curve,
+  which floors at 45% for anything rated 800 or below. This is the dial that a
+  rating alone could not express (`blunderChance(400)` is the same 0.45 as
+  `blunderChance(800)`), and no other profile sets it, so every other opponent's
+  mistake rate is unchanged.
+
+His slips are still engine-priced moves from the MultiPV list, never random
+legal moves: `chooseBlunder` keeps them inside the beginner severity and refuses
+a line that walks into a forced mate. On a turn where no candidate is bad enough
+to be a mistake, the roll simply produces nothing and he plays the ordinary
+personality move — which is why he is not hanging a piece on every single move.
+
+**No repertoire.** He is deliberately absent from `PERSONALITY_REPERTOIRES`, so
+`personalityBookFor('emmanuel', colour)` is empty from the first ply in both
+colours, no `book`/`deviation` remark can fire from a prepared line, and
+`openingBias` is empty. His 1st move and his 40th come from the same path.
+
+Dialogue is triggered by the existing event layer and paced by `maybeReact`; his
+cadence is deliberately slower than the default (`ordinaryGap: 8`, `repeatGap:
+18`) because he is not a talker. Lines stay casual and understated in a lost
+position as well as a won one, and none of them references a tactic, an
+evaluation or a search.
+
 ## Mabinti Mansaray (Junior) — 1550, Strong
 
 | | |

@@ -47,6 +47,7 @@ const BANKS: Record<
     | 'edward'
     | 'brandon-freshman'
     | 'mabinti'
+    | 'emmanuel'
   >,
   Bank
 > = {
@@ -395,6 +396,47 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     loss: ['Ahhh, well played! That was a good one!', 'That was fun, guys!', 'Okay, next one is ours!'],
     draw: ['That was fun, guys!', 'A draw? Alright, I’ll take it!', 'Good game, right guys?'],
   },
+  /* Emmanuel Domah: flat, casual, funny by accident. He is not performing — he
+     simply has no idea what is going on and is not upset about it. Every line
+     is something a friend says from the next chair, never a narrated tactic
+     (he does not have one) and never a claim about the evaluation (he could not
+     read it). A lost position gets the same shrug as a won one. */
+  emmanuel: {
+    book: ['Alright, let’s get this over with.', 'Okay, what are we doing?', 'I have no idea what I’m doing, by the way.'],
+    deviation: [
+      'Why would you do that?',
+      'Interesting. I don’t know what that means.',
+      'Okay, sure.',
+    ],
+    mistake: [
+      'Oh. That’s probably bad.',
+      'Wait, what did I just do?',
+      'I might have messed up.',
+      'That was not the plan. There was no plan.',
+    ],
+    strong: ['Okay, sure.', 'Huh. That worked.', 'I’ll take it.'],
+    brilliant: [
+      'Bro this is abuse.',
+      'Nah, you’re doing too much.',
+      'Why are you attacking me like that?',
+    ],
+    winning: ['Wait, I’m actually cooking?', 'No way that worked.', 'Okay, I see myself.'],
+    losing: ['Yeah, I’m not winning this.', 'Bro, I’m getting cooked.', 'This is unfortunate.'],
+    defense: [
+      'You do that, I’m gonna tickle you.',
+      'Bro, relax.',
+      'This is getting personal.',
+      'I’m just gonna move this guy back.',
+    ],
+    attack: ['Alright, I’ll try something.', 'Let’s see what happens.'],
+    'attack-fail': ['Yeah, that went how I expected.', 'Okay. We move on.'],
+    sacrifice: ['I did not mean to do that.', 'Well. That is a piece, I guess.'],
+    'material-won': ['Oh. Free stuff.', 'Okay, sure.'],
+    'material-lost': ['Yeah, that’s gone.', 'Hm. That seems bad for me.'],
+    win: ['Wait, I actually won?', 'Bro... okay.', 'That was something.'],
+    loss: ['Bro...', 'Yeah, never playing this again.', 'That was something.'],
+    draw: ['A draw. Sure.', 'That was something.', 'Yeah, I’ll take that.'],
+  },
   /* The earlier Bryan inherits his voice verbatim — the same object, the same
      lines — and adds only what a defender says. A separate object so Junior and
      Prime cannot pick up these lines through the shared bank. */
@@ -459,6 +501,10 @@ const CADENCE: Partial<
   /* Edward barely talks: a remark every five full moves at most, and the same
      event only once in a long while. */
   edward: { ordinaryGap: 10, repeatGap: 22 },
+  /* He is not a talker: a remark every few moves, and the same kind of remark
+     rarely twice. Nothing here is urgent enough to break the quiet gap except
+     the game ending. */
+  emmanuel: { ordinaryGap: 8, repeatGap: 18 },
 };
 
 export interface ReactOptions {

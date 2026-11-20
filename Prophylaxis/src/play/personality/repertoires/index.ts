@@ -52,6 +52,10 @@ export const PERSONALITY_REPERTOIRES: Record<
     | 'bryan'
     | 'bryan-prime'
     | 'bryan-sophomore'
+    /* Emmanuel Domah has no repertoire at all — not a short one, none. Every
+       move of every game, including the first, comes from his own strength
+       path, so leaving him out of this record is the implementation. */
+    | 'emmanuel'
   >,
   PersonalityRepertoire
 > = {
@@ -113,7 +117,24 @@ const BRYAN_PROFILE_IDS: ReadonlySet<string> = new Set([
   'bryan-sophomore',
 ]);
 
-export function isRepertoireId(id: string): id is PersonalityId {
+/**
+ * Every id that owns a book, and only those.
+ *
+ * A personality can legitimately have none — Emmanuel Domah is deliberately not
+ * in `PERSONALITY_REPERTOIRES` — so this predicate is the accurate list rather
+ * than "any personality id".
+ */
+type RepertoireId =
+  | keyof typeof PERSONALITY_REPERTOIRES
+  | 'brandon'
+  | 'brandon-freshman'
+  | 'nina'
+  | 'nina-freshman'
+  | 'bryan'
+  | 'bryan-prime'
+  | 'bryan-sophomore';
+
+export function isRepertoireId(id: string): id is RepertoireId {
   return (
     id === 'brandon' ||
     id === 'brandon-freshman' ||
