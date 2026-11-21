@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { metadataFor } from '../sync/accountProfile.ts';
+import { syncProfileToAccount } from '../sync/profileMirror.ts';
 import { supabase } from '../sync/client.ts';
 import { useSync } from '../sync/useSync.ts';
 import {
@@ -116,10 +116,10 @@ export default function AccountMenu() {
     /* Local first: the nameplate updates instantly, online or not. */
     updatePlayerProfile(next);
 
-    const result = await supabase?.auth.updateUser({ data: metadataFor(next) });
+    const failure = await syncProfileToAccount(next);
     setBusy(false);
-    if (result?.error) {
-      setError(result.error.message);
+    if (failure) {
+      setError(failure);
       return;
     }
     setNotice('Profile saved.');

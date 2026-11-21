@@ -18,6 +18,7 @@ import { collapsePending, mergeRemoteRow, toWireRow } from '../../src/sync/sync.
 import { deleteTrainingSet } from '../../src/puzzles/trainingSets.ts';
 import { clearActiveGame, saveActiveGame } from '../../src/play/gameStore.ts';
 import { applyRemotePreference, syncPreference } from '../../src/sync/preferences.ts';
+import { updatePlayerProfile } from '../../src/profile/usePlayerProfile.ts';
 import type { ActiveGameRecord } from '../../src/play/types.ts';
 
 test('a change is stamped forward, never backwards', () => {
@@ -118,6 +119,23 @@ test('a preference is queued once per value change', async () => {
   await syncPreference('appearance', '{"mode":"dark"}');
   assert.equal(await db.sync_outbox.count(), 2);
   assert.equal((await db.prefs.get('appearance'))?.value, '{"mode":"dark"}');
+});
+
+test('name and rating change is queued as the profile preference', async () => {
+  await db.prefs.clear();
+  await db.sync_outbox.clear();
+
+  updatePlayerProfile({ firstName: 'Ada', lastName: 'Lovelace', elo: 1820 });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+
+  const stored = await db.prefs.get('profile');
+  assert.ok(stored, 'the profile is written to the synced table');
+  assert.deepEqual(JSON.parse(stored!.value), {
+    firstName: 'Ada',
+    lastName: 'Lovelace',
+    elo: 1820,
+  });
+  assert.equal(await db.sync_outbox.count(), 1);
 });
 
 test('a preference arriving from the server is stored without echoing back', async () => {

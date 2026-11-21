@@ -1,4 +1,5 @@
 import { db } from '../db.ts';
+import { PLAYER_PROFILE_KEY } from '../profile/playerProfile.ts';
 import { recordSyncedChange } from './outbox.ts';
 
 /**
@@ -16,15 +17,21 @@ import { recordSyncedChange } from './outbox.ts';
  * received.
  */
 
-export type PreferenceKey = 'appearance' | 'sound' | 'premoves';
+export type PreferenceKey = 'appearance' | 'sound' | 'premoves' | 'profile';
 
-export const PREFERENCE_KEYS: readonly PreferenceKey[] = ['appearance', 'sound', 'premoves'];
+export const PREFERENCE_KEYS: readonly PreferenceKey[] = [
+  'appearance',
+  'sound',
+  'premoves',
+  'profile',
+];
 
 /** The `localStorage` key each preference lives under. */
 export const PREFERENCE_STORAGE: Record<PreferenceKey, string> = {
   appearance: 'chess-trainer.appearance.v1',
   sound: 'chess-trainer.sound.settings.v1',
   premoves: 'chess-trainer.premoves.enabled.v1',
+  profile: PLAYER_PROFILE_KEY,
 };
 
 /** Fired after a remote value is written locally, so the UI can re-read it. */

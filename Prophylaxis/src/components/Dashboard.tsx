@@ -10,6 +10,7 @@ import {
   playerDisplayName,
 } from '../profile/playerProfile.ts';
 import { updatePlayerProfile, usePlayerProfile } from '../profile/usePlayerProfile.ts';
+import { syncProfileToAccount } from '../sync/profileMirror.ts';
 import type { TabId } from './SideNav';
 
 /**
@@ -187,6 +188,8 @@ function Dashboard({
     setFirstName(saved.firstName);
     setLastName(saved.lastName);
     setEloDraft(String(saved.elo));
+    /* Name and rating belong to the account, not just this device. */
+    void syncProfileToAccount(saved);
     setProfileStatus('Saved');
   }
 

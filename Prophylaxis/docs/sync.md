@@ -146,8 +146,9 @@ Every table that belongs to one person: `played_games`, `puzzle_sets`,
 ### Cosmetics and preferences
 
 `prefs` is one row per setting — `appearance` (palette, piece set, ground,
-accent, board size, colour mode), `sound` (mute and volume) and `premoves` —
-with the same JSON string `localStorage` holds. `src/sync/preferences.ts`
+accent, board size, colour mode), `sound` (mute and volume), `premoves` and
+`profile` (first name, last name, elo) — with the same JSON string
+`localStorage` holds. `src/sync/preferences.ts`
 writes the row from the same place that writes storage and skips the write when
 the value is unchanged, so a value that arrived from the server is not pushed
 straight back. On a pull the row is applied by writing storage, notifying the
@@ -155,6 +156,17 @@ sound manager (registered in `ThemeProvider`), and firing
 `openinglab:preferences-applied`, which the theme and premove hooks listen for.
 A device that has been used for months uploads its current look once, on the
 first boot after the upgrade (`seedPreferences`).
+
+### Name and rating
+
+`profile` travels twice, on purpose. As a synced preference it reaches other
+signed-in devices within a sync round trip, and `usePlayerProfile` re-reads
+storage on `openinglab:preferences-applied`, so the nameplate follows without a
+reload. As `user_metadata` (`first_name`, `last_name`, `elo`) it belongs to the
+account itself: `syncProfileToAccount` pushes every local save (Dashboard form,
+account panel), and `applySignedInProfile` runs at boot — account values win,
+but an account that has no name yet adopts the local profile, so a profile set
+before signing in is not lost.
 
 `woodpecker_sets` is not legacy: the Puzzles page's "Available sets" list is
 built from it, so freezing a set there is the row that has to travel. Migration
