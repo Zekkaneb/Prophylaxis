@@ -35,9 +35,19 @@
   overflow: hidden;
 }
 
-/* A workbench runs edge to edge, so the chip takes the rail's own inset. */
+/* A workbench runs edge to edge, so the chip takes the rail's own inset. Its
+   width is reserved at the right of the room's top row, so the tab strip ends
+   before the chip instead of running underneath it. */
 .app-shell--locked {
   --account-inset: clamp(10px, 1.4vw, 24px);
+  --account-reserve: 56px;
+}
+
+@media (min-width: 861px) {
+  .app-shell--locked {
+    /* Face, gap and the widest name the pill shows, plus its padding. */
+    --account-reserve: 186px;
+  }
 }
 
 .app-shell .view {

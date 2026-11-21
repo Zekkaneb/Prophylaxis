@@ -26,6 +26,9 @@
   gap: 12px;
   flex-wrap: wrap;
   min-width: 0;
+  /* The account chip owns the room's top-right corner; the strip stops short
+     of it rather than scrolling under a floating control. */
+  padding-right: var(--account-reserve, 0px);
 }
 
 .play-tabs {

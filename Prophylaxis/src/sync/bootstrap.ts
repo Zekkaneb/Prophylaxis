@@ -42,20 +42,32 @@ export async function bootstrapDatabase(): Promise<void> {
 }
 
 /**
- * Second boot step: queue rows that were saved before their table synced.
- * Kept separate from the database switch so a failure here cannot stop the app
- * from opening the right database.
+ * Puts the synced appearance settings in place before the first frame, so a
+ * device that changed theme elsewhere does not flash the default one. Local
+ * reads only.
+ */
+export async function bootstrapPreferences(): Promise<void> {
+  if (!syncConfigured || !supabase) return;
+  try {
+    await seedPreferences();
+  } catch (cause) {
+    if (import.meta.env.DEV) console.warn('[sync] could not seed preferences', cause);
+  }
+}
+
+/**
+ * Remaining boot work: queue rows that were saved before their table synced,
+ * and put the account's name on the nameplate. Runs after the first frame —
+ * the backfill walks the whole library and the profile read touches the
+ * network, so neither may hold up (or blank) the page.
  */
 export async function bootstrapSyncQueue(): Promise<void> {
   if (!syncConfigured || !supabase) return;
   try {
-    await seedPreferences();
     await backfillSyncedRows();
   } catch (cause) {
     if (import.meta.env.DEV) console.warn('[sync] could not queue existing rows', cause);
   }
 
-  /* The account's own name and rating belong on the nameplate even before the
-     first sync round trip. */
   await applySignedInProfile();
 }
