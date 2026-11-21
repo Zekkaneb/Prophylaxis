@@ -17,6 +17,7 @@ import {
 import { collapsePending, mergeRemoteRow, toWireRow } from '../../src/sync/sync.ts';
 import { deleteTrainingSet } from '../../src/puzzles/trainingSets.ts';
 import { clearActiveGame, saveActiveGame } from '../../src/play/gameStore.ts';
+import { applyRemotePreference, syncPreference } from '../../src/sync/preferences.ts';
 import type { ActiveGameRecord } from '../../src/play/types.ts';
 
 test('a change is stamped forward, never backwards', () => {
@@ -102,6 +103,33 @@ test('drill and lesson progress only ever move forward', () => {
   );
   assert.equal(lesson.is_completed, true, 'completing a lesson on either device keeps it done');
   assert.equal(lesson.last_practiced, 300);
+});
+
+test('a preference is queued once per value change', async () => {
+  await db.prefs.clear();
+  await db.sync_outbox.clear();
+
+  await syncPreference('appearance', '{"mode":"light"}');
+  assert.equal(await db.sync_outbox.count(), 1);
+
+  await syncPreference('appearance', '{"mode":"light"}');
+  assert.equal(await db.sync_outbox.count(), 1, 'the same value does not queue again');
+
+  await syncPreference('appearance', '{"mode":"dark"}');
+  assert.equal(await db.sync_outbox.count(), 2);
+  assert.equal((await db.prefs.get('appearance'))?.value, '{"mode":"dark"}');
+});
+
+test('a preference arriving from the server is stored without echoing back', async () => {
+  await db.prefs.clear();
+  await db.sync_outbox.clear();
+
+  await withRemoteApply(() =>
+    applyRemotePreference('sound', '{"muted":true,"volume":0.4}'),
+  );
+
+  assert.equal((await db.prefs.get('sound'))?.value, '{"muted":true,"volume":0.4}');
+  assert.equal(await db.sync_outbox.count(), 0, 'a pull must not queue the value it just applied');
 });
 
 test('the live game is tombstoned when it is archived or cleared', async () => {

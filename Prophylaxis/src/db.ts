@@ -20,7 +20,7 @@ import type {
 import { LICHESS_TO_CHESSCOM_SHIFT } from './puzzles/tiers.ts';
 
 export const DB_NAME = 'chess-trainer-db';
-export const DB_SCHEMA_VERSION = 10;
+export const DB_SCHEMA_VERSION = 11;
 
 /**
  * One local change waiting to be uploaded.
@@ -40,6 +40,15 @@ export interface SyncOutboxRow {
 
 /** Small key/value scratch space for sync cursors. */
 export interface SyncMetaRow {
+  key: string;
+  value: string;
+}
+
+/**
+ * Cosmetics and gameplay preferences, one row per setting, so they can sync.
+ * The value is the same JSON string `localStorage` holds.
+ */
+export interface PrefRow {
   key: string;
   value: string;
 }
@@ -301,6 +310,12 @@ const schemaV10 = {
   sync_meta: 'key',
 } as const;
 
+/** v11 adds the synced preferences (theme, board, sound, premoves). */
+const schemaV11 = {
+  ...schemaV10,
+  prefs: 'key',
+} as const;
+
 export type AppDatabase = Dexie & {
   puzzles: EntityTable<Puzzle, 'puzzle_id'>;
   woodpecker_sets: EntityTable<WoodpeckerSet, 'set_id'>;
@@ -317,6 +332,7 @@ export type AppDatabase = Dexie & {
   active_game: EntityTable<ActiveGameRecord, 'game_id'>;
   sync_outbox: EntityTable<SyncOutboxRow, 'id'>;
   sync_meta: EntityTable<SyncMetaRow, 'key'>;
+  prefs: EntityTable<PrefRow, 'key'>;
 };
 
 /**
@@ -337,9 +353,10 @@ export function createDatabase(name: string): AppDatabase {
   instance.version(6).stores(schemaV6);
   instance.version(7).stores(schemaV7);
   instance.version(8).stores(schemaV8);
+  instance.version(10).stores(schemaV10);
   instance
     .version(DB_SCHEMA_VERSION)
-    .stores(schemaV10)
+    .stores(schemaV11)
     .upgrade((tx) =>
       tx
         .table('puzzles')

@@ -32,6 +32,7 @@ export const SYNCED_TABLES = [
   'lesson_progress',
   'saved_reviews',
   'active_game',
+  'prefs',
 ] as const;
 export type SyncedTable = (typeof SYNCED_TABLES)[number];
 

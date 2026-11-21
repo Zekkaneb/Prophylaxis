@@ -2,6 +2,7 @@ import { db, type SyncOutboxRow } from '../db.ts';
 import { readDatabaseOwner } from './accountDatabase.ts';
 import { supabase } from './client.ts';
 import { isSyncedTable, withRemoteApply } from './outbox.ts';
+import { applyRemotePreference } from './preferences.ts';
 
 /**
  * Push local changes, then pull everyone else's.
@@ -238,6 +239,13 @@ async function pullOnce(userId: string): Promise<PullResult> {
         if (!isSyncedTable(row.table_name)) continue;
         if (row.deleted) {
           await db.table(row.table_name).delete(row.row_id);
+        } else if (row.table_name === 'prefs') {
+          /* A preference is not just a row: the screen has to pick it up. */
+          const key = row.payload?.key;
+          const value = row.payload?.value;
+          if (typeof key === 'string' && typeof value === 'string') {
+            await applyRemotePreference(key, value);
+          }
         } else if (row.payload) {
           const local = (await db.table(row.table_name).get(row.row_id)) as
             | Record<string, unknown>

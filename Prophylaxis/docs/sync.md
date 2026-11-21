@@ -127,8 +127,8 @@ Accounts ship in the hosted build served over https.
 
 1. Server schema + RLS (done — `supabase/migrations/0001_sync.sql`,
    `0002_sync_cursor.sql` and `0003_woodpecker_sets.sql`; run them in order).
-2. Auth: client, session persistence, sign-in in Settings (done —
-   `src/sync/client.ts`, `src/sync/useSync.ts`, the Account section).
+2. Auth: client, session persistence, sign-in from the account corner (done —
+   `src/sync/client.ts`, `src/sync/useSync.ts`, `src/components/AccountMenu.tsx`).
 3. Outbox + push, for `played_games` only, then pull on sign-in (done —
    `src/sync/outbox.ts`, `src/sync/sync.ts`, `src/play/gameStore.ts`).
 4. The remaining tables (done — see "What syncs today").
@@ -141,7 +141,20 @@ Accounts ship in the hosted build served over https.
 Every table that belongs to one person: `played_games`, `puzzle_sets`,
 `puzzle_cycles`, `puzzle_attempts`, `woodpecker_sets`, `pgn_courses`,
 `custom_lessons`, `line_progress`, `lesson_progress`, `saved_reviews`,
-`active_game`.
+`active_game`, and `prefs`.
+
+### Cosmetics and preferences
+
+`prefs` is one row per setting — `appearance` (palette, piece set, ground,
+accent, board size, colour mode), `sound` (mute and volume) and `premoves` —
+with the same JSON string `localStorage` holds. `src/sync/preferences.ts`
+writes the row from the same place that writes storage and skips the write when
+the value is unchanged, so a value that arrived from the server is not pushed
+straight back. On a pull the row is applied by writing storage, notifying the
+sound manager (registered in `ThemeProvider`), and firing
+`openinglab:preferences-applied`, which the theme and premove hooks listen for.
+A device that has been used for months uploads its current look once, on the
+first boot after the upgrade (`seedPreferences`).
 
 `woodpecker_sets` is not legacy: the Puzzles page's "Available sets" list is
 built from it, so freezing a set there is the row that has to travel. Migration

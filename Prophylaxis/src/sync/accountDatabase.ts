@@ -44,6 +44,7 @@ export const CLAIMED_TABLES = [
   'puzzle_cycles',
   'puzzle_attempts',
   'woodpecker_sets',
+  'prefs',
 ] as const;
 
 export function databaseNameFor(owner: string): string {

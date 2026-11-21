@@ -8,6 +8,7 @@ import PlayPage from './components/PlayPage';
 import WoodpeckerTrainer from './components/WoodpeckerTrainer';
 import GameReviewDashboard from './components/GameReviewDashboard';
 import SettingsDrawer from './components/SettingsDrawer';
+import AccountMenu from './components/AccountMenu';
 import { PersistentBoardProvider } from './board/PersistentBoard';
 import { listCourses } from './courses/courseService';
 import type { PgnCourseRecord } from './courses/types';
@@ -218,6 +219,8 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+
+      <AccountMenu />
 
       <SideNav
         tab={route.tab}

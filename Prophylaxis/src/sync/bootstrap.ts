@@ -1,4 +1,6 @@
 import { backfillSyncedRows, ensureDatabaseFor, LOCAL_OWNER } from './accountDatabase.ts';
+import { applySignedInProfile } from './accountProfile.ts';
+import { seedPreferences } from './preferences.ts';
 import { supabase, syncConfigured } from './client.ts';
 
 /**
@@ -47,8 +49,13 @@ export async function bootstrapDatabase(): Promise<void> {
 export async function bootstrapSyncQueue(): Promise<void> {
   if (!syncConfigured || !supabase) return;
   try {
+    await seedPreferences();
     await backfillSyncedRows();
   } catch (cause) {
     if (import.meta.env.DEV) console.warn('[sync] could not queue existing rows', cause);
   }
+
+  /* The account's own name and rating belong on the nameplate even before the
+     first sync round trip. */
+  await applySignedInProfile();
 }

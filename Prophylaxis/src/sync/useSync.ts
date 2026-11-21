@@ -33,7 +33,11 @@ export interface SyncController {
   /** Which local database the count belongs to. */
   database: string;
   signIn: (email: string, password: string) => Promise<string | null>;
-  signUp: (email: string, password: string) => Promise<string | null>;
+  signUp: (
+    email: string,
+    password: string,
+    metadata?: Record<string, unknown>,
+  ) => Promise<string | null>;
   signOut: () => Promise<void>;
   syncNow: () => Promise<void>;
 }
@@ -228,13 +232,22 @@ export function useSync(): SyncController {
     return error ? error.message : null;
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string) => {
-    if (!supabase) return 'This build has no backend.';
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) return error.message;
-    setMessage('Account created. If your project asks for confirmation, check your email first.');
-    return null;
-  }, []);
+  const signUp = useCallback(
+    async (email: string, password: string, metadata?: Record<string, unknown>) => {
+      if (!supabase) return 'This build has no backend.';
+      /* The name and rating live in `user_metadata`, so they arrive with the
+         account on every device instead of being synced rows. */
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: metadata ? { data: metadata } : undefined,
+      });
+      if (error) return error.message;
+      setMessage('Account created. If your project asks for confirmation, check your email first.');
+      return null;
+    },
+    [],
+  );
 
   const signOut = useCallback(async () => {
     if (!supabase) return;

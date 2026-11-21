@@ -17,7 +17,7 @@
 --   policy checks auth.uid WRITE the INSERT half of the policy
 --   authenticated can SELECT/INSERT/UPDATE  the grants 0002 adds
 --   authenticated can execute rpc           the RPC grant
---   constraint allows every synced table    migration 0003 (woodpecker_sets)
+--   constraint allows every synced table    migrations 0003 (woodpecker_sets) and 0004 (prefs)
 --   anon cannot touch the table             no anonymous access at all
 
 select 'updated_seq column' as check_name,
@@ -95,7 +95,10 @@ select 'constraint allows every synced table',
        coalesce(
          pg_get_constraintdef(
            (select oid from pg_constraint where conname = 'sync_rows_known_table')
-         ) like '%woodpecker_sets%',
+         ) like '%woodpecker_sets%'
+         and pg_get_constraintdef(
+           (select oid from pg_constraint where conname = 'sync_rows_known_table')
+         ) like '%prefs%',
          false
        )
 

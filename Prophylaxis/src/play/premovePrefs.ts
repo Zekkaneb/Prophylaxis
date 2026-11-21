@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { PREFERENCES_APPLIED_EVENT, syncPreference } from '../sync/preferences.ts';
 
 const STORAGE_KEY = 'chess-trainer.premoves.enabled.v1';
 const CHANGE_EVENT = 'chess-trainer:premoves-changed';
@@ -29,6 +30,7 @@ export function savePremovesEnabled(enabled: boolean): void {
   } catch {
     /* Private mode. */
   }
+  void syncPreference('premoves', enabled ? '1' : '0');
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
@@ -40,9 +42,11 @@ export function usePremovesEnabled(): boolean {
     const sync = () => setEnabled(loadPremovesEnabled());
     window.addEventListener(CHANGE_EVENT, sync);
     window.addEventListener('storage', sync);
+    window.addEventListener(PREFERENCES_APPLIED_EVENT, sync);
     return () => {
       window.removeEventListener(CHANGE_EVENT, sync);
       window.removeEventListener('storage', sync);
+      window.removeEventListener(PREFERENCES_APPLIED_EVENT, sync);
     };
   }, []);
 

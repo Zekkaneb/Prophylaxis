@@ -8,6 +8,13 @@ import {
   type ReactNode,
 } from 'react';
 import { getVolume, isMuted, setMuted, setVolume } from '../services/soundService';
+import { loadSoundSettings, parseSoundSettings } from '../play/audio/soundSettings';
+import { configureSound } from '../services/soundService';
+import {
+  PREFERENCES_APPLIED_EVENT,
+  registerPreferenceApplier,
+  syncPreference,
+} from '../sync/preferences.ts';
 import type { PieceSetId } from './pieceSets';
 
 export type BoardPaletteId =
@@ -296,12 +303,39 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     appearance.mode === 'system' ? systemTheme : appearance.mode;
 
   useEffect(() => {
+    const serialised = JSON.stringify(appearance);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appearance));
+      localStorage.setItem(STORAGE_KEY, serialised);
     } catch {
       /* private mode — settings stay in memory */
     }
+    /* Also into the synced table. `syncPreference` compares before queueing, so
+       a value that just arrived from the server is not echoed back. */
+    void syncPreference('appearance', serialised);
   }, [appearance]);
+
+  /* A preference that arrived from another device is already in storage; this
+     is what makes the screen follow it. */
+  useEffect(() => {
+    const sync = () => {
+      setAppearance(readAppearance());
+      setSoundOnState(!isMuted());
+      setSoundVolumeState(getVolume());
+    };
+    window.addEventListener(PREFERENCES_APPLIED_EVENT, sync);
+    return () => window.removeEventListener(PREFERENCES_APPLIED_EVENT, sync);
+  }, []);
+
+  /* Sound needs more than the storage write: the manager holds its own copy. */
+  useEffect(() => {
+    registerPreferenceApplier('sound', (value) => {
+      const settings = parseSoundSettings(value);
+      configureSound({ muted: settings.muted, volume: settings.volume });
+      setSoundOnState(!settings.muted);
+      setSoundVolumeState(settings.volume);
+    });
+    return () => registerPreferenceApplier('sound', null);
+  }, []);
 
   /* The whole theme is two attributes on <html>: every token resolves from them. */
   useEffect(() => {
@@ -356,11 +390,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setSoundOn = useCallback((on: boolean) => {
     setMuted(!on);
     setSoundOnState(on);
+    void syncPreference('sound', JSON.stringify(loadSoundSettings()));
   }, []);
 
   const setSoundVolume = useCallback((volume: number) => {
     setVolume(volume);
     setSoundVolumeState(getVolume());
+    void syncPreference('sound', JSON.stringify(loadSoundSettings()));
   }, []);
 
   const reset = useCallback(() => {
@@ -369,6 +405,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setVolume(DEFAULT_SOUND_VOLUME);
     setSoundOnState(true);
     setSoundVolumeState(DEFAULT_SOUND_VOLUME);
+    void syncPreference('sound', JSON.stringify(loadSoundSettings()));
   }, []);
 
   const value = useMemo<AppearanceContextValue>(
