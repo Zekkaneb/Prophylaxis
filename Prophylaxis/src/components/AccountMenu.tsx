@@ -40,6 +40,7 @@ export default function AccountMenu() {
   const [password, setPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   /* Follow the session: signed in opens the details, signed out the form. */
   useEffect(() => {
@@ -50,6 +51,24 @@ export default function AccountMenu() {
       setPassword('');
       setNewPassword('');
     }
+  }, [sync.email]);
+
+  /* A provider sign-in can hand us a picture; email accounts use initials. */
+  useEffect(() => {
+    if (!supabase || !sync.email) {
+      setAvatarUrl(null);
+      return;
+    }
+    let cancelled = false;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (cancelled) return;
+      const metadata = data.session?.user.user_metadata ?? {};
+      const picture = metadata.avatar_url ?? metadata.picture;
+      setAvatarUrl(typeof picture === 'string' && picture ? picture : null);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [sync.email]);
 
   /* Seed the fields from the profile the boards already show. */
@@ -165,6 +184,9 @@ export default function AccountMenu() {
   };
 
   const displayName = playerDisplayName(profile);
+  /* The pill is a face and a name: the account's given name, never the whole
+     address. */
+  const nameLabel = profile.firstName || profile.lastName;
 
   return (
     <div className="account-corner">
@@ -177,7 +199,12 @@ export default function AccountMenu() {
         title={sync.email ? `Signed in as ${sync.email}` : 'Sign in or create an account'}
       >
         {sync.email ? (
-          <span className="account-trigger__initials">{playerInitials(profile)}</span>
+          <>
+            <span className="account-trigger__avatar">
+              {avatarUrl ? <img src={avatarUrl} alt="" /> : playerInitials(profile)}
+            </span>
+            {nameLabel ? <span className="account-trigger__name">{nameLabel}</span> : null}
+          </>
         ) : (
           'Sign in'
         )}
