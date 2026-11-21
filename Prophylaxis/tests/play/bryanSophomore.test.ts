@@ -99,8 +99,8 @@ test('the new opponent is Bryan Martinez-Hernandez, Sophomore, 1350', () => {
   assert.equal(opponentFullName(SOPHOMORE), 'Bryan Martinez-Hernandez (Sophomore)');
   assert.equal(opponentMeta(SOPHOMORE), 'Sophomore · 1350 Elo');
 
-  assert.equal(PERSONALITY_OPPONENTS.length, 15);
-  assert.equal(ALL_OPPONENTS.length, 16);
+  assert.equal(PERSONALITY_OPPONENTS.length, 16);
+  assert.equal(ALL_OPPONENTS.length, 17);
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'bryan-sophomore').length,
     1,
@@ -108,8 +108,8 @@ test('the new opponent is Bryan Martinez-Hernandez, Sophomore, 1350', () => {
   );
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id.startsWith('bryan')).length,
-    3,
-    'three separate Bryan ids, no merge',
+    4,
+    'four separate Bryan ids, no merge',
   );
 });
 

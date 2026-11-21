@@ -176,6 +176,30 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'BM',
     usesRepertoire: false,
   },
+  /* Bryan Widjaja (Prime), 1400 — the Wall.
+
+     A different Bryan and a different player from the three
+     Martinez-Hernandez profiles: defence is his speciality. He sits in the
+     Intermediate group at 1400 by category, never by rating order, and
+     `bryan-widjaja` is his own stable id, so a saved game can never resolve
+     him to any other Bryan card. */
+  {
+    id: 'bryan-widjaja',
+    kind: 'personality',
+    category: 'intermediate',
+    name: 'Bryan Widjaja',
+    shortName: 'Bryan W',
+    title: 'Prime',
+    elo: 1400,
+    style:
+      'The Wall: exceptionally hard to break down. Protects his king and his material, defends cramped positions calmly and refuses to hand you a weakness — but he misses tactics a stronger player would see.',
+    portraitPath: 'opponents/bryan-widjaja.webp',
+    /* Framed tight in the source file, like Mabinti's: at 1 the whole head
+       shows instead of being cropped twice. */
+    portraitScale: 1,
+    initials: 'BW',
+    usesRepertoire: false,
+  },
   {
     id: 'nina',
     kind: 'personality',

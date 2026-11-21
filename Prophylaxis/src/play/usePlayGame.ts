@@ -81,6 +81,7 @@ import {
   ninaPlan,
 } from './personality/nina.ts';
 import { faadiAllowsMistake } from './personality/faadi.ts';
+import { bryanWidjajaAllowsMistake } from './personality/bryanWidjaja.ts';
 import { styleFor, type PersonalityStyle } from './personality/styles.ts';
 import { computeThinkingPlan, type ThinkingPlan } from './personality/thinking.ts';
 import type {
@@ -728,7 +729,12 @@ export function usePlayGame(engine: StockfishController) {
             : null;
         /* Faadi still sees a free piece: his wildcard error is an idea he
            missed, not a queen handed over in broad daylight. */
-        const blunder = rolled && faadiAllowsMistake(fen, rolled, style) ? rolled : null;
+        const blunder =
+          rolled &&
+          faadiAllowsMistake(fen, rolled, style) &&
+          bryanWidjajaAllowsMistake(fen, rolled, style)
+            ? rolled
+            : null;
 
         if (style) {
           /* Judge the player's last move against the bot's own reading of the

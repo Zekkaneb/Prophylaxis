@@ -42,6 +42,9 @@ import type { PersonalityStyle } from '../styles.ts';
  *   order, castles, then takes the break the centre asks for when the engine is
  *   reasonably happy with it (a wider tolerance than Junior's, since he plays
  *   by feel). No speculative ...f5.
+ * - Bryan Widjaja is the defender of the group: complete the setup, castle,
+ *   and only then take the break the centre asks for, when the engine clearly
+ *   agrees. No speculative ...f5 and no early commitment.
  */
 
 export type KidBreak = 'e5' | 'c5';
@@ -157,7 +160,8 @@ export function kidPlan(
     style.id !== 'junior' &&
     style.id !== 'bryan' &&
     style.id !== 'bryan-prime' &&
-    style.id !== 'bryan-sophomore'
+    style.id !== 'bryan-sophomore' &&
+    style.id !== 'bryan-widjaja'
   ) {
     return null;
   }
@@ -170,7 +174,8 @@ export function kidPlan(
     junior ||
     style.id === 'bryan' ||
     style.id === 'bryan-prime' ||
-    style.id === 'bryan-sophomore';
+    style.id === 'bryan-sophomore' ||
+    style.id === 'bryan-widjaja';
 
   const nf6 = at(game, 'f6', 'n', 'b');
   const g6 = at(game, 'g6', 'p', 'b');
@@ -294,7 +299,10 @@ export function chooseKidMove(input: {
           : style.id === 'bryan-sophomore'
             /* A defender commits to a break only when it is clearly sound. */
             ? 40
-            : 60;
+            : style.id === 'bryan-widjaja'
+              /* The Wall wants the engine clearly behind the commitment. */
+              ? 40
+              : 60;
 
   for (const move of plan.moves) {
     const features = describeMove(fen, move.uci);

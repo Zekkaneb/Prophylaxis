@@ -116,6 +116,59 @@ Senior therefore steps up from Junior through the blunder curve, the tighter
 60cp candidate gap (vs 70) and accuracy 2.2 (vs 2.05), not through a shallower
 search. His aggression, risk and tactical tendencies are unchanged.
 
+## Bryan Widjaja (Prime) — 1400, Intermediate
+
+| | |
+|---|---|
+| id | `bryan-widjaja` |
+| Name / subtext | Bryan Widjaja · Prime |
+| Rating | 1400, Intermediate group |
+| White | Queen's Gambit: 1.d4, 2.c4, sound development |
+| Black vs 1.e4 | Caro-Kann: 1...c6, then 2...d5 (Classical, Advance, Exchange) |
+| Black vs 1.d4 | King's Indian set-up: ...Nf6, ...g6, ...Bg7, ...d6, ...O-O, then ...e5 or ...c5 |
+| Profile file | `src/play/personality/styles.ts` (`bryan-widjaja`) |
+| Repertoire | `src/play/personality/repertoires/bryanWidjaja.ts` |
+| Dialogue | `DIALOGUE_BANKS['bryan-widjaja']` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/bryan-widjaja.webp` (monogram `BW` if missing) |
+
+The Wall: the defensive speciality of the roster. Defensive and king safety are
+the maximum dial values (98/98), material care 90, simplification 80 and
+positional 75; aggression (30), risk (20), initiative (40) and complexity (25)
+are all low, so he steers towards stable structures, sensible exchanges and a
+safe king. `sacrifice` is 10 and the opening bias favours solid, positional,
+developing tags while penalising sharp and initiative ones. "Prime" here is the
+card subtext, not a strength group — he is an Intermediate card at 1400.
+
+Defence is a selection preference, not accuracy. His strength dials come from
+1400 exactly as they do for any other profile: `accuracyForElo(1400)` = 1.05,
+`candidateGapForElo(1400)` = 115, the standard search depth and the standard
+blunder curve (about 15% at 1250, 7% at 1550). Tactical awareness is 35, below
+the other cards at his rating, so complicated forcing lines are still missed at
+the rate a 1400 misses them.
+
+One small per-character guard keeps the defence honest rather than strong: when
+the blunder roll fires, `bryanWidjajaAllowsMistake` in
+`src/play/personality/bryanWidjaja.ts` rejects a deliberate slip that is a
+blatant material blunder or allows mate in one, following the existing
+`faadiAllowsMistake` / `edwardAllowsMistake` pattern. He still slips; he does not
+throw a piece or walk into mate on purpose. The guard is wired into both blunder
+paths (`chooseMove.ts` and `usePlayGame.ts`) and touches no other profile or
+engine setting.
+
+The repertoire is short and ordinary. White plays the Queen's Gambit (main,
+Exchange and a Slav-style set-up); Black answers 1.e4 with the Caro-Kann in its
+Classical, Advance and Exchange forms; against 1.d4 he registers in the shared
+King's Indian layer (`repertoires/kid.ts`) as a patient builder — set-up and
+castling first, and a break only when the engine is clearly behind it
+(`breakTolerance: 40`). That layer is a preference, not a script: it declines
+after 1.e4 or when the structure is wrong, and ordinary Stockfish selection takes
+over. Book lookups are always re-checked for legality.
+
+Dialogue is event-driven by `events.ts` and paced by `maybeReact` with a reserved
+cadence (`ordinaryGap: 8`, `repeatGap: 18`): short, chill, understated lines,
+never a narrated tactic, an evaluation or a number, and never a cue to the move
+chooser. The never-repeat-a-line pool and the once-per-game events still apply.
+
 ## Repertoire data
 
 `src/play/personality/repertoires/*.ts` contains the declared SAN lines.

@@ -31,6 +31,7 @@ import {
 } from './nina.ts';
 import { faadiAllowsMistake } from './faadi.ts';
 import { edwardAllowsMistake } from './edward.ts';
+import { bryanWidjajaAllowsMistake } from './bryanWidjaja.ts';
 import {
   brandonFreshmanAllowsMistake,
   chooseBrandonFreshmanMove,
@@ -221,6 +222,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
       rolled &&
       faadiAllowsMistake(fen, rolled, style) &&
       edwardAllowsMistake(fen, rolled, style) &&
+      bryanWidjajaAllowsMistake(fen, rolled, style) &&
       brandonFreshmanAllowsMistake(fen, rolled, style)
         ? rolled
         : null;
@@ -284,7 +286,9 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
                     ? 70
                     : style.id === 'bryan-sophomore'
                       ? 65
-                      : 100;
+                      : style.id === 'bryan-widjaja'
+                        ? 65
+                        : 100;
           if (gap <= tolerance) {
             kidSelection = { uci: move.uci, gap, features, best: gap <= 5 };
             break;

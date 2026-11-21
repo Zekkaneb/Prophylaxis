@@ -73,9 +73,9 @@ test('Bryan (Junior) is on the roster at 1800 with a unique id', () => {
   assert.match(BRYAN.style, /balanced/i);
   assert.match(BRYAN.style, /intuitive/i);
 
-  assert.equal(PERSONALITY_OPPONENTS.length, 15);
-  assert.equal(ALL_OPPONENTS.length, 16, 'fifteen personalities plus the General Bot');
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 16);
+  assert.equal(PERSONALITY_OPPONENTS.length, 16);
+  assert.equal(ALL_OPPONENTS.length, 17, 'sixteen personalities plus the General Bot');
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 17);
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'bryan').length,
     1,
@@ -493,7 +493,7 @@ test('Bryan Prime is its own id at 2000 in The Big 3', () => {
   assert.equal(opponentFullName(PRIME), 'Bryan Martinez-Hernandez (Prime)');
 
   assert.notEqual(PRIME.id, BRYAN.id, 'the two Bryans are distinguishable in a saved game');
-  assert.equal(PERSONALITY_OPPONENTS.filter((opponent) => opponent.id.startsWith('bryan')).length, 3);
+  assert.equal(PERSONALITY_OPPONENTS.filter((opponent) => opponent.id.startsWith('bryan')).length, 4);
 });
 
 test('the two Bryans share one voice and one repertoire', () => {

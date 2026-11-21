@@ -206,6 +206,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* A quick glance. A busy board does not earn him a longer think, because he
          would not know what to do with the extra time. */
       return 0.7 + (profile.tactical ? 0.06 : 0.02) * profile.complexity;
+    case 'bryan-widjaja':
+      /* The defensive question first: a busy board earns a slightly longer look,
+         but the time goes into checking threats, not into finding combinations. */
+      return 0.95 + (profile.tactical ? 0.1 : 0.04) * profile.complexity;
   }
 }
 
@@ -252,6 +256,9 @@ function deliberationFactor(style: PersonalityStyle): number {
       /* He moves when he has picked something, not when he is sure — and never
          with any ceremony about it. */
       return 0.75;
+    case 'bryan-widjaja':
+      /* Unhurried without being slow: defence is patient, not ponderous. */
+      return 1.0;
   }
 }
 

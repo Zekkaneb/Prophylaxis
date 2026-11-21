@@ -26,7 +26,8 @@ export type PersonalityId =
   | 'edward'
   | 'brandon-freshman'
   | 'mabinti'
-  | 'emmanuel';
+  | 'emmanuel'
+  | 'bryan-widjaja';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -403,6 +404,40 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 80,
     activePieces: 85,
     openingBias: { sharp: 28, initiative: 24, developing: 8, solid: -16, positional: -8 },
+  },
+  /* Bryan Widjaja (Prime), 1400 — the Wall.
+
+     The strongest defensive profile on the roster, and deliberately not the
+     strongest player. Defence, king safety and material sit at the top of the
+     table (98/98/90), positional understanding above the midpoint (75),
+     aggression, risk and complexity at the bottom (30/20/25), and tactical
+     awareness at 35 — well below what a 1400 usually gets from this table.
+
+     That last number is the distinction the character is built on: `tactical`
+     is how often he *looks* for a shot, and it is low. His defensive numbers
+     only reorder near-equal candidates — the engine's evaluation, the 1400
+     candidate gap and the rating's own slip curve still decide how strong he
+     is. Nothing here can make him calculate like a 2000; what it does is make
+     him very hard to break down with a straightforward attack. `accuracy` is
+     left to `accuracyForElo(1400)`, exactly like every other profile. */
+  'bryan-widjaja': {
+    ...BASE,
+    id: 'bryan-widjaja',
+    aggression: 30,
+    risk: 20,
+    positional: 75,
+    tactical: 35,
+    defensive: 98,
+    initiative: 40,
+    simplification: 80,
+    complexity: 25,
+    kingSafety: 98,
+    material: 90,
+    /* He will give a pawn for a concrete defensive resource, never a piece on
+       speculation. */
+    sacrifice: 10,
+    activePieces: 55,
+    openingBias: { solid: 26, positional: 20, developing: 14, sharp: -24, initiative: -14 },
   },
 };
 

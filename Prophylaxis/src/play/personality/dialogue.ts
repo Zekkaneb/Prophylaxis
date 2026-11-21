@@ -47,6 +47,11 @@ const BANKS: Record<
     | 'edward'
     | 'brandon-freshman'
     | 'mabinti'
+    /* Both banks below are written in `DIALOGUE_BANKS` rather than here:
+       Emmanuel because his voice is his own, Bryan Widjaja because his sits
+       beside the other Bryan entries there. */
+    | 'emmanuel'
+    | 'bryan-widjaja'
   >,
   Bank
 > = {
@@ -447,6 +452,43 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     ],
     losing: [...BANKS.bryan.losing, 'I’m just trying to survive here.'],
   },
+  /* Bryan Widjaja: reserved, chill and unbothered. Short sentences, an ordinary
+     streetwise register rather than performed slang, and no comment on most
+     moves at all. Every line is something said across the board — never a
+     narrated tactic, never a claim about the evaluation, never a number. */
+  'bryan-widjaja': {
+    book: ['Do I got this?', 'Alright, let’s see.', 'We good.'],
+    deviation: [
+      'Oh alr.',
+      'I hear you.',
+      'Hmm... hold on.',
+      'Let me see something.',
+      'Nah, wait.',
+    ],
+    mistake: ['Ah, I ain’t see that.', 'Okay, that wasn’t good.', 'My fault.'],
+    strong: [
+      'Okay, that’s solid.',
+      'Yeah, I like that.',
+      'That’s a good one.',
+      'Yeah, that’s calm.',
+    ],
+    brilliant: ['You doing a lot right now.', 'Hold on, hold on.', 'Nah, I’m not letting that happen.'],
+    winning: ['Yeah, we good.', 'It’s looking alright.', 'I might have this.'],
+    losing: [
+      'It’s looking rough.',
+      'Nah, I gotta figure something out.',
+      'Still got a chance.',
+    ],
+    defense: ['We good.', 'I can work with this.', 'Nah, there’s a way out.'],
+    attack: ['Yeah, I like this.', 'Alright, let’s see where this goes.'],
+    'attack-fail': ['Nah, that wasn’t it.', 'Yeah, that didn’t work.'],
+    sacrifice: ['Yeah, I had to.', 'That’s the one.'],
+    'material-won': ['Yeah, that’s calm.', 'Okay, good.'],
+    'material-lost': ['Ah, that’s on me.', 'Nah, I ain’t like that.'],
+    win: ['Alr, that’s game.', 'Good game.', 'Yeah, that was solid.'],
+    loss: ['Good game.', 'Yeah, you got me.', 'It’s calm.'],
+    draw: ['We good.', 'Yeah, that’s fair.'],
+  },
 };
 
 export interface DialogueState {
@@ -497,6 +539,9 @@ const CADENCE: Partial<
   /* Edward barely talks: a remark every five full moves at most, and the same
      event only once in a long while. */
   edward: { ordinaryGap: 10, repeatGap: 22 },
+  /* Bryan Widjaja is reserved: a remark every eight plies at most, and the same
+     kind of remark only after a long quiet stretch. */
+  'bryan-widjaja': { ordinaryGap: 8, repeatGap: 18 },
 };
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except

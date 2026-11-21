@@ -96,7 +96,7 @@ test('categories are explicitly configured, complete and free of Big 4', () => {
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'intermediate').map(
       (opponent) => opponent.id,
     ),
-    ['sophomore', 'bryan-sophomore'],
+    ['sophomore', 'bryan-sophomore', 'bryan-widjaja'],
   );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'strong').map(
@@ -146,6 +146,7 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
       'opponents/faadi.webp',
       'opponents/nina-freshman.webp',
       'opponents/bryan-sophomore.webp',
+      'opponents/bryan-widjaja.webp',
       'opponents/nina.webp',
       'opponents/mabinti.webp',
       'opponents/brandon-freshman.webp',
@@ -269,8 +270,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
   assert.equal(GENERAL_BOT.usesRepertoire, false);
-  assert.equal(ALL_OPPONENTS.length, 16);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 16);
+  assert.equal(ALL_OPPONENTS.length, 17);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 17);
   assert.equal(GENERAL_BOT_ELO.min, 100);
   assert.equal(GENERAL_BOT_ELO.max, 2800);
 });
