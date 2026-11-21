@@ -114,8 +114,8 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     style:
       'The greatest player of all time (Not really). How fast can you win?',
     portraitPath: 'opponents/emmanuel.webp',
-    /* He is the one portrait framed taller than it is wide, and it is already
-       painted tight: the shared 1.2 zoom would crop the beanie and the hood. */
+    /* It is already painted tight: the shared 1.2 zoom would crop the beanie
+       and the hood. */
     portraitScale: 1,
     initials: 'ED',
     usesRepertoire: false,
@@ -282,10 +282,9 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'NY',
     usesRepertoire: false,
   },
-  /* Brandon before Prime: the same person and the same portrait, one rung down
-     the ladder at 1600. The shared portrait is deliberate — it is the same
-     player at an earlier stage — and the subtext and rating tell the two cards
-     apart. */
+  /* Brandon before Prime: the same person, one rung down the ladder at 1600.
+     Each version carries its own portrait of the same player at that stage, so
+     the subtext and rating tell the two cards apart. */
   {
     id: 'brandon-freshman',
     kind: 'personality',
@@ -297,6 +296,9 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     style:
       'Starting off strong in his freshman year, but his signature "funk" throws opponents off completely. Will you smell the funk and falter?',
     portraitPath: 'opponents/brandon-freshman.webp',
+    /* Framed close in the source, like Faadi's: the shared zoom would clip his
+       hair, so the whole square shows. */
+    portraitScale: 1,
     initials: 'BT',
     usesRepertoire: false,
   },
@@ -345,6 +347,9 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     elo: 2350,
     style: 'A player who once rivaled with the best of the best. Do you actually have what it takes to best him in his prime?',
     portraitPath: 'opponents/brandon.webp',
+    /* Framed close in the source, like his Freshman card: the shared zoom would
+       clip his hair, so the whole square shows. */
+    portraitScale: 1,
     initials: 'BT',
     usesRepertoire: false,
   },
