@@ -415,7 +415,7 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
      (he does not have one) and never a claim about the evaluation (he could not
      read it). A lost position gets the same shrug as a won one. */
   emmanuel: {
-    book: ['I am 8,000 elo by the way.', 'I have no idea what I’m doing, by the way.'],
+    book: ["I am 8,000 elo by the way.", "I have no idea what I’m doing, by the way."],
     deviation: [
       'Hmm.',
     ],
