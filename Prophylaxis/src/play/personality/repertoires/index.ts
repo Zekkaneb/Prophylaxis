@@ -21,6 +21,7 @@ import { ALEX_TANG_REPERTOIRE } from './alexTang.ts';
 import { ERIK_WIESSMANN_REPERTOIRE } from './erikWiessmann.ts';
 import { JONAH_PACHIKARA_REPERTOIRE } from './jonahPachikara.ts';
 import { SOPHIA_KUAN_REPERTOIRE } from './sophiaKuan.ts';
+import { BRANDON_VARSITY_REPERTOIRE } from './brandonVarsity.ts';
 import {
   BRANDON_FRESHMAN_MAINLINES,
   BRANDON_FRESHMAN_SHARED_BLACK_PREFIX,
@@ -76,6 +77,7 @@ export const PERSONALITY_REPERTOIRES: Record<
   'erik-wiessmann': ERIK_WIESSMANN_REPERTOIRE,
   'jonah-pachikara': JONAH_PACHIKARA_REPERTOIRE,
   'sophia-kuan': SOPHIA_KUAN_REPERTOIRE,
+  'brandon-varsity': BRANDON_VARSITY_REPERTOIRE,
 };
 
 export interface PersonalityBooks {

@@ -22,8 +22,8 @@ test('Brandon is registered as the fifth personality at 2350', () => {
   assert.equal(BRANDON.elo, 2350);
   assert.equal(BRANDON.portraitPath, 'opponents/brandon.webp');
   assert.equal(BRANDON.usesRepertoire, false);
-  assert.equal(PERSONALITY_OPPONENTS.length, 20);
-  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 20);
+  assert.equal(PERSONALITY_OPPONENTS.length, 21);
+  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 21);
   assert.equal(PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'brandon').length, 1);
 });
 

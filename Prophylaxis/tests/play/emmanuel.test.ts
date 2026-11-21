@@ -1,5 +1,5 @@
 /**
- * Emmanuel Domah (Senior) — the Reluctant Player, 400.
+ * Emmanuel Domah (Senior) — the Reluctant Player, 150.
  *
  * Covers his catalogue entry and card identity, the Easy group, the strength
  * dials that make him genuinely weak (shallow search ceiling, lowest accuracy,
@@ -56,7 +56,7 @@ import { buildPgn } from '../../src/play/pgn.ts';
 import type { StockfishController } from '../../src/engine/useStockfish.ts';
 
 const EMMANUEL = getOpponent('emmanuel');
-const STYLE = styleFor('emmanuel', 400) as PersonalityStyle;
+const STYLE = styleFor('emmanuel', 150) as PersonalityStyle;
 
 function position(...san: string[]): Chess {
   const game = new Chess();
@@ -128,13 +128,13 @@ function engineWith(candidates: StubCandidate[], seen?: { depth: number; multipv
 
 /* ----------------------- 1-3. identity, name, rating ----------------------- */
 
-test('Emmanuel Domah is on the roster as Senior, 400, in the Beginner band', () => {
+test('Emmanuel Domah is on the roster as Senior, 150, in the Beginner band', () => {
   assert.ok(EMMANUEL);
   assert.equal(EMMANUEL.id, 'emmanuel', 'his own stable id');
   assert.equal(EMMANUEL.kind, 'personality');
   assert.equal(EMMANUEL.name, 'Emmanuel Domah');
   assert.equal(EMMANUEL.title, 'Senior', 'the subtext is exactly Senior');
-  assert.equal(EMMANUEL.elo, 400);
+  assert.equal(EMMANUEL.elo, 150);
   assert.equal(EMMANUEL.category, 'beginner');
   assert.equal(EMMANUEL.initials, 'ED');
   assert.equal(EMMANUEL.usesRepertoire, false);
@@ -143,7 +143,7 @@ test('Emmanuel Domah is on the roster as Senior, 400, in the Beginner band', () 
   assert.doesNotMatch(EMMANUEL.name, /\(/, 'the name carries no parenthetical suffix');
   assert.doesNotMatch(EMMANUEL.name, /senior/i, 'the subtext lives in its own field');
   assert.equal(opponentStage(EMMANUEL), 'Senior');
-  assert.equal(opponentMeta(EMMANUEL), 'Senior · 400 Elo');
+  assert.equal(opponentMeta(EMMANUEL), 'Senior · 150 Elo');
   assert.equal(opponentFullName(EMMANUEL), 'Emmanuel Domah (Senior)');
   assert.ok(EMMANUEL.style.length > 0);
 });
@@ -204,7 +204,7 @@ test('Beginner is the first ladder band and holds the lowest ratings', () => {
   );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((o) => o.category === 'varsity').map((o) => o.id),
-    ['bryan', 'senior'],
+    ['bryan', 'senior', 'brandon-varsity'],
   );
   assert.equal(
     PERSONALITY_OPPONENTS.filter((o) => o.category === 'big-4').length,
@@ -227,15 +227,15 @@ test('Beginner is the first ladder band and holds the lowest ratings', () => {
 
 test('his strength dials are the weakest in the roster', () => {
   assert.equal(STYLE.id, 'emmanuel');
-  assert.equal(STYLE.accuracy, accuracyForElo(400), 'accuracy still comes from the rating');
+  assert.equal(STYLE.accuracy, accuracyForElo(150), 'accuracy still comes from the rating');
   assert.equal(STYLE.accuracy, 0.85, 'the floor of the accuracy scale');
   assert.equal(STYLE.depthCap, 6, 'the shallowest search in the roster');
   assert.ok(STYLE.depthCap! < (PERSONALITY_STYLES.edward.depthCap ?? 16));
-  assert.ok(STYLE.depthCap! < depthForElo(400), 'strictly below the shared depth');
+  assert.ok(STYLE.depthCap! < depthForElo(150), 'strictly below the shared depth');
   assert.equal(STYLE.mistakeChance, 0.55, 'highest deliberate-slip rate in the roster');
-  assert.ok(STYLE.mistakeChance! > blunderChance(400), 'above the shared curve at 400');
+  assert.ok(STYLE.mistakeChance! > blunderChance(150), 'above the shared curve at 400');
   assert.ok(STYLE.mistakeChance! > blunderChance(800), 'above the curve where it floors');
-  assert.equal(candidateGapForElo(400), 140, 'he may drift further than a 1550');
+  assert.equal(candidateGapForElo(150), 140, 'he may drift further than a 1550');
 
   /* No speciality pretends to be strength: he is weak everywhere. */
   assert.ok(STYLE.tactical <= 20 && STYLE.positional <= 20);
@@ -245,18 +245,18 @@ test('his strength dials are the weakest in the roster', () => {
 
 test('the slip rate is his alone: the shared rating curve continues to apply', () => {
   /* Same roll, same rating, different answer — the override is per character. */
-  assert.equal(shouldTakeBlunder(400, () => 0.5, false), false, '400 by the curve: 0.45');
-  assert.equal(shouldTakeBlunder(400, () => 0.5, false, STYLE.mistakeChance), true);
+  assert.equal(shouldTakeBlunder(150, () => 0.5, false), false, '150 by the curve: 0.45');
+  assert.equal(shouldTakeBlunder(150, () => 0.5, false, STYLE.mistakeChance), true);
 
   /* Theory never rolls, even for him. */
-  assert.equal(shouldTakeBlunder(400, () => 0, true, STYLE.mistakeChance), false);
+  assert.equal(shouldTakeBlunder(150, () => 0, true, STYLE.mistakeChance), false);
 
   /* Nobody else gained the dial. */
   assert.equal(PERSONALITY_STYLES.edward.mistakeChance, undefined);
   assert.equal(PERSONALITY_STYLES.faadi.mistakeChance, undefined);
   assert.equal(PERSONALITY_STYLES.mabinti.mistakeChance, undefined);
   assert.equal(blunderChance(800), 0.45);
-  assert.equal(blunderChance(400), 0.45, 'the shared curve is unchanged at 400');
+  assert.equal(blunderChance(150), 0.45, 'the shared curve is unchanged at 150');
 });
 
 test('his search is capped at six plies, however deep the calling rating asks', async () => {
@@ -268,7 +268,7 @@ test('his search is capped at six plies, however deep the calling rating asks', 
     history: ['e4', 'e5'],
     botColor: 'w',
     style: STYLE,
-    elo: 400,
+    elo: 150,
     clockMs: null,
     incrementMs: 0,
     initialMs: 0,
@@ -303,7 +303,7 @@ test('a slip replaces his good move with a visibly worse one from the same list'
     history: ['d4', 'd5'],
     botColor: 'w',
     style: STYLE,
-    elo: 400,
+    elo: 150,
     clockMs: null,
     incrementMs: 0,
     initialMs: 0,
@@ -327,7 +327,7 @@ test('a slip replaces his good move with a visibly worse one from the same list'
     history: ['d4', 'd5'],
     botColor: 'w',
     style: STYLE,
-    elo: 400,
+    elo: 150,
     clockMs: null,
     incrementMs: 0,
     initialMs: 0,
@@ -336,7 +336,7 @@ test('a slip replaces his good move with a visibly worse one from the same list'
   });
   assert.ok(steady);
   assert.equal(steady.uci, 'c2c4');
-  assert.ok((steady.decision?.gap ?? 999) <= candidateGapForElo(400) + 30);
+  assert.ok((steady.decision?.gap ?? 999) <= candidateGapForElo(150) + 30);
 });
 
 test('a weak mover still takes something: he is not random legal moves', async () => {
@@ -349,7 +349,7 @@ test('a weak mover still takes something: he is not random legal moves', async (
       history: ['e4', 'c5', 'Nf3'],
       botColor: 'b',
       style: STYLE,
-      elo: 400,
+      elo: 150,
       clockMs: null,
       incrementMs: 0,
       initialMs: 0,
@@ -413,7 +413,7 @@ test('his first move comes from his own search, not from theory', async () => {
     history: [],
     botColor: 'w',
     style: STYLE,
-    elo: 400,
+    elo: 150,
     clockMs: null,
     incrementMs: 0,
     initialMs: 0,
@@ -453,7 +453,7 @@ test('every move he picks in a real game is legal, in both colours', async () =>
       history: [...history],
       botColor,
       style: STYLE,
-      elo: 400,
+      elo: 150,
       clockMs: null,
       incrementMs: 0,
       initialMs: 0,
@@ -485,7 +485,7 @@ test('his errors are cheap beginner errors, never a walk into mate', () => {
      severity (700cp below 1100 Elo), not the worst line in the list. */
   const seen = new Set<string | null>();
   for (const roll of [0, 0.25, 0.5, 0.75, 0.99]) {
-    const slip = chooseBlunder(candidates, 'w', 400, () => roll);
+    const slip = chooseBlunder(candidates, 'w', 150, () => roll);
     assert.notEqual(slip, 'd2d4', 'a forced mate is never the chosen error');
     if (slip) {
       const entry = candidates.find((candidate) => candidate.uci === slip)!;
@@ -507,7 +507,7 @@ test('he is not losing a piece on every single move', async () => {
     history: ['e4', 'e5', 'Nf3', 'Nc6'],
     botColor: 'w',
     style: STYLE,
-    elo: 400,
+    elo: 150,
     clockMs: null,
     incrementMs: 0,
     initialMs: 0,
@@ -521,7 +521,7 @@ test('he is not losing a piece on every single move', async () => {
     random: () => 0,
   });
   assert.ok(chosen);
-  assert.ok((chosen.decision?.gap ?? 999) <= candidateGapForElo(400) + 30);
+  assert.ok((chosen.decision?.gap ?? 999) <= candidateGapForElo(150) + 30);
   assertLegal(played.fen(), chosen.uci);
 });
 
@@ -636,8 +636,8 @@ test('dialogue cannot change a move: the same position and roll pick the same mo
     { uci: 'f1c4', scoreCp: 20, mate: null },
     { uci: 'd2d4', scoreCp: 18, mate: null },
   ];
-  const one = choosePersonalityMove({ fen, candidates, style: STYLE, elo: 400, random: () => 0.3 });
-  const two = choosePersonalityMove({ fen, candidates, style: STYLE, elo: 400, random: () => 0.3 });
+  const one = choosePersonalityMove({ fen, candidates, style: STYLE, elo: 150, random: () => 0.3 });
+  const two = choosePersonalityMove({ fen, candidates, style: STYLE, elo: 150, random: () => 0.3 });
   assert.equal(one?.uci, two?.uci);
   assert.ok(candidates.some((candidate) => candidate.uci === one?.uci));
 });
@@ -652,7 +652,7 @@ test('Normal Play: he plays both colours from the same ad-hoc selection', async 
     history: ['e4'],
     botColor: 'b',
     style: STYLE,
-    elo: 400,
+    elo: 150,
     clockMs: 300_000,
     incrementMs: 2_000,
     initialMs: 300_000,
@@ -677,7 +677,7 @@ test('Normal Play: he plays both colours from the same ad-hoc selection', async 
     history: [],
     botColor: 'w',
     style: STYLE,
-    elo: 400,
+    elo: 150,
     clockMs: null,
     incrementMs: 0,
     initialMs: 0,
@@ -710,8 +710,8 @@ test('Bot vs. Bot: the same selection drives both sides of a match', async () =>
       fen: game.fen(),
       history: [...history],
       botColor,
-      style: styleFor('emmanuel', 400),
-      elo: 400,
+      style: styleFor('emmanuel', 150),
+      elo: 150,
       clockMs: 180_000,
       incrementMs: 0,
       initialMs: 180_000,
@@ -763,7 +763,7 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
     ['e4', 'e5', 'Nf3', 'Nc6'],
   );
   assert.match(pgn, /\[White "Emmanuel Domah \(Senior\)"\]/);
-  assert.match(pgn, /\[WhiteElo "400"\]/);
+  assert.match(pgn, /\[WhiteElo "150"\]/);
   assert.doesNotMatch(pgn, /\[White "Emmanuel Domah"\]/, 'the stage is never dropped');
   assert.doesNotMatch(pgn, /"emmanuel"/i, 'no internal id leaks into the PGN');
 
@@ -778,15 +778,15 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
   assert.equal(profile.id, 'emmanuel');
   assert.equal(profile.name, 'Emmanuel Domah');
   assert.equal(profile.title, 'Senior');
-  assert.equal(profile.elo, 400);
+  assert.equal(profile.elo, 150);
   assert.equal(profile.category, 'beginner');
-  assert.equal(opponentMeta(profile), 'Senior · 400 Elo');
+  assert.equal(opponentMeta(profile), 'Senior · 150 Elo');
 
   /* A dropped record still shows a name and a rating, never a crash. */
   const unknown = profileFromRecord({
     opponent_id: 'emmanuel',
     opponent_name: 'Emmanuel Domah (Senior)',
-    opponent_elo: 400,
+    opponent_elo: 150,
     opponent_kind: 'personality',
   });
   assert.equal(unknown.id, 'emmanuel');
@@ -799,8 +799,8 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
 /* --------------------------- 14. regressions --------------------------- */
 
 test('every other opponent and the General Bot are untouched', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 20);
-  assert.equal(ALL_OPPONENTS.length, 21);
+  assert.equal(PERSONALITY_OPPONENTS.length, 21);
+  assert.equal(ALL_OPPONENTS.length, 22);
 
   const expected: Array<[string, string, string, number, string]> = [
     ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],
@@ -840,6 +840,6 @@ test('every other opponent and the General Bot are untouched', () => {
   assert.equal(PERSONALITY_STYLES.freshman.aggression, 25);
   assert.equal(PERSONALITY_STYLES.mabinti.positional, 70);
   assert.equal(blunderChance(800), 0.45, 'the curve is untouched at its anchor');
-  assert.equal(depthForElo(400), 16, 'the shared depth is untouched');
-  assert.equal(chooseBlunder([], 'w', 400), null);
+  assert.equal(depthForElo(150), 16, 'the shared depth is untouched');
+  assert.equal(chooseBlunder([], 'w', 150), null);
 });

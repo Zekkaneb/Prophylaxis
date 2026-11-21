@@ -56,6 +56,7 @@ const BANKS: Record<
     | 'erik-wiessmann'
     | 'jonah-pachikara'
     | 'sophia-kuan'
+    | 'brandon-varsity'
   >,
   Bank
 > = {
@@ -309,6 +310,9 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
   /* Both Brandons are one person, so they share one bank object: the same voice,
      the same lines and the same cadence. He is not less charismatic at 1600. */
   'brandon-freshman': BANKS.brandon,
+  /* The Sophomore is the same person as the other two Brandons: the bank is
+     shared, immutable data, and only his chess strength differs. */
+  'brandon-varsity': BANKS.brandon,
   /* Nina before she was comfortable: the same friendliness with the volume
      down. Hedged, still finding her feet, and never the sharp reactions her
      Sophomore profile is allowed. */

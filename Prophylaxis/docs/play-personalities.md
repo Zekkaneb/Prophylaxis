@@ -25,16 +25,16 @@ same band.
 | Beginner | 100–1000 Elo | Emmanuel Domah, Edward Chen, Faadi Granillo Garcia |
 | Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang, Erik Wiessmann, Sophia Kuan (Senior) |
 | Intermediate | 1301–1600 Elo | Bryan Martinez-Hernandez (Sophomore), Bryan Widjaja, Johnfer Quispe (Sophomore), Nina Yang (Sophomore), Brandon Tran (Freshman), Jonah Pachikara |
-| Varsity | 1601–2000 Elo | Bryan Martinez-Hernandez (Junior), Johnfer Quispe (Senior) |
+| Varsity | 1601–2000 Elo | Bryan Martinez-Hernandez (Junior), Johnfer Quispe (Senior), Brandon Tran (Sophomore) |
 | The Big 4 | Special designation | Brandon Tran (Prime), Johnfer Quispe (Junior), Bryan Martinez-Hernandez (Prime), Mabinti Mansaray |
 
-## Emmanuel Domah (Senior) — 400, Beginner
+## Emmanuel Domah (Senior) — 150, Beginner
 
 | | |
 |---|---|
 | id | `emmanuel` |
 | Name / subtext | Emmanuel Domah · Senior |
-| Rating | 400, Beginner band (100–1000) |
+| Rating | 150, Beginner band (100–1000) |
 | Opening | none — no book, no theory, no bias |
 | Profile file | `src/play/personality/styles.ts` (`emmanuel`) |
 | Dialogue | `DIALOGUE_BANKS.emmanuel` in `src/play/personality/dialogue.ts` |
@@ -54,7 +54,7 @@ His strength is three strength dials, not a label:
   below 1300 shares.
 - `mistakeChance: 0.55` — a per-character override of the shared mistake curve,
   which floors at 45% for anything rated 800 or below. This is the dial that a
-  rating alone could not express (`blunderChance(400)` is the same 0.45 as
+  rating alone could not express (`blunderChance(150)` is the same 0.45 as
   `blunderChance(800)`), and no other profile sets it, so every other opponent's
   mistake rate is unchanged.
 
@@ -341,6 +341,44 @@ Dialogue is event-driven with `ordinaryGap: 7`, `repeatGap: 16`: soft-spoken,
 hesitant and exceptionally kind ("Oh, okay.", "I think that's alright.", "Maybe
 I should trade here.", "I hope this works."), polite in won and lost games and
 never taunting. The anti-repetition pool and once-per-game events apply.
+
+## Brandon Tran (Sophomore) — 1850, Varsity
+
+| | |
+|---|---|
+| id | `brandon-varsity` |
+| Name / subtext | Brandon Tran · Sophomore |
+| Rating | 1850, Varsity band (1601–2200) |
+| White | Vienna Game, the sharp one (Vienna Gambit 3.f4; Bc4/Ng5) |
+| Black vs 1.e4 | 1...e6, French (Winawer, open Tarrasch, Advance) |
+| Black vs 1.d4 | 1...d5 (Queen's Gambit Accepted) — no Grünfeld |
+| Profile file | `src/play/personality/styles.ts` (`brandon-varsity`) |
+| Repertoire | `src/play/personality/repertoires/brandonVarsity.ts` |
+| Dialogue | shared immutable `BANKS.brandon` |
+| Portrait | `public/opponents/brandon-varsity.webp` (monogram `BT` if missing) |
+
+The third Brandon: the Freshman's voice and appetite for a fight, developed.
+Aggression 90 and initiative 90 stay, complexity drops slightly to 85, but
+positional 65 (against 40), tactical 85 (against 75), defence 45 (against 35) and
+material 40 (against 30) make him a real Varsity player. He is not the Prime:
+95 aggression, 98 tactical and 100 complexity stay Prime's, and his sacrifice
+appetite (88) sits between Freshman's 80 and Prime's 95.
+
+Strength is the rating dial: `accuracyForElo(1850)`, with the gap and slip curve
+of a 1850 — smaller than the Freshman's, larger than the Prime's. No extra depth
+cap or mistake chance was added to either version.
+
+White plays the sharp Vienna: the Vienna Gambit with 3.f4 (`...d5 fxe5 Nxe4 Qf3`),
+the `...exf4` branch, and a Bc4/Ng5 line when the gambit is not on. Black meets
+1.e4 with 1...e6 and counterattacks — the Winawer with `...Bb4 ...c5 ...Bxc3+`,
+the open Tarrasch with `...c5` and `exd5`, and an active Advance — and 1.d4 with
+1...d5 into a Queen's Gambit Accepted. Deliberately no Grünfeld: that belongs to
+Prime, and his book never offers it.
+
+The voice is literally the other Brandons': `DIALOGUE_BANKS['brandon-varsity']`
+is `BANKS.brandon`, the same immutable data the Freshman and Prime use, with the
+ordinary event/cooldown/repeat machinery and the default cadence. Only the chess
+configuration is independent.
 
 ## Repertoire data
 

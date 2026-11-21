@@ -110,7 +110,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     name: 'Emmanuel Domah',
     shortName: 'Emmanuel',
     title: 'Senior',
-    elo: 400,
+    elo: 150,
     style:
       'The greatest player of all time.',
     portraitPath: 'opponents/emmanuel.webp',
@@ -454,6 +454,25 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     /* Framed tight in the source file: the whole head shows at 1. */
     portraitScale: 1,
     initials: 'SK',
+    usesRepertoire: false,
+  },
+  /* Brandon Tran (Sophomore), 1850 — the funky attacker, between Freshman and
+     Prime. Same name and voice as the other two, its own id, rating and
+     category, and its own portrait file. */
+  {
+    id: 'brandon-varsity',
+    kind: 'personality',
+    category: 'varsity',
+    name: 'Brandon Tran',
+    shortName: 'Brandon Sophomore',
+    title: 'Sophomore',
+    elo: 1850,
+    style:
+      'The funky attacker: sharp Vienna gambits, French counterattacks and a taste for complications, with more calculation than the Freshman and more patience with material than the Prime.',
+    portraitPath: 'opponents/brandon-varsity.webp',
+    /* Framed tight in the source file: the whole head shows at 1. */
+    portraitScale: 1,
+    initials: 'BT',
     usesRepertoire: false,
   },
 ] as const;

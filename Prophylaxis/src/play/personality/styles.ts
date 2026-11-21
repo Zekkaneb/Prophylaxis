@@ -31,7 +31,8 @@ export type PersonalityId =
   | 'alex-tang'
   | 'erik-wiessmann'
   | 'jonah-pachikara'
-  | 'sophia-kuan';
+  | 'sophia-kuan'
+  | 'brandon-varsity';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -552,6 +553,34 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 8,
     activePieces: 40,
     openingBias: { solid: 24, positional: 12, developing: 10, sharp: -26, initiative: -16 },
+  },
+  /* Brandon Tran (Sophomore), 1850 — the funky attacker, between Freshman and
+     Prime.
+
+     He keeps Brandon's aggression (90) and initiative (90) and his taste for
+     complexity (85), but he is more developed than Freshman: positional 65 instead
+     of 40, tactical 85 instead of 75, defence 45 instead of 35, and a little more
+     patience with material (40 instead of 30). He is not Prime: 95 aggression,
+     98 tactical and 100 complexity stay his alone, and his sacrifice appetite
+     (88) sits between Freshman's 80 and Prime's 95. `accuracy` is still set from
+     the rating by `styleFor`, so the extra chess strength is real development,
+     not a curve override. */
+  'brandon-varsity': {
+    ...BASE,
+    id: 'brandon-varsity',
+    aggression: 90,
+    risk: 80,
+    positional: 65,
+    tactical: 85,
+    defensive: 45,
+    initiative: 90,
+    simplification: 30,
+    complexity: 85,
+    kingSafety: 55,
+    material: 40,
+    sacrifice: 88,
+    activePieces: 88,
+    openingBias: { sharp: 27, initiative: 21, developing: 6, solid: -17, positional: -7 },
   },
 };
 

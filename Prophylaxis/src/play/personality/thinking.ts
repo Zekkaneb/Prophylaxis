@@ -226,6 +226,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
     case 'sophia-kuan':
       /* She looks for the safe, simple continuation rather than a fight. */
       return 0.88 + 0.05 * profile.complexity;
+    case 'brandon-varsity':
+      /* A real attacking calculation, deeper than Freshman's glance but well
+         short of what Prime allows himself. */
+      return 0.86 + (profile.tactical ? 0.3 : 0.08) * profile.complexity;
   }
 }
 
@@ -288,6 +292,9 @@ function deliberationFactor(style: PersonalityStyle): number {
     case 'sophia-kuan':
       /* Hesitant on the clock: she takes the extra moment before committing. */
       return 0.98;
+    case 'brandon-varsity':
+      /* Confident and quick, but not as instant as Prime. */
+      return 0.86;
   }
 }
 

@@ -138,8 +138,8 @@ test('his id is unique, never a re-used Sophomore or another beginner', () => {
   assert.equal(getOpponent('alex-tang'), ALEX, 'the catalogue entry is the same object');
 
   const sophomores = PERSONALITY_OPPONENTS.filter((opponent) => opponent.title === 'Sophomore');
-  assert.equal(sophomores.length, 4);
-  assert.equal(new Set(sophomores.map((opponent) => opponentFullName(opponent))).size, 4);
+  assert.equal(sophomores.length, 5);
+  assert.equal(new Set(sophomores.map((opponent) => opponentFullName(opponent))).size, 5);
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
     PERSONALITY_OPPONENTS.length,
@@ -590,8 +590,8 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
 /* ---------------------------- 11. regressions --------------------------- */
 
 test('every other opponent and the General Bot are untouched', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 20);
-  assert.equal(ALL_OPPONENTS.length, 21);
+  assert.equal(PERSONALITY_OPPONENTS.length, 21);
+  assert.equal(ALL_OPPONENTS.length, 22);
 
   const expected: Array<[string, string, string, number, string]> = [
     ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],

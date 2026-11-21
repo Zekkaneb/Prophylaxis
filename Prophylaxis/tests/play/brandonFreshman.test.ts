@@ -164,7 +164,8 @@ test('Prime is untouched and the two Brandons stay separately selectable', () =>
 
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.name === 'Brandon Tran').length,
-    2,
+    3,
+    'Freshman, Sophomore and Prime',
   );
   const intermediate = PERSONALITY_OPPONENTS.filter(
     (opponent) => opponent.category === 'intermediate',
@@ -175,8 +176,8 @@ test('Prime is untouched and the two Brandons stay separately selectable', () =>
     'brandon-freshman',
     'the Freshman Brandon is the lower of the two Brandons',
   );
-  assert.equal(ALL_OPPONENTS.length, 21);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 21);
+  assert.equal(ALL_OPPONENTS.length, 22);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 22);
 });
 
 test('saved games resolve each Brandon to his own version', () => {
