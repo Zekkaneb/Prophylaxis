@@ -5,6 +5,7 @@ import {
   HUMAN_MULTI_PV,
   lastCaptureOf,
   planHumanSearch,
+  rollSub400RandomFloor,
   selectHumanBotMove,
   timeControlCategory,
 } from '../humanStrength.ts';
@@ -114,6 +115,26 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   let bookMove = false;
   let forgotten = false;
   let candidates: readonly PersonalityCandidate[] = [];
+
+  /* The sub-400 floor comes first, ahead of the book, the character sheet and
+     the search: below 400 USCF the bot may simply not look at the board. A
+     styled bot never reaches `selectHumanBotMove`, which is where that roll
+     lives for the calibrated path, so without this guard a 150 would obey only
+     his dials and never make the random move his rating implies. */
+  if (style) {
+    const floorMove = rollSub400RandomFloor(game, elo, random);
+    if (floorMove !== null) {
+      return {
+        uci: floorMove,
+        plan: computeThinkingPlan({ ...thinking, style, bookMove: false }),
+        decision: null,
+        bookMove: false,
+        forgotten: false,
+        source: 'engine',
+        candidates: [],
+      };
+    }
+  }
 
   /* One window for every theory source, shared with regular Play: repertoire,
      Nina's skeleton and the King's Indian plan all stop at the same ply. */

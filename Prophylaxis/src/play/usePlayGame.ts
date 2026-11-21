@@ -43,6 +43,7 @@ import {
   probeErrorMove,
   referenceCandidateScores,
   rollPhaseProfile,
+  rollSub400RandomFloor,
   selectHumanBotMove,
   timeControlCategory,
   type Bucket,
@@ -580,7 +581,21 @@ export function usePlayGame(engine: StockfishController) {
     };
 
     try {
+      /* The sub-400 floor, ahead of the book and the search: below 400 USCF the
+         bot may simply not look at the board. The calibrated path rolls the same
+         floor inside `selectHumanBotMove`, which a styled bot never reaches, so
+         a 150 with a character sheet needs the roll here. */
       if (style) {
+        const floorMove = rollSub400RandomFloor(game, elo, Math.random);
+        if (floorMove) {
+          uci = floorMove;
+          decisionRef.current = null;
+          plan = computeThinkingPlan({ ...thinkingInput, style, bookMove: false });
+          pauseMs = plan.pauseMs;
+        }
+      }
+
+      if (style && !uci) {
         /* Repertoire first: an opening move costs no search at all — but only
            for as many plies as this rating would really remember. */
         const bookMoves = inBookWindow

@@ -1174,6 +1174,34 @@ export function randomMoveChance(elo: number): number {
 }
 
 /**
+ * The sub-400 random turn, as a roll a caller can take before doing any work.
+ *
+ * Returns a UCI move when the rating's random roll succeeds, or `null` when this
+ * turn belongs to the model. Every entry point that can move a bot —
+ * `selectHumanBotMove` and the personality chooser — asks this first, so a 150
+ * plays the same way whether or not the bot has a character sheet, and the roll
+ * lands before the opening book, the search and the buckets rather than after
+ * them.
+ *
+ * chess.js has no `legalMoves()`; every legal move comes from
+ * `moves({ verbose: true })`.
+ */
+export function rollSub400RandomFloor(
+  game: Chess,
+  elo: number,
+  rng: () => number = Math.random,
+): string | null {
+  const chance = randomMoveChance(elo);
+  if (chance <= 0) return null;
+  if (rng() >= chance) return null;
+
+  const legal = game.moves({ verbose: true });
+  if (legal.length === 0) return null;
+  const index = Math.min(legal.length - 1, Math.floor(rng() * legal.length));
+  return uciOf(legal[index]);
+}
+
+/**
  * Whether a bot at this rating still reads an opening book.
  *
  * Sub-400 play is the floor of the scale: there is no book and no positional
@@ -1409,10 +1437,9 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
      bucket, no intent filter. This is the behavioural floor of the scale — a
      100 hangs a piece, walks into a check or pushes a pawn at random, because
      that is what a player who does not yet see the board actually does. */
-  const randomChance = randomMoveChance(elo);
-  if (randomChance > 0 && random() < randomChance) {
-    const index = Math.min(legal.length - 1, Math.floor(random() * legal.length));
-    return finish(uciOf(legal[index]), 'blunder', 0, RANDOM_MOVE_WIN_DROP, []);
+  const floorMove = rollSub400RandomFloor(game, elo, random);
+  if (floorMove !== null) {
+    return finish(floorMove, 'blunder', 0, RANDOM_MOVE_WIN_DROP, []);
   }
 
   const candidates = input.candidates

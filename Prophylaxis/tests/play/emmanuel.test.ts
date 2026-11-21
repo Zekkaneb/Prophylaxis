@@ -86,6 +86,24 @@ const noEngine: StockfishController = {
   terminate: () => {},
 };
 
+/**
+ * Steps over the sub-400 random turn, then behaves like `roll`.
+ *
+ * At 150 the floor fires on the first roll ~72% of the time, so a constant roll
+ * below that never reaches the model this file is testing: the first number is
+ * spent declining the random move and the rest drive the selection.
+ */
+function afterFloor(roll: () => number): () => number {
+  let first = true;
+  return () => {
+    if (first) {
+      first = false;
+      return 0.99;
+    }
+    return roll();
+  };
+}
+
 interface StubCandidate {
   uci: string;
   scoreCp: number;
@@ -308,7 +326,7 @@ test('a slip replaces his good move with a visibly worse one from the same list'
     incrementMs: 0,
     initialMs: 0,
     engine: engineWith(candidates),
-    random: () => 0,
+    random: afterFloor(() => 0),
   });
   assert.ok(slump);
   assert.equal(slump.bookMove, false);
@@ -360,13 +378,60 @@ test('a weak mover still takes something: he is not random legal moves', async (
         { uci: 'g8f6', scoreCp: -55 },
         { uci: 'a7a6', scoreCp: -120 },
       ]),
-      random: () => roll,
+      random: afterFloor(() => roll),
     });
     assert.ok(chosen);
     assertLegal(played.fen(), chosen.uci);
     sawMoves.add(chosen.uci);
   }
   assert.ok(sawMoves.size >= 3, 'the same roll does not always produce the same move');
+});
+
+test('at 150 the sub-400 floor can move him before the book or the search', async () => {
+  /* `noEngine` throws if the engine is asked anything: a random turn must be
+     decided without a book lookup, a search or a candidate list. */
+  const played = position('d4', 'd5');
+  const floored = await chooseBotMove({
+    game: played,
+    fen: played.fen(),
+    history: ['d4', 'd5'],
+    botColor: 'w',
+    style: STYLE,
+    elo: 150,
+    clockMs: null,
+    incrementMs: 0,
+    initialMs: 0,
+    engine: noEngine,
+    random: () => 0,
+  });
+  assert.ok(floored);
+  assert.equal(floored.bookMove, false);
+  assert.equal(floored.decision, null, 'the move is not chosen from the candidate list');
+  assert.equal(floored.candidates.length, 0, 'nothing was searched');
+  assert.equal(floored.source, 'engine');
+  assertLegal(played.fen(), floored.uci);
+
+  /* At 400 the chance is zero, so the same roll goes back to his own model. */
+  const normal = await chooseBotMove({
+    game: played,
+    fen: played.fen(),
+    history: ['d4', 'd5'],
+    botColor: 'w',
+    style: styleFor('emmanuel', 400),
+    elo: 400,
+    clockMs: null,
+    incrementMs: 0,
+    initialMs: 0,
+    engine: engineWith([
+      { uci: 'g1f3', scoreCp: 20 },
+      { uci: 'b1c3', scoreCp: 15 },
+      { uci: 'a2a3', scoreCp: -40 },
+    ]),
+    random: () => 0,
+  });
+  assert.ok(normal);
+  assert.ok(normal.candidates.length > 0, 'the search ran above the floor');
+  assertLegal(played.fen(), normal.uci);
 });
 
 /* ---------------------- 6. no opening repertoire at all ------------------- */
@@ -458,7 +523,7 @@ test('every move he picks in a real game is legal, in both colours', async () =>
       incrementMs: 0,
       initialMs: 0,
       engine: engineWith(candidates.slice(0, 5)),
-      random: roll,
+      random: afterFloor(roll),
     });
     assert.ok(chosen, `ply ${ply} produced a move`);
     assertLegal(game.fen(), chosen.uci);
@@ -518,7 +583,7 @@ test('he is not losing a piece on every single move', async () => {
       { uci: 'b1c3', scoreCp: 16 },
       { uci: 'd2d3', scoreCp: 12 },
     ]),
-    random: () => 0,
+    random: afterFloor(() => 0),
   });
   assert.ok(chosen);
   assert.ok((chosen.decision?.gap ?? 999) <= candidateGapForElo(150) + 30);
@@ -716,7 +781,7 @@ test('Bot vs. Bot: the same selection drives both sides of a match', async () =>
       incrementMs: 0,
       initialMs: 180_000,
       engine: engineWith(candidates),
-      random: () => 0.7,
+      random: afterFloor(() => 0.7),
     });
     assert.ok(chosen);
     /* Both sides are the same personality, and neither ever claims the book. */

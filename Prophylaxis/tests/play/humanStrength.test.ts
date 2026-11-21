@@ -51,6 +51,7 @@ import {
   probeMoveCandidates,
   qualityShares,
   randomMoveChance,
+  rollSub400RandomFloor,
   usesOpeningBook,
   recaptureChance,
   recaptureTrade,
@@ -1098,6 +1099,36 @@ test('a beginner is visibly wrong most turns and a club player half as often', (
   assert.ok(humanCalibration(700).errorRate > 0.52);
   assert.ok(humanCalibration(1000).errorRate > 0.4);
   assert.ok(humanCalibration(1800).errorRate < 0.24);
+});
+
+test('the sub-400 floor rolls a uniform legal move, and never above 400', () => {
+  const start = new Chess();
+  const verbose = start.moves({ verbose: true });
+
+  /* At 400 the chance is zero and the roll does not even consume a number. */
+  let calls = 0;
+  const counting = () => {
+    calls += 1;
+    return 0;
+  };
+  assert.equal(rollSub400RandomFloor(start, 400, counting), null);
+  assert.equal(rollSub400RandomFloor(start, 900, counting), null);
+  assert.equal(calls, 0);
+
+  /* At 100 every turn is random; the second roll picks inside the legal list. */
+  const expected = verbose[Math.floor(0.5 * verbose.length)];
+  assert.equal(
+    rollSub400RandomFloor(start, 100, () => 0.5),
+    `${expected.from}${expected.to}`,
+  );
+
+  /* A roll that misses leaves the turn to the model. */
+  assert.equal(rollSub400RandomFloor(start, 150, () => 0.99), null);
+  assert.ok(rollSub400RandomFloor(start, 150, () => 0.5));
+
+  /* Nothing to pick from is not a move. */
+  const mated = new Chess('rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3');
+  assert.equal(rollSub400RandomFloor(mated, 100, () => 0.5), null);
 });
 
 test('the beginner node cap is 45 nodes at 700 and gone at 1000', () => {

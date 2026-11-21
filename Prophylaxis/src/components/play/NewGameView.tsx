@@ -68,6 +68,22 @@ export function NewGameView({
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
 
+  /**
+   * Picks a bot and, on a phone, scrolls back to the pinned summary.
+   *
+   * Below 640px the personality card sits at the top of the setup and stays
+   * there (see `mobile.css`). The ladder is long, so a tap halfway down would
+   * otherwise leave the preview and Start Game off-screen until the user
+   * scrolled back up by hand. The smooth scroll is skipped at wider widths,
+   * where the card is already beside the list.
+   */
+  function selectOpponent(id: string) {
+    setOpponentId(id);
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    if (!window.matchMedia('(max-width: 640px)').matches) return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   const isGeneral = opponentId === GENERAL_BOT.id;
   const selected: OpponentProfile = isGeneral
     ? withElo(GENERAL_BOT, generalElo)
@@ -372,7 +388,7 @@ export function NewGameView({
                 aria-pressed={isGeneral}
                 aria-label="General Bot"
                 className={`play-engine__choice${isGeneral ? ' is-selected' : ''}`}
-                onClick={() => setOpponentId(GENERAL_BOT.id)}
+                onClick={() => selectOpponent(GENERAL_BOT.id)}
               >
                 <OpponentAvatar opponent={GENERAL_BOT} size="md" loading="eager" />
                 <span className="play-engine__body">
@@ -449,7 +465,7 @@ export function NewGameView({
                         aria-pressed={active}
                         aria-label={opponentFullName(opponent)}
                         className={`play-opponent${active ? ' is-selected' : ''}`}
-                        onClick={() => setOpponentId(opponent.id)}
+                        onClick={() => selectOpponent(opponent.id)}
                       >
                         <span className="play-opponent__portrait">
                           <OpponentAvatar opponent={opponent} size="lg" loading="eager" />
