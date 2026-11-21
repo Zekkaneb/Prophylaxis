@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { ensureDatabaseFor, readDatabaseOwner, LOCAL_OWNER } from './accountDatabase.ts';
-import { supabase, syncConfigured } from './client.ts';
+import { supabase, syncConfigured, syncDisabledReason, type SyncDisabledReason } from './client.ts';
 import { pendingChangeCount, runSync } from './sync.ts';
 
 /**
@@ -18,6 +18,8 @@ export type SyncStatus = 'idle' | 'syncing' | 'error';
 export interface SyncController {
   /** False in the single-file/offline build, which has no backend. */
   configured: boolean;
+  /** Why it is off, so the panel can say something useful. */
+  disabledReason: SyncDisabledReason | null;
   /** False until the stored session has been read once. */
   ready: boolean;
   email: string | null;
@@ -202,6 +204,7 @@ export function useSync(): SyncController {
 
   return {
     configured: syncConfigured,
+    disabledReason: syncDisabledReason,
     ready,
     email: session?.user?.email ?? null,
     status,

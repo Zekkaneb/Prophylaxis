@@ -323,7 +323,9 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
                 <h3>Account</h3>
                 <p className="settings__hint">
                   {!sync.configured
-                    ? 'This build has no backend, so everything stays on this device.'
+                    ? sync.disabledReason === 'file'
+                      ? 'This is the offline single-file build. Games stay on this device; open the hosted version to sign in.'
+                      : 'This build was made without VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, so everything stays on this device. Restart the dev server after adding them to .env.local.'
                     : sync.email
                       ? `Signed in as ${sync.email}. Your games sync to your other devices.`
                       : 'Sign in to carry your games between devices. Everything still works offline, signed in or not.'}

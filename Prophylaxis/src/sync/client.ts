@@ -27,7 +27,23 @@ const anonKey = env.VITE_SUPABASE_ANON_KEY?.trim();
  */
 const fileBuild = typeof window !== 'undefined' && window.location.protocol === 'file:';
 
-export const syncConfigured = Boolean(url && anonKey) && !fileBuild;
+/**
+ * Why sync cannot run here, or `null` when it can.
+ *
+ * The two cases look identical to a user and are fixed differently: a `file:`
+ * page is the offline single-file build (by design), while `unconfigured`
+ * means this build was made without `VITE_SUPABASE_URL` / `_ANON_KEY` — which
+ * is what a dev server started before `.env.local` existed looks like.
+ */
+export type SyncDisabledReason = 'file' | 'unconfigured';
+
+export const syncDisabledReason: SyncDisabledReason | null = fileBuild
+  ? 'file'
+  : url && anonKey
+    ? null
+    : 'unconfigured';
+
+export const syncConfigured = syncDisabledReason === null;
 
 export const supabase: SupabaseClient | null = syncConfigured
   ? createClient(url as string, anonKey as string, {
