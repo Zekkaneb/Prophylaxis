@@ -1,0 +1,69 @@
+/* --------------------------------------------------------------------------
+   Crash fallback
+
+   Shown only when a render throws: the window keeps its ground, and the panel
+   says what happened instead of leaving an empty page.
+   -------------------------------------------------------------------------- */
+
+.crash {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 24px;
+  background: var(--bg, var(--panel));
+}
+
+.crash__panel {
+  width: min(520px, 100%);
+  padding: 26px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background:
+    linear-gradient(180deg, var(--card-top), var(--card-bottom)),
+    var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.crash__eyebrow {
+  margin: 0;
+  font-size: var(--type-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--danger);
+}
+
+.crash__title {
+  margin: 6px 0 0;
+  font-size: var(--type-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+}
+
+.crash__body {
+  margin: 8px 0 0;
+  font-size: var(--type-sm);
+  line-height: var(--leading-snug);
+  color: var(--text-tertiary);
+}
+
+.crash__error {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--type-xs);
+  line-height: var(--leading-snug);
+  white-space: pre-wrap;
+}
+
+.crash__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}

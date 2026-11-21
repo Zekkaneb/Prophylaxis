@@ -1,5 +1,6 @@
 import { db } from '../db.ts';
 import { recordSyncedChange } from '../sync/outbox.ts';
+import { STANDARD_START_FEN } from './pgn.ts';
 import type { ActiveGameRecord, PlayedGameRecord } from './types.ts';
 
 /**
@@ -91,7 +92,74 @@ export async function loadActiveGame(): Promise<ActiveGameRecord | undefined> {
   const rows = await db.active_game.toArray();
   if (rows.length === 0) return undefined;
   /* Newest wins if an older build ever left more than one row behind. */
-  return rows.sort((a, b) => b.updated_at - a.updated_at)[0];
+  const usable = rows
+    .map((row) => normaliseActiveGame(row))
+    .filter((row): row is ActiveGameRecord => row !== null);
+  if (usable.length === 0) return undefined;
+  return usable.sort((a, b) => b.updated_at - a.updated_at)[0];
+}
+
+function numberOr(value: unknown, fallback: number): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+}
+
+/**
+ * Rebuilds a usable record from whatever the table holds.
+ *
+ * `active_game` arrives from two writers that can both be older than this
+ * build: the local save path and a sync pull from another device. A row without
+ * `sans` (or a colour, or clocks) used to throw while the Play room rendered it
+ * — "cannot read properties of undefined" — and a render throw unmounts the
+ * app, which reads as a blank page for that one account and nobody else.
+ * Filling the gaps is harmless; crashing is not. A row with no id or no
+ * position cannot be a game and is skipped.
+ */
+export function normaliseActiveGame(raw: unknown): ActiveGameRecord | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const row = raw as Partial<ActiveGameRecord>;
+
+  const gameId = typeof row.game_id === 'string' ? row.game_id : '';
+  if (!gameId) return null;
+
+  const initialFen =
+    typeof row.initial_fen === 'string' && row.initial_fen ? row.initial_fen : STANDARD_START_FEN;
+  const currentFen =
+    typeof row.current_fen === 'string' && row.current_fen ? row.current_fen : initialFen;
+
+  const playerColor = row.player_color === 'b' ? 'b' : 'w';
+  const whiteMs = numberOr(row.white_ms, numberOr(row.initial_seconds, 0) * 1000);
+  const blackMs = numberOr(row.black_ms, whiteMs);
+  const startedAt = numberOr(row.started_at, 0);
+
+  return {
+    game_id: gameId,
+    opponent_id: typeof row.opponent_id === 'string' ? row.opponent_id : 'unknown',
+    opponent_name: typeof row.opponent_name === 'string' ? row.opponent_name : 'Opponent',
+    opponent_elo: numberOr(row.opponent_elo, 1200),
+    opponent_kind: row.opponent_kind === 'general' ? 'general' : 'personality',
+    player_color: playerColor,
+    orientation: row.orientation === 'black' ? 'black' : 'white',
+    initial_fen: initialFen,
+    current_fen: currentFen,
+    sans: Array.isArray(row.sans) ? row.sans.filter((san) => typeof san === 'string') : [],
+    pgn: typeof row.pgn === 'string' ? row.pgn : '',
+    initial_seconds: numberOr(row.initial_seconds, 0),
+    increment_seconds: numberOr(row.increment_seconds, 0),
+    time_control_id: typeof row.time_control_id === 'string' ? row.time_control_id : 'custom',
+    untimed: row.untimed === true,
+    white_ms: whiteMs,
+    black_ms: blackMs,
+    active_clock: row.active_clock === 'w' || row.active_clock === 'b' ? row.active_clock : null,
+    clock_started: row.clock_started === true,
+    paused: row.paused === true,
+    started_at: startedAt,
+    last_sync_at: numberOr(row.last_sync_at, startedAt),
+    status: row.status === 'finished' ? 'finished' : 'playing',
+    result: row.result ?? null,
+    reason: row.reason ?? null,
+    ended_at: typeof row.ended_at === 'number' ? row.ended_at : null,
+    updated_at: numberOr(row.updated_at, startedAt),
+  };
 }
 
 /** Removes the active row (optionally only when it is still `gameId`). */
