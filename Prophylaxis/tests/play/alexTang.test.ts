@@ -445,14 +445,13 @@ test('his lines respect the quick gap, the repeat gap and never repeat', () => {
   const state = createDialogueState();
   assert.ok(maybeReact('alex-tang', 'strong', { ply: 20, state, random: () => 0 }));
 
-  /* Inside his four-ply gap he stays quiet, whichever event it is. */
-  assert.equal(maybeReact('alex-tang', 'mistake', { ply: 22, state, random: () => 0 }), null);
-  assert.equal(maybeReact('alex-tang', 'mistake', { ply: 23, state, random: () => 0 }), null);
-  assert.ok(maybeReact('alex-tang', 'mistake', { ply: 24, state, random: () => 0 }));
+  /* Inside his two-ply gap he stays quiet, whichever event it is. */
+  assert.equal(maybeReact('alex-tang', 'mistake', { ply: 21, state, random: () => 0 }), null);
+  assert.ok(maybeReact('alex-tang', 'mistake', { ply: 22, state, random: () => 0 }));
 
   /* The same event waits for the longer repeat gap. */
-  assert.equal(maybeReact('alex-tang', 'strong', { ply: 28, state, random: () => 0 }), null);
-  assert.ok(maybeReact('alex-tang', 'strong', { ply: 31, state, random: () => 0 }));
+  assert.equal(maybeReact('alex-tang', 'strong', { ply: 25, state, random: () => 0 }), null);
+  assert.ok(maybeReact('alex-tang', 'strong', { ply: 28, state, random: () => 0 }));
 
   /* Once-per-game remarks stay once per game. */
   const once = createDialogueState();

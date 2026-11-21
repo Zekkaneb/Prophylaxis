@@ -467,7 +467,7 @@ test('cooldowns, once-per-game events and anti-repetition all still apply', () =
   const ordinary = createDialogueState();
   assert.ok(maybeReact('faadi', 'strong', { state: ordinary, ply: 10, random: () => 0 }));
   assert.equal(
-    maybeReact('faadi', 'attack', { state: ordinary, ply: 12, random: () => 0 }),
+    maybeReact('faadi', 'attack', { state: ordinary, ply: 11, random: () => 0 }),
     null,
     'the quiet gap still holds between different remarks',
   );
@@ -477,7 +477,7 @@ test('he speaks more often than a reserved opponent, without changing the game',
   const chatty = createDialogueState();
   assert.ok(maybeReact('faadi', 'strong', { state: chatty, ply: 0, random: () => 0 }));
   assert.ok(
-    maybeReact('faadi', 'attack', { state: chatty, ply: DIALOGUE_TIMING.ordinaryGap - 2, random: () => 0 }),
+          maybeReact('faadi', 'attack', { state: chatty, ply: DIALOGUE_TIMING.ordinaryGap - 1, random: () => 0 }),
     'his cadence is shorter than the default gap',
   );
 
@@ -486,7 +486,7 @@ test('he speaks more often than a reserved opponent, without changing the game',
   assert.equal(
     maybeReact('freshman', 'attack', {
       state: reserved,
-      ply: DIALOGUE_TIMING.ordinaryGap - 2,
+      ply: DIALOGUE_TIMING.ordinaryGap - 1,
       random: () => 0,
     }),
     null,

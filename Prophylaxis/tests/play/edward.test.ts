@@ -701,19 +701,18 @@ test('he is composed, not Bryan-Sophomore hesitant or Faadi loud', () => {
   }
 });
 
-test('he talks rarely: long quiet gaps and no repeated line', () => {
+test('he talks often: a short gap and no repeated line', () => {
   const state = createDialogueState();
   const first = maybeReact('edward', 'mistake', { ply: 20, state, random: () => 0 });
   assert.ok(first);
 
-  /* Eight plies later he is still quiet — his gap is five full moves. */
-  assert.equal(maybeReact('edward', 'mistake', { ply: 24, state, random: () => 0 }), null);
-  /* A different event needs the same quiet gap. */
-  assert.equal(maybeReact('edward', 'defense', { ply: 28, state, random: () => 0 }), null);
+  /* Two plies later he is still quiet — his gap is two full moves. */
+  assert.equal(maybeReact('edward', 'defense', { ply: 22, state, random: () => 0 }), null);
   /* Past the gap, a different event can speak. */
-  assert.ok(maybeReact('edward', 'defense', { ply: 31, state, random: () => 0 }));
-  /* The same event waits much longer still. */
-  assert.equal(maybeReact('edward', 'mistake', { ply: 38, state, random: () => 0 }), null);
+  assert.ok(maybeReact('edward', 'defense', { ply: 25, state, random: () => 0 }));
+  /* The same event waits longer still. */
+  assert.equal(maybeReact('edward', 'mistake', { ply: 29, state, random: () => 0 }), null);
+  assert.ok(maybeReact('edward', 'mistake', { ply: 31, state, random: () => 0 }));
 
   /* No immediate repeats while the bank lasts. */
   const fresh = createDialogueState();

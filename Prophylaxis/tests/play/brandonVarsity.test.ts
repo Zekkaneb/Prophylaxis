@@ -502,12 +502,13 @@ test('he sounds exactly like the other Brandons', () => {
 
 test('his remarks are event-driven, spaced out and never repeat', () => {
   const state = createDialogueState();
-  /* The default cadence: no ordinary remark inside the quiet gap. */
+  /* The default cadence: no ordinary remark inside the quiet gap, and the same
+     event waits for the longer repeat gap. */
   assert.ok(maybeReact('brandon-varsity', 'strong', { ply: 20, state, random: () => 0 }));
-  assert.equal(maybeReact('brandon-varsity', 'mistake', { ply: 23, state, random: () => 0 }), null);
-  assert.ok(maybeReact('brandon-varsity', 'mistake', { ply: 27, state, random: () => 0 }));
-  assert.equal(maybeReact('brandon-varsity', 'strong', { ply: 33, state, random: () => 0 }), null);
-  assert.ok(maybeReact('brandon-varsity', 'strong', { ply: 36, state, random: () => 0 }));
+  assert.equal(maybeReact('brandon-varsity', 'strong', { ply: 24, state, random: () => 0 }), null);
+  assert.ok(maybeReact('brandon-varsity', 'strong', { ply: 29, state, random: () => 0 }));
+  assert.equal(maybeReact('brandon-varsity', 'mistake', { ply: 30, state, random: () => 0 }), null);
+  assert.ok(maybeReact('brandon-varsity', 'mistake', { ply: 33, state, random: () => 0 }));
 
   /* Once-per-game remarks stay once per game. */
   const once = createDialogueState();

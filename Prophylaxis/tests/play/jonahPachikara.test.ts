@@ -456,13 +456,13 @@ test('his lines respect the quiet gap, the repeat gap and never repeat', () => {
   const state = createDialogueState();
   assert.ok(maybeReact('jonah-pachikara', 'strong', { ply: 20, state, random: () => 0 }));
 
-  /* Inside his six-ply gap he stays quiet, whichever event it is. */
-  assert.equal(maybeReact('jonah-pachikara', 'mistake', { ply: 24, state, random: () => 0 }), null);
-  assert.ok(maybeReact('jonah-pachikara', 'mistake', { ply: 26, state, random: () => 0 }));
-
   /* The same event waits for the longer repeat gap. */
-  assert.equal(maybeReact('jonah-pachikara', 'strong', { ply: 32, state, random: () => 0 }), null);
-  assert.ok(maybeReact('jonah-pachikara', 'strong', { ply: 35, state, random: () => 0 }));
+  assert.equal(maybeReact('jonah-pachikara', 'strong', { ply: 26, state, random: () => 0 }), null);
+  assert.ok(maybeReact('jonah-pachikara', 'strong', { ply: 29, state, random: () => 0 }));
+
+  /* Inside his three-ply gap he stays quiet, whichever event it is. */
+  assert.equal(maybeReact('jonah-pachikara', 'mistake', { ply: 30, state, random: () => 0 }), null);
+  assert.ok(maybeReact('jonah-pachikara', 'mistake', { ply: 33, state, random: () => 0 }));
 
   /* Once-per-game remarks stay once per game. */
   const once = createDialogueState();

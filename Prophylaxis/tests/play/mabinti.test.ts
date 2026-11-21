@@ -473,13 +473,12 @@ test('her lines respect the quiet gap, the repeat gap and never repeat a line', 
   const first = maybeReact('mabinti', 'strong', { ply: 20, state, random: () => 0 });
   assert.ok(first);
 
-  /* Inside her ordinary gap (five plies) she stays quiet. */
-  assert.equal(maybeReact('mabinti', 'strong', { ply: 23, state, random: () => 0 }), null);
-  assert.equal(maybeReact('mabinti', 'defense', { ply: 24, state, random: () => 0 }), null);
+  /* Inside her ordinary gap (two plies) she stays quiet. */
+  assert.equal(maybeReact('mabinti', 'defense', { ply: 21, state, random: () => 0 }), null);
   /* Past the gap a different event may speak. */
-  assert.ok(maybeReact('mabinti', 'defense', { ply: 26, state, random: () => 0 }));
+  assert.ok(maybeReact('mabinti', 'defense', { ply: 23, state, random: () => 0 }));
   /* The same event waits for the longer repeat gap. */
-  assert.equal(maybeReact('mabinti', 'strong', { ply: 30, state, random: () => 0 }), null);
+  assert.equal(maybeReact('mabinti', 'strong', { ply: 26, state, random: () => 0 }), null);
 
   /* With the gap satisfied, a used line is not chosen again while the bank lasts. */
   const fresh = createDialogueState();

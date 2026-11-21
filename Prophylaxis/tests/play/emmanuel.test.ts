@@ -649,19 +649,17 @@ test('his lines are his own and he does not borrow another register', () => {
   assert.ok(DIALOGUE_BANKS.emmanuel.loss.length >= 3);
 });
 
-test('he speaks rarely and never repeats a line until his bank runs out', () => {
+test('he talks often and never repeats a line until his bank runs out', () => {
   const state = createDialogueState();
   const first = maybeReact('emmanuel', 'mistake', { ply: 30, state, random: () => 0 });
   assert.ok(first);
 
-  /* His quiet gap is eight plies: longer than the default, because he is not a
-     talker. */
-  assert.equal(maybeReact('emmanuel', 'defense', { ply: 34, state, random: () => 0 }), null);
+  /* The shared cadence: a different remark a move and a half later, and the same
+     kind of remark only once the repeat gap has passed. */
+  assert.equal(maybeReact('emmanuel', 'defense', { ply: 31, state, random: () => 0 }), null);
+  assert.ok(maybeReact('emmanuel', 'defense', { ply: 33, state, random: () => 0 }));
   assert.equal(maybeReact('emmanuel', 'mistake', { ply: 37, state, random: () => 0 }), null);
-  assert.ok(maybeReact('emmanuel', 'defense', { ply: 39, state, random: () => 0 }));
-  /* The same kind of remark waits for the repeat gap. */
-  assert.equal(maybeReact('emmanuel', 'mistake', { ply: 46, state, random: () => 0 }), null);
-  assert.ok(maybeReact('emmanuel', 'mistake', { ply: 49, state, random: () => 0 }));
+  assert.ok(maybeReact('emmanuel', 'mistake', { ply: 40, state, random: () => 0 }));
 
   /* Used lines are held back while the bank lasts. */
   const fresh = createDialogueState();
@@ -690,8 +688,9 @@ test('he speaks rarely and never repeats a line until his bank runs out', () => 
   assert.ok(loss);
   assert.ok(DIALOGUE_BANKS.emmanuel.loss.includes(loss.text));
 
-  /* His cadence is his own and slower than the default. */
-  assert.ok(DIALOGUE_TIMING.ordinaryGap < 8);
+  /* Everyone speaks often: his cadence is the shared one, not a slower one. */
+  assert.ok(DIALOGUE_TIMING.ordinaryGap <= 3);
+  assert.ok(DIALOGUE_TIMING.repeatGap <= 8);
 });
 
 test('dialogue cannot change a move: the same position and roll pick the same move', () => {

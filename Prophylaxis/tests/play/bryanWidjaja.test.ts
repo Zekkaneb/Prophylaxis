@@ -552,14 +552,14 @@ test('his lines respect the quiet gap, the repeat gap and never repeat a line', 
   const state = createDialogueState();
   assert.ok(maybeReact('bryan-widjaja', 'strong', { ply: 20, state, random: () => 0 }));
 
-  /* Inside his eight-ply gap he stays quiet. */
-  assert.equal(maybeReact('bryan-widjaja', 'strong', { ply: 23, state, random: () => 0 }), null);
-  assert.equal(maybeReact('bryan-widjaja', 'defense', { ply: 26, state, random: () => 0 }), null);
-  /* Past the gap a different event may speak. */
-  assert.ok(maybeReact('bryan-widjaja', 'defense', { ply: 28, state, random: () => 0 }));
+  /* Inside his four-ply gap he stays quiet. */
+  assert.equal(maybeReact('bryan-widjaja', 'defense', { ply: 21, state, random: () => 0 }), null);
   /* The same event waits for the longer repeat gap. */
-  assert.equal(maybeReact('bryan-widjaja', 'strong', { ply: 30, state, random: () => 0 }), null);
-  assert.ok(maybeReact('bryan-widjaja', 'strong', { ply: 38, state, random: () => 0 }));
+  assert.equal(maybeReact('bryan-widjaja', 'strong', { ply: 24, state, random: () => 0 }), null);
+  /* Past the gap a different event may speak. */
+  assert.ok(maybeReact('bryan-widjaja', 'defense', { ply: 26, state, random: () => 0 }));
+  assert.equal(maybeReact('bryan-widjaja', 'strong', { ply: 29, state, random: () => 0 }), null);
+  assert.ok(maybeReact('bryan-widjaja', 'strong', { ply: 34, state, random: () => 0 }));
 
   /* A used line is not chosen again while the bank lasts. */
   const fresh = createDialogueState();

@@ -76,8 +76,8 @@ colours, no `book`/`deviation` remark can fire from a prepared line, and
 `openingBias` is empty. His 1st move and his 40th come from the same path.
 
 Dialogue is triggered by the existing event layer and paced by `maybeReact`; his
-cadence is deliberately slower than the default (`ordinaryGap: 8`, `repeatGap:
-18`) because he is not a talker. Lines stay casual and understated in a lost
+cadence is the shared one (`ordinaryGap: 3`, `repeatGap: 8`), so he talks as
+often as everyone else. Lines stay casual and understated in a lost
 position as well as a won one, and none of them references a tactic, an
 evaluation or a search.
 
@@ -112,8 +112,8 @@ and a repertoire lookup can never produce an illegal move (`book.ts` re-checks
 every stored move against legal move generation).
 
 Dialogue is trigger-driven by the existing event layer (`events.ts`) and paced by
-`maybeReact`: her cadence is slightly quicker than the default
-(`ordinaryGap: 5`, `repeatGap: 12`) because she talks to the room, but the
+`maybeReact`: her cadence is the quickest on the roster
+(`ordinaryGap: 2`, `repeatGap: 7`) because she talks to the room, but the
 never-repeat-a-line pool and the repeat gap still apply. Her voice is warmth and
 punctuation, never phonetic spelling or an accent written into words, and no line
 mentions an engine, an evaluation or a search.
@@ -186,7 +186,7 @@ after 1.e4 or when the structure is wrong, and ordinary Stockfish selection take
 over. Book lookups are always re-checked for legality.
 
 Dialogue is event-driven by `events.ts` and paced by `maybeReact` with a reserved
-cadence (`ordinaryGap: 8`, `repeatGap: 18`): short, chill, understated lines,
+cadence (`ordinaryGap: 4`, `repeatGap: 10`): short, chill, understated lines,
 never a narrated tactic, an evaluation or a number, and never a cue to the move
 chooser. The never-repeat-a-line pool and the once-per-game events still apply.
 
@@ -217,7 +217,7 @@ is wider than a 1400's, the standard search depth is used (no `depthCap`, no
 `mistakeChance`), and the ordinary slip curve gives a 1100 more realistic
 mistakes than a 1550. He keeps his own thinking factors (a quick, interested
 look, slightly longer in a sharp position) and his own cadence
-(`ordinaryGap: 4`, `repeatGap: 11`), so he talks often without looping a
+(`ordinaryGap: 2`, `repeatGap: 7`), so he talks constantly without looping a
 catchphrase.
 
 White plays the London System only: 1.d4, ...Bf4 outside the pawn chain, ...e3
@@ -261,8 +261,8 @@ theoretical branches: `kid.ts` declines for his id, and outside the book the
 ordinary engine choice plus his tendencies take over. Every book move is
 re-checked for legality.
 
-Dialogue is event-driven through the existing layer with a reserved cadence
-(`ordinaryGap: 7`, `repeatGap: 16`): relaxed, friendly and quietly competitive,
+Dialogue is event-driven through the existing layer with a frequent cadence
+(`ordinaryGap: 3`, `repeatGap: 9`): relaxed, friendly and quietly competitive,
 with no lecturing, no digits and no engine or theory vocabulary. The
 never-repeat-a-line pool and the once-per-game events still apply.
 
@@ -304,7 +304,7 @@ version and the ...Nf6 recapture — and 1.d4 with 1...d5 into a Queen's Gambit
 Declined structure, plus a calm answer to the London. No King's Indian layer.
 Outside the book the ordinary engine choice and his tendencies take over.
 
-Dialogue is event-driven with `ordinaryGap: 6`, `repeatGap: 15`: understated,
+Dialogue is event-driven with the shared `ordinaryGap: 3`, `repeatGap: 8`: understated,
 casual, occasionally dry ("Oh, okay.", "That's interesting.", "I think there's
 something here."), level in won and lost games, and free of theory or engine
 talk. The anti-repetition pool and once-per-game events apply.
@@ -343,7 +343,7 @@ Exchange lines meet White's space calmly. Black meets 1.d4 with 1...d5 into a
 sound Queen's Gambit Declined set-up, plus a calm answer to the London. No
 King's Indian layer; outside the book, engine choice plus her tendencies play.
 
-Dialogue is event-driven with `ordinaryGap: 7`, `repeatGap: 16`: soft-spoken,
+Dialogue is event-driven with the shared `ordinaryGap: 3`, `repeatGap: 8`: soft-spoken,
 hesitant and exceptionally kind ("Oh, okay.", "I think that's alright.", "Maybe
 I should trade here.", "I hope this works."), polite in won and lost games and
 never taunting. The anti-repetition pool and once-per-game events apply.

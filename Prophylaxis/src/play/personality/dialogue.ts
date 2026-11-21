@@ -346,7 +346,7 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
      it — one short, matter-of-fact line, often about his own mistake, and then
      back to playing. Nothing here is sarcastic, cocky or dramatic, and there is
      no slang: where Bryan shrugs things off, Edward simply accepts them. The
-     quieter cadence below means most of these lines are never heard in a game. */
+     measured cadence below still lets most of these lines be heard. */
   edward: {
     book: ['Okay..'],
     deviation: ["I don't know what I'm doing"],
@@ -629,7 +629,7 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
   /* Jonah Pachikara, 1400: the silent threat.
 
      Extremely chill and understated, with a dry sense of humour and no
-     theatrics. He notices a position out loud only once in a while, stays level
+     theatrics. He notices a position out loud often, but briefly, stays level
      in won and lost games alike, and never explains a tactic, an evaluation or
      a line of theory. */
   'jonah-pachikara': {
@@ -747,50 +747,33 @@ const URGENT: ReadonlySet<DialogueEvent> = new Set([
 const ONCE: ReadonlySet<DialogueEvent> = new Set(['winning', 'losing']);
 
 export const DIALOGUE_TIMING = {
-  /** At least three full moves between ordinary remarks. */
-  ordinaryGap: 6,
+  /** At most a move and a half of silence between ordinary remarks. */
+  ordinaryGap: 3,
   /** The same event may not speak again for this many plies. */
-  repeatGap: 14,
+  repeatGap: 8,
 } as const;
 
 /**
- * Characters who talk more than the default cadence.
+ * Everyone talks often; these entries only decide who is chattiest.
  *
  * Only the quiet gaps move: the once-per-game events, the per-event repeat gap
- * and the never-repeat-a-used-line pool still apply, so a talkative character
- * cannot loop a catchphrase. Everyone else keeps `DIALOGUE_TIMING`.
+ * and the never-repeat-a-used-line pool still apply, so no character can loop
+ * a catchphrase no matter how short its gap is. A character with no entry here
+ * keeps `DIALOGUE_TIMING`.
  */
 const CADENCE: Partial<
   Record<PersonalityId, { ordinaryGap: number; repeatGap: number }>
 > = {
-  faadi: { ordinaryGap: 4, repeatGap: 10 },
-  /* She talks to the room, so she speaks a little more often than the default —
-     but the same repeat gap and never-repeat-a-line pool still apply, so the
-     enthusiasm cannot become a loop. */
-  mabinti: { ordinaryGap: 5, repeatGap: 12 },
-  /* Edward barely talks: a remark every five full moves at most, and the same
-     event only once in a long while. */
-  edward: { ordinaryGap: 10, repeatGap: 22 },
-  /* Bryan Widjaja is reserved: a remark every eight plies at most, and the same
-     kind of remark only after a long quiet stretch. */
-  'bryan-widjaja': { ordinaryGap: 8, repeatGap: 18 },
-  /* Alex talks when something happens to him: quick, but not a monologue — the
-     repeat gap and the never-repeat-a-line pool still keep him off a catchphrase
-     loop. */
-  'alex-tang': { ordinaryGap: 4, repeatGap: 11 },
-  /* Erik is relaxed, not chatty: a remark every seven plies at most, and the
-     same kind of observation only after a long stretch. */
-  'erik-wiessmann': { ordinaryGap: 7, repeatGap: 16 },
-  /* Jonah is quiet by nature: a remark every six plies at most, and the same
-     kind of remark only after a long stretch. */
-  'jonah-pachikara': { ordinaryGap: 6, repeatGap: 15 },
-  /* Sophia is quiet and hesitant: a remark every seven plies at most, and the
-     same kind of remark only after a long stretch. */
-  'sophia-kuan': { ordinaryGap: 7, repeatGap: 16 },
+  /* The streamer and the two loudest friends: a remark almost every move,
+     with the repeat gap keeping the same joke from landing twice in a row. */
+  faadi: { ordinaryGap: 2, repeatGap: 6 },
+  mabinti: { ordinaryGap: 2, repeatGap: 7 },
+  'alex-tang': { ordinaryGap: 2, repeatGap: 7 },
+  /* Measured, but no longer silent: a remark every other move. */
+  edward: { ordinaryGap: 4, repeatGap: 10 },
+  'bryan-widjaja': { ordinaryGap: 4, repeatGap: 10 },
+  'erik-wiessmann': { ordinaryGap: 3, repeatGap: 9 },
 };
-  /* He is not a talker: a remark every few moves, and the same kind of remark
-     rarely twice. Nothing here is urgent enough to break the quiet gap except
-     the game ending. */
 export interface ReactOptions {
   ply: number;
   state: DialogueState;
