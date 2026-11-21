@@ -137,9 +137,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'EC',
     usesRepertoire: false,
   },
-  /* Listed after Sophomore so the Bot vs. Bot default pairing stays Freshman
-     against Sophomore; the Beginners group is built by category, so he still
-     appears directly beneath the Freshman card. */
   /* Faadi Granillo Garcia (Prime), 700 — the wildcard: loose, instinctive and
      happy to improvise. */
   {
@@ -159,9 +156,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'FG',
     usesRepertoire: false,
   },
-  /* Nina before she found her confidence. Same character, an earlier profile:
-     the beginners' balanced opponent, so a first game meets someone who plays
-     normally rather than a dedicated attacker or defender. */
   /* Nina before she found her confidence. Same character, an earlier profile:
      the Novice band's balanced opponent, so a first game meets someone who plays
      normally rather than a dedicated attacker or defender. */
@@ -198,12 +192,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
 
      A different person from the Johnfer Sophomore and from Bryan (Sophomore):
      `alex-tang` is his own id, so a saved game can never resolve him to either
-     of them. He is a Beginners card at 1100 and a straightforward beginner at
-     the board — the loud, funny personality lives in his dialogue only. */
-  /* Alex Tang (Sophomore), 1100 — the energetic goofball.
-
-     A different person from the Johnfer Sophomore and from Bryan (Sophomore):
-     `alex-tang` is his own id, so a saved game can never resolve him to either
      of them. The loud, funny personality lives in his dialogue only. */
   {
     id: 'alex-tang',
@@ -222,9 +210,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'AT',
     usesRepertoire: false,
   },
-  /* The earlier Bryan. Same name and portrait, a defend-first game: he sits in
-     the intermediate group, beside the 1450 Johnfer — the step where a player
-     has to convert an advantage against someone who does not hand it back. */
   /* The earlier Bryan. Same name and portrait, a defend-first game — the step
      where a player has to convert an advantage against someone who does not
      hand it back. */
@@ -242,13 +227,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'BM',
     usesRepertoire: false,
   },
-  /* Bryan Widjaja (Prime), 1400 — the Wall.
-
-     A different Bryan and a different player from the three
-     Martinez-Hernandez profiles: defence is his speciality. He sits in the
-     Intermediate group at 1400 by category, never by rating order, and
-     `bryan-widjaja` is his own stable id, so a saved game can never resolve
-     him to any other Bryan card. */
   /* Bryan Widjaja (Prime), 1400 — the Wall.
 
      A different Bryan and a different player from the three
@@ -305,11 +283,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     usesRepertoire: false,
   },
   /* Brandon before Prime: the same person and the same portrait, one rung down
-     the ladder. He belongs to the Strong group at 1600, between Nina and Bryan
-     Junior, because his chess is promising rather than polished. The shared
-     portrait is deliberate — it is the same player at an earlier stage — and
-     the subtext and rating are what tell the two cards apart. */
-  /* Brandon before Prime: the same person and the same portrait, one rung down
      the ladder at 1600. The shared portrait is deliberate — it is the same
      player at an earlier stage — and the subtext and rating tell the two cards
      apart. */
@@ -360,7 +333,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'S',
     usesRepertoire: false,
   },
-  /* The Big 3, in the order the featured row shows them. */
   /* The Big 4, strongest first. Membership is a special designation, never a
      rating band: Mabinti's 1550 sits here by invitation, not by Elo. */
   {
@@ -405,10 +377,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'BM',
     usesRepertoire: false,
   },
-  /* Mabinti Mansaray, the Strong group's balanced player: 1550, the same
-     rating as Nina but a completely different character — principled rather
-     than initiative-first. `mabinti` is her own id: it never resolves to
-     another character's card, saved games or PGN. */
   /* Mabinti Mansaray (Junior), 1550 — the featured four's fourth card, by
      designation rather than by rating. */
   {
@@ -426,6 +394,27 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
        would crop her braids twice. */
     portraitScale: 1,
     initials: 'MM',
+    usesRepertoire: false,
+  },
+  /* Erik Wiessmann (Teacher), 1100 — the chill logician.
+
+     The computer science teacher, and the roster's most principled card: sound
+     development, central control, no speculation. `erik-wiessmann` is his own
+     id, so a saved game can never resolve him to another 1100. */
+  {
+    id: 'erik-wiessmann',
+    kind: 'personality',
+    category: 'novice',
+    name: 'Erik Wiessmann',
+    shortName: 'Erik',
+    title: 'Teacher',
+    elo: 1100,
+    style:
+      'The chill logician: plays the principled move — develop, take the centre, castle, keep the pieces — and explains it only when the position is interesting.',
+    portraitPath: 'opponents/erik-wiessmann.webp',
+    /* Framed tight in the source file: the whole head shows at 1. */
+    portraitScale: 1,
+    initials: 'EW',
     usesRepertoire: false,
   },
 ] as const;

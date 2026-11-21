@@ -45,10 +45,11 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
       ['junior', 'Johnfer Quispe', 'Junior', 2150],
       ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000],
       ['mabinti', 'Mabinti Mansaray', 'Junior', 1550],
+      ['erik-wiessmann', 'Erik Wiessmann', 'Teacher', 1100],
     ],
   );
 
-  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 17);
+  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 18);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.doesNotMatch(opponent.name, /\(/, 'the name carries no parenthetical suffix');
     assert.ok(opponent.title, `${opponent.id} has a subtext`);
@@ -64,7 +65,7 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
      two Bryans apart, which is how saved games are labelled. */
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    17,
+    18,
   );
 });
 
@@ -94,7 +95,7 @@ test('categories are explicitly configured, complete and ordered by band', () =>
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'novice').map(
       (opponent) => opponent.id,
     ),
-    ['nina-freshman', 'freshman', 'alex-tang'],
+    ['nina-freshman', 'freshman', 'alex-tang', 'erik-wiessmann'],
   );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'intermediate').map(
@@ -169,6 +170,7 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
       'opponents/junior.webp',
       'opponents/bryan-prime.webp',
       'opponents/mabinti.webp',
+      'opponents/erik-wiessmann.webp',
     ],
   );
 
@@ -282,8 +284,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
   assert.equal(GENERAL_BOT.usesRepertoire, false);
-  assert.equal(ALL_OPPONENTS.length, 18);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 18);
+  assert.equal(ALL_OPPONENTS.length, 19);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 19);
   assert.equal(GENERAL_BOT_ELO.min, 100);
   assert.equal(GENERAL_BOT_ELO.max, 2800);
 });

@@ -215,6 +215,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
          stare — but he is still a beginner, so the extra time buys a check of
          the obvious, not a calculation. */
       return 0.85 + (profile.tactical ? 0.16 : 0.05) * profile.complexity;
+    case 'erik-wiessmann':
+      /* An ordinary, methodical look: he reads the position, not the tactics
+         first, and a busy board earns a slightly longer check of the threats. */
+      return 0.92 + (profile.tactical ? 0.1 : 0.04) * profile.complexity;
   }
 }
 
@@ -268,6 +272,9 @@ function deliberationFactor(style: PersonalityStyle): number {
       /* Keen, so a little quicker than the table average — he wants to see what
          happens next. */
       return 0.82;
+    case 'erik-wiessmann':
+      /* Unhurried but never slow: he wants the move to make sense. */
+      return 0.95;
   }
 }
 

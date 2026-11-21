@@ -23,7 +23,7 @@ same band.
 | Band | Range | Cards, in display order |
 |---|---|---|
 | Beginner | 100–1000 Elo | Emmanuel Domah, Edward Chen, Faadi Granillo Garcia |
-| Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang |
+| Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang, Erik Wiessmann |
 | Intermediate | 1301–1600 Elo | Bryan Martinez-Hernandez (Sophomore), Bryan Widjaja, Johnfer Quispe (Sophomore), Nina Yang (Sophomore), Brandon Tran (Freshman) |
 | Varsity | 1601–2000 Elo | Bryan Martinez-Hernandez (Junior), Johnfer Quispe (Senior) |
 | The Big 4 | Special designation | Brandon Tran (Prime), Johnfer Quispe (Junior), Bryan Martinez-Hernandez (Prime), Mabinti Mansaray |
@@ -221,6 +221,44 @@ short lines. Black against 1.d4 registers in the shared King's Indian layer
 later. Against 1.e4 there is deliberately no repertoire: the book is empty, so
 ordinary principled selection answers with a legal, sensible move. Book moves are
 always re-checked for legality, and outside his lines he improvises normally.
+
+## Erik Wiessmann (Teacher) — 1100, Novice
+
+| | |
+|---|---|
+| id | `erik-wiessmann` |
+| Name / subtext | Erik Wiessmann · Teacher |
+| Rating | 1100, Novice band (1001–1300) |
+| White | 1.e4, then principled development (Italian, Open Sicilian, French) |
+| Black vs 1.e4 | 1...e5 (Italian, Ruy Lopez, Scotch responses) |
+| Black vs 1.d4 | 1...d5 (Tarrasch, Slav, and a ...d5 answer to the London) |
+| Profile file | `src/play/personality/styles.ts` (`erik-wiessmann`) |
+| Repertoire | `src/play/personality/repertoires/erikWiessmann.ts` |
+| Dialogue | `DIALOGUE_BANKS['erik-wiessmann']` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/erik-wiessmann.webp` (monogram `EW` if missing) |
+
+The chill logician: the most principled table on the roster. Positional 75,
+king safety 75 and material 75 all point at sound, purposeful moves; aggression
+35, risk 25, complexity 25 and initiative 40 keep him away from speculation, and
+sacrifice is 10 — nothing is given without a concrete reason. The opening bias
+favours developing, solid and positional tags and penalises sharp ones.
+
+That is all taste. Strength still comes from the 1100 rating:
+`accuracyForElo(1100)` = 0.85, the same candidate gap as any other 1100, the
+standard search depth (no `depthCap`, no `mistakeChance`) and the ordinary slip
+curve — a logical personality does not calculate better than its rating.
+
+White opens 1.e4 with three short, principled lines (Italian, Open Sicilian,
+French), Black answers 1.e4 with 1...e5 (Italian, Ruy Lopez, Scotch) and 1.d4
+with 1...d5 (Tarrasch, Slav, London reply). No King's Indian layer and no
+theoretical branches: `kid.ts` declines for his id, and outside the book the
+ordinary engine choice plus his tendencies take over. Every book move is
+re-checked for legality.
+
+Dialogue is event-driven through the existing layer with a reserved cadence
+(`ordinaryGap: 7`, `repeatGap: 16`): relaxed, friendly and quietly competitive,
+with no lecturing, no digits and no engine or theory vocabulary. The
+never-repeat-a-line pool and the once-per-game events still apply.
 
 ## Repertoire data
 

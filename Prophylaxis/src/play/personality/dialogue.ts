@@ -53,6 +53,7 @@ const BANKS: Record<
     | 'emmanuel'
     | 'bryan-widjaja'
     | 'alex-tang'
+    | 'erik-wiessmann'
   >,
   Bank
 > = {
@@ -563,6 +564,62 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     ],
     draw: ['Okay, that was fun.', 'That is crazy. Anyway...', 'Good game!'],
   },
+  /* Erik Wiessmann (Teacher), 1100: the chill logician.
+
+     Relaxed and friendly with a quiet competitive streak. He explains himself
+     only when a position is genuinely interesting, never lectures, and no line
+     names a tactic, an evaluation or a search. Ordinary remarks stay rare: three
+     or four a game, not one a move. */
+  'erik-wiessmann': {
+    book: ['Alright, let’s see.', 'Interesting start.', 'Let’s be logical about this.'],
+    deviation: [
+      'Oh, that is a bit different.',
+      'Okay, I see what you are doing.',
+      'Hm. Let me think about that.',
+    ],
+    mistake: [
+      'Hm. That was not it.',
+      'Okay, miscalculation.',
+      'That one is on me.',
+    ],
+    strong: [
+      'That is actually pretty interesting.',
+      'Okay, now we are getting somewhere.',
+      'That was the logical move.',
+    ],
+    brilliant: [
+      'Okay, that is clever.',
+      'Nah, we cannot allow that.',
+      'I think there is a better move.',
+    ],
+    winning: [
+      'This is going according to plan.',
+      'Okay, I like my chances.',
+      'Steady. Just steady.',
+    ],
+    losing: [
+      'Come on, there has to be something here.',
+      'Okay, this is a puzzle now.',
+      'I am not out of this yet.',
+    ],
+    defense: [
+      'Okay, I saw that one.',
+      'Let me deal with this first.',
+      'Nah, we cannot allow that.',
+    ],
+    attack: ['Now we have an idea.', 'Let us see where this goes.', 'I think there is something here.'],
+    'attack-fail': ['Hm. Not quite.', 'Fair enough.', 'Okay, that did not work.'],
+    sacrifice: ['It is sound. I checked.', 'Let us be reasonable here.'],
+    'material-won': ['That was logical.', 'Good. Material matters.', 'Okay, now we are getting somewhere.'],
+    'material-lost': [
+      'Hm. That was not logical.',
+      'I am not letting you get away with that.',
+      'Okay. Reset.',
+    ],
+    win: ['Good game.', 'That was fun. Rematch?', 'Haha, fair enough.'],
+    loss: ['Good game.', 'Haha, fair enough.', 'Fine. You got me there.'],
+    draw: ['Fair result.', 'Good game.', 'Haha, fair enough.'],
+  },
 };
 
 export interface DialogueState {
@@ -620,6 +677,9 @@ const CADENCE: Partial<
      repeat gap and the never-repeat-a-line pool still keep him off a catchphrase
      loop. */
   'alex-tang': { ordinaryGap: 4, repeatGap: 11 },
+  /* Erik is relaxed, not chatty: a remark every seven plies at most, and the
+     same kind of observation only after a long stretch. */
+  'erik-wiessmann': { ordinaryGap: 7, repeatGap: 16 },
 };
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except

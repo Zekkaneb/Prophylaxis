@@ -28,7 +28,8 @@ export type PersonalityId =
   | 'mabinti'
   | 'emmanuel'
   | 'bryan-widjaja'
-  | 'alex-tang';
+  | 'alex-tang'
+  | 'erik-wiessmann';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -469,6 +470,32 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 15,
     activePieces: 50,
     openingBias: { developing: 20, solid: 16, positional: 10, sharp: -18, initiative: -10 },
+  },
+  /* Erik Wiessmann (Teacher), 1100 — the chill logician.
+
+     The most principled table on the roster: positional 75, king safety 75 and
+     material 75 all point at sound, purposeful moves, while risk 25, complexity
+     25 and aggression 35 keep him away from speculative play. Nothing here is
+     strength: `accuracy` still comes from `accuracyForElo(1100)`, there is no
+     search cap and no custom slip rate, so his logic is a preference among
+     near-equal candidates rather than better calculation. */
+  'erik-wiessmann': {
+    ...BASE,
+    id: 'erik-wiessmann',
+    aggression: 35,
+    risk: 25,
+    positional: 75,
+    tactical: 45,
+    defensive: 65,
+    initiative: 40,
+    simplification: 65,
+    complexity: 25,
+    kingSafety: 75,
+    material: 75,
+    /* A principled player gives material only for something concrete. */
+    sacrifice: 10,
+    activePieces: 55,
+    openingBias: { developing: 20, solid: 18, positional: 14, sharp: -22, initiative: -12 },
   },
 };
 
