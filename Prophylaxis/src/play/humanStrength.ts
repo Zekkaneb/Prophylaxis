@@ -57,6 +57,33 @@ import { Chess, type Square } from 'chess.js';
 export const ELO_MIN = 100;
 export const ELO_MAX = 2800;
 
+/**
+ * The extreme bottom tier: 100-200 USCF.
+ *
+ * Below this rating the model stops interpolating between curves and plays the
+ * profile it can defend: the piece is simply gone, the pawn push is simply
+ * chaotic, and the recapture is simply not noticed. It is a step rather than a
+ * slope on purpose - 100-200 USCF is one kind of player, and no card above the
+ * tier is asked to play this way.
+ */
+export const BOTTOM_TIER_ELO = 200;
+
+/**
+ * What a sub-200 player rolls, per move.
+ *
+ * 65% blunder, 25% mistake, and under 10% left for anything that survives - the
+ * distribution of someone who has not yet learned what a threat is. The error
+ * buckets are not scaled again on top of this: this *is* the bottom tier.
+ */
+export const BOTTOM_TIER_SHARES = {
+  blunder: 0.65,
+  mistake: 0.25,
+  inaccuracy: 0.04,
+  good: 0.04,
+  excellent: 0.015,
+  best: 0.005,
+} as const;
+
 /** MultiPV width of the main search: enough lines for every band to exist. */
 export const HUMAN_MULTI_PV = 10;
 
@@ -332,6 +359,7 @@ export function skillOf(elo: number): number {
  */
 export function getBucketWeights(elo: number): QualityShares {
   const target = clampElo(elo);
+  if (target <= BOTTOM_TIER_ELO) return normalizeQuality({ ...BOTTOM_TIER_SHARES });
   const s = skillOf(target);
 
   const blunder =
@@ -434,6 +462,13 @@ export function humanSearchDepth(elo: number, depthOffset = 0): number {
 export function beginnerNodeCap(elo: number): number | null {
   const target = clampElo(elo);
   if (target >= BEGINNER_DEPTH_ELO) return null;
+  /* The extreme bottom tier gets a single-ply budget: 8 nodes at 100 USCF and
+     12 at 200, which is less than one full look at the board. The bot cannot
+     see the reply, so a one-move threat and the recapture are both invisible -
+     which is the whole point, not a side effect. */
+  if (target <= BOTTOM_TIER_ELO) {
+    return Math.min(12, Math.round(8 + (target - ELO_MIN) * 0.04));
+  }
   return Math.round(BEGINNER_NODE_FLOOR + (target - ELO_MIN) * BEGINNER_NODE_PER_ELO);
 }
 
@@ -1752,10 +1787,13 @@ export async function probeErrorMove(
   const pool = (options.pool ?? []).filter((uci) => !known.has(uci));
   const limit = options.count ?? (pool.length > 0 ? 10 : 6);
   const ranked = beginner ? spreadPool(pool, limit) : pool.slice(0, limit);
-  const moves = [...ranked, ...probeMoveCandidates(fen, [...exclude, ...pool], 6)].slice(
-    0,
-    limit + 6,
-  );
+  /* The bottom tier needs a wider net: at 8-12 nodes its own search sees almost
+     nothing, so the probe is the only place a genuinely bad move comes from. */
+  const extras = elo <= BOTTOM_TIER_ELO ? 12 : 6;
+  const moves = [
+    ...ranked,
+    ...probeMoveCandidates(fen, [...exclude, ...pool], extras),
+  ].slice(0, limit + extras);
 
   /* Above 400 the order is temptation, not rank: try the grab, the check and
      the central push before the quiet moves. Below 600 (but above 400) that
@@ -1795,5 +1833,11 @@ export async function probeErrorMove(
     if (!worst || result.winDrop > worst.winDrop) worst = result;
   }
 
-  return worst && worst.winDrop >= PROBE_WINDOWS.mistake.min ? worst : null;
+  if (!worst) return null;
+  /* Below 200 the probe never comes back empty-handed: the worst legal move it
+     scored is the move, even when the reference calls it only slightly worse.
+     On a quiet board that is exactly the chaotic pawn push "the worst of the
+     worst" plays. */
+  if (elo <= BOTTOM_TIER_ELO) return worst;
+  return worst.winDrop >= PROBE_WINDOWS.mistake.min ? worst : null;
 }

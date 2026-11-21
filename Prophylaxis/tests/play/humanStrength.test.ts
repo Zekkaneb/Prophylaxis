@@ -7,6 +7,7 @@ import {
   BEGINNER_SECOND_WEIGHT,
   BEGINNER_TOP_WEIGHT,
   BEGINNER_VULNERABILITY_ELO,
+  BOTTOM_TIER_ELO,
   BUCKET_GATES,
   BUCKET_ORDER,
   COSTLY_RECAPTURE_SHARE,
@@ -123,10 +124,29 @@ test('the six quality buckets sum to 1 across the whole range', () => {
   }
 });
 
+test('the sub-200 tier is the worst of the worst', () => {
+  for (const elo of [100, 150, 200]) {
+    const shares = qualityShares(elo);
+    assert.ok(Math.abs(shares.blunder - 0.65) < 1e-9, `blunder at ${elo}`);
+    assert.ok(Math.abs(shares.mistake - 0.25) < 1e-9, `mistake at ${elo}`);
+    const surviving = shares.inaccuracy + shares.good + shares.excellent + shares.best;
+    assert.ok(surviving <= 0.1 + 1e-9, `quality mass at ${elo}: ${surviving}`);
+  }
+  /* The tier lifts at 200: 300 is back on the smooth curve. */
+  assert.equal(BOTTOM_TIER_ELO, 200);
+  assert.ok(qualityShares(300).blunder < 0.4);
+
+  /* A single-ply budget: 8 nodes at the floor, 12 at the top of the tier. */
+  assert.equal(beginnerNodeCap(100), 8);
+  assert.equal(beginnerNodeCap(150), 10);
+  assert.equal(beginnerNodeCap(200), 12);
+  assert.ok(beginnerNodeCap(300)! > 12);
+});
+
 test('the beginner tiers carry the extra error mass', () => {
   const floor = qualityShares(100);
-  assert.ok(Math.abs(floor.blunder - 0.46) < 1e-9);
-  assert.ok(Math.abs(floor.mistake - 0.34) < 1e-9);
+  assert.ok(Math.abs(floor.blunder - 0.65) < 1e-9);
+  assert.ok(Math.abs(floor.mistake - 0.25) < 1e-9);
   assert.ok(floor.best < 0.12);
 
   const sevenHundred = qualityShares(700);
@@ -138,8 +158,8 @@ test('the beginner tiers carry the extra error mass', () => {
     `700 blunder share ${sevenHundred.blunder}`,
   );
 
-  /* The beginner band is the curve's own lower end: 46% blunders at the floor,
-     and no separate scaling on top of it. */
+  /* The beginner band is the curve's own lower end: the sub-200 tier blunders
+     65% of the time, and there is no separate scaling on top of it. */
   assert.equal(BEGINNER_VULNERABILITY_ELO, 1000);
   assert.ok(qualityShares(700).blunder > qualityShares(1000).blunder);
   assert.ok(qualityShares(300).blunder > qualityShares(700).blunder);
@@ -160,7 +180,13 @@ test('the error rate falls and Best rises as the rating climbs', () => {
   let previousError = 1;
   for (let elo = ELO_MIN; elo <= ELO_MAX; elo += 100) {
     const { errorRate } = humanCalibration(elo);
-    assert.ok(errorRate < previousError, `error rate rose at ${elo}`);
+    if (elo <= BOTTOM_TIER_ELO) {
+      /* 100-200 is one tier on purpose: it is bad in the same way at both ends
+         and does not get better within itself. */
+      assert.ok(errorRate <= previousError, `error rate rose at ${elo}`);
+    } else {
+      assert.ok(errorRate < previousError, `error rate rose at ${elo}`);
+    }
     previousError = errorRate;
   }
 
@@ -999,7 +1025,11 @@ test('a beginner is visibly wrong most turns and a club player half as often', (
   let previous = 1;
   for (let elo = 100; elo < 1000; elo += 100) {
     const errors = humanCalibration(elo).errorRate;
-    assert.ok(errors < previous, `beginner error rate rose at ${elo}`);
+    /* 100-200 is one flat tier; the smooth fall starts above it. */
+    assert.ok(
+      elo <= BOTTOM_TIER_ELO ? errors <= previous : errors < previous,
+      `beginner error rate rose at ${elo}`,
+    );
     previous = errors;
   }
 
@@ -1010,7 +1040,10 @@ test('a beginner is visibly wrong most turns and a club player half as often', (
 });
 
 test('the beginner node cap is 45 nodes at 700 and gone at 1000', () => {
-  assert.equal(beginnerNodeCap(100), 12);
+  /* The sub-200 tier gets 8-12 nodes: not one complete look at the board. */
+  assert.equal(beginnerNodeCap(100), 8);
+  assert.equal(beginnerNodeCap(150), 10);
+  assert.equal(beginnerNodeCap(200), 12);
   assert.equal(beginnerNodeCap(700), 45);
   assert.ok((beginnerNodeCap(900) ?? 0) > (beginnerNodeCap(400) ?? 0));
   assert.equal(beginnerNodeCap(1000), null);

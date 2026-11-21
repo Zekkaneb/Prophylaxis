@@ -200,13 +200,16 @@
      of the screen; every stage is made definite here and then fitted from the
      column, capped by the height left under the app bar. */
 
+  /* `svh`, not `dvh`: the small viewport height is the one that does not change
+     when a phone's URL bar hides on scroll. A `dvh` board grows and shrinks
+     under the player mid-game, which reads as the board resizing on a move. */
   .play,
   .play-current,
   .study,
   .gr,
   .wp {
     --board-chrome: 250px;
-    --board-px: max(220px, min(100%, calc(100dvh - var(--board-chrome))));
+    --board-px: max(220px, min(100%, calc(100svh - var(--board-chrome))));
     width: 100%;
     max-width: none;
     min-width: 0;
@@ -249,7 +252,7 @@
      board has to end above the bottom profile, not behind it. */
   .bot-match {
     --board-chrome: 300px;
-    --board-px: max(220px, min(100%, calc(100dvh - var(--board-chrome))));
+    --board-px: max(220px, min(100%, calc(100svh - var(--board-chrome))));
   }
 
   /* The bot match parks its score bar just outside the board's left edge, so

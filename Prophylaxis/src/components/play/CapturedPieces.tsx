@@ -28,7 +28,11 @@ export interface CapturedPiecesProps {
  */
 export function CapturedPieces({ pieces, color, advantage }: CapturedPiecesProps) {
   const { appearance } = useAppearance();
-  if (pieces.length === 0 && advantage <= 0) return null;
+  /* Empty, but still there: the row's height is reserved from the first render,
+     so the first capture fills it instead of pushing the board down. */
+  if (pieces.length === 0 && advantage <= 0) {
+    return <span className="captured" aria-hidden="true" />;
+  }
 
   const label = [
     pieces.length > 0

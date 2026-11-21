@@ -445,6 +445,9 @@
   height: 100%;
   min-height: 0;
   overflow-y: auto;
+  /* The notation grows a line per move; reserving the gutter keeps this column
+     (and the board's fit beside it) the same width from first move to last. */
+  scrollbar-gutter: stable;
 }
 
 .play-side__card {

@@ -64,6 +64,12 @@ a line that walks into a forced mate. On a turn where no candidate is bad enough
 to be a mistake, the roll simply produces nothing and he plays the ordinary
 personality move — which is why he is not hanging a piece on every single move.
 
+That is his **Watch Bots** path, where the personality selector chooses. In the
+Play room the same 150 card is calibrated instead, so it runs the sub-200 tier:
+65% blunder, 25% mistake, an 8-12 node budget and an off-list probe whenever the
+rolled band is empty. Playing him is playing a beginner who loses pieces — the
+voice still comes from the dialogue layer, the moves come from the tier.
+
 **No repertoire.** He is deliberately absent from `PERSONALITY_REPERTOIRES`, so
 `personalityBookFor('emmanuel', colour)` is empty from the first ply in both
 colours, no `book`/`deviation` remark can fire from a prepared line, and
@@ -489,6 +495,17 @@ With `s = (clamp(elo, 100, 2800) - 100) / 2700`:
 - **Excellent** (`⦿`, under 2%, non-#1) `0.02 + 0.34 * s^1.05`
 - **Best** (`*`, the #1 move only) `max(0.01, 1 - the other five)`
 
+**Below 200 USCF** the curves are replaced by one tier rather than interpolated
+between them: `BOTTOM_TIER_SHARES` rolls 65% blunder, 25% mistake and under 10%
+for everything else (`inaccuracy` 4, `good` 4, `excellent` 1.5, `best` 0.5), and
+that tier is not scaled again. A sub-200 bot also gets an 8-12 node budget
+(`beginnerNodeCap`, 8 at 100 and 12 at 200), less than a single complete look at
+the board, so a one-move threat and the recapture are both invisible. When the
+rolled band has no usable member it always probes off-list (`probeErrorMove`),
+and below 200 the probe returns its worst-scoring legal move even when the
+reference calls it only slightly worse - a piece dropped for nothing, or a pawn
+pushed for no reason.
+
 The six sum to 1 at every rating, and the names double as the **vision window**.
 After the depth-9 reference pass, `classifyCandidate` puts the engine's #1 move
 alone in `best` and buckets every other candidate by its win drop (`excellent`
@@ -501,9 +518,10 @@ ends close: blunders leave the distribution entirely at 2100 USCF and mistakes a
 Phase and time control only scale the three error buckets; the displaced mass
 moves proportionally into good, excellent and best and the six are re-normalized,
 so a fast game makes the same player worse rather than differently rated. At 100
-USCF a bot blunders 46% of the time and errs on 82% of turns; at 700 it is 16%
-blunders and 54% overall; at 1800, 1.5% blunders and 22% overall; at 2800 it has
-no blunder or mistake bucket left at all.
+USCF a bot blunders 65% of the time and errs on 94% of turns; at 300 it is back
+on the smooth curve (34% blunders, 74% overall); at 700 it is 16% blunders and
+54% overall; at 1800, 1.5% blunders and 22% overall; at 2800 it has no blunder or
+mistake bucket left at all.
 
 Recapture awareness is one monotone curve,
 `0.50 + 0.49 * (1 - exp(-4.2 * s^0.55))`: 50% at 100 USCF, ~85% at 400, ~91% at
@@ -518,7 +536,9 @@ automatic.
 
 Depth `max(2, round(2 + 12 * s^1.3) + depthOffset)`: 5 at 1100, 14 at 2800. The
 sub-1000 node cap is a depth cap in this engine path: 2 plies below 500 USCF and
-3 up to 1000, so a 700 frequently misses a two-move tactic. Temperature
+3 up to 1000, so a 700 frequently misses a two-move tactic. Below 200 the node
+budget itself is 8-12 nodes, which is not even one complete ply of Stockfish's
+node accounting. Temperature
 `max(0.20, 1.35 * exp(-1.7s))`.
 
 Inside a quality bucket below 1000 USCF the leading line's softmax weight is
@@ -564,7 +584,7 @@ inward toward the rating's median bucket before it may fall to `best`
 bucket candidates are then filtered by **intent**, which is what removed the
 alien rank-32 blunders:
 
-- from 400 USCF up a **free hang** is never played as an error. `freeHangAfter`
+- from 1000 USCF up a **free hang** is never played as an error. `freeHangAfter`
   refuses a move that leaves a queen, rook, bishop or knight attacked with
   nothing defending it, so a blunder roll in a calm position cannot be spent on
   a piece dropped in the middle of nowhere. The escapes are answering a check,
