@@ -267,22 +267,50 @@
 
 /* ------------------------------ opponents -------------------------------- */
 
+/* One card per row until the setup has room to pack three; that wider layout
+   and the centring of short last rows live in the `min-width: 861px` block
+   below. */
 .play-opponents {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 
-/* A group of three (Strong and The Big 3) fits three across when the column is
-   wide enough and folds to two-plus-one rather than squeezing the cards. */
-.play-opponents:has(> :nth-child(3)) {
-  grid-template-columns: repeat(auto-fit, minmax(228px, 1fr));
-}
+@media (min-width: 861px) {
+  /* Six tracks, two per card. A full row is still three cards, but a short last
+     row can be offset by half a card, so four read as 3 + 1 with the odd card
+     centred and five as 3 + 2 straddling the middle card instead of hanging
+     off one edge. */
+  .play-opponents {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 
-/* A level with a single opponent takes the full row instead of leaving an
-   empty half-cell beside it. */
-.play-opponents:has(> :only-child) {
-  grid-template-columns: minmax(0, 1fr);
+  .play-opponents > * {
+    grid-column: span 2;
+  }
+
+  /* Two opponents share the row evenly, one takes it whole. */
+  .play-opponents:has(> :last-child:nth-child(2)) > * {
+    grid-column: span 3;
+  }
+
+  .play-opponents:has(> :only-child) > * {
+    grid-column: 1 / -1;
+  }
+
+  /* Four: the fourth sits over the middle pair of tracks. */
+  .play-opponents:has(> :last-child:nth-child(4)) > :nth-child(4) {
+    grid-column: 3 / span 2;
+  }
+
+  /* Five: the pair starts half a card in, centred under the three above. */
+  .play-opponents:has(> :last-child:nth-child(5)) > :nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .play-opponents:has(> :last-child:nth-child(5)) > :nth-child(5) {
+    grid-column: 4 / span 2;
+  }
 }
 
 /* Ladder groups: one headed section per level, so the grid reads as a ladder
@@ -2202,12 +2230,6 @@
 
 
 @media (max-width: 860px) {
-  .play-opponents,
-  .play-opponents:has(> :nth-child(3)),
-  .play-opponents:has(> :only-child) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .play-opponent__style {
     -webkit-line-clamp: 3;
   }
