@@ -1049,6 +1049,12 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface-1);
+  /* The shared board is a fixed layer at z-index 1, so a plate the square board
+     overlaps would be painted underneath it. The plates own the layer above
+     the board, which is what keeps a name and avatar fully visible when the
+     Watch Bots column runs short. */
+  position: relative;
+  z-index: 2;
 }
 
 .play-seat--opponent {
@@ -1105,6 +1111,50 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* --------------------------- captured material ---------------------------- */
+
+/* The pieces this side has taken, in the board's own artwork, then its lead as
+   a `+3`. It sits under the name so a long line of captures never pushes the
+   clock off the plate. */
+.captured {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+.captured__pieces {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.captured__piece {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  /* Overlapped the way a live board lists them: one compact run of pieces
+     instead of a row that grows with every capture. */
+  margin-left: -4px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+.captured__piece:first-child {
+  margin-left: 0;
+}
+
+.captured__score {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--soft);
 }
 
 /* One reserved line for the character's latest remark. Its height exists even

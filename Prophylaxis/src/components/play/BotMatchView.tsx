@@ -7,6 +7,8 @@ import { formatClock, timeControlLabel } from '../../play/timeControls.ts';
 import { opponentMeta } from '../../play/opponents.ts';
 import { resultReasonLabel, type PlayColor } from '../../play/types.ts';
 import type { BotMatchSession, MatchSpeed } from '../../play/useBotMatch.ts';
+import { CapturedPieces } from './CapturedPieces.tsx';
+import { keepPlyVisible } from './keepPlyVisible.ts';
 import { OpponentAvatar } from './OpponentAvatar.tsx';
 import { usePlyBrowser } from './usePlyBrowser';
 
@@ -69,9 +71,10 @@ export function BotMatchView({
   const browser = usePlyBrowser(session.sans, session.fen, { playerColor: null });
   const reviewing = !browser.atLive;
 
+  /* The move list scrolls itself; the page never follows it down past the
+     board, which is what kept the bottom seat out of view on a phone. */
   useEffect(() => {
-    const element = movesRef.current?.querySelector('.play-moves__ply.is-selected');
-    element?.scrollIntoView({ block: 'nearest' });
+    keepPlyVisible(movesRef.current);
   }, [browser.ply, session.sans.length]);
 
   /* The bar scores whatever the board shows, so stepping back through the match
@@ -128,6 +131,7 @@ export function BotMatchView({
     const running = reviewing ? browser.turn === color : active && clock.active === color;
     const thinking = session.thinking === color;
     const reaction = session.reactions[color];
+    const advantage = browser.material * (color === 'w' ? 1 : -1);
     return (
       <div
         className={`play-seat ${slot === 'bottom' ? 'play-seat--self' : 'play-seat--opponent'}${
@@ -147,6 +151,11 @@ export function BotMatchView({
             {opponentMeta(opponent)} · {color === 'w' ? 'White' : 'Black'}
             {thinking ? ' · thinking' : ''}
           </span>
+          <CapturedPieces
+            pieces={browser.captured[color]}
+            color={color === 'w' ? 'b' : 'w'}
+            advantage={advantage}
+          />
           <span className="play-seat__line" aria-live="polite">
             {reaction ? (
               <span className="play-seat__line-text" key={reaction.at}>
@@ -421,14 +430,6 @@ export function BotMatchView({
             <div>
               <dt>Black</dt>
               <dd title={session.black.name}>{session.black.name}</dd>
-            </div>
-            <div>
-              <dt>Material</dt>
-              <dd>
-                {browser.material === 0
-                  ? 'Level'
-                  : `${browser.material > 0 ? '+' : '−'}${Math.abs(browser.material)} White`}
-              </dd>
             </div>
             <div>
               <dt>Status</dt>

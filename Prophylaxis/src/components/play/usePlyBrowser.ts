@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Chess } from 'chess.js';
+import { Chess, type PieceSymbol } from 'chess.js';
 import { playSoundEvent } from '../../play/audio/soundManager.ts';
 import { replayPlySound, replaySans } from '../../play/replay.ts';
 
@@ -38,6 +38,51 @@ function materialBalance(fen: string): number {
   }
 }
 
+/** Starting count of each capturable piece, for reading captures off a board. */
+const START_COUNT: Record<string, number> = { p: 8, n: 2, b: 2, r: 2, q: 1 };
+
+export interface CapturedPieces {
+  /** Black pieces White has captured, pawns first. */
+  w: PieceSymbol[];
+  /** White pieces Black has captured, pawns first. */
+  b: PieceSymbol[];
+}
+
+/**
+ * The pieces each side has captured in the shown position.
+ *
+ * Read from the board, not from the move list: a piece that is not there was
+ * captured, and comparing with the starting set means browsing back through a
+ * game shows the captures of the position on screen. The count is clamped at
+ * the starting set, so a promoted pawn does not read as a missing pawn plus an
+ * extra queen.
+ */
+function capturedPieces(fen: string): CapturedPieces {
+  const captured: CapturedPieces = { w: [], b: [] };
+  try {
+    const board = new Chess(fen);
+    const counts: Record<'w' | 'b', Record<string, number>> = {
+      w: { p: 0, n: 0, b: 0, r: 0, q: 0 },
+      b: { p: 0, n: 0, b: 0, r: 0, q: 0 },
+    };
+    for (const row of board.board()) {
+      for (const piece of row) {
+        if (!piece || piece.type === 'k') continue;
+        counts[piece.color][piece.type] = (counts[piece.color][piece.type] ?? 0) + 1;
+      }
+    }
+    for (const type of ['p', 'n', 'b', 'r', 'q'] as const) {
+      const lostWhite = Math.max(0, START_COUNT[type] - counts.w[type]);
+      const lostBlack = Math.max(0, START_COUNT[type] - counts.b[type]);
+      for (let index = 0; index < lostBlack; index += 1) captured.w.push(type);
+      for (let index = 0; index < lostWhite; index += 1) captured.b.push(type);
+    }
+  } catch {
+    /* A corrupt position leaves the row empty rather than failing the board. */
+  }
+  return captured;
+}
+
 export interface PlyBrowser {
   /** Number of plies in the game; index 0 is the starting position. */
   total: number;
@@ -51,6 +96,8 @@ export interface PlyBrowser {
   turn: 'w' | 'b';
   /** White minus Black material, in pawns. */
   material: number;
+  /** What each side has captured in the shown position, pawns first. */
+  captured: CapturedPieces;
   go: (ply: number) => void;
   first: () => void;
   prev: () => void;
@@ -96,6 +143,7 @@ export function usePlyBrowser(
       : null;
   const turn = fen.split(' ')[1] === 'b' ? 'b' : 'w';
   const material = useMemo(() => materialBalance(fen), [fen]);
+  const captured = useMemo(() => capturedPieces(fen), [fen]);
 
   const go = useCallback(
     (next: number) => {
@@ -153,6 +201,7 @@ export function usePlyBrowser(
     lastMove,
     turn,
     material,
+    captured,
     go,
     first: () => go(0),
     prev: () => go(ply - 1),

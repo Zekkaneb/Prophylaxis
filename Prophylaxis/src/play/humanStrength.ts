@@ -14,12 +14,17 @@ import { Chess, type Square } from 'chess.js';
  * error buckets; the displaced mass moves proportionally into good, excellent
  * and best, so a fast game makes a player worse rather than differently rated.
  *
- * Below `BAD_MOVE_INDEX_ELO` the error mass is also floored at the **Bad Move
- * Index** `B(E) = 0.08 + 0.82 * exp(-1.95 * s)`: 61% of turns at 700 USCF and
- * 54% at 900 are visibly suboptimal before the phase and clock multipliers make
- * them worse. The search budget is capped alongside it (`beginnerNodeCap`, 45
- * nodes at 700), because an error model that assumes blindness is pointless if
- * the engine still sees the tactic.
+ * The same six names describe the **vision window** a rating can see. The depth-9
+ * reference pass scores every candidate, and each one is bucketed by its win
+ * drop with `classifyCandidate`: only the engine's #1 move is *best*, and every
+ * other move lands in `excellent` (<2), `good` (2-5), `inaccuracy` (5-10),
+ * `mistake` (10-20) or `blunder` (20+). `getBucketWeights` decides how often
+ * each bucket is asked for; blunders leave the distribution entirely at 2100
+ * USCF and mistakes at 2400, so a strong bot never has to be talked out of one.
+ * The beginner band is carried by those curves alone (46% blunders and 34%
+ * mistakes at the 100 floor) and by the node cap (`beginnerNodeCap`, 45 nodes at
+ * 700), because an error model that assumes blindness is pointless if the engine
+ * still sees the tactic.
  *
  * Three more rules keep the errors human:
  *
@@ -35,9 +40,11 @@ import { Chess, type Square } from 'chess.js';
  *   bot's misses come from over-ambition — a capture into a trap, a queen
  *   sortie, a pawn push — not from a piece dropped in the middle of nowhere;
  * - the severity buckets are filled by **intent** — a greedy capture, a check or
- *   forward attack, central tension, or a shallow-search favourite — never by
- *   sampling ranks 21-32 of a wide search. A bot that errs plays a move a
- *   person would play and miss the point, not a move no one would consider.
+ *   forward attack, central tension, or a shallow-search favourite — from 1000
+ *   USCF up, never by sampling ranks 21-32 of a wide search. Below 1000 the bot
+ *   has beginner board blindness instead (any candidate in the band is fair),
+ *   and an error band the engine's list cannot fill is probed off-list before
+ *   the roll is allowed to settle for a milder move.
  *
  * The engine itself always calculates: every rating searches at its own depth
  * over `MultiPV 10` lines, and the choice among those lines is what changes.
@@ -63,12 +70,6 @@ export const BEGINNER_ELO = 600;
 /** Under this rating the beginner curves add error mass and suppress the top line. */
 export const BEGINNER_VULNERABILITY_ELO = 1000;
 
-/** Under this rating the blunder share gets its extra multiplier. */
-export const BEGINNER_BLUNDER_ELO = 900;
-
-/** Under this rating the three error buckets are floored at the Bad Move Index. */
-export const BAD_MOVE_INDEX_ELO = 1000;
-
 /** Under this rating the recapture curve is the beginner's, not the club player's. */
 export const BEGINNER_RECAPTURE_ELO = 900;
 
@@ -85,8 +86,27 @@ export const BEGINNER_DEPTH_ELO = 1000;
 export const BEGINNER_TOP_WEIGHT = 0.08;
 export const BEGINNER_SECOND_WEIGHT = 0.25;
 
-/** From here up the bot is expected to see a counter-attack coming. */
-export const TUNNEL_VISION_ELO = 600;
+/**
+ * From here up an error needs a tactical purpose.
+ *
+ * Below 1000 USCF the bot has beginner board blindness: it may leave a piece
+ * where it can simply be taken, step onto an attacked square or push a pawn
+ * for no reason. Above it, an error has to look intended — a greedy capture, a
+ * check or forward attack, a central push, a queen sortie, or a shallow-search
+ * favourite.
+ */
+export const TUNNEL_VISION_ELO = 1000;
+
+/**
+ * Under this rating an empty error bucket is filled by an off-list probe.
+ *
+ * The engine's MultiPV list holds only a handful of playable moves in a quiet
+ * position, so `mistake` and `blunder` are often empty: a 700-1400 player still
+ * errs, so the caller probes a few plausible legal moves and keeps the first
+ * whose depth-9 reference score lands in the rolled band. From 1500 up the slip
+ * has to be a line the bot actually considered, and the probe is off.
+ */
+export const PROBE_ELO = 1500;
 
 /** From here a slip must survive a deep calculation, not just a shallow look. */
 export const DEEP_SLIP_ELO = 1500;
@@ -94,10 +114,11 @@ export const DEEP_SLIP_ELO = 1500;
 /**
  * From here a free hang of a major piece is never an error.
  *
- * Below this rating leaving a knight on a square nobody defends really is the
- * mistake; above it the model insists on a move with a human point.
+ * Below the intent floor leaving a knight on a square nobody defends really is
+ * the mistake — beginner board blindness. From 1000 up the model insists on a
+ * move with a human point, so an undefended piece is no longer a legal slip.
  */
-export const HANG_GUARD_ELO = 400;
+export const HANG_GUARD_ELO = 1000;
 
 /**
  * Discount on a "recapture" that wins back less than it costs.
@@ -132,9 +153,9 @@ export const PROBE_DEPTH = 8;
 /**
  * Shallow width used to collect beginner probe candidates.
  *
- * Only reachable below `BEGINNER_ELO`: a player who does not see the board yet
- * really does leave a piece where it can simply be taken, so the wide tail of a
- * shallow search is where those moves live.
+ * Only reachable below `PROBE_ELO`: the wide tail of a shallow search is where
+ * the moves a player would never pick deliberately live — a piece left where it
+ * can simply be taken, a loose pawn push — so that is what gets scored.
  */
 export const PROBE_MULTI_PV = 32;
 
@@ -174,14 +195,22 @@ export const BUCKET_CENTRES = {
   best: 0.2,
 } as const;
 
-/** Percentages at which one quality band ends and the next begins. */
-export const QUALITY_BANDS = {
-  best: 0.4,
-  excellent: 1.8,
-  good: 4.5,
-  inaccuracy: 10,
-  mistake: 20,
-  blunder: 20,
+/**
+ * Ratings at which a bucket leaves the distribution entirely.
+ *
+ * A 2100 does not blunder by choice: the error mass that the smooth curve would
+ * still assign it is re-normalized into the other buckets, so `best` keeps
+ * growing at the top instead of the curve leaving a 0.2% tail it can no longer
+ * justify.
+ */
+export const BUCKET_GATES = { blunder: 2100, mistake: 2400 } as const;
+
+/** Win-drop percentages that separate one bucket from the next. */
+export const SELECTION_BANDS = {
+  excellent: 2.0,
+  good: 5.0,
+  inaccuracy: 10.0,
+  mistake: 20.0,
 } as const;
 
 export type Bucket = 'blunder' | 'mistake' | 'inaccuracy' | 'good' | 'excellent' | 'best';
@@ -292,91 +321,34 @@ export function skillOf(elo: number): number {
 }
 
 /**
- * The six-bucket move-quality distribution.
+ * The six-bucket move-quality distribution: how often each class is rolled.
  *
- * Each curve has its own shape on purpose: blunders collapse fastest, mistakes
- * decay smoothly, good moves peak through the middle of the range (a 1400 plays
- * plenty of merely-sound moves), excellent rises with rating, and best takes
- * whatever the other five do not.
+ * Each curve has its own shape on purpose: blunders collapse fastest (46% at the
+ * floor, ~16% at 700, ~7% at 1100) and are switched off at `BUCKET_GATES`;
+ * mistakes decay smoothly and stop at 2400; inaccuracies peak through the club
+ * band; good absorbs the main body of club and intermediate play; excellent
+ * rises with rating; and best takes whatever the other five leave. The beginner
+ * band is carried by these curves alone, with no separate scaling on top.
  */
-/**
- * Extra error mass below 1000 USCF.
- *
- * The smooth curves are calibrated for club players and up; a true beginner is
- * not a slightly worse club player. Below `BEGINNER_VULNERABILITY_ELO` the three
- * error buckets grow linearly toward the floor (and below 900 the blunder
- * share grows further). The Bad Move Index then floors the total at 61% of
- * turns for a 700 USCF bot, with roughly a quarter of them outright blunders.
- */
-export function beginnerScaling(elo: number): { errors: number; blunder: number } {
+export function getBucketWeights(elo: number): QualityShares {
   const target = clampElo(elo);
-  if (target >= BEGINNER_VULNERABILITY_ELO) return { errors: 1, blunder: 1 };
+  const s = skillOf(target);
 
-  const errorGap = 1 - target / BEGINNER_VULNERABILITY_ELO;
-  const blunderGap = target >= BEGINNER_BLUNDER_ELO ? 0 : 1 - target / BEGINNER_BLUNDER_ELO;
-  /* 1.35x error mass and 1.67x blunders at 300 USCF, 1.15x / 1.22x at 700,
-     both fading to 1 exactly at their boundaries. */
-  return { errors: 1 + 0.5 * errorGap, blunder: 1 + 1.0 * blunderGap };
-}
-
-/**
- * Bad Move Index B(E): the share of turns a beginner should be visibly wrong.
- *
- *     B(E) = 0.08 + 0.82 * exp(-1.95 * s)
- *
- * 74% at 400 USCF, 61% at 700, 54% at 900 and 51% at 1000. The smooth curves
- * already ask for more than this at the very bottom (a 100 USCF player is wrong
- * on nine turns in ten), so the index is a floor rather than a replacement: it
- * raises the error mass of a 700-900 bot and never lowers an existing share.
- */
-export function badMoveIndex(elo: number): number {
-  return 0.08 + 0.82 * Math.exp(-1.95 * skillOf(elo));
-}
-
-/**
- * Raises the three error shares to `target` of the total, taking the extra mass
- * from good/excellent/best in proportion. The bucket ratios are untouched, so
- * this changes how often the bot errs, not what its errors look like.
- */
-function withErrorMass(shares: QualityShares, target: number): QualityShares {
-  const errors = shares.blunder + shares.mistake + shares.inaccuracy;
-  if (!(errors > 0) || errors >= target || target >= 1) return shares;
-
-  const errorScale = target / errors;
-  const rest = Math.max(1e-9, 1 - errors);
-  const restScale = (1 - target) / rest;
-  return normalizeQuality({
-    blunder: shares.blunder * errorScale,
-    mistake: shares.mistake * errorScale,
-    inaccuracy: shares.inaccuracy * errorScale,
-    good: shares.good * restScale,
-    excellent: shares.excellent * restScale,
-    best: shares.best * restScale,
-  });
-}
-
-export function qualityShares(elo: number, errorMultiplier = 1): QualityShares {
-  const s = skillOf(elo);
-  const beginner = beginnerScaling(elo);
-
-  const blunder = (0.0005 + 0.56 * Math.exp(-5.4 * Math.pow(s, 1.15))) * beginner.blunder;
-  const mistake = (0.008 + 0.28 * Math.exp(-3.1 * s)) * beginner.errors;
+  const blunder =
+    target >= BUCKET_GATES.blunder ? 0 : 0.46 * Math.exp(-5.8 * Math.pow(s, 1.15));
+  const mistake = target >= BUCKET_GATES.mistake ? 0 : 0.34 * Math.exp(-3.4 * s);
   const inaccuracy =
-    (0.035 + 0.21 * Math.sin(Math.PI * Math.pow(s, 0.75)) * Math.exp(-0.6 * s)) *
-    beginner.errors;
-  const good = 0.06 + 0.34 * Math.sin(Math.PI * Math.pow(s, 0.85));
-  const excellent = 0.03 + 0.3 * Math.pow(s, 0.9);
+    0.02 + 0.25 * Math.sin(Math.PI * Math.pow(s, 0.72)) * Math.exp(-0.45 * s);
+  const good = 0.05 + 0.33 * Math.sin(Math.PI * Math.pow(s, 0.85));
+  const excellent = 0.02 + 0.34 * Math.pow(s, 1.05);
   const best = Math.max(0.01, 1 - (blunder + mistake + inaccuracy + good + excellent));
 
-  const shares = scaleErrors(
-    { blunder, mistake, inaccuracy, good, excellent, best },
-    errorMultiplier,
-  );
+  return normalizeQuality({ blunder, mistake, inaccuracy, good, excellent, best });
+}
 
-  /* Under 1000 USCF the bot must be wrong on roughly half its turns, not on the
-     smoother share the club curves would allow. */
-  if (clampElo(elo) >= BAD_MOVE_INDEX_ELO) return shares;
-  return withErrorMass(shares, badMoveIndex(elo));
+/** The rating's weights with the active phase, time control and trouble offset. */
+export function qualityShares(elo: number, errorMultiplier = 1): QualityShares {
+  return scaleErrors(getBucketWeights(elo), errorMultiplier);
 }
 
 const PIECE_VALUE: Record<string, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
@@ -490,25 +462,96 @@ export function pickCategory(roll: number, quality: QualityShares): Bucket {
   return 'blunder';
 }
 
-/** Win-drop -> quality label, the six-tier model both play and review share. */
+/**
+ * Win-drop -> quality label for a move that is not the #1 engine choice.
+ *
+ * The probe results and the distance fallback are labelled with this; the six
+ * bands are the ones the review uses, so a move the bot played as an Excellent
+ * is still an Excellent when the game is analysed. `best` is never returned:
+ * it is an identity test on the #1 move (`classifyCandidate`).
+ */
 export function bucketFor(winDrop: number): Bucket {
-  if (winDrop >= QUALITY_BANDS.blunder) return 'blunder';
-  if (winDrop >= QUALITY_BANDS.inaccuracy) return 'mistake';
-  if (winDrop >= QUALITY_BANDS.good) return 'inaccuracy';
-  if (winDrop >= QUALITY_BANDS.excellent) return 'good';
-  if (winDrop >= QUALITY_BANDS.best) return 'excellent';
-  return 'best';
+  return classifyCandidate(winDrop, false);
 }
 
-/** The milder buckets an empty roll falls through to. */
-const BUCKET_CHAIN: Record<Bucket, readonly Bucket[]> = {
-  blunder: ['blunder', 'mistake', 'inaccuracy', 'good', 'excellent', 'best'],
-  mistake: ['mistake', 'inaccuracy', 'good', 'excellent', 'best'],
-  inaccuracy: ['inaccuracy', 'good', 'excellent', 'best'],
-  good: ['good', 'excellent', 'best'],
-  excellent: ['excellent', 'best'],
-  best: ['best'],
-};
+/**
+ * The bucket a reference-scored candidate belongs to.
+ *
+ * `best` is not a win-drop band: it is the single #1 move the reference pass
+ * agreed with, so a position where two moves are equally good still has one
+ * best move and one excellent one.
+ */
+export function classifyCandidate(winDrop: number, top: boolean): Bucket {
+  if (top) return 'best';
+  const drop = Math.max(0, winDrop);
+  if (drop < SELECTION_BANDS.excellent) return 'excellent';
+  if (drop < SELECTION_BANDS.good) return 'good';
+  if (drop < SELECTION_BANDS.inaccuracy) return 'inaccuracy';
+  if (drop < SELECTION_BANDS.mistake) return 'mistake';
+  return 'blunder';
+}
+
+export type BucketGroups<T> = Record<Bucket, T[]>;
+
+/** Splits the reference-scored candidates into the six selection buckets. */
+export function bucketCandidates<T extends { winDrop: number }>(
+  candidates: readonly T[],
+): BucketGroups<T> {
+  const groups: BucketGroups<T> = {
+    best: [],
+    excellent: [],
+    good: [],
+    inaccuracy: [],
+    mistake: [],
+    blunder: [],
+  };
+  if (candidates.length === 0) return groups;
+
+  let top = candidates[0];
+  for (const candidate of candidates) {
+    if (candidate.winDrop < top.winDrop) top = candidate;
+  }
+  for (const candidate of candidates) {
+    groups[classifyCandidate(candidate.winDrop, candidate === top)].push(candidate);
+  }
+  return groups;
+}
+
+/** The bucket where the rating's probability mass is centred. */
+export function medianBucket(quality: QualityShares): Bucket {
+  let cursor = 0;
+  for (const bucket of BUCKET_ORDER) {
+    cursor += quality[bucket];
+    if (cursor >= 0.5) return bucket;
+  }
+  return 'good';
+}
+
+/**
+ * Where an empty roll goes: step inward toward the rating's median bucket, then
+ * on past it toward `best`.
+ *
+ * An 1800's empty `excellent` roll becomes `good` before `best`, because `good`
+ * is where that rating's mass sits; a 700's empty `blunder` roll walks
+ * `mistake -> inaccuracy -> good` before it reaches a quality move. Nothing is
+ * ever forced outward into a worse bucket, which is what stops an empty band
+ * becoming an alien rank-30 move.
+ */
+export function bucketFallbackChain(rolled: Bucket, median: Bucket): readonly Bucket[] {
+  const start = BUCKET_ORDER.indexOf(rolled);
+  const centre = BUCKET_ORDER.indexOf(median);
+  const step = start <= centre ? 1 : -1;
+  const chain: Bucket[] = [];
+
+  for (let index = start; ; index += step) {
+    chain.push(BUCKET_ORDER[index]);
+    if (index === centre) break;
+  }
+  for (let index = centre - 1; index >= 0; index -= 1) {
+    if (!chain.includes(BUCKET_ORDER[index])) chain.push(BUCKET_ORDER[index]);
+  }
+  return chain;
+}
 
 /* --------------------------------------------------------------------------
    Per-game phase proficiency
@@ -1335,9 +1378,9 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
     }
   }
 
-  /* Above 400 USCF a free hang is never rolled: dropping a queen, rook, bishop
-     or knight on a square nobody defends is not a mistake a rated player makes
-     at random. Errors have to be *tempting* instead — a capture into a trap, a
+  /* From 1000 USCF up a free hang is never rolled: dropping a queen, rook,
+     bishop or knight on a square nobody defends is not a mistake a rated player
+     makes at random. Errors have to be *tempting* instead — a capture into a trap, a
      queen sortie, central tension. Check replies and checking sacrifices stay
      legal; see `freeHangAfter`. */
   const hangGuarded = elo >= HANG_GUARD_ELO;
@@ -1353,10 +1396,10 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
   const guarded = pool.filter(safeForElo);
   const usable = guarded.length > 0 ? guarded : pool;
 
-  /* At 600+ an error has to look intended. Below 600 anything goes: that is
-     beginner blindness — dropping a piece for no reason, stepping into an
-     attacked square, forgetting the recapture. The free-hang floor above 400
-     trims that band without touching the intent rule. */
+  /* From 1000 up an error has to look intended. Below 1000 anything goes: that
+     is beginner blindness — dropping a piece for no reason, stepping into an
+     attacked square, forgetting the recapture. The free-hang floor is the same
+     1000, so both rules lift together. */
   const requiresIntent = elo >= TUNNEL_VISION_ELO;
   const deepOnly = elo >= DEEP_SLIP_ELO;
   const intents = new Map<string, MoveIntent | null>();
@@ -1426,14 +1469,17 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
     return Boolean(intent && hasHumanIntent(intent, entry.winDrop));
   };
 
-  /* 3. One roll against the six-bucket distribution. */
+  /* 3. One roll against the six-bucket distribution, then the bucket it names
+     is filled from the depth-9 reference pass. */
+  const buckets = bucketCandidates(entries);
   const category: Bucket = input.forcedBucket ?? pickCategory(random(), plan.quality);
-  const chain = BUCKET_CHAIN[category];
+  const chain = bucketFallbackChain(category, medianBucket(plan.quality));
+  const usableUcis = new Set(usable.map((entry) => entry.uci));
 
   for (const step of chain) {
-    const matches = usable.filter(
+    const matches = buckets[step].filter(
       (entry) =>
-        bucketFor(entry.winDrop) === step &&
+        usableUcis.has(entry.uci) &&
         (step === 'good' || step === 'excellent' || step === 'best'
           ? true
           : errorAllowed(entry)),
@@ -1458,9 +1504,19 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
       return finishedAt(step, matches, boost);
     }
 
-    /* A beginner who should err this badly really does hang something, so ask
-       the caller for an off-list move instead of settling for a milder error. */
-    if ((step === 'blunder' || step === 'mistake') && input.allowProbe && !requiresIntent) {
+    /* The engine's list is often too narrow to hold a real error — a quiet
+       position has only a few safe moves in it — so a player who should err
+       this badly asks the caller to probe off-list candidates instead of
+       settling for a milder bucket. The trigger is *no usable member*: an empty
+       band, or a band whose every move this rating is not allowed to play.
+       Falling through in that case would quietly turn a blunder roll into a
+       merely good move, which is the calibration gap this probe exists for. */
+    if (
+      (step === 'blunder' || step === 'mistake') &&
+      input.allowProbe &&
+      elo < PROBE_ELO &&
+      matches.length === 0
+    ) {
       return { ...finish(null, 'probe', 0, 0, []), probeTarget: step };
     }
   }
@@ -1653,10 +1709,16 @@ export interface ProbeErrorResult {
  * lands in the requested window.
  *
  * Below 600 USCF the pool is spread across ranks 21-32, where a beginner's
- * unprovoked piece drop lives. From 400 up a free hang is skipped outright, and
- * the remaining candidates are ordered by `temptationRank` — captures and
+ * unprovoked piece drop lives. From 1000 up a free hang is skipped outright,
+ * and the remaining candidates are ordered by `temptationRank` — captures and
  * checks first, quiet edge pushes last — so the miss is over-ambition or a
  * miscalculated trade rather than a move nobody would consider.
+ *
+ * `requireIntent` keeps that filter strict for the club and intermediate bands:
+ * only a move with a human point (a capture, a check, a forward push, a heavy
+ * attack, central tension or a queen sortie) is probed at all. Below 1000 USCF
+ * the caller leaves it off, because beginner blindness is exactly the ability
+ * to drop a piece for no reason.
  */
 export async function probeErrorMove(
   engine: ReferenceEngine,
@@ -1670,6 +1732,8 @@ export async function probeErrorMove(
     exclude?: readonly string[];
     depth?: number;
     count?: number;
+    /** Probe only moves with a human point, never a quiet unforced move. */
+    requireIntent?: boolean;
   },
 ): Promise<ProbeErrorResult | null> {
   const scores = [...options.referenceScores.values()];
@@ -1703,8 +1767,19 @@ export async function probeErrorMove(
         .sort((a, b) => a.rank - b.rank || a.index - b.index)
         .map((entry) => entry.uci);
 
+  /* The intent gates inside `hasHumanIntent` ask for a *drop* as well as a
+     point, and here the engine decides the drop. Pass the blunder threshold so
+     the filter only answers "did this move want to do something", and a greedy
+     capture that loses 12% survives instead of being read as unmotivated. */
+  const plausible = options.requireIntent
+    ? ordered.filter((uci) => {
+        const intent = moveIntent(fen, uci);
+        return Boolean(intent && hasHumanIntent(intent, PROBE_WINDOWS.blunder.min));
+      })
+    : ordered;
+
   let worst: ProbeErrorResult | null = null;
-  for (const uci of ordered) {
+  for (const uci of plausible) {
     if (guarded && freeHangAfter(fen, uci)) continue;
     const child = applyUci(fen, uci);
     if (!child) continue;

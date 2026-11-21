@@ -481,25 +481,29 @@ lines by a six-bucket **move-quality distribution** over 100-2800 USCF.
 
 With `s = (clamp(elo, 100, 2800) - 100) / 2700`:
 
-- **Blunder** (`??`, 20%+ win drop) `0.0005 + 0.56 * exp(-5.4 * s^1.15)`
-- **Mistake** (`?`, 10-20%) `0.008 + 0.28 * exp(-3.1s)`
-- **Inaccuracy** (`?!`, 4.5-10%)
-  `0.035 + 0.21 * sin(pi * s^0.75) * exp(-0.6s)`
-- **Good** (`✓`, 1.8-4.5%) `0.06 + 0.34 * sin(pi * s^0.85)`
-- **Excellent** (`⦿`, 0.4-1.8%) `0.03 + 0.30 * s^0.9`
-- **Best** (`*`, under 0.4%) `max(0.01, 1 - the other five)`
+- **Blunder** (`??`, 20%+ win drop) `0.46 * exp(-5.8 * s^1.15)`, off at 2100
+- **Mistake** (`?`, 10-20%) `0.34 * exp(-3.4s)`, off at 2400
+- **Inaccuracy** (`?!`, 5-10%)
+  `0.02 + 0.25 * sin(pi * s^0.72) * exp(-0.45s)`
+- **Good** (`✓`, 2-5%) `0.05 + 0.33 * sin(pi * s^0.85)`
+- **Excellent** (`⦿`, under 2%, non-#1) `0.02 + 0.34 * s^1.05`
+- **Best** (`*`, the #1 move only) `max(0.01, 1 - the other five)`
 
-The six sum to 1 at every rating. Phase and time control only scale the three
-error buckets; the displaced mass moves proportionally into good, excellent and
-best and the six are re-normalized, so a fast game makes the same player worse
-rather than differently rated. At 100 USCF a bot blunders 56% of the time; at
-2800 it is under 1%.
+The six sum to 1 at every rating, and the names double as the **vision window**.
+After the depth-9 reference pass, `classifyCandidate` puts the engine's #1 move
+alone in `best` and buckets every other candidate by its win drop (`excellent`
+under 2, `good` 2-5, `inaccuracy` 5-10, `mistake` 10-20, `blunder` 20+), so a
+strong bot's mistakes are limited to what its own window can still see.
+`getBucketWeights` decides how often each bucket is asked for, and the severe
+ends close: blunders leave the distribution entirely at 2100 USCF and mistakes at
+2400, their mass re-normalized into the other buckets rather than played.
 
-Below 1000 USCF the beginner curves add error mass on top of that: the three
-error buckets grow by up to 1.5x toward the floor and the blunder share by up to
-2x below 900, fading to nothing at each boundary (`beginnerScaling`). A 700 bot
-is then suboptimal on ~58% of turns with 20-25% outright blunders; a 300 bot
-blunders roughly half the time.
+Phase and time control only scale the three error buckets; the displaced mass
+moves proportionally into good, excellent and best and the six are re-normalized,
+so a fast game makes the same player worse rather than differently rated. At 100
+USCF a bot blunders 46% of the time and errs on 82% of turns; at 700 it is 16%
+blunders and 54% overall; at 1800, 1.5% blunders and 22% overall; at 2800 it has
+no blunder or mistake bucket left at all.
 
 Recapture awareness is one monotone curve,
 `0.50 + 0.49 * (1 - exp(-4.2 * s^0.55))`: 50% at 100 USCF, ~85% at 400, ~91% at
@@ -517,9 +521,11 @@ sub-1000 node cap is a depth cap in this engine path: 2 plies below 500 USCF and
 3 up to 1000, so a 700 frequently misses a two-move tactic. Temperature
 `max(0.20, 1.35 * exp(-1.7s))`.
 
-On normal (non-error) turns below 1000 USCF the softmax weight of the #1 engine
-move is multiplied by 0.08 and the #2 by 0.25 (`suppressTopLines`), so a beginner
-plays a plausible, slightly loose move instead of echoing Stockfish.
+Inside a quality bucket below 1000 USCF the leading line's softmax weight is
+multiplied by 0.08 and the runner-up by 0.25 (`suppressTopLines`), so a beginner's
+good and excellent choices spread across its plausible moves instead of echoing
+the engine's ranking. The `best` bucket holds a single move, so a beginner only
+reaches the top line on a `best` roll.
 
 Every game also rolls a **phase proficiency profile** (`rollPhaseProfile`): one
 level per phase, from 1 (Weak / Sloppy, -200 Elo, errors x1.35) to 5 (Peak /
@@ -551,8 +557,12 @@ flags.
 
 `selectHumanBotMove` applies, in order: a forced move immediately; a recapture
 at the rating's own rate for the trade it actually is; then one roll against the
-six quality probabilities. The matching candidates are filtered by **intent**,
-which is what removed the alien rank-32 blunders:
+six quality probabilities. The roll names a bucket, and the buckets are filled
+from the depth-9 reference pass; a bucket that is empty on this board steps
+inward toward the rating's median bucket before it may fall to `best`
+(`bucketFallbackChain`), so a missing band never forces an unnatural move. Error
+bucket candidates are then filtered by **intent**, which is what removed the
+alien rank-32 blunders:
 
 - from 400 USCF up a **free hang** is never played as an error. `freeHangAfter`
   refuses a move that leaves a queen, rook, bishop or knight attacked with
@@ -562,13 +572,25 @@ which is what removed the alien rank-32 blunders:
   the move. A piece something defends is an exchange rather than a free hang,
   which is exactly the 800-1200 error: taking material while walking into a pin,
   a fork or a trap;
-- below 600 USCF (beginner blindness) any other candidate in the band is
-  allowed - a step onto an attacked square, a missed recapture - and an empty
-  band can ask the caller to probe off-list moves;
-- 600-1500 (tactical tunnel vision) allows only a greedy capture that loses
+- below 1000 USCF (beginner blindness) any other candidate in the band is
+  allowed - a step onto an attacked square, a missed recapture, an unprovoked
+  piece drop - and an empty band asks the caller to probe off-list moves;
+- 1000-1500 (tactical tunnel vision) allows only a greedy capture that loses
   material (18%+), a check or forward attack, a pawn pushed at the king, an
   ambitious queen sortie, a move into contested central tension, or one of the
   first six shallow (`depth 3`) lines;
+
+Under 1500 USCF a `mistake` or `blunder` roll with no usable member is filled
+from **off the list** - a bucket that is empty, or one whose every move the
+rating's intent filter will not allow. The engine's MultiPV lines are all
+playable in a quiet position - a typical 700 sees only three or four - so the
+rolled band often has nothing to spend the roll on and would otherwise fall into
+`good`. `probeErrorMove` scores a handful of
+plausible legal moves at depth 8 against the depth-9 reference and keeps the
+first that lands in the band (10-20 or 20-45 percentage points). From 1000 up
+the probe only offers moves with a human point (`requireIntent`); below it the
+bot may simply hang something. The probe is a move the caller has to allow, and
+`usePlayGame` falls back to the milder buckets when it finds nothing.
 - 1500+ (deep calculation slip) allows only one of the first four shallow lines
   that the depth-9 reference pass refutes.
 

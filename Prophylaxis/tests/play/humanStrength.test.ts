@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Chess } from 'chess.js';
 import {
-  BEGINNER_BLUNDER_ELO,
   BEGINNER_DEPTH_ELO,
   BEGINNER_ELO,
   BEGINNER_SECOND_WEIGHT,
   BEGINNER_TOP_WEIGHT,
   BEGINNER_VULNERABILITY_ELO,
+  BUCKET_GATES,
   BUCKET_ORDER,
   COSTLY_RECAPTURE_SHARE,
   DEEP_SLIP_ELO,
@@ -20,22 +20,25 @@ import {
   PHASE_DISTINCT_ELO,
   PHASE_LEVELS_META,
   PHASE_ONE_BAD_ELO,
-  QUALITY_BANDS,
+  SELECTION_BANDS,
   SELF_MATE_GUARD_ELO,
   allowsMateInOne,
-  badMoveIndex,
   beginnerNodeCap,
-  beginnerScaling,
+  bucketCandidates,
+  bucketFallbackChain,
   bucketFor,
   clampElo,
+  classifyCandidate,
   describePhaseProfile,
   errorTemperatureBoost,
   freeHangAfter,
+  getBucketWeights,
   getEffectivePhaseElo,
   hasHumanIntent,
   humanCalibration,
   humanSearchDepth,
   lastCaptureOf,
+  medianBucket,
   moveIntent,
   phaseForMoveNumber,
   phaseErrorMultiplier,
@@ -52,6 +55,7 @@ import {
   selectHumanBotMove,
   suppressTopLines,
   skillOf,
+  type Bucket,
   temptationRank,
   timeControlCategory,
   timeControlScaling,
@@ -121,34 +125,34 @@ test('the six quality buckets sum to 1 across the whole range', () => {
 
 test('the beginner tiers carry the extra error mass', () => {
   const floor = qualityShares(100);
-  assert.ok(floor.blunder > 0.55);
-  assert.ok(floor.best < 0.02);
+  assert.ok(Math.abs(floor.blunder - 0.46) < 1e-9);
+  assert.ok(Math.abs(floor.mistake - 0.34) < 1e-9);
+  assert.ok(floor.best < 0.12);
 
   const sevenHundred = qualityShares(700);
   const errorRate =
     sevenHundred.blunder + sevenHundred.mistake + sevenHundred.inaccuracy;
-  assert.ok(errorRate > 0.58 && errorRate < 0.63, `700 error rate ${errorRate}`);
+  assert.ok(errorRate > 0.52 && errorRate < 0.56, `700 error rate ${errorRate}`);
   assert.ok(
-    sevenHundred.blunder >= 0.2 && sevenHundred.blunder <= 0.25,
+    sevenHundred.blunder >= 0.15 && sevenHundred.blunder <= 0.19,
     `700 blunder share ${sevenHundred.blunder}`,
   );
 
-  /* The boost is gone at exactly 1000, where the smooth curves take over. */
-  assert.equal(beginnerScaling(BEGINNER_VULNERABILITY_ELO).errors, 1);
-  assert.equal(beginnerScaling(BEGINNER_VULNERABILITY_ELO).blunder, 1);
-  assert.equal(beginnerScaling(BEGINNER_BLUNDER_ELO).blunder, 1);
-  assert.ok(beginnerScaling(700).errors > 1);
-  assert.ok(beginnerScaling(700).blunder > beginnerScaling(700).errors);
+  /* The beginner band is the curve's own lower end: 46% blunders at the floor,
+     and no separate scaling on top of it. */
+  assert.equal(BEGINNER_VULNERABILITY_ELO, 1000);
+  assert.ok(qualityShares(700).blunder > qualityShares(1000).blunder);
+  assert.ok(qualityShares(300).blunder > qualityShares(700).blunder);
 
   const oneThousand = qualityShares(1000);
-  assert.ok(Math.abs(oneThousand.blunder - 0.122) < 0.01);
-  assert.ok(oneThousand.best > 0.04);
+  assert.ok(Math.abs(oneThousand.blunder - 0.089) < 0.01);
+  assert.ok(oneThousand.best > 0.07);
 
   const ceiling = qualityShares(2800);
   assert.ok(ceiling.blunder < 0.005);
   assert.ok(ceiling.mistake < 0.03);
-  assert.ok(Math.abs(ceiling.inaccuracy - 0.035) < 0.002);
-  assert.ok(Math.abs(ceiling.excellent - 0.33) < 0.002);
+  assert.ok(Math.abs(ceiling.inaccuracy - 0.02) < 0.002);
+  assert.ok(Math.abs(ceiling.excellent - 0.36) < 0.002);
   assert.ok(ceiling.best > 0.5);
 });
 
@@ -182,31 +186,140 @@ test('a quality roll lands inside the bucket it names', () => {
   assert.equal(pickCategory(0.7, uniform), 'mistake');
   assert.equal(pickCategory(0.99, uniform), 'blunder');
 
-  for (const elo of [100, 700, 1500, 2800]) {
+  for (const elo of [100, 700, 1500]) {
     const shares = qualityShares(elo);
     assert.equal(pickCategory(0, shares), 'best');
     assert.equal(pickCategory(0.999999, shares), 'blunder');
   }
+
+  /* Blunders are gated out at 2100 and mistakes at 2400, so the last roll lands
+     in the worst bucket the rating still owns. */
+  assert.equal(pickCategory(0.999999, qualityShares(2400)), 'inaccuracy');
+  assert.equal(pickCategory(0.999999, qualityShares(2800)), 'inaccuracy');
 });
 
-test('the win-drop bands are the six shared review thresholds', () => {
-  assert.equal(QUALITY_BANDS.best, 0.4);
-  assert.equal(QUALITY_BANDS.excellent, 1.8);
-  assert.equal(QUALITY_BANDS.good, 4.5);
-  assert.equal(QUALITY_BANDS.inaccuracy, 10);
-  assert.equal(QUALITY_BANDS.mistake, 20);
-  assert.equal(bucketFor(0), 'best');
-  assert.equal(bucketFor(0.39), 'best');
-  assert.equal(bucketFor(0.4), 'excellent');
-  assert.equal(bucketFor(1.79), 'excellent');
-  assert.equal(bucketFor(1.8), 'good');
-  assert.equal(bucketFor(4.49), 'good');
-  assert.equal(bucketFor(4.5), 'inaccuracy');
+test('the win-drop labels use the same 2 / 5 / 10 / 20 bands as review', () => {
+  assert.equal(bucketFor(0), 'excellent');
+  assert.equal(bucketFor(1.99), 'excellent');
+  assert.equal(bucketFor(2), 'good');
+  assert.equal(bucketFor(4.99), 'good');
+  assert.equal(bucketFor(5), 'inaccuracy');
   assert.equal(bucketFor(9.9), 'inaccuracy');
   assert.equal(bucketFor(10), 'mistake');
   assert.equal(bucketFor(19.9), 'mistake');
   assert.equal(bucketFor(20), 'blunder');
   assert.equal(bucketFor(60), 'blunder');
+
+  /* Best is an identity test on the #1 move, never a win-drop band. */
+  assert.equal(classifyCandidate(0, true), 'best');
+});
+
+test('the vision windows close as the rating climbs', () => {
+  assert.equal(BUCKET_GATES.blunder, 2100);
+  assert.equal(BUCKET_GATES.mistake, 2400);
+  assert.ok(getBucketWeights(2000).blunder > 0);
+  assert.equal(getBucketWeights(2100).blunder, 0);
+  assert.ok(getBucketWeights(2100).mistake > 0);
+  assert.equal(getBucketWeights(2400).mistake, 0);
+  assert.equal(getBucketWeights(2800).blunder, 0);
+  assert.equal(getBucketWeights(2800).mistake, 0);
+
+  let previous = 1;
+  for (let elo = ELO_MIN; elo < BUCKET_GATES.mistake; elo += 100) {
+    const weight = getBucketWeights(elo).blunder;
+    assert.ok(weight <= previous, `blunder share rose at ${elo}`);
+    previous = weight;
+  }
+
+  /* The median bucket is where each band's mass actually sits. */
+  assert.equal(medianBucket(getBucketWeights(700)), 'inaccuracy');
+  assert.equal(medianBucket(getBucketWeights(1100)), 'good');
+  assert.equal(medianBucket(getBucketWeights(1800)), 'good');
+  assert.equal(medianBucket(getBucketWeights(2800)), 'best');
+
+  /* An 1800 blunders almost never and owns more excellent moves than a 700. */
+  assert.ok(getBucketWeights(1800).blunder < 0.02);
+  assert.ok(getBucketWeights(1800).excellent > getBucketWeights(700).excellent * 2);
+});
+
+test('reference candidates fall into the six selection buckets', () => {
+  assert.equal(SELECTION_BANDS.excellent, 2.0);
+  assert.equal(SELECTION_BANDS.good, 5.0);
+  assert.equal(SELECTION_BANDS.inaccuracy, 10.0);
+  assert.equal(SELECTION_BANDS.mistake, 20.0);
+
+  /* Only the #1 move is Best; a tie still leaves one best move. */
+  assert.equal(classifyCandidate(0, true), 'best');
+  assert.equal(classifyCandidate(0, false), 'excellent');
+  assert.equal(classifyCandidate(1.99, false), 'excellent');
+  assert.equal(classifyCandidate(2, false), 'good');
+  assert.equal(classifyCandidate(4.99, false), 'good');
+  assert.equal(classifyCandidate(5, false), 'inaccuracy');
+  assert.equal(classifyCandidate(9.99, false), 'inaccuracy');
+  assert.equal(classifyCandidate(10, false), 'mistake');
+  assert.equal(classifyCandidate(19.99, false), 'mistake');
+  assert.equal(classifyCandidate(20, false), 'blunder');
+  assert.equal(classifyCandidate(60, false), 'blunder');
+
+  const buckets = bucketCandidates([
+    { uci: 'e2e4', winDrop: 0 },
+    { uci: 'd2d4', winDrop: 0 },
+    { uci: 'g1f3', winDrop: 1.4 },
+    { uci: 'b1c3', winDrop: 3.1 },
+    { uci: 'h2h3', winDrop: 7.2 },
+    { uci: 'a2a3', winDrop: 12 },
+    { uci: 'g2g4', winDrop: 25 },
+  ]);
+  assert.deepEqual(
+    buckets.best.map((entry) => entry.uci),
+    ['e2e4'],
+  );
+  assert.deepEqual(
+    buckets.excellent.map((entry) => entry.uci),
+    ['d2d4', 'g1f3'],
+  );
+  assert.deepEqual(
+    buckets.good.map((entry) => entry.uci),
+    ['b1c3'],
+  );
+  assert.deepEqual(
+    buckets.inaccuracy.map((entry) => entry.uci),
+    ['h2h3'],
+  );
+  assert.deepEqual(
+    buckets.mistake.map((entry) => entry.uci),
+    ['a2a3'],
+  );
+  assert.deepEqual(
+    buckets.blunder.map((entry) => entry.uci),
+    ['g2g4'],
+  );
+  assert.deepEqual(bucketCandidates([]).best, []);
+});
+
+test('an empty bucket steps inward toward the median, never outward', () => {
+  assert.deepEqual(bucketFallbackChain('excellent', 'good'), ['excellent', 'good', 'best']);
+  assert.deepEqual(bucketFallbackChain('good', 'inaccuracy'), [
+    'good',
+    'inaccuracy',
+    'excellent',
+    'best',
+  ]);
+  assert.deepEqual(bucketFallbackChain('blunder', 'good'), [
+    'blunder',
+    'mistake',
+    'inaccuracy',
+    'good',
+    'excellent',
+    'best',
+  ]);
+  assert.deepEqual(bucketFallbackChain('inaccuracy', 'best'), [
+    'inaccuracy',
+    'good',
+    'excellent',
+    'best',
+  ]);
+  assert.deepEqual(bucketFallbackChain('best', 'excellent'), ['best', 'excellent']);
 });
 
 test('phase and time control scale the error buckets, not the rating', () => {
@@ -412,20 +525,82 @@ test('club-level errors must be intended or shallow-attractive', () => {
   assert.equal(attractive.kind, 'blunder');
 });
 
-test('a blunder needs a human idea at club level, but a beginner may just drop a piece', () => {
+test('an unprovoked piece drop is beginner chess below 1000 and refused above it', () => {
   const candidates = [candidate('e2e4', 0), candidate('a2a3', -400)];
 
-  const beginner = selectHumanBotMove({
+  /* 1000 is the intent floor: a quiet pawn push with no human point is board
+     blindness, which is exactly what the sub-1000 bands are made of. */
+  for (const elo of [300, 700, 900]) {
+    const beginner = selectHumanBotMove({
+      fen: START_FEN,
+      elo,
+      candidates,
+      plan: plan(elo),
+      forcedBucket: 'blunder',
+      random: () => 0.5,
+    });
+    assert.equal(beginner.uci, 'a2a3', `${elo} should be allowed to drop the piece`);
+    assert.equal(beginner.kind, 'blunder');
+    assert.ok(beginner.winDrop >= SELECTION_BANDS.mistake);
+  }
+});
+
+test('an empty error bucket asks for an off-list probe below 1500', () => {
+  /* Neither move is 20% worse, so the reference pass has no blunder to offer. */
+  const candidates = [candidate('e2e4', 0), candidate('d2d4', -5)];
+  const probe = (elo: number, allowProbe = true, forcedBucket: Bucket = 'blunder') =>
+    selectHumanBotMove({
+      fen: START_FEN,
+      elo,
+      candidates,
+      plan: plan(elo),
+      forcedBucket,
+      allowProbe,
+      shallowRank: ['e2e4', 'd2d4'],
+      random: () => 0.5,
+    });
+
+  const club = probe(1100);
+  assert.equal(club.kind, 'probe');
+  assert.equal(club.probeTarget, 'blunder');
+  assert.equal(club.uci, null);
+
+  assert.equal(probe(1400, true, 'mistake').probeTarget, 'mistake');
+  /* From 1500 up the slip has to be a line the bot considered. */
+  assert.notEqual(probe(1500).kind, 'probe');
+  /* A caller that cannot probe falls through to the milder buckets. */
+  assert.notEqual(probe(1100, false).kind, 'probe');
+  /* Quality rolls never probe. */
+  assert.notEqual(probe(1100, true, 'good').kind, 'probe');
+
+  /* A band that exists is spent on the list, not probed off it. */
+  const realBlunder = selectHumanBotMove({
     fen: START_FEN,
-    elo: 300,
-    candidates,
-    plan: plan(300),
+    elo: 1100,
+    candidates: [candidate('e2e4', 0), candidate('a2a3', -400)],
+    plan: plan(1100),
     forcedBucket: 'blunder',
+    shallowRank: ['a2a3', 'e2e4'],
+    allowProbe: true,
     random: () => 0.5,
   });
-  assert.equal(beginner.uci, 'a2a3');
-  assert.equal(beginner.kind, 'blunder');
-  assert.ok(beginner.winDrop >= QUALITY_BANDS.blunder);
+  assert.equal(realBlunder.kind, 'blunder');
+  assert.equal(realBlunder.uci, 'a2a3');
+
+  /* A band this rating may not play is empty for the roll: a2a3 loses 30%+
+     but is a quiet push, which the 1000+ intent filter refuses. */
+  const ineligible = selectHumanBotMove({
+    fen: START_FEN,
+    elo: 1400,
+    candidates: [candidate('e2e4', 0), candidate('a2a3', -400)],
+    plan: plan(1400),
+    forcedBucket: 'blunder',
+    shallowRank: ['e2e4'],
+    allowProbe: true,
+    random: () => 0.5,
+  });
+  assert.equal(ineligible.kind, 'probe');
+  assert.equal(ineligible.probeTarget, 'blunder');
 });
 
 test('a greedy capture that fails tactically is a legal club-level blunder', () => {
@@ -445,7 +620,7 @@ test('a greedy capture that fails tactically is a legal club-level blunder', () 
 
   assert.equal(choice.uci, 'd5e4');
   assert.equal(choice.kind, 'blunder');
-  assert.ok(choice.winDrop >= QUALITY_BANDS.blunder);
+  assert.ok(choice.winDrop >= SELECTION_BANDS.mistake);
 });
 
 test('a 1500+ slip must be one of the first four shallow lines', () => {
@@ -533,7 +708,8 @@ test('the #1 line is damped below 1500 and quality picks stay inside their band'
       elo,
       candidates,
       plan: plan(elo),
-      forcedBucket: 'best',
+      /* The Best bucket holds one move, so the damping shows up on Excellent. */
+      forcedBucket: 'excellent',
       random: () => 0.5,
     });
 
@@ -542,8 +718,8 @@ test('the #1 line is damped below 1500 and quality picks stay inside their band'
   assert.ok(strong.weights[0].weight > weak.weights[0].weight);
   const total = weak.weights.reduce((sum, entry) => sum + entry.weight, 0);
   assert.ok(Math.abs(total - 1) < 1e-9);
-  assert.equal(strong.kind, 'best');
-  assert.ok(strong.winDrop < QUALITY_BANDS.best);
+  assert.equal(strong.kind, 'excellent');
+  assert.ok(strong.winDrop < SELECTION_BANDS.excellent);
 });
 
 test('a mating line is never played and the mate guard is rating-gated', () => {
@@ -710,13 +886,14 @@ test('below 1000 USCF the top two engine moves are suppressed', () => {
       elo,
       candidates,
       plan: plan(elo),
-      forcedBucket: 'best',
+      forcedBucket: 'excellent',
       random: () => 0.9,
     });
 
   const weak = play(700);
   const strong = play(2200);
   assert.ok(weak.weights[0].weight < strong.weights[0].weight / 2);
+  /* The #1 move lives in its own bucket, so a beginner never echoes it here. */
   assert.notEqual(weak.uci, 'e2e4');
 });
 
@@ -753,10 +930,10 @@ test('a recapture is classified by what it wins back', () => {
   );
 });
 
-test('a free hang is refused above 400 USCF but allowed for a beginner', () => {
+test('a free hang is beginner chess below 1000 USCF and refused above it', () => {
   /* Ng1-f3 steps next to the g4 pawn with nothing defending f3. */
   const HANG_FEN = '4k3/8/8/8/6p1/8/1P6/4K1N1 w - - 0 1';
-  assert.equal(HANG_GUARD_ELO, 400);
+  assert.equal(HANG_GUARD_ELO, 1000);
   assert.equal(freeHangAfter(HANG_FEN, 'g1f3'), true);
   assert.equal(freeHangAfter(HANG_FEN, 'e1d1'), false);
   /* A defended f3 is an exchange, not a free hang. */
@@ -773,12 +950,14 @@ test('a free hang is refused above 400 USCF but allowed for a beginner', () => {
       random: () => 0.99,
     });
 
-  const beginner = play(300);
-  assert.equal(beginner.uci, 'g1f3');
-  assert.equal(beginner.kind, 'blunder');
+  for (const elo of [300, 700, 900]) {
+    const beginner = play(elo);
+    assert.equal(beginner.uci, 'g1f3', `${elo} should be allowed to hang the knight`);
+    assert.equal(beginner.kind, 'blunder');
+  }
 
-  /* At 700 the roll cannot be spent on the free hang, so it falls through. */
-  const rated = play(700);
+  /* From 1000 the roll cannot be spent on the free hang, so it falls through. */
+  const rated = play(1100);
   assert.equal(rated.uci, 'e1d1');
   assert.notEqual(rated.kind, 'blunder');
 });
@@ -796,7 +975,7 @@ test('central tension and a queen sortie count as a human idea', () => {
   assert.equal(sortie?.queenSortie, true);
   assert.equal(hasHumanIntent(sortie!, 30), true);
 
-  /* Both are still free hangs, so above 400 neither is rolled as an error. */
+  /* Both are still free hangs, so from 1000 up neither is rolled as an error. */
   assert.equal(freeHangAfter(centreFen, 'b1c3'), true);
   assert.equal(freeHangAfter(sortieFen, 'd1d5'), true);
 });
@@ -813,26 +992,9 @@ test('the probe leads with captures and ranks a quiet edge push last', () => {
   if (moves.includes('a2a3')) assert.ok(moves.indexOf('a2a3') > 0);
 });
 
-test('the Bad Move Index floors a beginner at a visible error rate', () => {
-  /* B(E) = 0.08 + 0.82 * exp(-1.95 * s): 61% at 700, 54% at 900, 90% at the floor. */
-  assert.ok(Math.abs(badMoveIndex(100) - 0.9) < 1e-9);
-  assert.ok(Math.abs(badMoveIndex(700) - 0.612) < 0.01);
-  assert.ok(Math.abs(badMoveIndex(900) - 0.54) < 0.01);
-  assert.ok(badMoveIndex(1000) > 0.5 && badMoveIndex(1000) < 0.52);
-
-  for (const elo of [700, 900]) {
-    const shares = qualityShares(elo);
-    const errorRate = shares.blunder + shares.mistake + shares.inaccuracy;
-    assert.ok(
-      Math.abs(errorRate - badMoveIndex(elo)) < 1e-6,
-      `${elo} error rate ${errorRate} is not the index`,
-    );
-  }
-
-  /* The floor raises a beginner, never lowers an error mass already above it. */
+test('a beginner is visibly wrong most turns and a club player half as often', () => {
   const bottom = qualityShares(100);
-  const bottomErrors = bottom.blunder + bottom.mistake + bottom.inaccuracy;
-  assert.ok(bottomErrors > badMoveIndex(100));
+  assert.ok(bottom.blunder + bottom.mistake + bottom.inaccuracy > 0.8);
 
   let previous = 1;
   for (let elo = 100; elo < 1000; elo += 100) {
@@ -840,6 +1002,11 @@ test('the Bad Move Index floors a beginner at a visible error rate', () => {
     assert.ok(errors < previous, `beginner error rate rose at ${elo}`);
     previous = errors;
   }
+
+  /* 54% wrong at 700, 43% at 1000, 22% at 1800: the club band is the curve. */
+  assert.ok(humanCalibration(700).errorRate > 0.52);
+  assert.ok(humanCalibration(1000).errorRate > 0.4);
+  assert.ok(humanCalibration(1800).errorRate < 0.24);
 });
 
 test('the beginner node cap is 45 nodes at 700 and gone at 1000', () => {

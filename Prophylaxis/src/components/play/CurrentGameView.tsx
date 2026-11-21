@@ -15,6 +15,8 @@ import { describePremoveQueue, isPromotionPiece, type Premove } from '../../play
 import { formatClock, formatDuration, timeControlLabel } from '../../play/timeControls.ts';
 import type { PlaySession } from '../../play/usePlayGame';
 import { resultReasonLabel, type PlayResult } from '../../play/types.ts';
+import { CapturedPieces } from './CapturedPieces';
+import { keepPlyVisible } from './keepPlyVisible';
 import { OpponentAvatar } from './OpponentAvatar';
 import { usePlyBrowser } from './usePlyBrowser';
 
@@ -173,10 +175,10 @@ export function CurrentGameView({
   }, [session.sans]);
 
   /* Keep the inspected move visible, whether it moved because a new ply landed
-     or because the reader clicked further back. */
+     or because the reader clicked further back. Only the list scrolls: a phone
+     must never be dragged down to the notation and away from the board. */
   useEffect(() => {
-    const element = movesRef.current?.querySelector('.play-moves__ply.is-selected');
-    element?.scrollIntoView({ block: 'nearest' });
+    keepPlyVisible(movesRef.current);
   }, [browser.ply, session.sans.length]);
   /* The board's position decides the bar, so stepping back through history
      scores the snapshot on screen rather than the live game behind it. */
@@ -208,6 +210,9 @@ export function CurrentGameView({
   const playerClockActive = playing && clock.active === session.playerColor;
   const opponentClockActive = playing && clock.active === opponentColor;
   const untimed = session.config.untimed;
+
+  /* Pawns ahead from the player's seat; the opponent's row reads the inverse. */
+  const playerAdvantage = browser.material * (session.playerColor === 'w' ? 1 : -1);
 
   const finished = session.status === 'finished' && session.result !== null;
   const duration = session.endedAt ? (session.endedAt - session.startedAt) / 1000 : 0;
@@ -290,17 +295,6 @@ export function CurrentGameView({
                 <dt>You played</dt>
                 <dd>{session.playerColor === 'w' ? 'White' : 'Black'}</dd>
               </div>
-              <div>
-                <dt>Material</dt>
-                <dd>
-                  {(() => {
-                    const playerMaterial =
-                      browser.material * (session.playerColor === 'w' ? 1 : -1);
-                    if (playerMaterial === 0) return 'Level';
-                    return `${playerMaterial > 0 ? '+' : '−'}${Math.abs(playerMaterial)} you`;
-                  })()}
-                </dd>
-              </div>
             </dl>
           </section>
         </div>
@@ -327,6 +321,11 @@ export function CurrentGameView({
               {opponentColor === 'w' ? 'White' : 'Black'}
               {botThinking ? ' · thinking' : ''}
             </span>
+            <CapturedPieces
+              pieces={browser.captured[opponentColor]}
+              color={session.playerColor}
+              advantage={-playerAdvantage}
+            />
           </div>
           <span
             className={clockClass(
@@ -408,6 +407,11 @@ export function CurrentGameView({
             <span className="play-seat__meta">
               You · {session.playerColor === 'w' ? 'White' : 'Black'} · {profile.elo}
             </span>
+            <CapturedPieces
+              pieces={browser.captured[session.playerColor]}
+              color={opponentColor}
+              advantage={playerAdvantage}
+            />
           </div>
           <span
             className={clockClass(

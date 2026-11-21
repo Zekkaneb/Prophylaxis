@@ -27,9 +27,10 @@ import {
 import { replaySans } from './replay.ts';
 import { chooseCandidate, chooseBlunder, depthForElo } from './strength.ts';
 import {
-  BEGINNER_ELO,
   HUMAN_MULTI_PV,
+  PROBE_ELO,
   PROBE_MULTI_PV,
+  TUNNEL_VISION_ELO,
   SHALLOW_DEPTH,
   SHALLOW_MULTI_PV,
   bucketFor,
@@ -873,9 +874,10 @@ export function usePlayGame(engine: StockfishController) {
               forcedBucket,
             });
 
-          /* Only a beginner gets the off-list probe: from 600 up an error has
-             to be a move the player meant, and the intent filter handles it. */
-          let choice: HumanMoveChoice = select(elo < BEGINNER_ELO);
+          /* Under 1500 the off-list probe is available: below 1000 the bot may
+             err without a human point (board blindness), and from 1000 up the
+             probe keeps the intent filter. */
+          let choice: HumanMoveChoice = select(elo < PROBE_ELO);
 
           /* The engine's own ten lines are all reasonable in a quiet position,
              so an error roll can find nothing bad enough to play. A real
@@ -903,6 +905,7 @@ export function usePlayGame(engine: StockfishController) {
                   elo,
                   pool,
                   exclude: [...known],
+                  requireIntent: elo >= TUNNEL_VISION_ELO,
                 })
               : null;
             if (statusRef.current !== 'playing' || gameIdRef.current !== searchGameId) {

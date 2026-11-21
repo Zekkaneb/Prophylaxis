@@ -514,10 +514,9 @@ export interface ClassificationResult {
 /**
  * Severity bands, in win-probability points.
  *
- * Each value is its band's *lower* edge, matching the six-tier model the
- * Elo-rated bots are calibrated on (`qualityShares` in `play/humanStrength.ts`):
- * Best < 0.4, Excellent 0.4-1.8, Good 1.8-4.5, Inaccuracy 4.5-10, Mistake
- * 10-20, Blunder 20+.
+ * Each value is its band's *lower* edge, matching the six selection buckets the
+ * Elo-rated bots play from (`SELECTION_BANDS` in `play/humanStrength.ts`):
+ * Excellent < 2, Good 2-5, Inaccuracy 5-10, Mistake 10-20, Blunder 20+.
  *
  * Best is not a band: it is an identity test (the move must be the engine's own
  * first choice), so there is no win-drop threshold for it. Everything that is
