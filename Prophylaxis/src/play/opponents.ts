@@ -171,7 +171,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     shortName: 'Christian',
     title: 'Senior',
     elo: 950,
-    style: 'No theory, no plan, just whatever feels right. Can you outplay the Natural?',
+    style: 'The Big H.',
     portraitPath: 'opponents/christian-hernandez.webp',
     initials: 'CH',
     usesRepertoire: false,
