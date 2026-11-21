@@ -95,10 +95,15 @@ export function useSync(): SyncController {
         const tables = report.pushRejectedRows.length
           ? ` from ${report.pushRejectedRows.join(', ')}`
           : '';
+        /* Name the fix when the server's own message identifies it: this is
+           the one rejection a user can resolve and the app can recognise. */
+        const hint = /sync_rows_known_table/.test(report.pushError ?? '')
+          ? ' Run supabase/migrations/0003_woodpecker_sets.sql in the Supabase SQL editor: the allow-list still excludes woodpecker_sets.'
+          : '';
         setStatus('error');
         setMessage(
           `The server refused ${report.pushRejected} change(s)${tables}: ${report.pushError ?? 'unknown error'}. ` +
-            `They stay queued here; ${report.pushed} other change(s) were uploaded.`,
+            `They stay queued here; ${report.pushed} other change(s) were uploaded.${hint}`,
         );
         return;
       }
