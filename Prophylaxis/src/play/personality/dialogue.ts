@@ -301,7 +301,7 @@ const BANKS: Record<
 
     'material-lost': ['oh shit, I forgot about that'],
 
-    win: ['You played like shit' 'GGs'],
+    win: ['You played like shit', 'GGs'],
 
     loss: ['I played like shit', 'Damn I fucked up'],
 
