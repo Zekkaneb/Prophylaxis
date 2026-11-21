@@ -137,10 +137,25 @@ Accounts ship in the hosted build served over https.
 5. Tombstone sweep across all tables and the legacy-database claim on first
    sign-in (not started).
 
-## What the first slice does not do yet
+## What syncs today
 
-* Only `played_games` syncs. Puzzle attempts, courses, drill history and
-  progress are saved locally and stay there.
-* Changes are captured where a table is written (`src/play/gameStore.ts`), not
-  centrally, because one table is one seam. That changes in step 4.
+`played_games`, `puzzle_sets`, `puzzle_cycles`, `puzzle_attempts`. The puzzle
+rows are the ones a training set owns, so a set never arrives without its
+cycles. Rows saved *before* a table was synced are queued once by
+`backfillSyncedRows()` (`src/sync/accountDatabase.ts`), which runs at boot and
+marks the database so it never repeats — otherwise last week's puzzle set would
+stay invisible to every other device.
+
+`puzzle_sets.current_cycle` is merged with `max()` on the way in (see
+`mergeRemoteRow`): last-write-wins would let a clock that ran a few seconds ahead
+move a trainer backwards through its cycles.
+
+## What does not sync yet
+
+* Courses, drill history, lesson progress, reviews and the active game are saved
+  locally and stay there.
+* Changes are captured where a table is written (`src/play/gameStore.ts`,
+  `src/puzzles/trainingSets.ts`), not centrally. Those are the only write seams
+  for the four synced tables; the remaining tables are written from many places
+  and will need the general capture point.
 * There is no conflict UI: the newest write wins silently, as designed.

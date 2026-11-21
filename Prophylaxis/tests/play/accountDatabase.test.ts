@@ -9,6 +9,7 @@ import test from 'node:test';
 import { DB_NAME, createDatabase, db } from '../../src/db.ts';
 import {
   LOCAL_OWNER,
+  backfillSyncedRows,
   claimLocalRows,
   databaseNameFor,
   ensureDatabaseFor,
@@ -59,6 +60,26 @@ test('the anonymous rows are claimed once, outbox included', async () => {
 
   await source.close();
   await target.close();
+});
+
+test('rows saved before sync existed are queued once', async () => {
+  await ensureDatabaseFor(LOCAL_OWNER);
+  await db.played_games.clear();
+  await db.sync_outbox.clear();
+  await db.sync_meta.clear();
+  await db.played_games.put(game('from-before-sync'));
+
+  const queued = await backfillSyncedRows();
+  assert.ok(queued > 0);
+
+  const changes = await db.sync_outbox.toArray();
+  assert.ok(
+    changes.some((change) => change.table_name === 'played_games' && change.row_id === 'from-before-sync'),
+    'a row without an outbox entry still gets uploaded',
+  );
+
+  await db.sync_outbox.clear();
+  assert.equal(await backfillSyncedRows(), 0, 'the backfill runs once per database');
 });
 
 test('two accounts on one browser cannot see each other’s games', async () => {

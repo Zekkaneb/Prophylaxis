@@ -72,6 +72,30 @@ export function collapsePending(pending: SyncOutboxRow[]): SyncOutboxRow[] {
   return [...newest.values()];
 }
 
+/**
+ * Folds an incoming row into the local one before it is written.
+ *
+ * Almost every synced row is independent, so the server's newest-wins answer is
+ * taken as-is. `puzzle_sets.current_cycle` is the exception: it is a counter,
+ * and last-write-wins would let a device whose clock ran a few seconds ahead
+ * move a trainer backwards through its cycles. The higher value wins there,
+ * everything else still comes from the incoming row.
+ */
+export function mergeRemoteRow(
+  table: string,
+  local: Record<string, unknown> | undefined,
+  remote: Record<string, unknown>,
+): Record<string, unknown> {
+  if (table === 'puzzle_sets' && local) {
+    const ours = local.current_cycle;
+    const theirs = remote.current_cycle;
+    if (typeof ours === 'number' && typeof theirs === 'number' && ours > theirs) {
+      return { ...remote, current_cycle: ours };
+    }
+  }
+  return remote;
+}
+
 /** The shape `push_sync_rows` expects for one change. */
 export function toWireRow(change: SyncOutboxRow, stored: Record<string, unknown> | undefined) {
   return {
@@ -142,8 +166,14 @@ async function pullOnce(userId: string): Promise<PullResult> {
     await withRemoteApply(async () => {
       for (const row of page) {
         if (!isSyncedTable(row.table_name)) continue;
-        if (row.deleted) await db.table(row.table_name).delete(row.row_id);
-        else if (row.payload) await db.table(row.table_name).put(row.payload);
+        if (row.deleted) {
+          await db.table(row.table_name).delete(row.row_id);
+        } else if (row.payload) {
+          const local = (await db.table(row.table_name).get(row.row_id)) as
+            | Record<string, unknown>
+            | undefined;
+          await db.table(row.table_name).put(mergeRemoteRow(row.table_name, local, row.payload));
+        }
       }
     });
 

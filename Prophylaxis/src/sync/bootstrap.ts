@@ -1,4 +1,4 @@
-import { ensureDatabaseFor, LOCAL_OWNER } from './accountDatabase.ts';
+import { backfillSyncedRows, ensureDatabaseFor, LOCAL_OWNER } from './accountDatabase.ts';
 import { supabase, syncConfigured } from './client.ts';
 
 /**
@@ -36,5 +36,19 @@ export async function bootstrapDatabase(): Promise<void> {
     /* A failed switch leaves the app on the anonymous database: usable, just
        not synced. Never fatal. */
     if (import.meta.env.DEV) console.warn('[sync] could not open the account database', cause);
+  }
+}
+
+/**
+ * Second boot step: queue rows that were saved before their table synced.
+ * Kept separate from the database switch so a failure here cannot stop the app
+ * from opening the right database.
+ */
+export async function bootstrapSyncQueue(): Promise<void> {
+  if (!syncConfigured || !supabase) return;
+  try {
+    await backfillSyncedRows();
+  } catch (cause) {
+    if (import.meta.env.DEV) console.warn('[sync] could not queue existing rows', cause);
   }
 }

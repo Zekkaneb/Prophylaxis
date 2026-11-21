@@ -12,7 +12,8 @@
  * rows in and out of IndexedDB.
  */
 
-import { db } from '../db';
+import { db } from '../db.ts';
+import { recordSyncedChange } from '../sync/outbox.ts';
 import { DEFAULT_QUALITY_FILTERS } from './types.ts';
 import type {
   PuzzleAttempt,
@@ -197,6 +198,13 @@ export async function createTrainingSet(config: TrainingSetConfig): Promise<Crea
     await db.puzzle_cycles.bulkAdd(cycles);
   });
 
+  /* A set is one row plus one row per cycle; every one of them is a change the
+     other devices need, so the set cannot arrive without its cycles. */
+  await recordSyncedChange('puzzle_sets', set.set_id, false);
+  for (const cycle of cycles) {
+    await recordSyncedChange('puzzle_cycles', cycle.cycle_id, false);
+  }
+
   return { set, available: eligible.length, requested: config.puzzleCount };
 }
 
@@ -211,11 +219,21 @@ export async function listTrainingSets(): Promise<PuzzleTrainingSet[]> {
 
 /** Removes a set and everything recorded against it. */
 export async function deleteTrainingSet(setId: string): Promise<void> {
+  /* Ids first: after the delete there is nothing left to name the tombstones. */
+  const [attemptIds, cycleIds] = await Promise.all([
+    db.puzzle_attempts.where('set_id').equals(setId).primaryKeys(),
+    db.puzzle_cycles.where('set_id').equals(setId).primaryKeys(),
+  ]);
+
   await db.transaction('rw', db.puzzle_sets, db.puzzle_cycles, db.puzzle_attempts, async () => {
     await db.puzzle_attempts.where('set_id').equals(setId).delete();
     await db.puzzle_cycles.where('set_id').equals(setId).delete();
     await db.puzzle_sets.delete(setId);
   });
+
+  for (const id of attemptIds) await recordSyncedChange('puzzle_attempts', String(id), true);
+  for (const id of cycleIds) await recordSyncedChange('puzzle_cycles', String(id), true);
+  await recordSyncedChange('puzzle_sets', setId, true);
 }
 
 export async function getTrainingCycles(setId: string): Promise<PuzzleCycleProgress[]> {
@@ -319,6 +337,8 @@ export async function recordAttempt(
   });
 
   if (!attempt || !cycle) throw new Error('Could not record that attempt.');
+  await recordSyncedChange('puzzle_attempts', attempt.attempt_id, false);
+  await recordSyncedChange('puzzle_cycles', cycle.cycle_id, false);
   return { attempt, cycle };
 }
 
@@ -341,6 +361,7 @@ export async function completeCycle(setId: string, cycleNum: number): Promise<Pu
   });
 
   await db.puzzle_cycles.put(updated);
+  await recordSyncedChange('puzzle_cycles', updated.cycle_id, false);
   return updated;
 }
 

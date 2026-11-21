@@ -14,7 +14,8 @@ import {
   recordSyncedChange,
   withRemoteApply,
 } from '../../src/sync/outbox.ts';
-import { collapsePending, toWireRow } from '../../src/sync/sync.ts';
+import { collapsePending, mergeRemoteRow, toWireRow } from '../../src/sync/sync.ts';
+import { deleteTrainingSet } from '../../src/puzzles/trainingSets.ts';
 
 test('a change is stamped forward, never backwards', () => {
   const first = changeStamp();
@@ -59,6 +60,36 @@ test('a burst of writes collapses to the newest change per row', () => {
   assert.equal(collapsed.length, 2);
   const a = collapsed.find((change) => change.row_id === 'a');
   assert.equal(a?.updated_at, 12, 'the newest entry wins, out-of-order included');
+});
+
+test('a counter row keeps the higher cycle when two devices disagree', () => {
+  const merged = mergeRemoteRow(
+    'puzzle_sets',
+    { set_id: 's1', current_cycle: 4, name: 'mine' },
+    { set_id: 's1', current_cycle: 3, name: 'theirs' },
+  );
+  assert.equal(merged.current_cycle, 4, 'a slow clock cannot roll a trainer back a cycle');
+  assert.equal(merged.name, 'theirs', 'every other field still takes the incoming value');
+
+  const forward = mergeRemoteRow(
+    'puzzle_sets',
+    { set_id: 's1', current_cycle: 2 },
+    { set_id: 's1', current_cycle: 5 },
+  );
+  assert.equal(forward.current_cycle, 5);
+
+  const unaffected = mergeRemoteRow('played_games', { game_id: 'g' }, { game_id: 'g', pgn: 'x' });
+  assert.deepEqual(unaffected, { game_id: 'g', pgn: 'x' }, 'other tables take the row as it comes');
+});
+
+test('deleting a training set queues tombstones for its tables', async () => {
+  await db.sync_outbox.clear();
+  await deleteTrainingSet('set-that-does-not-exist');
+
+  const changes = await db.sync_outbox.toArray();
+  assert.equal(changes.length, 1, 'the set itself is tombstoned');
+  assert.equal(changes[0].table_name, 'puzzle_sets');
+  assert.equal(changes[0].deleted, true);
 });
 
 test('a delete becomes a tombstone, a re-create becomes a row', () => {

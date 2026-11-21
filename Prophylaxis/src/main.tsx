@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import { ThemeProvider } from './theme/ThemeProvider.tsx';
-import { bootstrapDatabase } from './sync/bootstrap.ts';
+import { bootstrapDatabase, bootstrapSyncQueue } from './sync/bootstrap.ts';
 /* Loaded last so the premium surface layer wins over feature stylesheets. */
 import './premium.css';
 /* After everything: the one viewport-height frame the board rooms share. */
@@ -15,7 +15,9 @@ import './mobile.css';
    never shows one person's library for a frame on the way to another's. */
 const root = createRoot(document.getElementById('root')!);
 
-void bootstrapDatabase().finally(() => {
+void bootstrapDatabase()
+  .then(() => bootstrapSyncQueue())
+  .finally(() => {
   root.render(
     <StrictMode>
       <ThemeProvider>
@@ -23,4 +25,4 @@ void bootstrapDatabase().finally(() => {
       </ThemeProvider>
     </StrictMode>,
   );
-});
+  });

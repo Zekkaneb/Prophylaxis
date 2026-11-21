@@ -2,10 +2,12 @@ import {
   DB_NAME,
   activeDatabaseName,
   createDatabase,
+  db,
   getActiveDatabase,
   setActiveDatabase,
   type AppDatabase,
 } from '../db.ts';
+import { SYNCED_TABLES, recordSyncedChange } from './outbox.ts';
 
 /**
  * One local database per account.
@@ -92,6 +94,31 @@ export async function claimLocalRows(
 
   await target.sync_meta.put({ key: 'owner', value: owner });
   return copied;
+}
+
+const BACKFILL_KEY = 'backfill:1';
+
+/**
+ * Queues the rows that existed before this table was synced.
+ *
+ * Without it, anything saved before sync covered a table would sit in the
+ * database forever, invisible to the other devices — a puzzle set created last
+ * week would never arrive. Runs once per database; a no-op afterwards.
+ */
+export async function backfillSyncedRows(): Promise<number> {
+  if (await db.sync_meta.get(BACKFILL_KEY)) return 0;
+
+  let queued = 0;
+  for (const table of SYNCED_TABLES) {
+    const keys = await db.table(table).toCollection().primaryKeys();
+    for (const key of keys) {
+      await recordSyncedChange(table, String(key), false);
+      queued += 1;
+    }
+  }
+
+  await db.sync_meta.put({ key: BACKFILL_KEY, value: String(Date.now()) });
+  return queued;
 }
 
 async function openDatabase(name: string): Promise<AppDatabase> {

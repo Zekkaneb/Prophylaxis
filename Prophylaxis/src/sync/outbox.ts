@@ -10,8 +10,8 @@ import { db } from '../db.ts';
  * collapses into a single upload of its latest state.
  */
 
-/** Tables this build syncs. One until the round trip is proven. */
-export const SYNCED_TABLES = ['played_games'] as const;
+/** Tables this build syncs: game history and everything a puzzle set owns. */
+export const SYNCED_TABLES = ['played_games', 'puzzle_sets', 'puzzle_cycles', 'puzzle_attempts'] as const;
 export type SyncedTable = (typeof SYNCED_TABLES)[number];
 
 export function isSyncedTable(name: string): name is SyncedTable {
