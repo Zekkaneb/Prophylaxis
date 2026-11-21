@@ -363,7 +363,7 @@ export function NewGameView({
                 General
                 <span className="play-tier__count">1</span>
               </h3>
-              <span className="play-tier__hint">Configurable · your own repertoire</span>
+              <span className="play-tier__hint">Configurable · standard openings</span>
             </div>
 
             <div className="play-engine">
@@ -378,7 +378,7 @@ export function NewGameView({
                 <span className="play-engine__body">
                   <span className="play-engine__name">General Bot</span>
                   <span className="play-engine__hint">
-                    Configurable strength · follows your imported repertoire
+                    Configurable strength · standard beginner book
                   </span>
                 </span>
                 <span className="play-engine__elo">{generalElo} Elo</span>

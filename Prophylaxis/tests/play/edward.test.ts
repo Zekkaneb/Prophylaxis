@@ -223,7 +223,7 @@ test('the roster gains him once, without disturbing any existing id', () => {
     assert.equal(opponent.category, category);
   }
   assert.equal(GENERAL_BOT.id, 'general');
-  assert.equal(GENERAL_BOT.usesRepertoire, true);
+  assert.equal(GENERAL_BOT.usesRepertoire, false);
 });
 
 test('he is selectable in every Beginners section, and the lowest rated card', () => {

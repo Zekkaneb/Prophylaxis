@@ -164,7 +164,8 @@ test('Brandon’s book is independent of Senior’s and of the user courses', ()
     'Senior’s Pirc must not leak into Brandon’s book',
   );
 
-  /* The General Bot is the only character wired to the imported courses. */
+  /* No bot is wired to the imported courses, and the General Bot has no
+     personality book of its own. */
   assert.equal(personalityBookFor('general', 'w').size, 0);
   assert.equal(personalityBookFor('general', 'b').size, 0);
 });

@@ -14,13 +14,22 @@ import { Chess, type Square } from 'chess.js';
  * error buckets; the displaced mass moves proportionally into good, excellent
  * and best, so a fast game makes a player worse rather than differently rated.
  *
+ * Below `BAD_MOVE_INDEX_ELO` the error mass is also floored at the **Bad Move
+ * Index** `B(E) = 0.08 + 0.82 * exp(-1.95 * s)`: 61% of turns at 700 USCF and
+ * 54% at 900 are visibly suboptimal before the phase and clock multipliers make
+ * them worse. The search budget is capped alongside it (`beginnerNodeCap`, 45
+ * nodes at 700), because an error model that assumes blindness is pointless if
+ * the engine still sees the tactic.
+ *
  * Three more rules keep the errors human:
  *
- * - `recaptureChance` now separates the two things a beginner does at the board.
- *   An **equal trade** is taken back 85-91% of the time from 400-700 USCF and
- *   ~94% at 1000, so basic exchanges (`Nxf3`, `Bxf6`) are understood; a
- *   **costly** recapture — winning back less than was lost — keeps a much lower
- *   rate, because that is the exchange a weaker player miscalculates;
+ * - `recaptureChance` separates the beginner band from the club band sharply.
+ *   Below 900 USCF an **equal trade** is taken back only 32% of the time at 400
+ *   and 46% at 700 — that is board blindness, the piece that just took
+ *   something simply not being noticed. From 900 up the club curve takes it
+ *   back ~93% of the time and ~94% at 1000. A **costly** recapture — winning
+ *   back less than was lost — keeps a much lower share, because that is the
+ *   exchange a weaker player miscalculates;
  * - `freeHangAfter` is a hard floor above 400 USCF: a quiet move that leaves a
  *   major piece attacked with no defender is never rolled as an error. The
  *   bot's misses come from over-ambition — a capture into a trap, a queen
@@ -56,6 +65,18 @@ export const BEGINNER_VULNERABILITY_ELO = 1000;
 
 /** Under this rating the blunder share gets its extra multiplier. */
 export const BEGINNER_BLUNDER_ELO = 900;
+
+/** Under this rating the three error buckets are floored at the Bad Move Index. */
+export const BAD_MOVE_INDEX_ELO = 1000;
+
+/** Under this rating the recapture curve is the beginner's, not the club player's. */
+export const BEGINNER_RECAPTURE_ELO = 900;
+
+/** Nodes the shakiest beginner search may spend (100 USCF). */
+export const BEGINNER_NODE_FLOOR = 12;
+
+/** Extra nodes per rating point: 45 nodes at 700 USCF, ~61 at 1000. */
+export const BEGINNER_NODE_PER_ELO = 0.055;
 
 /** From here down the analysis is only one or two plies deep. */
 export const BEGINNER_DEPTH_ELO = 1000;
@@ -284,8 +305,8 @@ export function skillOf(elo: number): number {
  * The smooth curves are calibrated for club players and up; a true beginner is
  * not a slightly worse club player. Below `BEGINNER_VULNERABILITY_ELO` the three
  * error buckets grow linearly toward the floor (and below 900 the blunder
- * share grows further), so a 700 USCF bot is suboptimal on ~58% of turns with
- * roughly a fifth to a quarter of them outright blunders.
+ * share grows further). The Bad Move Index then floors the total at 61% of
+ * turns for a 700 USCF bot, with roughly a quarter of them outright blunders.
  */
 export function beginnerScaling(elo: number): { errors: number; blunder: number } {
   const target = clampElo(elo);
@@ -296,6 +317,42 @@ export function beginnerScaling(elo: number): { errors: number; blunder: number 
   /* 1.35x error mass and 1.67x blunders at 300 USCF, 1.15x / 1.22x at 700,
      both fading to 1 exactly at their boundaries. */
   return { errors: 1 + 0.5 * errorGap, blunder: 1 + 1.0 * blunderGap };
+}
+
+/**
+ * Bad Move Index B(E): the share of turns a beginner should be visibly wrong.
+ *
+ *     B(E) = 0.08 + 0.82 * exp(-1.95 * s)
+ *
+ * 74% at 400 USCF, 61% at 700, 54% at 900 and 51% at 1000. The smooth curves
+ * already ask for more than this at the very bottom (a 100 USCF player is wrong
+ * on nine turns in ten), so the index is a floor rather than a replacement: it
+ * raises the error mass of a 700-900 bot and never lowers an existing share.
+ */
+export function badMoveIndex(elo: number): number {
+  return 0.08 + 0.82 * Math.exp(-1.95 * skillOf(elo));
+}
+
+/**
+ * Raises the three error shares to `target` of the total, taking the extra mass
+ * from good/excellent/best in proportion. The bucket ratios are untouched, so
+ * this changes how often the bot errs, not what its errors look like.
+ */
+function withErrorMass(shares: QualityShares, target: number): QualityShares {
+  const errors = shares.blunder + shares.mistake + shares.inaccuracy;
+  if (!(errors > 0) || errors >= target || target >= 1) return shares;
+
+  const errorScale = target / errors;
+  const rest = Math.max(1e-9, 1 - errors);
+  const restScale = (1 - target) / rest;
+  return normalizeQuality({
+    blunder: shares.blunder * errorScale,
+    mistake: shares.mistake * errorScale,
+    inaccuracy: shares.inaccuracy * errorScale,
+    good: shares.good * restScale,
+    excellent: shares.excellent * restScale,
+    best: shares.best * restScale,
+  });
 }
 
 export function qualityShares(elo: number, errorMultiplier = 1): QualityShares {
@@ -311,7 +368,15 @@ export function qualityShares(elo: number, errorMultiplier = 1): QualityShares {
   const excellent = 0.03 + 0.3 * Math.pow(s, 0.9);
   const best = Math.max(0.01, 1 - (blunder + mistake + inaccuracy + good + excellent));
 
-  return scaleErrors({ blunder, mistake, inaccuracy, good, excellent, best }, errorMultiplier);
+  const shares = scaleErrors(
+    { blunder, mistake, inaccuracy, good, excellent, best },
+    errorMultiplier,
+  );
+
+  /* Under 1000 USCF the bot must be wrong on roughly half its turns, not on the
+     smoother share the club curves would allow. */
+  if (clampElo(elo) >= BAD_MOVE_INDEX_ELO) return shares;
+  return withErrorMass(shares, badMoveIndex(elo));
 }
 
 const PIECE_VALUE: Record<string, number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
@@ -346,20 +411,25 @@ export function recaptureTrade(
 /**
  * Chance an obvious recapture is actually taken.
  *
- * One monotone curve over the whole range, calibrated so the two things asked
- * of a beginner stay separate:
+ * Below 900 USCF the board is not read properly, so the curve is the beginner's:
  *
- * - an equal trade `0.50 + 0.49 * (1 - exp(-4.2 * s^0.55))` — 50% at the floor,
- *   ~85% at 400, ~91% at 700, ~94% at 1000 and ~98% at the top, so a 400-700
- *   bot almost always takes a direct trade back but still gets tricked by a
- *   hidden defender or an intermediate move about one time in ten;
- * - a `costly` recapture keeps `COSTLY_RECAPTURE_SHARE` of that chance, so a
- *   queen taking back a pawn is a real, occasional beginner error;
+ * - an equal trade `0.12 + 0.70 * (1 - exp(-3.0 * s))` — 12% at the floor, 32%
+ *   at 400 and 46% at 700. Half the time a 700 bot does not notice the piece
+ *   that just took something, which is exactly the free recapture a beginner
+ *   leaves on the board;
+ * - from 900 up the club curve `0.50 + 0.49 * (1 - exp(-4.2 * s^0.55))` takes
+ *   over: ~93% at 900, ~94% at 1000 and ~98% at the top. The boundary is steep
+ *   on purpose — it is the model's beginner/club line;
+ * - a `costly` recapture keeps `COSTLY_RECAPTURE_SHARE` of either chance, so a
+ *   queen taking back a pawn stays a real beginner error;
  * - a `favourable` recapture (their queen took our pawn) is automatic.
  */
 export function recaptureChance(elo: number, trade: TradeKind = 'equal'): number {
   const s = skillOf(elo);
-  const base = 0.5 + 0.49 * (1 - Math.exp(-4.2 * Math.pow(s, 0.55)));
+  const base =
+    clampElo(elo) < BEGINNER_RECAPTURE_ELO
+      ? 0.12 + 0.7 * (1 - Math.exp(-3.0 * s))
+      : 0.5 + 0.49 * (1 - Math.exp(-4.2 * Math.pow(s, 0.55)));
   return trade === 'costly' ? base * COSTLY_RECAPTURE_SHARE : base;
 }
 
@@ -378,6 +448,21 @@ export function humanSearchDepth(elo: number, depthOffset = 0): number {
      band. Applied after the time-control offset. */
   if (clampElo(elo) >= BEGINNER_DEPTH_ELO) return depth;
   return Math.min(depth, clampElo(elo) < 500 ? 2 : 3);
+}
+
+/**
+ * Node budget for a beginner search, or null once the bot is out of the band.
+ *
+ * A beginner does not calculate: it looks at a handful of moves and stops. At
+ * 700 USCF 45 nodes is depth 1-2 for Stockfish over a MultiPV list, so the
+ * two-ply tactic, the fork and the discovered attack are routinely missed — the
+ * whole point of capping nodes rather than only depth. The budget grows with
+ * rating and disappears at 1000, where depth does the work again.
+ */
+export function beginnerNodeCap(elo: number): number | null {
+  const target = clampElo(elo);
+  if (target >= BEGINNER_DEPTH_ELO) return null;
+  return Math.round(BEGINNER_NODE_FLOOR + (target - ELO_MIN) * BEGINNER_NODE_PER_ELO);
 }
 
 /** The continuous calibration for a target rating. */
@@ -661,6 +746,8 @@ export interface HumanSearchPlan {
   positionKind: PositionKind;
   /** Depth handed to the engine. */
   depth: number;
+  /** Stockfish node cap for a beginner search; null above 1000 USCF. */
+  nodeCap: number | null;
   /** Wall-clock budget for the search; the engine really uses this. */
   thinkTimeMs: number;
   /** The six probabilities after phase, time control and time trouble. */
@@ -769,6 +856,7 @@ export function planHumanSearch(input: HumanSearchInput): HumanSearchPlan {
     timeTrouble,
     positionKind: kind,
     depth,
+    nodeCap: beginnerNodeCap(effectiveElo),
     thinkTimeMs,
     quality,
     errorRate: quality.blunder + quality.mistake + quality.inaccuracy,

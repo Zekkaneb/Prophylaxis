@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Chess, type Move } from 'chess.js';
 import type { StockfishController } from '../engine/useStockfish';
-import { listCourses } from '../courses/courseService';
 import { ChessClock, recoverClock, type ClockSnapshot } from './clock.ts';
 import { profileFromRecord, type OpponentProfile } from './opponents.ts';
 import {
@@ -25,7 +24,6 @@ import {
   resolvePremoveQueue,
   type Premove,
 } from './premove.ts';
-import { buildRepertoireBook, pickRepertoireMove, type RepertoireBook } from './repertoire.ts';
 import { replaySans } from './replay.ts';
 import { chooseCandidate, chooseBlunder, depthForElo } from './strength.ts';
 import {
@@ -73,7 +71,7 @@ import {
   endingEvent,
   playerMoveEvents,
 } from './personality/events.ts';
-import { legalBookMoves } from './personality/repertoires/book.ts';
+import { bookKey, legalBookMoves } from './personality/repertoires/book.ts';
 import { personalityBookFor } from './personality/repertoires/index.ts';
 import { chooseKidMove, kidPlan } from './personality/repertoires/kid.ts';
 import {
@@ -155,11 +153,6 @@ interface BotTimers {
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-/** Below this rating a bot's repertoire is remembered imperfectly. */
-const BOOK_ABANDON_ELO = 1600;
-/** Chance of leaving book early at those ratings: one move in five. */
-const BOOK_ABANDON_CHANCE = 0.2;
-
 /**
  * Deepest ply of prepared theory a personality may keep following, by rating.
  *
@@ -180,6 +173,72 @@ export function bookPlyLimit(elo: number): number {
   if (elo <= 1500) return BOOK_PLY_CAP.club;
   if (elo <= 2000) return BOOK_PLY_CAP.expert;
   return BOOK_PLY_CAP.master;
+}
+
+/**
+ * Opening book for a beginner general bot, and the only book it may read.
+ *
+ * Three short mainlines — the Italian, the Queen's Gambit and the Najdorf — so
+ * a low-rated bot opens like someone who has been taught the first few moves
+ * instead of like a random-move generator. `bookPlyLimit` caps how deep it can
+ * follow them (four plies at 700), and above 1200 the table is skipped entirely
+ * so the calibrated error model starts on move one.
+ *
+ * The player's imported PGN courses are deliberately not part of this: a bot's
+ * repertoire must never leak out of the library, and no live-game path reads
+ * `usesRepertoire` any more. Personality bots above read only their own
+ * declared books.
+ */
+const BEGINNER_BOOK_ELO = 1200;
+
+const BEGINNER_LINES: readonly (readonly string[])[] = [
+  ['e4', 'e5', 'Nf3', 'Nc6', 'Bc4', 'Bc5', 'c3', 'Nf6', 'd3', 'd6', 'O-O', 'O-O'],
+  ['d4', 'd5', 'c4', 'e6', 'Nc3', 'Nf6', 'Bg5', 'Be7', 'e3', 'O-O', 'Nf3', 'h6'],
+  ['e4', 'c5', 'Nf3', 'd6', 'd4', 'cxd4', 'Nxd4', 'Nf6', 'Nc3', 'a6', 'Be3', 'e5'],
+];
+
+/**
+ * Position -> the book move(s) played from it, built once from the SAN lines.
+ *
+ * Keying by board, side to move and castling rights reuses the personality
+ * book's key, so a transposition finds the same entry; an illegal line is
+ * dropped at build time instead of reaching the board.
+ */
+function buildBeginnerBook(): Map<string, string[]> {
+  const book = new Map<string, string[]>();
+  for (const line of BEGINNER_LINES) {
+    const game = new Chess();
+    for (const san of line) {
+      const before = bookKey(game.fen());
+      let applied;
+      try {
+        applied = game.move(san);
+      } catch {
+        break;
+      }
+      if (!applied) break;
+      const uci = `${applied.from}${applied.to}${applied.promotion ?? ''}`;
+      const moves = book.get(before);
+      if (!moves) book.set(before, [uci]);
+      else if (!moves.includes(uci)) moves.push(uci);
+    }
+  }
+  return book;
+}
+
+const BEGINNER_BOOK = buildBeginnerBook();
+
+/** A standard beginner book move for this position, or null when out of book. */
+export function beginnerBookMove(game: Chess): string | null {
+  const moves = BEGINNER_BOOK.get(bookKey(game.fen()));
+  if (!moves || moves.length === 0) return null;
+
+  const legal = new Set(
+    game.moves({ verbose: true }).map((move) => `${move.from}${move.to}${move.promotion ?? ''}`),
+  );
+  const playable = moves.filter((uci) => legal.has(uci));
+  if (playable.length === 0) return null;
+  return playable[Math.min(playable.length - 1, Math.floor(Math.random() * playable.length))];
 }
 
 /** Used when a book move has no measurable engine features attached. */
@@ -228,8 +287,6 @@ export function usePlayGame(engine: StockfishController) {
   const startedAtRef = useRef(0);
   const savedRef = useRef(false);
   const viewVisibleRef = useRef(true);
-  const bookRef = useRef<RepertoireBook | null>(null);
-  const bookPromiseRef = useRef<Promise<void> | null>(null);
   /** Rolled once per game (keyed by game id) and kept for that whole game. */
   const phaseProfileRef = useRef<{ key: string; elo: number; profile: PhaseProfile } | null>(
     null,
@@ -562,19 +619,14 @@ export function usePlayGame(engine: StockfishController) {
           plan = computeThinkingPlan({ ...thinkingInput, style, bookMove: true });
           pauseMs = plan.pauseMs;
         }
-      } else if (bookPromiseRef.current) {
-        await bookPromiseRef.current;
       }
 
-      if (!uci && !style) {
-        const book = bookRef.current;
-        if (book && book.size > 0) {
-          const bookMove = pickRepertoireMove(book, fen, Math.random);
-          /* A sub-1300 player forgets the line now and then: one move in five
-             leaves book and plays the calibrated model instead. */
-          const abandonsBook = elo < BOOK_ABANDON_ELO && Math.random() < BOOK_ABANDON_CHANCE;
-          if (bookMove && !abandonsBook) uci = bookMove;
-        }
+      /* A general bot under 1200 opens from the compact table above — never
+         from the player's imported courses. From 1200 up it has no book at all
+         and relies on its calibrated error model from the first move. */
+      if (!uci && !style && inBookWindow && elo < BEGINNER_BOOK_ELO) {
+        const bookMove = beginnerBookMove(game);
+        if (bookMove) uci = bookMove;
       }
 
       /* Theory first: the prepared move above, then the character's
@@ -629,6 +681,9 @@ export function usePlayGame(engine: StockfishController) {
               humanSearch!.depth,
               HUMAN_MULTI_PV,
               humanSearch!.thinkTimeMs,
+              /* A beginner's whole search: a few dozen nodes, so simple
+                 two-ply tactics and forks stay outside its horizon. */
+              humanSearch!.nodeCap ?? 0,
             );
 
         /* Pass 2, calibrated bots only: score each PV move's resulting position
@@ -1153,8 +1208,6 @@ export function usePlayGame(engine: StockfishController) {
       savedRef.current = false;
       sansRef.current = [];
       startedAtRef.current = Date.now();
-      bookRef.current = null;
-      bookPromiseRef.current = null;
       viewVisibleRef.current = true;
       premovesRef.current = [];
       setBotThinking(false);
@@ -1185,21 +1238,6 @@ export function usePlayGame(engine: StockfishController) {
         savedGameId: null,
       });
       persistRef.current();
-
-      if (opponent.usesRepertoire) {
-        const id = gameIdRef.current;
-        const botColor: PlayColor = playerColor === 'w' ? 'b' : 'w';
-        bookPromiseRef.current = (async () => {
-          try {
-            const courses = await listCourses();
-            if (gameIdRef.current === id && statusRef.current === 'playing') {
-              bookRef.current = buildRepertoireBook(courses, botColor);
-            }
-          } catch {
-            /* an empty library simply means normal engine chess */
-          }
-        })();
-      }
 
       if (playerColor === 'b') scheduleBotRef.current(650);
     },
@@ -1292,8 +1330,6 @@ export function usePlayGame(engine: StockfishController) {
       sansRef.current = [...record.sans];
       startedAtRef.current = record.started_at;
       premovesRef.current = [];
-      bookRef.current = null;
-      bookPromiseRef.current = null;
       setBotThinking(false);
       setNotice(null);
       setResumable(null);
@@ -1332,20 +1368,6 @@ export function usePlayGame(engine: StockfishController) {
       persistRef.current();
 
       if (game.turn() !== record.player_color) {
-        if (opponent.usesRepertoire) {
-          const botColor: PlayColor = record.player_color === 'w' ? 'b' : 'w';
-          const id = record.game_id;
-          bookPromiseRef.current = (async () => {
-            try {
-              const courses = await listCourses();
-              if (gameIdRef.current === id && statusRef.current === 'playing') {
-                bookRef.current = buildRepertoireBook(courses, botColor);
-              }
-            } catch {
-              /* fall back to engine chess */
-            }
-          })();
-        }
         scheduleBotRef.current(400);
       }
 

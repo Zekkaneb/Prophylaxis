@@ -641,7 +641,7 @@ test('every other opponent and the General Bot are untouched', () => {
   }
   assert.equal(GENERAL_BOT.id, 'general');
   assert.equal(GENERAL_BOT.kind, 'general');
-  assert.equal(GENERAL_BOT.usesRepertoire, true);
+  assert.equal(GENERAL_BOT.usesRepertoire, false);
 
   /* Tendency anchors elsewhere are exactly as they were. */
   assert.equal(PERSONALITY_STYLES['bryan-sophomore'].defensive, 95);

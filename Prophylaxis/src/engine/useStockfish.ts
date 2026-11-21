@@ -245,12 +245,17 @@ export interface StockfishController {
   /**
    * A search that also respects a wall-clock budget (`movetime`). The clock
    * path uses this; review and draw offers keep the depth-only call.
+   *
+   * `nodes` adds a node budget on top of depth and time: 0 means no cap. The
+   * beginner bands pass their node cap here so a low-rated bot stops after a
+   * few dozen positions however much time it has.
    */
   evaluateWithin: (
     fen: string,
     depth: number,
     multiPv: number,
     movetimeMs: number,
+    nodes?: number,
   ) => Promise<EngineEvaluation>;
   /**
    * Analyses one position in the background, reporting the evaluation so far
@@ -431,6 +436,7 @@ export function useStockfish(): StockfishController {
       multiPv: number = MULTI_PV,
       movetimeMs = 0,
       onProgress: ((evaluation: EngineEvaluation) => void) | null = null,
+      nodes = 0,
     ): Promise<EngineEvaluation> => {
       const terminal = terminalEvaluation(fen);
       if (terminal) return Promise.resolve(terminal);
@@ -456,7 +462,7 @@ export function useStockfish(): StockfishController {
 
             const start = () => {
               worker.postMessage(`position fen ${fen}`);
-              worker.postMessage(buildGoCommand(depth, movetimeMs));
+              worker.postMessage(buildGoCommand(depth, movetimeMs, nodes));
             };
 
             // MultiPV is a UCI option, not a go parameter: set it between
@@ -533,8 +539,14 @@ export function useStockfish(): StockfishController {
   );
 
   const evaluateWithin = useCallback(
-    (fen: string, depth: number, multiPv: number, movetimeMs: number): Promise<EngineEvaluation> => {
-      const run = () => requestEvaluation(fen, depth, multiPv, movetimeMs);
+    (
+      fen: string,
+      depth: number,
+      multiPv: number,
+      movetimeMs: number,
+      nodes = 0,
+    ): Promise<EngineEvaluation> => {
+      const run = () => requestEvaluation(fen, depth, multiPv, movetimeMs, null, nodes);
       const result = chainRef.current.then(run, run);
       chainRef.current = result.then(
         () => undefined,

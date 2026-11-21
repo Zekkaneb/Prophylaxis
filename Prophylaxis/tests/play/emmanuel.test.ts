@@ -827,7 +827,7 @@ test('every other opponent and the General Bot are untouched', () => {
 
   assert.equal(GENERAL_BOT.id, 'general');
   assert.equal(GENERAL_BOT.kind, 'general');
-  assert.equal(GENERAL_BOT.usesRepertoire, true);
+  assert.equal(GENERAL_BOT.usesRepertoire, false);
 
   /* Strength dials elsewhere are exactly as they were: no shared curve moved. */
   assert.equal(PERSONALITY_STYLES.edward.depthCap, 10);

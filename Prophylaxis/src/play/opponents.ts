@@ -75,7 +75,11 @@ export interface OpponentProfile {
   portraitScale?: number;
   /** Fallback monogram when the portrait is missing. */
   initials: string;
-  /** True when the bot should try the user's imported opening repertoire first. */
+  /**
+   * Legacy flag from when the General Bot followed the player's imported
+   * courses. Live play never loads them: every bot opens from its own book, so
+   * no opponent sets this to true any more.
+   */
   usesRepertoire: boolean;
 }
 
@@ -351,10 +355,11 @@ export const GENERAL_BOT: OpponentProfile = {
   name: 'General Bot',
   shortName: 'General',
   elo: 1500,
-  style: 'Plays your imported opening repertoire, then settles into ordinary engine chess.',
+  style:
+    'Ordinary engine chess, with a short standard opening book at beginner ratings.',
   portraitPath: null,
   initials: 'GB',
-  usesRepertoire: true,
+  usesRepertoire: false,
 };
 
 export const ALL_OPPONENTS: readonly OpponentProfile[] = [

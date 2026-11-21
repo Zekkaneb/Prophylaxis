@@ -1,7 +1,5 @@
 import { Chess } from 'chess.js';
 import type { StockfishController } from '../../engine/useStockfish.ts';
-import type { RepertoireBook } from '../repertoire.ts';
-import { pickRepertoireMove } from '../repertoire.ts';
 import { depthForElo, chooseCandidate, chooseBlunder } from '../strength.ts';
 import {
   HUMAN_MULTI_PV,
@@ -77,8 +75,6 @@ export interface ChooseBotMoveInput {
   incrementMs: number;
   initialMs: number;
   engine: StockfishController;
-  /** The General Bot's imported-course book; personalities never receive it. */
-  userBook?: RepertoireBook | null;
   random?: () => number;
   /** Returns true when the caller cancelled (paused, stopped, new match). */
   shouldAbort?: () => boolean;
@@ -160,8 +156,6 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
         };
       }
     }
-  } else if (input.userBook) {
-    uci = pickRepertoireMove(input.userBook, fen, random);
   }
 
   const nina =
@@ -208,6 +202,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
           humanSearch!.depth,
           HUMAN_MULTI_PV,
           humanSearch!.thinkTimeMs,
+          humanSearch!.nodeCap ?? 0,
         );
     candidates = evaluation.candidates;
 

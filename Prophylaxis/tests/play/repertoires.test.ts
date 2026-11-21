@@ -161,8 +161,8 @@ test('leaving the repertoire ends book play', () => {
   }
 });
 
-test('personality bots never read the General Bot repertoire', () => {
-  assert.equal(GENERAL_BOT.usesRepertoire, true);
+test('no bot reads the player’s imported courses or another character’s book', () => {
+  assert.equal(GENERAL_BOT.usesRepertoire, false);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.equal(opponent.usesRepertoire, false);
     /* Emmanuel Domah is the one personality with no opening book at all: an

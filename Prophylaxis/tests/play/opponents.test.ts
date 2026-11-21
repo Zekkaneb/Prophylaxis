@@ -268,7 +268,7 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.name, 'General Bot');
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
-  assert.equal(GENERAL_BOT.usesRepertoire, true);
+  assert.equal(GENERAL_BOT.usesRepertoire, false);
   assert.equal(ALL_OPPONENTS.length, 16);
   assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 16);
   assert.equal(GENERAL_BOT_ELO.min, 100);

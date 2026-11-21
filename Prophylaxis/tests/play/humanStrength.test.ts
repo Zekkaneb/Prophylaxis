@@ -23,6 +23,8 @@ import {
   QUALITY_BANDS,
   SELF_MATE_GUARD_ELO,
   allowsMateInOne,
+  badMoveIndex,
+  beginnerNodeCap,
   beginnerScaling,
   bucketFor,
   clampElo,
@@ -125,7 +127,7 @@ test('the beginner tiers carry the extra error mass', () => {
   const sevenHundred = qualityShares(700);
   const errorRate =
     sevenHundred.blunder + sevenHundred.mistake + sevenHundred.inaccuracy;
-  assert.ok(errorRate > 0.55 && errorRate < 0.61, `700 error rate ${errorRate}`);
+  assert.ok(errorRate > 0.58 && errorRate < 0.63, `700 error rate ${errorRate}`);
   assert.ok(
     sevenHundred.blunder >= 0.2 && sevenHundred.blunder <= 0.25,
     `700 blunder share ${sevenHundred.blunder}`,
@@ -298,16 +300,19 @@ test('thinking time is randomized per position and time control', () => {
 });
 
 test('an obvious recapture follows the rating curve, not a switch', () => {
-  assert.ok(Math.abs(recaptureChance(100) - 0.5) < 1e-9);
-  assert.ok(Math.abs(recaptureChance(400) - 0.85) < 0.02);
-  assert.ok(Math.abs(recaptureChance(700) - 0.912) < 0.02);
+  assert.ok(Math.abs(recaptureChance(100) - 0.12) < 1e-9);
+  assert.ok(Math.abs(recaptureChance(400) - 0.318) < 0.02);
+  assert.ok(Math.abs(recaptureChance(700) - 0.461) < 0.02);
   assert.ok(Math.abs(recaptureChance(1000) - 0.941) < 0.02);
   assert.ok(recaptureChance(2400) > 0.95);
   assert.ok(recaptureChance(2800) < 1);
 
-  /* A direct equal trade is close to automatic through the beginner bands. */
-  for (let elo = 400; elo <= 1200; elo += 100) {
-    assert.ok(recaptureChance(elo, 'equal') > 0.84, `equal recapture too rare at ${elo}`);
+  /* A beginner genuinely misses the free recapture; a club player does not. */
+  for (let elo = 100; elo < 900; elo += 100) {
+    assert.ok(recaptureChance(elo, 'equal') < 0.56, `beginner recapture too sure at ${elo}`);
+  }
+  for (let elo = 900; elo <= 1200; elo += 100) {
+    assert.ok(recaptureChance(elo, 'equal') > 0.92, `club recapture too rare at ${elo}`);
   }
   /* Winning back less than was lost keeps only a share of that chance. */
   assert.ok(
@@ -806,4 +811,50 @@ test('the probe leads with captures and ranks a quiet edge push last', () => {
   assert.ok(moves.length > 0 && moves.length <= 4);
   /* Nothing unmotivated > #1 in the queue. */
   if (moves.includes('a2a3')) assert.ok(moves.indexOf('a2a3') > 0);
+});
+
+test('the Bad Move Index floors a beginner at a visible error rate', () => {
+  /* B(E) = 0.08 + 0.82 * exp(-1.95 * s): 61% at 700, 54% at 900, 90% at the floor. */
+  assert.ok(Math.abs(badMoveIndex(100) - 0.9) < 1e-9);
+  assert.ok(Math.abs(badMoveIndex(700) - 0.612) < 0.01);
+  assert.ok(Math.abs(badMoveIndex(900) - 0.54) < 0.01);
+  assert.ok(badMoveIndex(1000) > 0.5 && badMoveIndex(1000) < 0.52);
+
+  for (const elo of [700, 900]) {
+    const shares = qualityShares(elo);
+    const errorRate = shares.blunder + shares.mistake + shares.inaccuracy;
+    assert.ok(
+      Math.abs(errorRate - badMoveIndex(elo)) < 1e-6,
+      `${elo} error rate ${errorRate} is not the index`,
+    );
+  }
+
+  /* The floor raises a beginner, never lowers an error mass already above it. */
+  const bottom = qualityShares(100);
+  const bottomErrors = bottom.blunder + bottom.mistake + bottom.inaccuracy;
+  assert.ok(bottomErrors > badMoveIndex(100));
+
+  let previous = 1;
+  for (let elo = 100; elo < 1000; elo += 100) {
+    const errors = humanCalibration(elo).errorRate;
+    assert.ok(errors < previous, `beginner error rate rose at ${elo}`);
+    previous = errors;
+  }
+});
+
+test('the beginner node cap is 45 nodes at 700 and gone at 1000', () => {
+  assert.equal(beginnerNodeCap(100), 12);
+  assert.equal(beginnerNodeCap(700), 45);
+  assert.ok((beginnerNodeCap(900) ?? 0) > (beginnerNodeCap(400) ?? 0));
+  assert.equal(beginnerNodeCap(1000), null);
+  assert.equal(beginnerNodeCap(2800), null);
+
+  assert.equal(plan(700).nodeCap, 45);
+  assert.equal(plan(1200).nodeCap, null);
+  /* The cap is the phase rating's, so a 700 in a strong phase gets its budget. */
+  assert.equal(
+    plan(700, { phaseProfile: { opening: 5, middlegame: 3, endgame: 1 }, moveNumber: 3 })
+      .nodeCap,
+    55,
+  );
 });
