@@ -1,0 +1,218 @@
+/* --------------------------------------------------------------------------
+   Activity view
+
+   One sheet, two placements: a centred card on a wide window and a bottom
+   sheet in a hand. Rows are the activity itself — symbol, title, one line of
+   context — and every row is a full-width target.
+   -------------------------------------------------------------------------- */
+
+.share {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.share__scrim {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: var(--scrim);
+  backdrop-filter: blur(6px) saturate(120%);
+  cursor: default;
+  animation: share-scrim-in var(--dur) var(--ease);
+}
+
+.share__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(420px, 100%);
+  max-height: min(78vh, 640px);
+  overflow-y: auto;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  background:
+    linear-gradient(180deg, var(--card-top), var(--card-bottom)),
+    var(--panel);
+  box-shadow:
+    inset 0 1px 0 var(--inset-hi),
+    var(--shadow-drawer);
+  animation: share-rise var(--dur-slow) var(--ease);
+}
+
+.share__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.share__eyebrow {
+  margin: 0;
+  font-size: var(--type-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.share__title {
+  margin: 4px 0 0;
+  font-size: var(--type-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--text);
+}
+
+.share__subtitle {
+  margin: 5px 0 0;
+  font-size: var(--type-xs);
+  line-height: var(--leading-snug);
+  color: var(--text-tertiary);
+}
+
+.share__close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-tertiary);
+  font-size: var(--type-sm);
+  line-height: 1;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.share__close:hover {
+  border-color: var(--border-default);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.share__close:active {
+  transform: translateY(1px);
+}
+
+.share__list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.share-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 6px;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  transition:
+    background-color var(--dur) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.share-row:hover {
+  background: var(--surface-2);
+}
+
+.share-row:active {
+  transform: translateY(1px);
+}
+
+.share-row__symbol {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--type-md);
+  line-height: 1;
+}
+
+.share-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.share-row__label {
+  font-size: var(--type-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+
+.share-row__desc {
+  font-size: var(--type-xs);
+  line-height: var(--leading-snug);
+  color: var(--text-tertiary);
+}
+
+@keyframes share-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes share-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.985);
+  }
+}
+
+/* A hand holds the sheet from the bottom edge; a window can float it. */
+@media (max-width: 640px) {
+  .share {
+    place-items: end stretch;
+    padding: 0;
+  }
+
+  .share__panel {
+    width: 100%;
+    max-height: 82svh;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    border-bottom: 0;
+    animation: share-sheet-up var(--dur-slow) var(--ease);
+  }
+
+  .share-row {
+    min-height: 60px;
+  }
+
+  .share__close {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@keyframes share-sheet-up {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+}

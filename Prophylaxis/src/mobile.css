@@ -100,25 +100,32 @@
     order: 2;
     flex: 1 1 90px;
     min-width: 0;
+    /* Leaves the floating account pill its corner instead of letting the field
+       run underneath it. */
+    margin-right: 74px;
   }
 
   .sidenav__search form,
   .sidenav__search-btn {
-    height: 38px;
+    height: 44px;
   }
 
   .sidenav .sidebar-bottom {
     order: 3;
-    flex: none;
+    /* Its own line, gathered at the right edge, under the account pill rather
+       than colliding with it. */
+    flex: 1 0 100%;
     flex-direction: row;
+    justify-content: flex-end;
     align-items: center;
-    gap: 2px;
-    margin-top: 0;
+    gap: 4px;
+    margin: 2px 0 0;
   }
 
+  /* 44px: the smallest region a thumb can be expected to hit first time. */
   .sidenav .sidebar-bottom .nav-item {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     min-height: 0;
     padding: 0;
     justify-content: center;
@@ -129,19 +136,12 @@
     display: none;
   }
 
-  .sidenav .board-utility {
-    width: auto;
-  }
-
-  .sidenav .board-utility__btn {
-    width: 38px;
-    height: 38px;
-  }
-
   .sidenav .main-nav {
     order: 4;
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    /* Seven rooms, one row: the strip must never wrap its last room onto a
+       second line and double the height of the app bar. */
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 2px;
     flex: 1 0 100%;
     width: 100%;
@@ -152,10 +152,11 @@
     flex-direction: column;
     justify-content: center;
     gap: 3px;
-    min-height: 46px;
+    min-height: 44px;
     padding: 4px 0;
-    font-size: 10.5px;
-    border-radius: 10px;
+    font-size: 9px;
+    letter-spacing: -0.02em;
+    border-radius: var(--radius-md);
   }
 
   .sidenav .nav-item em {
@@ -315,6 +316,11 @@
   .bot-choice,
   .button {
     min-height: 44px;
+  }
+
+  .icon-btn {
+    min-width: 44px;
+    height: 44px;
   }
 
   .play-opponents {

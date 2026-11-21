@@ -1,0 +1,150 @@
+/* --------------------------------------------------------------------------
+   Action sheet
+
+   A small choice attached to an intentional action: the destructive button is
+   named and red at the top, Cancel sits below it, and the sheet keeps the
+   same two placements as the activity view (card in a window, bottom sheet in
+   a hand).
+   -------------------------------------------------------------------------- */
+
+.action-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.action-sheet__scrim {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: var(--scrim);
+  backdrop-filter: blur(6px) saturate(120%);
+  cursor: default;
+  animation: action-sheet-scrim-in var(--dur) var(--ease);
+}
+
+.action-sheet__panel {
+  position: relative;
+  width: min(340px, 100%);
+  padding: 20px 20px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  background:
+    linear-gradient(180deg, var(--card-top), var(--card-bottom)),
+    var(--panel);
+  box-shadow:
+    inset 0 1px 0 var(--inset-hi),
+    var(--shadow-drawer);
+  animation: action-sheet-rise var(--dur-slow) var(--ease);
+}
+
+.action-sheet__title {
+  margin: 0;
+  font-size: var(--type-lg);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+}
+
+.action-sheet__message {
+  margin: 6px 0 0;
+  font-size: var(--type-xs);
+  line-height: var(--leading-snug);
+  color: var(--text-tertiary);
+}
+
+.action-sheet__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.action-sheet__confirm,
+.action-sheet__cancel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--type-sm);
+  font-weight: var(--weight-semibold);
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.action-sheet__confirm {
+  background: var(--danger);
+  color: var(--danger-ink);
+}
+
+.action-sheet__confirm:hover {
+  background: color-mix(in srgb, var(--danger) 86%, var(--text));
+}
+
+.action-sheet__cancel {
+  border-color: var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--text);
+}
+
+.action-sheet__cancel:hover {
+  border-color: var(--border-default);
+  background: var(--surface-2);
+}
+
+.action-sheet__confirm:active,
+.action-sheet__cancel:active {
+  transform: translateY(1px);
+}
+
+@keyframes action-sheet-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes action-sheet-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+}
+
+/* A hand holds the sheet from the bottom edge, where the thumb already is. */
+@media (max-width: 640px) {
+  .action-sheet {
+    place-items: end stretch;
+    padding: 0;
+  }
+
+  .action-sheet__panel {
+    width: 100%;
+    padding: 20px 16px calc(16px + env(safe-area-inset-bottom));
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    border-bottom: 0;
+    animation: action-sheet-up var(--dur-slow) var(--ease);
+  }
+
+  .action-sheet__confirm,
+  .action-sheet__cancel {
+    min-height: 44px;
+  }
+}
+
+@keyframes action-sheet-up {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+}

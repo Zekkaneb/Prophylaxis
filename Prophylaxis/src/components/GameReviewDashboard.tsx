@@ -7,6 +7,7 @@ import { BoardSlot, useBoardHandle } from '../board/PersistentBoard';
 import { db, type MoveEvaluation, type SavedReview } from '../db';
 import { recordSyncedChange } from '../sync/outbox.ts';
 import { useStockfish, type EngineCandidate } from '../engine/useStockfish';
+import ActionSheet from './ActionSheet';
 import { getPlayedGame } from '../play/gameStore';
 import {
   SUMMARY_CLASSIFICATIONS,
@@ -182,6 +183,7 @@ export default function GameReviewDashboard({
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
   const [ply, setPly] = useState(0);
   const [progress, setProgress] = useState({ completed: 0, total: 0 });
+  const [cancelOpen, setCancelOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retry, setRetry] = useState<RetryState | null>(null);
   /* Manual board orientation: X or the flip button turns the board around. */
@@ -434,8 +436,9 @@ export default function GameReviewDashboard({
     event.target.value = '';
   };
 
+  const [pendingDelete, setPendingDelete] = useState<SavedReview | null>(null);
+
   const deleteReview = async (review: SavedReview) => {
-    if (!window.confirm('Delete this saved game review?')) return;
     try {
       await db.saved_reviews.delete(review.game_id);
       await recordSyncedChange('saved_reviews', review.game_id, true);
@@ -742,8 +745,9 @@ export default function GameReviewDashboard({
                     </button>
                     <button
                       type="button"
-                      className="button button--ghost button--small"
-                      onClick={() => void deleteReview(review)}
+                      className="button button--danger-ghost button--small"
+                      title="Delete this saved review"
+                      onClick={() => setPendingDelete(review)}
                     >
                       Delete
                     </button>
@@ -763,7 +767,7 @@ export default function GameReviewDashboard({
     const percent =
       progress.total === 0 ? 0 : Math.round((progress.completed / progress.total) * 100);
     return (
-      <section className="gr gr-analyzing">
+      <section className="gr gr-analyzing" aria-busy="true">
         <div className="gr-panel gr-panel--centre">
           <p className="gr-eyebrow">
             Stockfish · MultiPV 2 · depth {reviewProfile.depth} · {reviewProfile.label}
@@ -774,9 +778,11 @@ export default function GameReviewDashboard({
           <div
             className="gr-progress"
             role="progressbar"
+            aria-label="Analysis progress"
             aria-valuenow={percent}
             aria-valuemin={0}
             aria-valuemax={100}
+            aria-valuetext={`Move ${progress.completed} of ${progress.total}`}
           >
             <span style={{ width: `${percent}%` }} />
           </div>
@@ -784,10 +790,26 @@ export default function GameReviewDashboard({
             Book moves are skipped, so only the real decisions are searched. Cancel any time —
             finished moves are discarded.
           </p>
-          <button type="button" className="button button--ghost" onClick={cancelAnalysis}>
+          <button
+            type="button"
+            className="button button--ghost"
+            onClick={() => setCancelOpen(true)}
+          >
             Cancel
           </button>
         </div>
+
+        <ActionSheet
+          open={cancelOpen}
+          title="Stop analysing?"
+          message="Moves analysed so far are discarded and the review will not be saved."
+          confirmLabel="Stop analysis"
+          onCancel={() => setCancelOpen(false)}
+          onConfirm={() => {
+            setCancelOpen(false);
+            cancelAnalysis();
+          }}
+        />
       </section>
     );
   }
@@ -959,7 +981,15 @@ export default function GameReviewDashboard({
                   >
                     {scoreLabel}
                   </span>
-                  <div className="gr-eval" aria-hidden="true">
+                  <div
+                    className="gr-eval"
+                    role="meter"
+                    aria-label="Evaluation"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(whitePercent)}
+                    aria-valuetext={`${scoreLabel}, White ${Math.round(whitePercent)}%`}
+                  >
                     <div className="gr-eval__fill" style={{ height: `${whitePercent}%` }} />
                   </div>
                 </div>
@@ -1340,6 +1370,19 @@ export default function GameReviewDashboard({
           {toast.message}
         </div>
       )}
+
+      <ActionSheet
+        open={Boolean(pendingDelete)}
+        title="Delete saved review?"
+        message="The analysis and its moves are removed from this device."
+        confirmLabel="Delete review"
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={() => {
+          const review = pendingDelete;
+          setPendingDelete(null);
+          if (review) void deleteReview(review);
+        }}
+      />
     </section>
   );
 }

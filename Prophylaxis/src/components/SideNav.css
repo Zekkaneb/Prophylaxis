@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 232px;
+  width: var(--nav-width);
   height: 100dvh;
   min-height: 0;
   /* The rail owns its height: the room list scrolls inside it so the footer
@@ -29,7 +29,7 @@
 }
 
 .sidenav.is-collapsed {
-  width: 68px;
+  width: var(--nav-width-collapsed);
   padding-inline: 10px;
 }
 
@@ -108,8 +108,27 @@
 }
 
 .sidenav .nav-item {
+  position: relative;
   cursor: pointer;
   min-width: 0;
+}
+
+/* The current room keeps a thin gold rule on the rail's edge, so the active
+   tab reads even where the tinted background is subtle. */
+.sidenav .nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 2px;
+  height: 18px;
+  border-radius: var(--radius-xs);
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+
+.sidenav.is-collapsed .nav-item.active::before {
+  left: -10px;
 }
 
 .sidenav .nav-item em {
@@ -144,12 +163,12 @@
   gap: 6px;
   height: 34px;
   padding: 0 9px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface-1);
+  border: 1px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background: var(--field-bg);
   color: var(--muted);
-  font-size: 12.5px;
-  transition: border-color 160ms var(--ease);
+  font-size: var(--type-sm);
+  transition: border-color var(--dur) var(--ease);
 }
 
 .sidenav__search form:focus-within {
@@ -170,13 +189,47 @@
   color: var(--muted);
 }
 
+/* The field owns one clear affordance: the native cancel button would sit next
+   to ours and give the same action two different looks. */
+.sidenav__search input::-webkit-search-cancel-button,
+.sidenav__search input::-webkit-search-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.sidenav__clear {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--text-tertiary);
+  font-size: 9px;
+  line-height: 1;
+  transition:
+    color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.sidenav__clear:hover {
+  color: var(--text);
+}
+
+.sidenav__clear:active {
+  transform: translateY(1px);
+}
+
 .sidenav__search-btn {
   display: grid;
   place-items: center;
   width: 100%;
   height: 34px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--field-radius);
   background: var(--surface-1);
   color: var(--muted);
   font-size: 14px;
@@ -193,29 +246,6 @@
   margin-top: auto;
   gap: 3px;
   flex: none;
-}
-
-.sidenav .board-utility {
-  width: 100%;
-}
-
-.sidenav .board-utility__btn {
-  width: 100%;
-  height: 32px;
-}
-
-/* Folded rail: the size control is a glyph, so it keeps a glyph's width instead
-   of stretching across the strip. */
-.sidenav.is-collapsed .board-utility__btn {
-  width: 36px;
-  margin-inline: auto;
-}
-
-/* The rail is narrow: the size popover opens into the content column. */
-.sidenav .board-utility__panel {
-  left: 0;
-  right: auto;
-  top: calc(100% + 6px);
 }
 
 /* The design system still carries the old phone rules for the retired bottom

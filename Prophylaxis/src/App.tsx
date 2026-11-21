@@ -253,6 +253,7 @@ export default function App() {
         tab={route.tab}
         soundOn={soundOn}
         busy={busy}
+        query={query}
         onQuery={setQuery}
         onSearchSubmit={handleSearchSubmit}
         onNavigate={navigateTab}
@@ -305,7 +306,12 @@ export default function App() {
                   </div>
                 </div>
 
-                <CourseLibrary query={query} onStudy={openCourse} onNotify={notify} />
+                <CourseLibrary
+                  query={query}
+                  onClearSearch={() => setQuery('')}
+                  onStudy={openCourse}
+                  onNotify={notify}
+                />
               </div>
             ))}
 

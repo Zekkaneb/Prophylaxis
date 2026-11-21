@@ -25,10 +25,6 @@
   min-height: 0;
 }
 
-.view {
-  padding-top: 26px;
-}
-
 .page {
   display: flex;
   flex-direction: column;
@@ -123,8 +119,8 @@
 .ledger dd {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 34px;
-  font-weight: 600;
+  font-size: var(--type-2xl);
+  font-weight: var(--weight-semibold);
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
 }
@@ -173,20 +169,26 @@
   width: 100%;
   min-width: 0;
   padding: 9px 11px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--bg-deep);
+  border: 1px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background: var(--field-bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--type-md);
+  font-weight: var(--weight-medium);
   letter-spacing: normal;
   text-transform: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.dash-profile__field input:hover {
+  border-color: var(--border-strong);
 }
 
 .dash-profile__field input:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring-color);
   outline-offset: 1px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .dash-profile__field--elo input {
@@ -216,9 +218,9 @@
 .block {
   min-width: 0;
   padding: 16px 18px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--panel);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
 }
 
 .block__head {
@@ -230,8 +232,9 @@
 }
 
 .block__head h2 {
-  font-size: 15px;
-  letter-spacing: 0.01em;
+  font-size: var(--type-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
 }
 
 .link-btn {
@@ -280,9 +283,14 @@
   gap: 12px;
   min-width: 0;
   padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
   background: var(--surface-1);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.course-row:hover {
+  border-color: var(--border-default);
 }
 
 .course-row__main {
@@ -399,24 +407,20 @@
   gap: 5px;
   min-width: 0;
   padding: 16px 18px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
   background: var(--card-top);
   color: var(--soft);
   text-align: left;
   cursor: pointer;
   transition:
-    transform var(--dur) var(--spring),
+    transform var(--dur) var(--ease-out),
     border-color var(--dur) var(--ease),
     box-shadow var(--dur) var(--ease);
 }
 
-.quick-card:hover {
-  transform: translateY(-3px);
-}
-
 .quick-card:active {
-  transform: translateY(-1px) scale(0.995);
+  transform: translateY(0) scale(0.995);
 }
 
 .quick-card > span {
@@ -439,7 +443,7 @@
 .quick-card:hover {
   transform: translateY(-2px);
   border-color: color-mix(in srgb, var(--gold) 45%, transparent);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--elev-2);
 }
 
 kbd {

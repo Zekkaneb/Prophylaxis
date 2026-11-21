@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Chess, type Move } from 'chess.js';
 import { BoardSlot } from '../board/PersistentBoard';
+import ShareSheet from './ShareSheet';
 import { START_FEN } from './ChessBoardWrapper';
 import {
   useStockfish,
@@ -264,6 +265,7 @@ export default function AnalysisPage({ onSendToReview }: AnalysisPageProps = {})
   });
 
   const [fenOpen, setFenOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [fenDraft, setFenDraft] = useState('');
   const [fenError, setFenError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
@@ -443,6 +445,23 @@ export default function AnalysisPage({ onSendToReview }: AnalysisPageProps = {})
     [say],
   );
 
+  const downloadPgn = useCallback(() => {
+    const slug = (value: string) =>
+      value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'player';
+    const blob = new Blob([pgn], { type: 'application/x-chess-pgn' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${slug(white.name)}-${slug(black.name)}.pgn`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    say('PGN downloaded.');
+  }, [black.name, pgn, say, white.name]);
+
+  const closeShare = useCallback(() => setShareOpen(false), []);
+
   const loadFen = useCallback(() => {
     const trimmed = fenDraft.trim();
     if (!trimmed) {
@@ -553,7 +572,15 @@ export default function AnalysisPage({ onSendToReview }: AnalysisPageProps = {})
                   >
                     {scoreLabel}
                   </span>
-                  <div className="gr-eval" aria-hidden="true">
+                  <div
+                    className="gr-eval"
+                    role="meter"
+                    aria-label="Evaluation"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(whitePercent)}
+                    aria-valuetext={`${scoreLabel}, White ${Math.round(whitePercent)}%`}
+                  >
                     <div className="gr-eval__fill" style={{ height: `${whitePercent}%` }} />
                   </div>
                 </div>
@@ -851,16 +878,11 @@ export default function AnalysisPage({ onSendToReview }: AnalysisPageProps = {})
               <button
                 type="button"
                 className="button button--ghost button--small"
-                onClick={() => void copy(pgn, 'PGN copied.')}
+                aria-haspopup="dialog"
+                aria-expanded={shareOpen}
+                onClick={() => setShareOpen(true)}
               >
-                Copy PGN
-              </button>
-              <button
-                type="button"
-                className="button button--ghost button--small"
-                onClick={() => void copy(currentFen, 'FEN copied.')}
-              >
-                Copy FEN
+                Share
               </button>
             </div>
 
@@ -912,6 +934,40 @@ export default function AnalysisPage({ onSendToReview }: AnalysisPageProps = {})
           </section>
         </div>
       </aside>
+
+      <ShareSheet
+        open={shareOpen}
+        onClose={closeShare}
+        title="Share position"
+        subtitle={`${
+          current.san
+            ? `After ${current.number}${current.color === 'w' ? '.' : '…'} ${current.san}`
+            : 'Start position'
+        } · ${plies.length} ${plies.length === 1 ? 'move' : 'moves'} in this line`}
+        activities={[
+          {
+            id: 'copy-pgn',
+            label: 'Copy PGN',
+            description: 'The whole line, with both players and their ratings',
+            symbol: '⧉',
+            onSelect: () => void copy(pgn, 'PGN copied.'),
+          },
+          {
+            id: 'copy-fen',
+            label: 'Copy FEN',
+            description: 'The exact position on the board',
+            symbol: '⌗',
+            onSelect: () => void copy(currentFen, 'FEN copied.'),
+          },
+          {
+            id: 'download-pgn',
+            label: 'Download PGN',
+            description: 'Save the line as a .pgn file',
+            symbol: '↓',
+            onSelect: downloadPgn,
+          },
+        ]}
+      />
     </section>
   );
 }

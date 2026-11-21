@@ -11,7 +11,60 @@
     sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', 'Segoe UI Mono', monospace;
 
-  --r: 24px;
+  /* ---------------------------------------------------------------- type --
+     One ramp for the whole product. Components pick a step; they never invent
+     a size. Metadata (10/11.5), body (13/14/16), display (20/26/clamp). */
+  --type-2xs: 10px;
+  --type-xs: 11.5px;
+  --type-sm: 13px;
+  --type-md: 14px;
+  --type-lg: 16px;
+  --type-xl: 20px;
+  --type-2xl: 26px;
+  --type-display: clamp(30px, 3.1vw, 42px);
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --leading-tight: 1.1;
+  --leading-snug: 1.35;
+  --leading-body: 1.6;
+  --tracking-tight: -0.025em;
+  --tracking-wide: 0.12em;
+
+  /* -------------------------------------------------------------- radius --
+     Seven steps replace the bespoke 7/8/9/10/12/14/15/16/21/22/26 values the
+     feature sheets had grown. */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-pill: 999px;
+
+  --r: var(--radius-2xl);
+
+  /* ----------------------------------------------------------- elevation --
+     Three planes: hairline lift, resting card, floating overlay. */
+  --elev-1: 0 1px 2px rgb(0 0 0 / 18%);
+  --elev-2: 0 14px 30px -22px rgb(0 0 0 / 55%);
+
+  /* ----------------------------------------------------------- components --
+     Component tokens are the only values a control should read. */
+  --control-height: 34px;
+  --control-height-sm: 28px;
+  --control-pad-x: 16px;
+  --control-radius: var(--radius-pill);
+  --card-radius: var(--radius-xl);
+  --card-bg: var(--panel);
+  --card-border: var(--line-soft);
+  --field-radius: var(--radius-md);
+  --field-bg: var(--surface-2);
+  --field-border: var(--line-soft);
+  --nav-width: 232px;
+  --nav-width-collapsed: 68px;
+  --board-radius: var(--radius-lg);
 
   /* The board is laid out at exactly this square base and then multiplied by
      --board-scale, so every tab draws an identical board and nothing around it
@@ -42,12 +95,12 @@
   --space-7: 56px;
   --space-8: 80px;
 
-  /* Motion: everything settles on a heavy spring, never linear. */
+  /* Motion: one ease for entering, one for leaving, and a short press. No
+     bounce in the product chrome; the spring stays for board-scale gestures. */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* Hover/press answers instantly enough to feel causal; page entries are
-     allowed a little more room. Short durations are what keep it feeling
-     responsive rather than choreographed. */
+  --dur-fast: 100ms;
   --dur: 160ms;
   --dur-slow: 280ms;
 
@@ -56,6 +109,17 @@
   --surface-raised: var(--panel-2);
   --border: var(--line);
   --text-muted: var(--muted);
+
+  /* Semantic layer: what a surface/ink/border means, independent of its hex. */
+  --text-primary: var(--text);
+  --text-secondary: var(--soft);
+  --text-tertiary: var(--muted);
+  --border-subtle: var(--line-soft);
+  --border-default: var(--line);
+  --border-strong: var(--line-strong);
+  --surface-sunken: var(--bg-deep);
+  --surface-flat: var(--panel);
+  --focus-ring-color: var(--accent-strong);
 
   font-family: var(--font-sans);
   color: var(--text);
@@ -356,12 +420,14 @@ body::after {
   z-index: 70;
   pointer-events: none;
   opacity: var(--grain);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
-}  h1,
-  h2 {
+  background-image:   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+h1,
+h2 {
   font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
   line-height: 1.08;
   margin: 0;
   text-wrap: balance;
@@ -407,17 +473,29 @@ button:disabled {
   outline-offset: 3px;
 }
 
-/* Ring sits above surfaces that would clip a plain outline */
-.icon-btn:focus-visible,
-.nav-item:focus-visible,
-.button:focus-visible,
-.tier-card:focus-visible,
-.palette-tile:focus-visible,
-.piece-tile:focus-visible,
-  .settings-switch:focus-visible {
-  outline: 2px solid var(--accent-strong);
+/* Ring sits above surfaces that would clip a plain outline. The soft halo is
+   the same width everywhere, so focus reads as one gesture across the app. */
+:is(
+    .icon-btn,
+    .nav-item,
+    .button,
+    .primary-btn,
+    .secondary-btn,
+    .chip,
+    .pill,
+    .courses__scope-btn,
+    .courses__side-btn,
+    .sidenav__clear,
+    .gr-move,
+    .gr-candidate,
+    .tier-card,
+    .palette-tile,
+    .piece-tile,
+    .settings-switch
+  ):focus-visible {
+  outline: 2px solid var(--focus-ring-color);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 /* Skip link: hidden until keyboard focus, then a floating gold pill */
@@ -461,13 +539,13 @@ kbd {
 
 /* Section markers read like a printed programme: italic, no shouting. */
 .eyebrow {
+  margin: 0 0 6px;
   font-family: var(--font-sans);
-  font-size: 13.5px;
+  font-size: var(--type-sm);
   font-style: italic;
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.01em;
   color: var(--accent-strong);
-  margin: 0 0 6px;
 }
 
 .muted {
@@ -484,8 +562,8 @@ kbd {
   width: 112px;
   height: 112px;
   overflow: hidden;
-  border: 1px solid var(--line-soft);
-  border-radius: 28px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
   background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
   box-shadow:
     inset 0 1px 0 var(--inset-hi),
@@ -550,15 +628,10 @@ kbd {
 }
 
 /* --------------------------------------------------------------------------
-   Shell: sidebar + topbar + view (legacy .app-shell structure)
-   -------------------------------------------------------------------------- */
+   Shell furniture
 
-.app-shell {
-  display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
-  min-height: 100dvh;
-  column-gap: 6px;
-}
+   The shell grid itself lives in shell.css, which owns the rail + page frame.
+   -------------------------------------------------------------------------- */
 
 .brand {
   display: flex;
@@ -602,16 +675,17 @@ kbd {
   background: transparent;
   color: var(--muted);
   text-align: left;
+  text-decoration: none;
   padding: 10px 12px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 14px;
+  font-size: var(--type-md);
   width: 100%;
   transition:
-    background 300ms var(--ease),
-    color 300ms var(--ease);
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 
 .nav-item > span {
@@ -645,7 +719,7 @@ kbd {
   width: 100%;
   max-width: 1480px;
   margin: 0 auto;
-  padding: 44px clamp(18px, 3.6%, 52px) 100px;
+  padding: 30px clamp(18px, 3.2%, 48px) 72px;
   /* A slide, no fade, and no fill. Three traps live here: a kept transform
      (the identity one a forwards fill leaves behind) makes every view a
      stacking context, so the board's body-level paint layer covers the view's
@@ -673,9 +747,11 @@ kbd {
 }
 
 .page-heading h1 {
-  font: 750 clamp(30px, 3.1vw, 42px)/1.08 var(--font-sans);
+  font-family: var(--font-sans);
+  font-size: var(--type-display);
+  font-weight: 750;
+  line-height: var(--leading-tight);
   letter-spacing: -0.028em;
-  line-height: 1.1;
 }
 
 .page-heading h1 em {
@@ -685,9 +761,11 @@ kbd {
 }
 
 .subheading {
-  color: var(--muted);
-  margin: 6px 0 0;
-  font-size: 14px;
+  max-width: 62ch;
+  margin: 7px 0 0;
+  color: var(--text-tertiary);
+  font-size: var(--type-md);
+  line-height: var(--leading-snug);
 }
 
 /* --------------------------------------------------------------------------
@@ -695,60 +773,153 @@ kbd {
    -------------------------------------------------------------------------- */
 
 .panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 10px;
   padding: 18px;
   margin-bottom: 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
 }
 
-.primary-btn {
+/* --------------------------------------------------------------------------
+   Controls
+
+   One control language: .button (with .button--ghost / .button--small),
+   .primary-btn and .secondary-btn are the same object, so a page can use the
+   old names and still land on the same height, radius, weight and states.
+   -------------------------------------------------------------------------- */
+
+.button,
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--control-height);
+  padding: 0 var(--control-pad-x);
+  border: 1px solid transparent;
+  border-radius: var(--control-radius);
   background: var(--accent);
   color: var(--accent-ink);
-  border: 0;
-  border-radius: 980px;
-  padding: 9px 18px;
-  font-size: 13px;
-  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: var(--type-sm);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    transform var(--dur-fast) var(--ease);
 }
 
+.button:hover:not(:disabled),
+.primary-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 86%, var(--text));
+}
+
+.button:active:not(:disabled),
+.primary-btn:active:not(:disabled),
+.secondary-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.995);
+}
+
+.button:disabled,
+.primary-btn:disabled,
+.secondary-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.button--ghost,
 .secondary-btn {
-  background: var(--panel-2);
+  border-color: var(--border-default);
+  background: var(--surface-2);
   color: var(--text);
-  border: 0;
-  border-radius: 980px;
-  padding: 9px 18px;
-  font-size: 13px;
-  font-weight: 600;
+}
+
+.button--ghost:hover:not(:disabled),
+.secondary-btn:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.button--small {
+  min-height: var(--control-height-sm);
+  padding-inline: 12px;
+  font-size: var(--type-xs);
+}
+
+/* Destructive actions never borrow the primary accent: red marks the result. */
+.button--danger {
+  border-color: transparent;
+  background: var(--danger);
+  color: var(--danger-ink);
+}
+
+.button--danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 86%, var(--text));
+}
+
+.button--danger-ghost {
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.button--danger-ghost:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--danger) 60%, transparent);
+  background: color-mix(in srgb, var(--danger) 18%, transparent);
+  color: var(--danger);
 }
 
 .icon-btn {
-  border: 0;
-  background: var(--panel-2);
-  color: var(--soft);
-  border-radius: 9px;
-  min-width: 34px;
-  height: 32px;
   display: inline-grid;
   place-items: center;
+  min-width: 34px;
+  height: 32px;
   padding: 0 8px;
-  font-size: 13px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--soft);
+  font-size: var(--type-sm);
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 
 .icon-btn:hover:not(:disabled) {
-  color: var(--accent);
+  border-color: var(--border-default);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* Every custom button answers a press, so the pointer never wonders. */
+.icon-btn:active:not(:disabled),
+.chip:active,
+.pill:active {
+  transform: translateY(1px);
+}
+
+.nav-item:active {
+  background: var(--surface-3);
 }
 
 .pill {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  border-radius: 20px;
   padding: 3px 9px;
-  font-size: 13px;
-  font-weight: 600;
-  background: var(--panel-2);
-  color: var(--soft);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--type-xs);
+  font-weight: var(--weight-semibold);
+  line-height: 1.4;
 }
 
 .pill.green {
@@ -762,51 +933,21 @@ kbd {
 }
 
 .chip {
-  border: 1px solid transparent;
-  background: var(--panel-2);
-  color: var(--soft);
-  border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 5px 11px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--type-sm);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
 }
 
 .chip:hover {
-  color: var(--accent);
-}
-
-/* App buttons (components use .button / .button--ghost) */
-.button {
-  padding: 9px 18px;
-  border-radius: 980px;
-  border: 0;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-size: 13px;
-  font-weight: 600;
-  transition: filter 150ms, transform 120ms;
-}
-
-.button:hover:not(:disabled) {
-  filter: brightness(1.08);
-}
-
-.button:active:not(:disabled) {
-  transform: scale(0.96);
-}
-
-.button--ghost {
-  background: var(--panel-2);
+  border-color: var(--border-default);
   color: var(--text);
-}
-
-.button--small {
-  padding: 6px 13px;
-  font-size: 12px;
-}
-
-.button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 /* Old app header (kept for the toast + fallbacks) */
@@ -823,11 +964,11 @@ kbd {
   max-width: min(460px, 92vw);
   padding: 10px 18px;
   border: 0;
-  border-radius: 980px;
+  border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--accent-ink);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--type-sm);
+  font-weight: var(--weight-semibold);
   box-shadow: var(--shadow);
   animation: toast-in 180ms ease-out;
 }
@@ -869,9 +1010,9 @@ kbd {
 }
 
 .board-frame {
-  border-radius: 8px;
+  border-radius: var(--board-radius);
   overflow: hidden;
-  box-shadow: 0 10px 32px #0003;
+  box-shadow: var(--elev-2);
   background: var(--panel);
   /* A chess board is square by definition: never let width/height drift apart. */
   aspect-ratio: 1 / 1;

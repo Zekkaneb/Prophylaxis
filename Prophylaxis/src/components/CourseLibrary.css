@@ -16,27 +16,62 @@
   align-items: center;
   gap: 18px;
   padding: 20px 22px;
-  border: 1px dashed color-mix(in srgb, var(--gold) 38%, transparent);
-  border-radius: 16px;
+  /* A solid hairline at rest, like every other card; the dashed outline is the
+     drop affordance and only appears while a file is over the band. */
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
   background:
-    radial-gradient(120% 150% at 0% 0%, color-mix(in srgb, var(--gold) 10%, transparent), transparent 55%),
-    var(--panel);
+    radial-gradient(120% 150% at 0% 0%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 55%),
+    linear-gradient(180deg, var(--card-top), var(--card-bottom));
   transition:
-    border-color 180ms var(--ease),
-    background 180ms var(--ease),
-    transform 180ms var(--ease);
+    border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
 }
 
 .courses__drop.is-dragging {
-  border-color: var(--gold);
-  background:
-    radial-gradient(120% 150% at 0% 0%, color-mix(in srgb, var(--gold) 18%, transparent), transparent 60%),
-    var(--panel-2);
+  border: 1px dashed var(--gold);
+  background: color-mix(in srgb, var(--gold) 10%, var(--panel-2));
   transform: translateY(-1px);
 }
 
 .courses__drop.is-busy {
   opacity: 0.75;
+}
+
+/* Import duration depends on the file, so it is indeterminate: a spinner in
+   the same slot the icon uses, never a bar that pretends to know. */
+.courses__spinner {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--gold) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+}
+
+.courses__spinner::after {
+  content: '';
+  width: 17px;
+  height: 17px;
+  border: 2px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: courses-spin 720ms linear infinite;
+}
+
+@keyframes courses-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .courses__spinner::after {
+    animation-duration: 2.4s;
+  }
 }
 
 .courses__drop-icon {
@@ -148,30 +183,77 @@
 
 .courses__head {
   display: flex;
-  align-items: baseline;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px 12px;
   margin-top: 2px;
 }
 
 .courses__head h2 {
-  font-size: 16px;
-  letter-spacing: 0.02em;
+  font-size: var(--type-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+/* Scope bar: the broader choice is the default, and the bar sits with the
+   results it filters rather than in the global search field. */
+.courses__scope {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+}
+
+.courses__scope-btn {
+  padding: 3px 11px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: var(--type-xs);
+  font-weight: var(--weight-semibold);
+  line-height: 1.5;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.courses__scope-btn:hover {
+  color: var(--text);
+}
+
+.courses__scope-btn:active {
+  transform: translateY(1px);
+}
+
+.courses__scope-btn.is-active {
+  background: var(--surface-3);
+  color: var(--text);
 }
 
 .courses__count {
-  font-size: 12.5px;
+  margin-left: auto;
+  font-size: var(--type-xs);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
+.courses__empty-reset {
+  margin-top: 14px;
+  cursor: pointer;
+}
+
 .courses__empty {
   padding: 26px 22px;
-  border: 1px dashed var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--surface-1);
   text-align: center;
-  color: var(--muted);
-  font-size: 13.5px;
+  color: var(--text-tertiary);
+  font-size: var(--type-sm);
 }
 
 .courses__empty p {
@@ -335,7 +417,8 @@
     gap: 8px 16px;
   }
 
-  .courses__drop-icon {
+  .courses__drop-icon,
+  .courses__spinner {
     grid-area: icon;
     align-self: center;
   }

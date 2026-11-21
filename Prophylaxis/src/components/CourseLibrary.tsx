@@ -8,6 +8,7 @@ import {
   setCourseColor,
 } from '../courses/courseService';
 import type { PgnCourseRecord } from '../courses/types';
+import ActionSheet from './ActionSheet';
 import './CourseLibrary.css';
 
 /**
@@ -66,11 +67,13 @@ function formatDate(timestamp: number): string {
 export interface CourseLibraryProps {
   /** Top-bar search, matched against course and chapter titles. */
   query?: string;
+  /** Clears that search from the empty state, so one click restores the list. */
+  onClearSearch?: () => void;
   onStudy: (courseId: string) => void;
   onNotify?: (message: string, tone?: 'success' | 'error') => void;
 }
 
-function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
+function CourseLibrary({ query = '', onClearSearch, onStudy, onNotify }: CourseLibraryProps) {
   const [courses, setCourses] = useState<PgnCourseRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -148,8 +151,6 @@ function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
 
   const handleDelete = useCallback(
     async (record: PgnCourseRecord) => {
-      const confirmed = window.confirm(`Delete “${record.title}” from this device?`);
-      if (!confirmed) return;
       await deleteCourse(record.course_id);
       await refresh();
       onNotify?.(`Deleted “${record.title}”.`);
@@ -159,21 +160,28 @@ function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
 
   /* The field is debounced upstream; deferral keeps typing at 60fps on top. */
   const deferredQuery = useDeferredValue(query);
+  const [scope, setScope] = useState<'all' | 'w' | 'b'>('all');
+  const [pendingDelete, setPendingDelete] = useState<PgnCourseRecord | null>(null);
+  const filtered = Boolean(deferredQuery.trim()) || scope !== 'all';
 
+  /* Search and scope compose: the bar narrows the collection, the field
+     narrows the bar's result. */
   const visible = useMemo(() => {
     const needle = deferredQuery.trim().toLowerCase();
-    if (!needle) return courses;
-    return courses.filter((entry) => {
+    const scoped = scope === 'all' ? courses : courses.filter((entry) => entry.repertoire_color === scope);
+    if (!needle) return scoped;
+    return scoped.filter((entry) => {
       if (entry.title.toLowerCase().includes(needle)) return true;
       if (entry.source_name.toLowerCase().includes(needle)) return true;
       return entry.chapters.some((chapter) => chapter.title.toLowerCase().includes(needle));
     });
-  }, [courses, deferredQuery]);
+  }, [courses, deferredQuery, scope]);
 
   return (
     <section className="courses" aria-label="PGN courses">
       <div
         className={`courses__drop${dragging ? ' is-dragging' : ''}${busy ? ' is-busy' : ''}`}
+        aria-busy={busy}
         onDragOver={(event) => {
           event.preventDefault();
           setDragging(true);
@@ -185,11 +193,17 @@ function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
           void handleFiles(Array.from(event.dataTransfer.files));
         }}
       >
-        <span className="courses__drop-icon" aria-hidden="true">
-          ⇪
-        </span>
+        {busy ? (
+          <span className="courses__spinner" aria-hidden="true" />
+        ) : (
+          <span className="courses__drop-icon" aria-hidden="true">
+            ⇪
+          </span>
+        )}
         <div className="courses__drop-text">
-          <strong>{busy ? 'Reading your PGN…' : 'Drop a PGN course here'}</strong>
+          <strong role="status" aria-live="polite">
+            {busy ? 'Reading your PGN…' : 'Drop a PGN course here'}
+          </strong>
           <p>
             Every game in the file becomes a chapter. Parsed locally, stored on this
             device — nothing is uploaded.
@@ -221,7 +235,7 @@ function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
             onClick={() => fileInput.current?.click()}
             disabled={busy}
           >
-            Choose file
+            Choose file…
           </button>
           <button
             type="button"
@@ -260,23 +274,54 @@ function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
 
       <div className="courses__head">
         <h2>Library</h2>
-        <span className="courses__count">
+
+        <div className="courses__scope" role="group" aria-label="Filter by repertoire side">
+          {([
+            ['all', 'All'],
+            ['w', 'White'],
+            ['b', 'Black'],
+          ] as const).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              className={`courses__scope-btn${scope === value ? ' is-active' : ''}`}
+              aria-pressed={scope === value}
+              onClick={() => setScope(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <span className="courses__count" role="status" aria-live="polite">
           {loading
             ? 'Loading…'
             : `${visible.length} course${visible.length === 1 ? '' : 's'}${
-                query ? ` matching “${query.trim()}”` : ''
-              }`}
+                scope === 'all' ? '' : ` · ${scope === 'w' ? 'White' : 'Black'}`
+              }${query ? ` matching “${query.trim()}”` : ''}`}
         </span>
       </div>
 
       {!loading && visible.length === 0 && (
         <div className="courses__empty">
-          <p>{query ? 'No courses match that search.' : 'No courses yet.'}</p>
+          <p>{filtered ? 'No courses match those filters.' : 'No courses yet.'}</p>
           <p>
-            {query
-              ? 'Clear the search, or import a PGN that contains those chapters.'
+            {filtered
+              ? 'Clear the search or widen the side filter, or import a PGN that contains those chapters.'
               : 'Export a study as PGN, drop it above, and it lands here with one chapter per game.'}
           </p>
+          {filtered ? (
+            <button
+              type="button"
+              className="secondary-btn courses__empty-reset"
+              onClick={() => {
+                setScope('all');
+                onClearSearch?.();
+              }}
+            >
+              Clear filters
+            </button>
+          ) : null}
         </div>
       )}
 
@@ -310,7 +355,7 @@ function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
                   className="icon-btn course-card__delete"
                   aria-label={`Delete ${entry.title}`}
                   title="Delete course"
-                  onClick={() => void handleDelete(entry)}
+                  onClick={() => setPendingDelete(entry)}
                 >
                   ✕
                 </button>
@@ -351,6 +396,23 @@ function CourseLibrary({ query = '', onStudy, onNotify }: CourseLibraryProps) {
           );
         })}
       </div>
+
+      <ActionSheet
+        open={Boolean(pendingDelete)}
+        title="Delete course?"
+        message={
+          pendingDelete
+            ? `“${pendingDelete.title}” and its chapters are removed from this device.`
+            : undefined
+        }
+        confirmLabel="Delete course"
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={() => {
+          const record = pendingDelete;
+          setPendingDelete(null);
+          if (record) void handleDelete(record);
+        }}
+      />
     </section>
   );
 }

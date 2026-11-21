@@ -56,6 +56,8 @@ export interface SideNavProps {
   tab: TabId;
   soundOn: boolean;
   busy: 'export' | 'import' | null;
+  /** The live search term, owned by the app so the library can clear it. */
+  query: string;
   onQuery: (value: string) => void;
   onSearchSubmit: () => void;
   onNavigate: (tab: TabId) => void;
@@ -81,21 +83,35 @@ function SideNavComponent({
   onQuery,
   onSearchSubmit,
   onNavigate,
+  query,
   onSettings,
   onExport,
   onImport,
   onToggleSound,
 }: SideNavProps) {
   const [collapsed, setCollapsed] = useState(readCollapsed);
-  const [text, setText] = useState('');
+  const [text, setText] = useState(query);
   const inputRef = useRef<HTMLInputElement>(null);
   const wantsSearchFocus = useRef(false);
+  const lastSent = useRef(query);
 
   /* Commit the filter after a short pause; the field itself stays responsive. */
   useEffect(() => {
-    const timer = setTimeout(() => onQuery(text), SEARCH_DEBOUNCE_MS);
+    if (text === lastSent.current) return;
+    const timer = setTimeout(() => {
+      lastSent.current = text;
+      onQuery(text);
+    }, SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [onQuery, text]);
+
+  /* The library can clear the search from its empty state; the field follows the
+     query it does not own instead of keeping stale text. */
+  useEffect(() => {
+    if (query === lastSent.current) return;
+    lastSent.current = query;
+    setText(query);
+  }, [query]);
 
   useEffect(() => {
     /* A phone never folds, so it must not overwrite the desktop preference. */
@@ -216,6 +232,7 @@ function SideNavComponent({
             role="search"
             onSubmit={(event) => {
               event.preventDefault();
+              lastSent.current = text;
               onQuery(text);
               onSearchSubmit();
             }}
@@ -231,6 +248,7 @@ function SideNavComponent({
               autoComplete="off"
               spellCheck={false}
               enterKeyHint="search"
+              /* Results refine while typing; Return jumps to the library. */
               onChange={(event) => setText(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === 'Escape') {
@@ -239,6 +257,22 @@ function SideNavComponent({
                 }
               }}
             />
+            {text ? (
+              <button
+                type="button"
+                className="sidenav__clear"
+                aria-label="Clear search"
+                title="Clear search"
+                onClick={() => {
+                  lastSent.current = '';
+                  setText('');
+                  onQuery('');
+                  inputRef.current?.focus();
+                }}
+              >
+                <span aria-hidden="true">✕</span>
+              </button>
+            ) : null}
           </form>
         )}
       </div>
