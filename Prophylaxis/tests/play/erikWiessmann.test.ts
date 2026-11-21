@@ -303,7 +303,7 @@ test('as Black he answers 1.e4 with 1...e5 and 1.d4 with 1...d5', () => {
   );
 
   /* And he never reaches for the King's Indian layer: 1...d5 is his answer. */
-  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE), null);
+  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE, 'b'), null);
 });
 
 /* --------------------------- legal fallback ----------------------------- */

@@ -463,7 +463,7 @@ test('the Alapin is his answer to the Sicilian, as it is for the whole character
 
 test('the King’s Indian setup is available to him against 1.d4', () => {
   const afterD4 = position('d4');
-  const plan = kidPlan(afterD4.fen(), ['d4'], STYLE, () => 0.3);
+  const plan = kidPlan(afterD4.fen(), ['d4'], STYLE, 'b', () => 0.3);
   assert.ok(plan);
   assert.equal(plan.moves[0]?.uci, 'g8f6');
   for (const move of plan.moves) assertLegal(afterD4.fen(), move.uci);
@@ -471,7 +471,7 @@ test('the King’s Indian setup is available to him against 1.d4', () => {
   /* He finishes the skeleton before looking for a break. */
   const skeleton = ['d4', 'Nf6', 'Nf3', 'g6', 'c4', 'Bg7', 'Nc3', 'd6', 'e4'];
   const building = position(...skeleton);
-  const buildingPlan = kidPlan(building.fen(), skeleton, STYLE, () => 0.5);
+  const buildingPlan = kidPlan(building.fen(), skeleton, STYLE, 'b', () => 0.5);
   assert.ok(buildingPlan);
   assert.equal(buildingPlan.setupComplete, false);
   assert.equal(buildingPlan.moves[0]?.uci, 'e8g8', 'castling before any break');
@@ -479,18 +479,18 @@ test('the King’s Indian setup is available to him against 1.d4', () => {
   /* Setup finished: the classical break appears, exactly as it does for Junior. */
   const history = [...skeleton, 'O-O', 'Be2'];
   const built = position(...history);
-  const builtPlan = kidPlan(built.fen(), history, STYLE, () => 0.5);
+  const builtPlan = kidPlan(built.fen(), history, STYLE, 'b', () => 0.5);
   assert.ok(builtPlan);
   assert.equal(builtPlan.setupComplete, true);
   assert.ok(builtPlan.moves.some((move) => move.uci === 'e7e5'));
   assert.deepEqual(
     builtPlan.moves.map((move) => move.uci),
-    kidPlan(built.fen(), history, JUNIOR, () => 0.5)?.moves.map((move) => move.uci),
+    kidPlan(built.fen(), history, JUNIOR, 'b', () => 0.5)?.moves.map((move) => move.uci),
     'the same shared plan Junior builds',
   );
 
   /* Against 1.e4 the Pirc owns the opening. */
-  assert.equal(kidPlan(position('e4').fen(), ['e4'], STYLE), null);
+  assert.equal(kidPlan(position('e4').fen(), ['e4'], STYLE, 'b'), null);
 });
 
 test('every declaration still replays, including his', () => {

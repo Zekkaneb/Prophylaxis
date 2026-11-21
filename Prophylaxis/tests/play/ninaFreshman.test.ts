@@ -279,15 +279,16 @@ test('she plays the same London and Caro-Kann data, not a copy of it', () => {
 
 test('the London skeleton and ...d5 are principles she also follows', () => {
   const start = new Chess();
-  assert.deepEqual(ninaPlan(start.fen(), [], FRESH)?.moves.map((move) => move.uci), ['d2d4']);
+  assert.deepEqual(ninaPlan(start.fen(), [], FRESH, 'w')?.moves.map((move) => move.uci), ['d2d4']);
 
   const afterD4 = position('d4');
-  assert.deepEqual(ninaPlan(afterD4.fen(), ['d4'], FRESH)?.moves.map((move) => move.uci), ['d7d5']);
+  assert.deepEqual(ninaPlan(afterD4.fen(), ['d4'], FRESH, 'b')?.moves.map((move) => move.uci), ['d7d5']);
   assert.equal(
     chooseNinaPlanMove({
       fen: afterD4.fen(),
       history: ['d4'],
       style: FRESH,
+      color: 'b',
       elo: 1150,
       candidates: [],
     })?.uci,
@@ -295,7 +296,7 @@ test('the London skeleton and ...d5 are principles she also follows', () => {
   );
 
   const afterE4 = position('e4');
-  assert.equal(ninaPlan(afterE4.fen(), ['e4'], FRESH), null, '1.e4 is the Caro-Kann book');
+  assert.equal(ninaPlan(afterE4.fen(), ['e4'], FRESH, 'b'), null, '1.e4 is the Caro-Kann book');
 });
 
 test('both Nina profiles play their book before searching, as either colour', async () => {
@@ -373,6 +374,7 @@ test('she forgets her lines more often than Sophomore, but never blunders on cue
       fen: new Chess().fen(),
       history: [],
       style: FRESH,
+      color: 'w',
       elo: 1150,
       candidates: [],
       forgotten: true,

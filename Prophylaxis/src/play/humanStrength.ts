@@ -257,13 +257,13 @@ export interface QualityShares {
   blunder: number;
   /** `?`: 10-20%. */
   mistake: number;
-  /** `?!`: 4.5-10%. */
+  /** `?!`: 5-10% (`SELECTION_BANDS.inaccuracy`). */
   inaccuracy: number;
-  /** `✓`: 1.8-4.5%. */
+  /** `✓`: 2-5% (`SELECTION_BANDS.good`). */
   good: number;
-  /** `⦿`: 0.4-1.8%. */
+  /** `⦿`: 0-2% (`SELECTION_BANDS.excellent`). */
   excellent: number;
-  /** `*`: under 0.4%. */
+  /** `*`: the #1 reference move, i.e. win drop 0. */
   best: number;
 }
 

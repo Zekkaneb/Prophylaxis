@@ -37,6 +37,16 @@ function slug(text) {
     .slice(0, 48);
 }
 
+/**
+ * Plies already played in a FEN. A chapter that starts mid-line knows only the
+ * positions from that depth on, so its compiled moves carry this as `minPly`.
+ */
+function pliesBefore(fen) {
+  const parts = String(fen).trim().split(/\s+/);
+  const fullmove = Number(parts[5]) || 1;
+  return Math.max(0, (fullmove - 1) * 2 + (parts[1] === 'b' ? 1 : 0));
+}
+
 function addMove(key, move, meta) {
   let list = book.get(key);
   if (!list) {
@@ -49,6 +59,12 @@ function addMove(key, move, meta) {
     existing.weight = Math.max(existing.weight, meta.weight);
     for (const tag of meta.tags) if (!existing.tags.includes(tag)) existing.tags.push(tag);
     if (!existing.lineIds.includes(meta.lineId)) existing.lineIds.push(meta.lineId);
+    /* A move also reachable from a chapter that starts at the top of the game
+       stays available from the top of the game. */
+    if (meta.minPly !== undefined) {
+      existing.minPly =
+        existing.minPly === undefined ? meta.minPly : Math.min(existing.minPly, meta.minPly);
+    }
     return;
   }
   list.set(uci, {
@@ -57,6 +73,7 @@ function addMove(key, move, meta) {
     tags: [...meta.tags],
     weight: meta.weight,
     lineIds: [meta.lineId],
+    ...(meta.minPly ? { minPly: meta.minPly } : {}),
   });
 }
 
@@ -87,6 +104,9 @@ for (const source of SOURCES) {
       branches: 0,
     });
     const chapter = chapters[chapters.length - 1];
+    /* Chapters opened from a FEN begin mid-line; the depth is kept so a
+       fragment can only answer a game that has actually come that far. */
+    const startPly = pliesBefore(startFen);
 
     // Mark mainline nodes so variations can be counted and weighted down.
     const mainline = new Set();
@@ -137,6 +157,7 @@ for (const source of SOURCES) {
             tags: source.tags,
             weight: isMain ? 3 : 1,
             lineId: chapterId,
+            minPly: startPly,
           });
         }
         walk(child, local, depth + 1);
@@ -169,6 +190,8 @@ export interface BrandonBookEntry {
   tags: OpeningTag[];
   weight: number;
   lineIds: string[];
+  /** Plies already played when a FEN-started chapter began. */
+  minPly?: number;
 }
 
 export const BRANDON_BOOK_STATS = ${JSON.stringify(

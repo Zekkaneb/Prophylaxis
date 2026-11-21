@@ -274,7 +274,7 @@ test('against 1.d4 he builds the King’s Indian setup', () => {
     ['Bg7'],
   );
 
-  const start = kidPlan(position('d4').fen(), ['d4'], STYLE);
+  const start = kidPlan(position('d4').fen(), ['d4'], STYLE, 'b');
   assert.ok(start);
   assert.equal(start.moves[0]?.uci, 'g8f6');
 
@@ -296,7 +296,7 @@ test('against 1.d4 he builds the King’s Indian setup', () => {
   const plan = kidPlan(
     built.fen(),
     ['d4', 'Nf6', 'Bf4', 'g6', 'e3', 'Bg7', 'Nf3', 'O-O', 'Be2', 'd6', 'O-O', 'Nbd7', 'h3'],
-    STYLE,
+    STYLE, 'b',
   );
   assert.ok(plan);
   assert.equal(plan.setupComplete, true, 'setup first, break later');

@@ -112,7 +112,7 @@ test('the King’s Indian is prepared play, not a random or engine choice', () =
   game.move('d4');
 
   for (const id of ['sophomore', 'junior'] as const) {
-    const plan = kidPlan(game.fen(), ['d4'], PERSONALITY_STYLES[id]);
+    const plan = kidPlan(game.fen(), ['d4'], PERSONALITY_STYLES[id], 'b');
     assert.ok(plan);
     assert.equal(
       openingSource({
@@ -126,5 +126,5 @@ test('the King’s Indian is prepared play, not a random or engine choice', () =
   }
 
   /* The standard start has no KID plan, so White still searches. */
-  assert.equal(kidPlan(STANDARD_START_FEN, [], PERSONALITY_STYLES.junior), null);
+  assert.equal(kidPlan(STANDARD_START_FEN, [], PERSONALITY_STYLES.junior, 'b'), null);
 });

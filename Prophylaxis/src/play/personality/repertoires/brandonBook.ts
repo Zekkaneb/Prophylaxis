@@ -16,6 +16,8 @@ export interface BrandonBookEntry {
   tags: OpeningTag[];
   weight: number;
   lineIds: string[];
+  /** Plies already played when a FEN-started chapter began. */
+  minPly?: number;
 }
 
 export const BRANDON_BOOK_STATS = {
@@ -112,7 +114,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978",
       "brandon-austrian-klerides-v-lill-37th-chess-olympiad-2006",
       "brandon-austrian-trap"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq",
@@ -174,7 +177,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-max-lange-defense-segment-2-part-2",
       "brandon-vienna-max-lange-defense-segment-2-part-3",
       "brandon-vienna-max-lange-defense-segment-2-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pppp1ppp/5n2/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq",
@@ -203,7 +207,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-vienna-gambit-segment-2-part-6",
       "brandon-vienna-vienna-gambit-segment-2-part-7",
       "brandon-vienna-vienna-gambit-segment-2-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/ppp2ppp/5n2/3pp3/4PP2/2N5/PPPP2PP/R1BQKBNR w KQkq",
@@ -222,7 +227,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-vienna-gambit-main-line-part-6",
       "brandon-vienna-vienna-gambit-main-line-part-7",
       "brandon-vienna-vienna-gambit-main-line-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/ppp2ppp/8/3pP3/4n3/2N5/PPPP2PP/R1BQKBNR w KQkq",
@@ -239,7 +245,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-vienna-gambit-main-line-part-6",
       "brandon-vienna-vienna-gambit-main-line-part-7",
       "brandon-vienna-vienna-gambit-main-line-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/ppp2ppp/2n5/3pP3/4n3/2N2N2/PPPP2PP/R1BQKB1R w KQkq",
@@ -254,7 +261,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-vienna-gambit-main-line-part-6",
       "brandon-vienna-vienna-gambit-main-line-part-7",
       "brandon-vienna-vienna-gambit-main-line-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/ppp2ppp/2n5/3pP3/3P4/2n2N2/PPP3PP/R1BQKB1R w KQkq",
@@ -267,7 +275,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-vienna-gambit-main-line-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pppp1ppp/5n2/8/4Pp2/2N5/PPPP2PP/R1BQKBNR w KQkq",
@@ -286,7 +295,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-vienna-gambit-segment-2-part-6",
       "brandon-vienna-vienna-gambit-segment-2-part-7",
       "brandon-vienna-vienna-gambit-segment-2-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnb1kb1r/ppppqppp/5n2/4P3/5p2/2N5/PPPP2PP/R1BQKBNR w KQkq",
@@ -303,7 +313,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-vienna-gambit-segment-2-part-6",
       "brandon-vienna-vienna-gambit-segment-2-part-7",
       "brandon-vienna-vienna-gambit-segment-2-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnb1kbnr/ppppqppp/8/4P3/5p2/2N5/PPPPQ1PP/R1B1KBNR w KQkq",
@@ -318,7 +329,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-vienna-gambit-segment-2-part-6",
       "brandon-vienna-vienna-gambit-segment-2-part-7",
       "brandon-vienna-vienna-gambit-segment-2-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1kbnr/ppppqppp/2n5/4P3/5p2/2N2N2/PPPPQ1PP/R1B1KB1R w KQkq",
@@ -331,7 +343,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-vienna-gambit-segment-2-part-8"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pppp1ppp/8/2b1p3/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq",
@@ -349,7 +362,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-anderssen-defense-segment-1-part-5",
       "brandon-vienna-anderssen-defense-segment-1-part-6",
       "brandon-vienna-anderssen-defense-segment-1-part-7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pppp1ppp/8/2b1p3/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq",
@@ -376,7 +390,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-anderssen-defense-segment-4-part-2",
       "brandon-vienna-anderssen-defense-segment-4-part-3",
       "brandon-vienna-anderssen-defense-segment-4-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pppp1ppp/8/4p3/4PP2/2N5/PPPP2PP/R1BQKBbR w KQkq",
@@ -392,7 +407,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-anderssen-defense-segment-1-part-5",
       "brandon-vienna-anderssen-defense-segment-1-part-6",
       "brandon-vienna-anderssen-defense-segment-1-part-7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnb1k1nr/pppp1ppp/8/4p3/4PP1q/2N5/PPPP2PP/R1BQKBR1 w Qkq",
@@ -406,7 +422,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-vienna-anderssen-defense-segment-1-part-6",
       "brandon-vienna-anderssen-defense-segment-1-part-7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/ppp2ppp/3p4/2b1p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq",
@@ -421,7 +438,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-anderssen-defense-segment-2-part-3",
       "brandon-vienna-anderssen-defense-segment-2-part-4",
       "brandon-vienna-anderssen-defense-segment-2-part-5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/ppp2ppp/3p4/2b5/3pP3/2N2N2/PPP2PPP/R1BQKB1R w KQkq",
@@ -434,7 +452,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-anderssen-defense-segment-2-part-5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pppp1ppp/2n5/2b1p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq",
@@ -455,7 +474,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-anderssen-defense-segment-4-part-2",
       "brandon-vienna-anderssen-defense-segment-4-part-3",
       "brandon-vienna-anderssen-defense-segment-4-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pppp1ppp/8/2b1n3/4P3/2N5/PPPP1PPP/R1BQKB1R w KQkq",
@@ -474,7 +494,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-anderssen-defense-segment-4-part-2",
       "brandon-vienna-anderssen-defense-segment-4-part-3",
       "brandon-vienna-anderssen-defense-segment-4-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pppp1ppp/1b6/4n3/3PP3/2N5/PPP2PPP/R1BQKB1R w KQkq",
@@ -487,7 +508,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-anderssen-defense-segment-3-part-6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pppp1ppp/8/4n3/3bP3/2N5/PPP2PPP/R1BQKB1R w KQkq",
@@ -502,7 +524,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-anderssen-defense-segment-4-part-2",
       "brandon-vienna-anderssen-defense-segment-4-part-3",
       "brandon-vienna-anderssen-defense-segment-4-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pppp1ppp/6n1/8/3QP3/2N5/PPP2PPP/R1B1KB1R w KQkq",
@@ -515,7 +538,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-anderssen-defense-segment-4-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq",
@@ -536,7 +560,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-max-lange-defense-segment-2-part-2",
       "brandon-vienna-max-lange-defense-segment-2-part-3",
       "brandon-vienna-max-lange-defense-segment-2-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/2N5/PPPP1PPP/R1BQK1NR w KQkq",
@@ -551,7 +576,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-four-knights-game-italian-variation-part-1",
       "brandon-vienna-four-knights-game-italian-variation-part-2",
       "brandon-vienna-italian-game-giuoco-pianissimo-italian-four-knig"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq",
@@ -564,7 +590,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-italian-game-giuoco-pianissimo-italian-four-knig"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk2r/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq",
@@ -577,7 +604,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-italian-game-giuoco-pianissimo-italian-four-knig"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/2N5/PPPP1PPP/R1BQK1NR w KQkq",
@@ -592,7 +620,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-vienna-max-lange-defense-segment-2-part-2",
       "brandon-vienna-max-lange-defense-segment-2-part-3",
       "brandon-vienna-max-lange-defense-segment-2-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pppp1p1p/2n3p1/2b1p3/2B1P1Q1/2N5/PPPP1PPP/R1B1K1NR w KQkq",
@@ -605,7 +634,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-vienna-max-lange-defense-segment-2-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq",
@@ -641,7 +671,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-fischer-v-jose-perez-havana-1965",
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978",
       "brandon-austrian-trap"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/ppp1pppp/3p1n2/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq",
@@ -664,7 +695,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-fischer-v-jose-perez-havana-1965",
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978",
       "brandon-austrian-trap"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/3p1np1/8/3PP3/2N5/PPP2PPP/R1BQKBNR w KQkq",
@@ -687,7 +719,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-fischer-v-jose-perez-havana-1965",
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978",
       "brandon-austrian-trap"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pppppp1p/6p1/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq",
@@ -705,7 +738,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-polgar-v-smirin-34th-oympiad-2000",
       "brandon-austrian-polgar-v-papa-san-bernardino-1987",
       "brandon-austrian-klerides-v-lill-37th-chess-olympiad-2006"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/ppppppbp/6p1/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq",
@@ -723,7 +757,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-polgar-v-smirin-34th-oympiad-2000",
       "brandon-austrian-polgar-v-papa-san-bernardino-1987",
       "brandon-austrian-klerides-v-lill-37th-chess-olympiad-2006"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/ppp1ppbp/3p2p1/8/3PP3/2N5/PPP2PPP/R1BQKBNR w KQkq",
@@ -741,7 +776,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-polgar-v-smirin-34th-oympiad-2000",
       "brandon-austrian-polgar-v-papa-san-bernardino-1987",
       "brandon-austrian-klerides-v-lill-37th-chess-olympiad-2006"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk2r/ppp1ppbp/3p1np1/8/3PPP2/2N5/PPP3PP/R1BQKBNR w KQkq",
@@ -766,7 +802,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-fischer-v-jose-perez-havana-1965",
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978",
       "brandon-austrian-klerides-v-lill-37th-chess-olympiad-2006"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/3p1np1/8/3PPP2/2N2N2/PPP3PP/R1BQKB1R w KQ",
@@ -783,7 +820,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-so-vs-mahjoob-asian-individual-championship-2007",
       "brandon-austrian-shirov-v-nikolic-8th-amber-blindfold-1999",
       "brandon-austrian-fischer-v-jose-perez-havana-1965"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/3p1np1/8/3PPP2/2N2N2/PPP3PP/R1BQKB1R w KQ",
@@ -849,7 +887,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-austrian-attack-weiss-variation",
       "brandon-austrian-so-vs-mahjoob-asian-individual-championship-2007"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bq1rk1/pppnppbp/n2p2p1/4P3/3P1P2/2NB1N2/PPP3PP/R1BQK2R w KQ",
@@ -915,7 +954,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-austrian-attack-weiss-variation",
       "brandon-austrian-so-vs-mahjoob-asian-individual-championship-2007"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2q1rk1/pp2ppbp/n2p1np1/2pP4/4PPb1/2NB1N2/PPP3PP/R1BQ1RK1 w -",
@@ -1033,7 +1073,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-austrian-attack-weiss-variation",
       "brandon-austrian-fischer-v-benko-1963-64-us-championship"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bq1rk1/ppp1ppbp/2np1np1/8/3PPP2/2NB1N2/PPP3PP/R1BQK2R w KQ",
@@ -1048,7 +1089,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-austrian-attack-weiss-variation",
       "brandon-austrian-shirov-v-nikolic-8th-amber-blindfold-1999",
       "brandon-austrian-fischer-v-jose-perez-havana-1965"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bq1rk1/ppp2pbp/2np1np1/4p3/3PPP2/2NB1N2/PPP3PP/R1BQ1RK1 w -",
@@ -1141,7 +1183,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-austrian-austrian-attack-weiss-variation",
       "brandon-austrian-shirov-v-nikolic-8th-amber-blindfold-1999",
       "brandon-austrian-fischer-v-jose-perez-havana-1965"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bq1rk1/ppp1ppbp/2n2np1/4p3/3P1P2/2NB1N2/PPP3PP/R1BQK2R w KQ",
@@ -1324,7 +1367,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-austrian-attack-dragon-formation-6-bb5",
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk2r/pp2ppbp/3p1np1/2p5/3PPP2/2N2N2/PPP3PP/R1BQKB1R w KQkq",
@@ -1351,7 +1395,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-austrian-attack-dragon-formation-6-bb5",
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qk2r/pp1bppbp/3p1np1/1Bp5/3PPP2/2N2N2/PPP3PP/R1BQK2R w KQkq",
@@ -1378,7 +1423,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-austrian-attack-dragon-formation-6-bb5",
       "brandon-austrian-sampouw-v-hon-kah-seng-jakarta-1978"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qk2r/pp1bppbp/3p2p1/1Bp1P3/3P1Pn1/2N2N2/PPP3PP/R1BQK2R w KQkq",
@@ -1769,7 +1815,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-modern-defense-pseudo-austrian-attack",
       "brandon-austrian-klerides-v-lill-37th-chess-olympiad-2006"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qk2r/ppp1ppbp/3p1np1/8/3PPPb1/2N2N2/PPP3PP/R1BQKB1R w KQkq",
@@ -1796,7 +1843,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-austrian-modern-defense-pseudo-austrian-attack",
       "brandon-austrian-klerides-v-lill-37th-chess-olympiad-2006"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/ppp1ppbp/2np1np1/8/3PPP2/2N2Q1P/PPP3P1/R1B1KB1R w KQkq",
@@ -4793,7 +4841,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-french-chapter-20-sidelines-and-everything-else-part-2",
       "brandon-french-chapter-21-sidelines-and-everything-else-part-3",
       "brandon-french-chapter-22-sidelines-and-everything-else-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -4818,7 +4867,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-french-chapter-17-tarrasch-variation-part-1",
       "brandon-french-chapter-18-tarrasch-variation-part-2",
       "brandon-french-chapter-19-sidelines-and-everything-else-part-1"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -4834,7 +4884,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-french-chapter-2-the-advance-variation-part-2",
       "brandon-french-chapter-3-the-advance-variation-part-3",
       "brandon-french-chapter-4-the-advance-variation-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -4863,7 +4914,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-french-chapter-2-the-advance-variation-part-2",
       "brandon-french-chapter-3-the-advance-variation-part-3",
       "brandon-french-chapter-4-the-advance-variation-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/4p3/2ppP3/3P4/2P5/PP3PPP/RNBQKBNR b KQkq",
@@ -4943,7 +4995,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-french-chapter-1-the-advance-variation-part-1",
       "brandon-french-chapter-3-the-advance-variation-part-3",
       "brandon-french-chapter-4-the-advance-variation-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp3ppp/2n1p3/2ppP3/3P4/2P2N2/PP3PPP/RNBQKB1R b KQkq",
@@ -5619,7 +5672,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-french-chapter-2-the-advance-variation-part-2"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk1nr/pp3ppp/2n1p3/2bpP3/3N4/5N2/PPP2PPP/R1BQKB1R b KQkq",
@@ -5698,7 +5752,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-2-the-advance-variation-part-2",
       "brandon-french-chapter-20-sidelines-and-everything-else-part-2"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1kb1r/pp3ppp/1qn1p2n/2ppP3/3P1P2/2PB1N2/PP4PP/RNBQK2R b KQkq",
@@ -6894,7 +6949,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-french-chapter-4-the-advance-variation-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1kb1r/ppq3pp/2n1p2n/2ppP3/2P5/3B1N2/PP3PPP/RNBQ1RK1 b kq",
@@ -8664,7 +8720,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-french-chapter-5-winawer-variation-part-1",
       "brandon-french-chapter-6-winawer-variation-part-2",
       "brandon-french-chapter-7-winawer-variation-part-3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq",
@@ -9549,7 +9606,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-8-exchange-variation-part-1",
       "brandon-french-chapter-9-exchange-variation-part-2"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/ppp2ppp/8/3p4/3P4/5N2/PPP2PPP/RNBQKB1R b KQkq",
@@ -9784,7 +9842,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-9-exchange-variation-part-2",
       "brandon-french-chapter-21-sidelines-and-everything-else-part-3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbq1rk1/ppp2ppp/5n2/3p4/1bPP4/2NB1N2/PP3PPP/R1BQK2R b KQ",
@@ -10058,7 +10117,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-10-king-s-indian-attack-part-1",
       "brandon-french-chapter-11-king-s-indian-attack-part-2"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/ppp2ppp/4p3/3p4/4P3/3P4/PPP1QPPP/RNB1KBNR b KQkq",
@@ -10801,7 +10861,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
       "brandon-french-chapter-12-king-s-indian-attack-part-3",
       "brandon-french-chapter-14-king-s-indian-attack-part-4",
       "brandon-french-chapter-15-two-knights-attack-part-1"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/ppp2ppp/4p3/3p4/4P3/2N2N2/PPPP1PPP/R1BQKB1R b KQkq",
@@ -11569,7 +11630,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-15-two-knights-attack-part-1",
       "brandon-french-chapter-16-two-knights-attack-part-2"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pppn1ppp/4pN2/8/3P4/5N2/PPP2PPP/R1BQKB1R b KQkq",
@@ -11583,7 +11645,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-15-two-knights-attack-part-1",
       "brandon-french-chapter-16-two-knights-attack-part-2"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/ppp2ppp/4pn2/8/3P4/3B1N2/PPP2PPP/R1BQK2R b KQkq",
@@ -11688,7 +11751,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-16-two-knights-attack-part-2",
       "brandon-french-chapter-18-tarrasch-variation-part-2"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/ppp2ppp/4pn2/8/3P4/2P2N2/PP3PPP/R1BQKB1R b KQkq",
@@ -13119,7 +13183,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-21-sidelines-and-everything-else-part-3",
       "brandon-french-chapter-22-sidelines-and-everything-else-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/ppp2ppp/4p3/3P4/2P5/8/PP1P1PPP/RNBQKBNR b KQkq",
@@ -13145,7 +13210,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-french-chapter-21-sidelines-and-everything-else-part-3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/ppp2ppp/5n2/3P4/8/2N5/PP1P1PPP/R1BQKBNR b KQkq",
@@ -13250,7 +13316,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-french-chapter-21-sidelines-and-everything-else-part-3",
       "brandon-french-chapter-22-sidelines-and-everything-else-part-4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/ppp2ppp/5n2/3P4/8/5N2/PP1P1PPP/RNBQKB1R b KQkq",
@@ -13432,7 +13499,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/3n4/3PP3/2N5/PP3PPP/R1BQKBNR b KQkq",
@@ -13445,7 +13513,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/3n4/3PP3/2N5/PP3PPP/R1BQKBNR b KQkq",
@@ -13458,7 +13527,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/8/3PP3/2P5/P4PPP/R1BQKBNR b KQkq",
@@ -13471,7 +13541,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/8/3PP3/2P5/P4PPP/R1BQKBNR b KQkq",
@@ -13484,7 +13555,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/1n4p1/8/3PP3/2N1B3/PP3PPP/R2QKBNR b KQkq",
@@ -13497,7 +13569,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/1n4p1/8/3PP3/2N1B2P/PP3PP1/R2QKBNR b KQkq",
@@ -13510,7 +13583,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/3N4/3P4/8/PP2PPPP/R1BQKBNR b KQkq",
@@ -13523,7 +13597,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/3n4/3P4/2N5/PP1BPPPP/R2QKBNR b KQkq",
@@ -13536,7 +13611,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3n4/3PP3/2N5/PP1B1PPP/R2QKBNR b KQkq",
@@ -13549,7 +13625,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/3PP3/2B5/PP3PPP/R2QKBNR b KQkq",
@@ -13562,7 +13639,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/6p1/8/3PP3/2B5/PP1Q1PPP/R3KBNR b KQ",
@@ -13575,7 +13653,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2pP4/4P3/2B5/PP1Q1PPP/R3KBNR b KQ",
@@ -13588,7 +13667,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/pp3pbp/4p1p1/2pP4/2B1P3/2B5/PP1Q1PPP/R3K1NR b KQ",
@@ -13601,7 +13681,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/pp3p1p/4p1p1/2pP4/2B1P3/2P5/P2Q1PPP/R3K1NR b KQ",
@@ -13614,7 +13695,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/pp3p1p/6p1/2pB4/4P3/2P5/P2Q1PPP/R3K1NR b KQ",
@@ -13627,7 +13709,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/2BPP3/2P5/P4PPP/R1BQK1NR b KQkq",
@@ -13640,7 +13723,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/2BPP3/2P5/P4PPP/R1BQK1NR b KQkq",
@@ -13653,7 +13737,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/2BPP3/2P5/P3NPPP/R1BQK2R b KQkq",
@@ -13666,7 +13751,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bqk2r/pp2ppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/R2QK2R b KQkq",
@@ -13679,7 +13765,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/R2Q1RK1 b -",
@@ -13692,7 +13779,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/R2Q1RK1 b -",
@@ -13705,7 +13793,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/R2Q1RK1 b -",
@@ -13718,7 +13807,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/R2Q1RK1 b -",
@@ -13731,7 +13821,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r2q1rk1/pp1bppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/1R1Q1RK1 b -",
@@ -13744,7 +13835,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/ppqbppbp/2n3p1/2p5/3PP3/2PBB3/P3NPPP/1R1Q1RK1 b -",
@@ -13757,7 +13849,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "3r1rk1/ppqbppbp/2n3p1/2p5/3PP3/2PBB3/P3NPPP/1RQ2RK1 b -",
@@ -13770,7 +13863,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "2br1rk1/ppq1ppbp/2n3p1/2p5/3PP3/2PBB3/P3NPPP/1RQR2K1 b -",
@@ -13783,7 +13877,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "2br1rk1/ppq1ppbp/2n3p1/2p5/3PP3/2PBB3/P3NPPP/1RQR2K1 b -",
@@ -13796,7 +13891,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "3r1rk1/ppqbppbp/2n3p1/2p5/3PPP2/2PBB3/P3N1PP/1R1Q1RK1 b -",
@@ -13809,7 +13905,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/ppqbppbp/2n3p1/2p5/2BPPB2/2P5/P3NPPP/1R1Q1RK1 b -",
@@ -13822,7 +13919,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1q2rk1/pp1bppbp/2n3p1/2pP4/2B1PB2/2P5/P3NPPP/1R1Q1RK1 b -",
@@ -13835,7 +13933,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1q2rk1/pp1bppbp/6p1/n1pP4/4PB2/2PB4/P3NPPP/1R1Q1RK1 b -",
@@ -13848,7 +13947,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1q2rk1/pp1b1pbp/6p1/n1pPp3/4P3/2PBB3/P3NPPP/1R1Q1RK1 b -",
@@ -13861,7 +13961,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1q2rk1/pp1b2bp/6p1/n1pPpP2/8/2PBB3/P3NPPP/1R1Q1RK1 b -",
@@ -13874,7 +13975,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1q2rk1/pp1bppbp/2n3p1/2p5/2BPPB2/2P5/P3NPPP/2RQ1RK1 b -",
@@ -13887,7 +13989,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1q2rk1/1p1bppbp/p1n3p1/2p5/2BPPB2/2P5/P2QNPPP/2R2RK1 b -",
@@ -13900,7 +14003,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1q2rk1/3bppbp/p1n3p1/1pp5/3PPB2/2PB4/P2QNPPP/2R2RK1 b -",
@@ -13913,7 +14017,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/1q1bppbp/p1n3pB/1pp5/3PP3/2PB4/P2QNPPP/2R2RK1 b -",
@@ -13926,7 +14031,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/3bppBp/pqn3p1/1pp5/3PP3/2PB4/P2QNPPP/2R2RK1 b -",
@@ -13939,7 +14045,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/ppq1ppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/2RQ1RK1 b -",
@@ -13952,7 +14059,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2p5/2BPP3/2P1B3/P3NPPP/2RQK2R b K",
@@ -13965,7 +14073,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/8/2BPP3/4B3/P3NPPP/2RQK2R b K",
@@ -13978,7 +14087,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/pp2ppbp/2n3p1/q7/2BPP3/4B3/P3NPPP/2RQ1K1R b -",
@@ -13991,7 +14101,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/pp2ppbp/2n3p1/8/2BPP3/q1R1B3/P3NPPP/3Q1K1R b -",
@@ -14004,7 +14115,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/pp2ppbp/2nq2p1/8/2BPP2P/2R1B3/P3NPP1/3Q1K1R b -",
@@ -14017,7 +14129,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/pp2ppbp/2n3p1/8/2BPP3/qQ2B3/P3NPPP/2R2K1R b -",
@@ -14030,7 +14143,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/pp2ppbp/2n3p1/8/3PP3/1B2B3/P3NPPP/2R2K1R b -",
@@ -14043,7 +14157,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1br2k1/pp2ppbp/2n3p1/3P4/4P3/1B2B3/P3NPPP/2R2K1R b -",
@@ -14056,7 +14171,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1br2k1/pp2ppbp/6p1/n2P4/B3P3/4B3/P3NPPP/2R2K1R b -",
@@ -14069,7 +14185,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bqk2r/pp2ppbp/2n3p1/2pP4/2B1P3/2P5/P3NPPP/R1BQK2R b KQkq",
@@ -14082,7 +14199,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bqk2r/pp2ppbp/6p1/nBpP4/4P3/2P5/P3NPPP/R1BQK2R b KQkq",
@@ -14095,7 +14213,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r2qk2r/pp1bppbp/6p1/nBpP4/Q3P3/2P5/P3NPPP/R1B1K2R b KQkq",
@@ -14108,7 +14227,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bqk2r/pp2ppbp/6p1/n1pP4/4P3/2PB4/P3NPPP/R1BQK2R b KQkq",
@@ -14121,7 +14241,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/6p1/n1pP4/4P3/2PB4/P3NPPP/R1BQ1RK1 b -",
@@ -14134,7 +14255,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/2BPP3/2P2N2/P4PPP/R1BQK2R b KQkq",
@@ -14147,7 +14269,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p5/2BPP3/2P2N1P/P4PP1/R1BQK2R b KQ",
@@ -14160,7 +14283,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2p5/2BPP3/2P1BN1P/P4PP1/R2QK2R b KQ",
@@ -14173,7 +14297,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/8/2BPP3/4BN1P/P4PP1/R2QK2R b KQ",
@@ -14186,7 +14311,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p5/2BPP3/2P2N2/P4PPP/R1BQ1RK1 b -",
@@ -14199,7 +14325,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/8/2BPP3/5N2/P4PPP/R1BQ1RK1 b -",
@@ -14212,7 +14339,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/8/2BPP3/4BN2/P4PPP/R2Q1RK1 b -",
@@ -14225,7 +14353,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/2BPP3/2P1B3/P4PPP/R2QK1NR b KQkq",
@@ -14238,7 +14367,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-bc4"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/3PP3/2P2N2/P4PPP/R1BQKB1R b KQkq",
@@ -14251,7 +14381,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/3PP3/2P2N2/P4PPP/R1BQKB1R b KQkq",
@@ -14264,7 +14395,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/3PP3/2P2N2/P4PPP/1RBQKB1R b Kkq",
@@ -14277,7 +14409,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/3PP3/2P2N2/P4PPP/1RBQKB1R b Kkq",
@@ -14290,7 +14423,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p5/3PP3/2P2N2/P3BPPP/1RBQK2R b K",
@@ -14303,7 +14437,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p5/3PP3/2P2N2/P3BPPP/1RBQK2R b K",
@@ -14316,7 +14451,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p5/3PP3/2P2N2/P3BPPP/1RBQK2R b K",
@@ -14329,7 +14465,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/8/3PP3/5N2/P3BPPP/1RBQK2R b K",
@@ -14342,7 +14479,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/q7/3PP3/5N2/P2BBPPP/1R1QK2R b K",
@@ -14355,7 +14493,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/8/3PP3/5N2/q2BBPPP/1R1Q1RK1 b -",
@@ -14368,7 +14507,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pp2ppbp/6p1/6B1/3PP1b1/5N2/q3BPPP/1R1Q1RK1 b -",
@@ -14381,7 +14521,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pp2ppb1/6pp/8/3PP1b1/4BN2/q3BPPP/1R1Q1RK1 b -",
@@ -14394,7 +14535,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppb1/2n3pp/3P4/4P1b1/4BN2/q3BPPP/1R1Q1RK1 b -",
@@ -14407,7 +14549,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppb1/2n3pp/3P4/4P3/4BB2/q4PPP/1R1Q1RK1 b -",
@@ -14420,7 +14563,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pR2ppb1/6pp/3Pn3/4P3/4BB2/q4PPP/3Q1RK1 b -",
@@ -14433,7 +14577,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1R2ppb1/6pp/p2Pn3/4P3/4B3/q3BPPP/3Q1RK1 b -",
@@ -14446,7 +14591,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1R2ppb1/6pp/p2P4/2n1PB2/8/q3BPPP/3Q1RK1 b -",
@@ -14459,7 +14605,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rpb1/6pp/3P4/p1n1PB2/8/q3BPPP/3Q1RK1 b -",
@@ -14472,7 +14619,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/6pp/3P4/2n1PB2/p7/q3BPPP/3Q1RK1 b -",
@@ -14485,7 +14633,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/3P2pp/4n3/4PB2/p7/q3BPPP/3Q1RK1 b -",
@@ -14498,7 +14647,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/5pb1/3P2pp/4n3/4PB2/p7/1qR1BPPP/3Q1RK1 b -",
@@ -14511,7 +14661,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1q3pb1/3P2pp/4n3/4PB2/p7/R3BPPP/3Q1RK1 b -",
@@ -14524,7 +14675,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/5pb1/3P2pp/4n3/4q3/p7/R3BPPP/2BQ1RK1 b -",
@@ -14537,7 +14689,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/3P2pp/4n3/4PB2/p7/1q1QBPPP/5RK1 b -",
@@ -14550,7 +14703,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/3P3p/4n1p1/4PB2/p7/1Q2BPPP/5RK1 b -",
@@ -14563,7 +14717,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/3P3p/4B1p1/4P3/8/1p2BPPP/5RK1 b -",
@@ -14576,7 +14731,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1R3p2/3P3p/4b1p1/4P3/8/1p2BPPP/5RK1 b -",
@@ -14589,7 +14745,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/3P2pp/4B3/4P3/p7/1q2BPPP/3Q1RK1 b -",
@@ -14602,7 +14759,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/3P2pp/4q3/4PP2/p7/4B1PP/3Q1RK1 b -",
@@ -14615,7 +14773,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/2R2pb1/3P2pp/8/3qPP2/p7/4B1PP/3Q1R1K b -",
@@ -14628,7 +14787,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rpb1/6pp/p2P4/2n1P3/4B3/q3BPPP/3Q1RK1 b -",
@@ -14641,7 +14801,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rpb1/6pp/p2Pn3/4P3/4BB2/q4PPP/3Q1RK1 b -",
@@ -14654,7 +14815,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rpb1/6pp/3Pn3/p2BP3/5B2/q4PPP/3Q1RK1 b -",
@@ -14667,7 +14829,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rpb1/6pp/3P4/p2BP3/5P2/q4P1P/3Q1RK1 b -",
@@ -14680,7 +14843,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rp2/6pp/3P4/p2QP3/5P2/q4P1P/5RK1 b -",
@@ -14693,7 +14857,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rp2/3P2pp/8/3QP3/p4P2/q4P1P/5RK1 b -",
@@ -14706,7 +14871,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rp2/3P2pp/3Q4/4P3/p4P2/1q3P1P/5RK1 b -",
@@ -14719,7 +14885,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rp2/3P1qpp/3QP3/8/p4P2/5P1P/5RK1 b -",
@@ -14732,7 +14899,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4Rp2/3P2pp/3QP1q1/8/p4P2/5P1P/5R1K b -",
@@ -14745,7 +14913,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1R2ppb1/6pp/p1BPn3/4P3/5B2/q4PPP/3Q1RK1 b -",
@@ -14758,7 +14927,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1R2Bpb1/6pp/3Pn3/p3P3/5B2/q4PPP/3Q1RK1 b -",
@@ -14771,7 +14941,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rR4k1/4Bpb1/6pp/3Pn3/p3P3/5B2/q4PPP/3Q1RK1 b -",
@@ -14784,7 +14955,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/4Bpb1/3P2pp/4n3/p3P3/5B2/q4PPP/3Q1RK1 b -",
@@ -14797,7 +14969,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/4Bpb1/3Pq1pp/4n3/Q3P3/5B2/5PPP/5RK1 b -",
@@ -14810,7 +14983,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/4Bpb1/3Pq1pp/8/Q3P3/5P2/5P1P/5RK1 b -",
@@ -14823,7 +14997,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/4Bpb1/3P2pp/Q7/4P3/5P1q/5P1P/5RK1 b -",
@@ -14836,7 +15011,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/5pb1/3P2pp/Q7/4P2B/5q2/5P1P/5RK1 b -",
@@ -14849,7 +15025,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/5pb1/3P2pp/Q7/4q3/6B1/5P1P/5RK1 b -",
@@ -14862,7 +15039,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/3P1pb1/6pp/Q7/4q3/6B1/5P1P/1r3RK1 b -",
@@ -14875,7 +15053,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/3P1pb1/6pp/Q7/4q3/6B1/5P1P/5K2 b -",
@@ -14888,7 +15067,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/3P1pb1/6pp/Q7/8/3q2B1/5PKP/8 b -",
@@ -14901,7 +15081,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/5pb1/3P2pp/8/4q3/6B1/3Q1P1P/1r3RK1 b -",
@@ -14914,7 +15095,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/5pb1/3P2pp/8/4q3/6B1/3Q1P1P/5K2 b -",
@@ -14927,7 +15109,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/5pb1/3P2pp/8/8/6B1/3QKP1P/7q b -",
@@ -14940,7 +15123,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/5pb1/3P2pp/8/4q3/6B1/3Q1P1P/3K4 b -",
@@ -14953,7 +15137,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/5pb1/3P2pp/8/8/5qB1/2KQ1P1P/8 b -",
@@ -14966,7 +15151,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/5pb1/3P2pp/8/4q3/3Q2B1/2K2P1P/8 b -",
@@ -14979,7 +15165,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "6k1/5pb1/3P2pp/8/8/3K2B1/5P1P/8 b -",
@@ -14992,7 +15179,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5k2/5pb1/3P2pp/8/4K3/6B1/5P1P/8 b -",
@@ -15005,7 +15193,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "4k3/5pb1/3P2pp/3K4/8/6B1/5P1P/8 b -",
@@ -15018,7 +15207,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/3k1pb1/3P2pp/3KB3/8/8/5P1P/8 b -",
@@ -15031,7 +15221,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3Q2k1/5pb1/3P2pp/8/4q3/6B1/5P1P/1r3RK1 b -",
@@ -15044,7 +15235,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/4Qpbk/3P2pp/8/4q3/6B1/5P1P/1r3RK1 b -",
@@ -15057,7 +15249,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/4Qpbk/3P2pp/8/4q3/6B1/5P1P/5K2 b -",
@@ -15070,7 +15263,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/4Qpbk/3P2pp/8/8/6B1/4KP1P/7q b -",
@@ -15083,7 +15277,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/3PQpbk/6pp/3q4/8/6B1/4KP1P/8 b -",
@@ -15096,7 +15291,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/3PQpbk/6pp/8/2q5/5KB1/5P1P/8 b -",
@@ -15109,7 +15305,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/3PQpbk/6pp/3q4/8/4K1B1/5P1P/8 b -",
@@ -15122,7 +15319,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "8/3PQpbk/6pp/8/3q4/6B1/4KP1P/8 b -",
@@ -15135,7 +15333,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppb1/2n3pp/3P4/4P3/4BP2/q3BP1P/1R1Q1RK1 b -",
@@ -15148,7 +15347,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppb1/6pp/3P4/3nP3/3BBP2/q4P1P/1R1Q1RK1 b -",
@@ -15161,7 +15361,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1p2ppb1/6pp/p2P4/3nPP2/3BB3/q4P1P/1R1Q1RK1 b -",
@@ -15174,7 +15375,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4ppb1/6pp/pp1P4/3BPP2/3B4/q4P1P/1R1Q1RK1 b -",
@@ -15187,7 +15389,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4pp2/6pp/pB1P4/3bPP2/8/q4P1P/1R1Q1RK1 b -",
@@ -15200,7 +15403,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/4pp2/6pp/pBbP4/4PP2/3Q4/q4P1P/1R3RK1 b -",
@@ -15213,7 +15417,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppb1/6pp/3P4/3BP3/5P2/q3BP1P/1R1Q1RK1 b -",
@@ -15226,7 +15431,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2pp2/6pp/3P4/3QP3/5P2/q3BP1P/1R3RK1 b -",
@@ -15239,7 +15445,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pp2Bpb1/6pp/8/3PP1b1/5N2/q3BPPP/1R1Q1RK1 b -",
@@ -15252,7 +15459,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn2r1k1/pR2Bpb1/6pp/8/3PP1b1/5N2/q3BPPP/3Q1RK1 b -",
@@ -15265,7 +15473,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r3r1k1/pR1n1pb1/6pp/8/1B1PP1b1/5N2/q3BPPP/3Q1RK1 b -",
@@ -15278,7 +15487,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pp2ppb1/6pp/8/3PP1bB/5N2/q3BPPP/1R1Q1RK1 b -",
@@ -15291,7 +15501,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pp2ppb1/7p/6p1/3PP1b1/5NB1/q3BPPP/1R1Q1RK1 b -",
@@ -15304,7 +15515,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppb1/2n4p/3P2p1/4P1b1/5NB1/q3BPPP/1R1Q1RK1 b -",
@@ -15317,7 +15529,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/pR2ppb1/2n4p/3P2p1/4P1b1/5NB1/q3BPPP/3Q1RK1 b -",
@@ -15330,7 +15543,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/pR3pb1/2nPp2p/6p1/4P1b1/5NB1/q3BPPP/3Q1RK1 b -",
@@ -15343,7 +15557,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/pR3pb1/2nPp2p/6p1/4P3/5BB1/q4PPP/3Q1RK1 b -",
@@ -15356,7 +15571,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/pR3pb1/q1nPp2p/6p1/4P3/5BB1/5PPP/1Q3RK1 b -",
@@ -15369,7 +15585,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/pR1P1p2/q1n1p2p/4b1p1/4P3/5BB1/5PPP/1Q3RK1 b -",
@@ -15382,7 +15599,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/pR1P1p2/q1n1p2p/6p1/4P3/5BP1/5PP1/1Q3RK1 b -",
@@ -15395,7 +15613,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/pR1P1p2/q3p2p/4n1p1/4P3/5BP1/5PP1/1Q1R2K1 b -",
@@ -15408,7 +15627,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r1rk1/R2P1p2/2q1p2p/4n1p1/4P3/5BP1/5PP1/1Q1R2K1 b -",
@@ -15421,7 +15641,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pp2ppbp/6p1/8/3PP1b1/4BN2/q3BPPP/1R1Q1RK1 b -",
@@ -15434,7 +15655,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/3P4/4P1b1/4BN2/q3BPPP/1R1Q1RK1 b -",
@@ -15447,7 +15669,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/3P4/4P3/4BB2/q4PPP/1R1Q1RK1 b -",
@@ -15460,7 +15683,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pR2ppbp/6p1/3Pn3/4P3/4BB2/q4PPP/3Q1RK1 b -",
@@ -15473,7 +15697,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pR2ppbp/2n3p1/8/3PP1b1/4BN2/q3BPPP/3Q1RK1 b -",
@@ -15486,7 +15711,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r3rk1/p1R1ppbp/2n3p1/8/3PP1b1/4BN2/q3BPPP/3Q1RK1 b -",
@@ -15499,7 +15725,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1rR3k1/p3ppbp/2n3p1/8/3PP1b1/4BN2/q3BPPP/3Q1RK1 b -",
@@ -15512,7 +15739,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r3k1/p3ppbp/2n3p1/8/3PP1b1/4BN1P/q3BPP1/3Q1RK1 b -",
@@ -15525,7 +15753,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r3k1/p3ppbp/2n3p1/8/3PP3/4BB1P/q4PP1/3Q1RK1 b -",
@@ -15538,7 +15767,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r2k1/p3ppbp/2n3p1/3P4/4P3/4BB1P/q4PP1/3Q1RK1 b -",
@@ -15551,7 +15781,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pR2ppbp/6p1/8/3PP1b1/5N2/q2BBPPP/3Q1RK1 b -",
@@ -15564,7 +15795,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pR2ppbp/6p1/8/3PP3/5B2/q2B1PPP/3Q1RK1 b -",
@@ -15577,7 +15809,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pR2pp1p/6p1/8/1B1bP3/5B2/q4PPP/3Q1RK1 b -",
@@ -15590,7 +15823,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1r2k1/pR2pp1p/6p1/8/1B1bP3/5B2/q4PPP/2Q2RK1 b -",
@@ -15603,7 +15837,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2r2k1/pR2Bp1p/n5p1/8/3bP3/5B2/q4PPP/2Q2RK1 b -",
@@ -15616,7 +15851,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rr2k1/pR2Bp1p/n5p1/8/3bPQ2/5B2/q4PPP/5RK1 b -",
@@ -15629,7 +15865,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rB2k1/pR3p1p/6p1/2n5/3bPQ2/5B2/q4PPP/5RK1 b -",
@@ -15642,7 +15879,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r3k1/pn3p1p/5Bp1/8/3bPQ2/5B2/q4PPP/5RK1 b -",
@@ -15655,7 +15893,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r3k1/pn3p1p/5Qp1/8/4P3/5B2/q4PPP/5RK1 b -",
@@ -15668,7 +15907,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rr2k1/pR3p1p/6p1/2B5/3bPQ2/5B2/q4PPP/5RK1 b -",
@@ -15681,7 +15921,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r2k1/pR3p1p/6p1/2r5/3bPQ2/8/q4PPP/3B1RK1 b -",
@@ -15694,7 +15935,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "3r2k1/pR3p1p/6p1/2r1b3/4P2Q/8/q4PPP/3B1RK1 b -",
@@ -15707,7 +15949,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/pR3p1p/6p1/2r1b3/4P2Q/1B6/q4PPP/5RK1 b -",
@@ -15720,7 +15963,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/pR2Qp1p/6p1/q1r1b3/4P3/1B6/5PPP/5RK1 b -",
@@ -15733,7 +15977,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/p1R1Qp1p/6p1/q3b3/4P3/1B6/5PPP/5RK1 b -",
@@ -15746,7 +15991,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/p1Q2p1p/6p1/4b3/4P3/1B6/5PPP/5RK1 b -",
@@ -15759,7 +16005,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pR2pp1p/6p1/4P3/3b4/5B2/q2B1PPP/3Q1RK1 b -",
@@ -15772,7 +16019,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/p3Rp1p/n5p1/4P3/3b4/5B2/q2B1PPP/3Q1RK1 b -",
@@ -15785,7 +16033,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/q7/3PP3/5N2/P2QBPPP/1RB1K2R b K",
@@ -15798,7 +16047,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/8/3PP3/5N2/P2BBPPP/1R2K2R b K",
@@ -15811,7 +16061,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp3pbp/4p1p1/8/3PP3/5N2/P2BBPPP/1R3RK1 b -",
@@ -15824,7 +16075,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/p4pbp/1p2p1p1/8/3PP3/5N2/P2BBPPP/2R2RK1 b -",
@@ -15837,7 +16089,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/pb3pbp/1p2p1p1/8/1B1PP3/5N2/P3BPPP/2R2RK1 b -",
@@ -15850,7 +16103,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1r2k1/pb3pbp/1p2p1p1/1B6/1B1PP3/5N2/P4PPP/2R2RK1 b -",
@@ -15863,7 +16117,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1r2k1/p4pbp/bp2p1p1/1B6/PB1PP3/5N2/5PPP/2R2RK1 b -",
@@ -15876,7 +16131,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1r2k1/p4pbp/1p2p1p1/1P6/1B1PP3/5N2/5PPP/2R2RK1 b -",
@@ -15889,7 +16145,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2pP4/4P3/2P2N2/P3BPPP/1RBQK2R b K",
@@ -15902,7 +16159,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2ppbp/6p1/2pPN3/4P3/2P5/P3BPPP/1RBQK2R b K",
@@ -15915,7 +16173,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2pp1p/6p1/2pPb3/4P3/2P5/P2QBPPP/1RB1K2R b K",
@@ -15928,7 +16187,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp3p1p/4p1p1/2pPb3/4PP2/2P5/P2QB1PP/1RB1K2R b K",
@@ -15941,7 +16201,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/ppb2p1p/4p1p1/2pP4/4PP2/2P5/P2QB1PP/1RB2RK1 b -",
@@ -15954,7 +16215,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/ppb2p1p/6p1/2pP4/5P2/2P5/P2QB1PP/1RB2RK1 b -",
@@ -15967,7 +16229,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/p3ppbp/1p4p1/2p5/3PP3/2P2N2/P3BPPP/1RBQ1RK1 b -",
@@ -15980,7 +16243,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/pb2ppbp/1p4p1/2p5/3PP3/2PQ1N2/P3BPPP/1RB2RK1 b -",
@@ -15993,7 +16257,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/p3ppbp/bp4p1/2p5/3PP3/2P1QN2/P3BPPP/1RB2RK1 b -",
@@ -16006,7 +16271,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p5/2BPP3/2P2N2/P4PPP/1RBQK2R b K",
@@ -16019,7 +16285,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/2pP4/2B1P3/2P2N2/P4PPP/1RBQK2R b K",
@@ -16032,7 +16299,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2pp1p/2n3p1/2pP4/2B1P3/2b2N2/P2B1PPP/1R1QK2R b K",
@@ -16045,7 +16313,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2pp1p/2n3p1/2pP4/2B1P3/5N2/P2Q1PPP/1R2K2R b K",
@@ -16058,7 +16327,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bqk2r/pp2ppbp/2n3p1/2pP4/4P3/2P2N2/P4PPP/1RBQKB1R b Kkq",
@@ -16071,7 +16341,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bqk2r/pp2pp1p/2n3p1/2pP4/4P3/2b2N2/P2B1PPP/1R1QKB1R b Kkq",
@@ -16084,7 +16355,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-rb1"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/3PP3/2P1BN2/P4PPP/R2QKB1R b KQkq",
@@ -16097,7 +16369,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q1p5/3PP3/2P1BN2/P2Q1PPP/R3KB1R b KQkq",
@@ -16111,7 +16384,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3",
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b1k2r/pp2ppbp/2n3p1/q1p5/3PP3/2P1BN2/P2Q1PPP/1R2KB1R b Kkq",
@@ -16124,7 +16398,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/1p2ppbp/p1n3p1/q1p5/3PP3/2P1BN2/P2Q1PPP/2R1KB1R b Kkq",
@@ -16137,7 +16412,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/1p2ppbp/p1n3p1/q7/3PP3/4BN2/P2Q1PPP/2R1KB1R b Kkq",
@@ -16150,7 +16426,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/1p2ppbp/p1n3p1/8/3PP3/4BN2/P2K1PPP/2R2B1R b kq",
@@ -16163,7 +16440,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/1p3pbp/p1n1p1p1/8/3PP3/3BBN2/P2K1PPP/2R4R b kq",
@@ -16176,7 +16454,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p3pbp/p1n1p1p1/8/3PP2P/3BBN2/P2K1PP1/2R4R b -",
@@ -16189,7 +16468,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p3pb1/p1n1p1pp/2R5/3PP2P/3BBN2/P2K1PP1/7R b -",
@@ -16202,7 +16482,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1p1b1pb1/p1n1p1pp/2R5/3PP2P/3BBN2/P2K1PP1/1R6 b -",
@@ -16215,7 +16496,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/3b1pb1/p1n1p1pp/1pR1P3/3P3P/3BBN2/P2K1PP1/1R6 b -",
@@ -16228,7 +16510,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1r3k1/3b1pb1/p1n1p1pp/1pR1P3/3PB2P/4BN2/P2K1PP1/1R6 b -",
@@ -16241,7 +16524,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1r2bk1/3b1p2/p1n1p1pp/1p2P3/3PB2P/4BN2/P2K1PP1/1RR5 b -",
@@ -16254,7 +16538,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1rr2bk1/3b1p2/p1n1p1pp/1p2P3/3PB2P/4B3/P2K1PPN/1RR5 b -",
@@ -16267,7 +16552,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1rr3k1/3bbp2/p1n1p1pp/1p2P3/3PB1NP/4B3/P2K1PP1/1RR5 b -",
@@ -16280,7 +16566,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1rr3k1/3bbp2/p1n1pNp1/1p2P2p/3PB2P/4B3/P2K1PP1/1RR5 b -",
@@ -16293,7 +16580,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1rr3k1/3b1p2/p1n1pPp1/1p5p/3PB2P/4B3/P2K1PP1/1RR5 b -",
@@ -16306,7 +16594,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1rr3k1/3b1p2/p1n2Pp1/1p1Pp2p/4B2P/4B3/P2K1PP1/1RR5 b -",
@@ -16319,7 +16608,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p3pb1/p1n1p1pp/4P3/3P3P/3BBN2/P2K1PP1/2R4R b -",
@@ -16332,7 +16622,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/1p3pb1/p1n1p1pp/4P2P/3P4/3BBN2/P2K1PP1/2R4R b -",
@@ -16345,7 +16636,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/1p3pb1/p1n1p2p/4P1NP/3P4/3BB3/P2K1PP1/2R4R b -",
@@ -16358,7 +16650,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/1p3pb1/p1n1p2p/4P1NP/3P4/3BB3/P2K1PP1/2R4R b -",
@@ -16371,7 +16664,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/1p3pb1/p3p2p/4P2P/3nN3/3BB3/P2K1PP1/2R4R b -",
@@ -16384,7 +16678,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/1p3p2/p3p2B/4b2P/3nN3/3B4/P2K1PP1/2R4R b -",
@@ -16397,7 +16692,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/1p6/p3p2B/2N1bp1P/3n4/3B4/P2K1PP1/2R4R b -",
@@ -16410,7 +16706,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/1p3pbB/p3p2p/4P1NP/3n4/4B3/P2K1PP1/2R4R b -",
@@ -16423,7 +16720,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br1k2/1p3NbB/p3p2p/4P2P/3n4/4B3/P2K1PP1/2R4R b -",
@@ -16436,7 +16734,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br4/1pR2kbB/p3p2p/4P2P/3n4/4B3/P2K1PP1/7R b -",
@@ -16449,7 +16748,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br1k2/1pR3bB/p3p2p/4P2P/3n4/4B3/P2K1PP1/3R4 b -",
@@ -16462,7 +16762,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br1k2/1pR3bB/p3p2p/4Pn1P/8/4B3/P3KPP1/3R4 b -",
@@ -16475,7 +16776,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2k2/1pR3bB/p3p2p/2B1Pn1P/8/8/P3KPP1/3r4 b -",
@@ -16488,7 +16790,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k3/1pR3bB/p3p2p/2B1Pn1P/8/8/P4PP1/3K4 b -",
@@ -16501,7 +16804,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p3pbp/p1n1p1p1/8/2RPP3/3BBN2/P2K1PPP/7R b -",
@@ -16514,7 +16818,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/1p1b1pbp/p1n1p1p1/8/2RPP3/3BBN2/P2K1PPP/2R5 b -",
@@ -16527,7 +16832,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/1p3pbp/p1n1p1p1/8/3PP2P/4BN2/P2K1PP1/2R2B1R b kq",
@@ -16540,7 +16846,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/pp2ppbp/2n3p1/q1p5/3PP3/2P1BN2/P2Q1PPP/2R1KB1R b Kkq",
@@ -16553,7 +16860,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/pp2ppbp/2n3p1/q7/3PP3/4BN2/P2Q1PPP/2R1KB1R b Kkq",
@@ -16566,7 +16874,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/pp2ppbp/2n3p1/8/3PP3/4BN2/P2K1PPP/2R2B1R b kq",
@@ -16579,7 +16888,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/pp2ppbp/2n3p1/3P4/4P3/4BN2/P2K1PPP/2R2B1R b -",
@@ -16592,7 +16902,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/pp2ppbp/2n3p1/3P4/4P3/4BN2/P4PPP/2R1KB1R b -",
@@ -16605,7 +16916,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1br2k1/pp2ppbp/6p1/n2P2B1/4P3/5N2/P4PPP/2R1KB1R b -",
@@ -16618,7 +16930,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2r2k1/pp1bppbp/6p1/n2P2B1/4P3/3B1N2/P4PPP/2R1K2R b -",
@@ -16631,7 +16944,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/pp2ppbp/2n3p1/1B6/3PP3/4BN2/P2K1PPP/2R4R b -",
@@ -16644,7 +16958,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/pp2p1bp/2n3p1/1B3P2/3P4/4BN2/P2K1PPP/2R4R b -",
@@ -16657,7 +16972,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/pp2p1bp/2B3p1/5b2/3P4/4BN2/P2K1PPP/2R4R b -",
@@ -16670,7 +16986,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/p3p1bp/2R3p1/5b2/3P4/4BN2/P2K1PPP/7R b -",
@@ -16683,7 +17000,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q1p5/3PP3/2P1B3/P2N1PPP/R2QKB1R b KQkq",
@@ -16696,7 +17014,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q1p5/3PP3/2P1B3/P2N1PPP/R2QKB1R b KQkq",
@@ -16709,7 +17028,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q1p5/3PP3/2P1B3/P2N1PPP/R2QKB1R b KQkq",
@@ -16722,7 +17042,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/q1p5/3PP3/1NP1B3/P4PPP/R2QKB1R b KQ",
@@ -16735,7 +17056,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/2p5/3PP3/1Nq5/P2B1PPP/R2QKB1R b KQ",
@@ -16748,7 +17070,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/2p5/3PP3/1N6/Pq3PPP/R1BQKB1R b KQ",
@@ -16761,7 +17084,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/q1p5/3PP3/2P1B3/P2NBPPP/R2QK2R b KQ",
@@ -16774,7 +17098,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/p3ppbp/1p4p1/q1p5/3PP3/2P1B3/P2NBPPP/R2Q1RK1 b -",
@@ -16787,7 +17112,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q7/2NpP3/2P1B3/P4PPP/R2QKB1R b KQkq",
@@ -16800,7 +17126,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/8/2NPP3/4B3/P4PPP/R2QKB1R b KQkq",
@@ -16813,7 +17140,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/2p5/3PP3/2q1B3/P2N1PPP/2RQKB1R b Kkq",
@@ -16826,7 +17154,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/2R5/1q1PP3/4B3/P2N1PPP/3QKB1R b Kkq",
@@ -16839,7 +17168,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-be3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/1Bp5/3PP3/2P2N2/P4PPP/R1BQK2R b KQkq",
@@ -16852,7 +17182,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bqk2r/pp2ppbp/2n3p1/1Bp5/3PP3/2P2N2/P4PPP/R1BQ1RK1 b kq",
@@ -16865,7 +17196,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2n3p1/1Bp5/3PP3/2P1BN2/P4PPP/R2Q1RK1 b -",
@@ -16878,7 +17210,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2ppbp/2n3p1/1BpP4/4P1b1/2P1BN2/P4PPP/R2Q1RK1 b -",
@@ -16891,7 +17224,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2ppbp/6p1/2pPn3/4P1b1/2P1BN2/P3BPPP/R2Q1RK1 b -",
@@ -16904,7 +17238,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2ppbp/6p1/2pP4/4P1b1/2P1BB2/P4PPP/R2Q1RK1 b -",
@@ -16917,7 +17252,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2ppbp/6p1/2pP4/4P3/2P1BQ2/P4PPP/R4RK1 b -",
@@ -16930,7 +17266,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2pp1p/6p1/2pP4/4P3/2b1BQ2/P4PPP/1R3RK1 b -",
@@ -16943,7 +17280,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/p3pp1p/1p4p1/2BP4/4P3/2b2Q2/P4PPP/1R3RK1 b -",
@@ -16956,7 +17294,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/p3pp1p/1p4p1/2BP4/4P3/2b2Q2/P4PPP/1R3RK1 b -",
@@ -16969,7 +17308,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2ppbp/6p1/2pP4/4P1b1/2P1BP2/P3BP1P/R2Q1RK1 b -",
@@ -16982,7 +17322,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2ppbp/2B3p1/2p5/3PP1b1/2P1BN2/P4PPP/R2Q1RK1 b -",
@@ -16995,7 +17336,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/p3ppbp/2p3p1/2p5/3PP1b1/2P1BN2/P4PPP/2RQ1RK1 b -",
@@ -17008,7 +17350,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2ppbp/2n3p1/1BP5/4P1b1/2P1BN2/P4PPP/R2Q1RK1 b -",
@@ -17021,7 +17364,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/pp2pp1p/2n3p1/1BP5/4P1b1/2b1BN2/P4PPP/2RQ1RK1 b -",
@@ -17034,7 +17378,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2B3p1/2p5/3PP3/2P2N2/P4PPP/R1BQ1RK1 b -",
@@ -17047,7 +17392,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/p3ppbp/2p3p1/2p5/3PP3/2P2N2/P1Q2PPP/R1B2RK1 b -",
@@ -17060,7 +17406,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1rk1/p3ppbp/2p3p1/8/3PP3/5N2/P1Q2PPP/R1B2RK1 b -",
@@ -17073,7 +17420,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/p3ppbp/2p3p1/4N3/3PP1b1/8/P1Q2PPP/R1B2RK1 b -",
@@ -17086,7 +17434,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/p3ppbp/2p3p1/4N3/3qP1b1/8/PBQ2PPP/R4RK1 b -",
@@ -17099,7 +17448,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/p3ppbp/1qp3p1/4N3/4P1b1/8/PBQ2PPP/1R3RK1 b -",
@@ -17112,7 +17462,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r4rk1/p3pp1p/1qp3p1/4B3/4P1b1/8/P1Q2PPP/1R3RK1 b -",
@@ -17125,7 +17476,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bqk2r/pp2ppbp/2n3p1/1BpP4/4P3/2P2N2/P4PPP/R1BQK2R b KQkq",
@@ -17138,7 +17490,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/pp2ppbp/2n3p1/qBpP4/4P3/2P2N2/P4PPP/1RBQK2R b Kkq",
@@ -17151,7 +17504,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/1p2ppbp/p1B3p1/q1pP4/4P3/2P2N2/P4PPP/1RBQK2R b Kkq",
@@ -17164,7 +17518,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/4ppbp/p1p3p1/q1pP4/4P3/2P2N2/P4PPP/1RBQ1RK1 b kq",
@@ -17177,7 +17532,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/4ppbp/p1P3p1/q1p5/4P3/2P2N2/P4PPP/1RBQ1RK1 b -",
@@ -17190,7 +17546,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-nf3-8-bb5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/3PP3/2P1B3/P4PPP/R2QKBNR b KQkq",
@@ -17203,7 +17560,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/3PP3/2P1B3/P2Q1PPP/R3KBNR b KQkq",
@@ -17216,7 +17574,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q1p5/3PP3/2P1B3/P2Q1PPP/2R1KBNR b Kkq",
@@ -17229,7 +17588,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q7/3PP3/4B3/P2Q1PPP/2R1KBNR b Kkq",
@@ -17242,7 +17602,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/8/3PP3/8/P2B1PPP/2R1KBNR b Kkq",
@@ -17255,7 +17616,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/8/3PP3/8/P2B1PPP/2R1KBNR b Kkq",
@@ -17268,7 +17630,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/8/3PP3/5N2/P2B1PPP/2R1KB1R b K",
@@ -17281,7 +17644,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/8/3PP3/5N2/P2B1PPP/2R1KB1R b K",
@@ -17294,7 +17658,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/pp2ppbp/6p1/8/3PP1b1/4BN2/P4PPP/2R1KB1R b K",
@@ -17307,7 +17672,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/pp2ppbp/6p1/8/3PP1b1/4BN2/P4PPP/2R1KB1R b K",
@@ -17320,7 +17686,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/pp2ppbp/6p1/8/3PP1b1/4BN2/P4PPP/2R1KB1R b K",
@@ -17333,7 +17700,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/3P4/4P1b1/4BN2/P4PPP/2R1KB1R b K",
@@ -17346,7 +17714,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/3P4/4P3/4BP2/P4P1P/2R1KB1R b K",
@@ -17359,7 +17728,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/3P4/4P3/4BP2/P4P1P/2R1KB1R b K",
@@ -17372,7 +17742,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2ppbp/6p1/3P4/3nP3/4BP1B/P4P1P/2R1K2R b K",
@@ -17385,7 +17756,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2ppbp/6p1/3P4/3nP3/4BP1B/P4P1P/2R1K2R b K",
@@ -17398,7 +17770,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2p1bp/6p1/3P1p2/3nP3/4BP1B/P4P1P/2R2K1R b -",
@@ -17411,7 +17784,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2p1bp/6p1/3P1P2/8/4Bn1B/P4P1P/2R2K1R b -",
@@ -17424,7 +17798,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/ppR1p1bp/8/3P1p2/8/4Bn1B/P4P1P/5K1R b -",
@@ -17437,7 +17812,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "3r1rk1/pp2R1bp/8/3P1p2/8/4Bn1B/P4P1P/5K1R b -",
@@ -17450,7 +17826,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pp2ppbp/6p1/3P4/4P3/4Bn1B/P3KP1P/2R4R b -",
@@ -17463,7 +17840,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/ppR1ppbp/6p1/3P4/3nP3/4BP2/P4P1P/4KB1R b K",
@@ -17476,7 +17854,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/ppR2pbp/4P1p1/8/3nP3/4BP2/P4P1P/4KB1R b K",
@@ -17489,7 +17868,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/pR3pbp/4n1p1/8/4P3/4BP2/P4P1P/4KB1R b K",
@@ -17502,7 +17882,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "1R3rk1/p4pbp/4n1p1/8/4P3/4BP2/P4P1P/4KB1R b K",
@@ -17515,7 +17896,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn1r2k1/pp2ppbp/6p1/8/3PP1b1/4BN2/P3BPPP/2R1K2R b K",
@@ -17528,7 +17910,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn1r2k1/pp3pbp/4p1p1/4N3/3PP1b1/4B3/P3BPPP/2R1K2R b K",
@@ -17541,7 +17924,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn1r2k1/pp3pbp/4p1p1/4N3/3PP3/4B3/P3KPPP/2R4R b -",
@@ -17554,7 +17938,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn1r2k1/pp4bp/4ppp1/8/3PP3/4BN2/P3KPPP/2R4R b -",
@@ -17567,7 +17952,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/pp2ppbp/6p1/8/3PP3/4BP2/P4P1P/2R1KB1R b K",
@@ -17580,7 +17966,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/pp3pbp/4p1p1/1B6/3PP3/4BP2/P4P1P/2R1K2R b K",
@@ -17593,7 +17980,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/1p3pbp/p3p1p1/8/B2PP3/4BP2/P4P1P/2R1K2R b K",
@@ -17606,7 +17994,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/5pbp/p3p1p1/1p6/3PP3/1B2BP2/P4P1P/2R1K2R b K",
@@ -17619,7 +18008,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/5pbp/4p1p1/pp6/P2PP3/1B2BP2/5P1P/2R1K2R b K",
@@ -17632,7 +18022,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/5pbp/4p1p1/p7/B2PP3/4BP2/5P1P/2R1K2R b K",
@@ -17645,7 +18036,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn3rk1/pp2ppbp/6p1/3P4/4P1b1/5N2/P2B1PPP/2R1KB1R b K",
@@ -17658,7 +18050,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb2rk1/pp3pbp/4p1p1/1B6/3PP3/5N2/P2B1PPP/2R1K2R b K",
@@ -17671,7 +18064,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/pp3pbp/2B1p1p1/8/3PP3/5N2/P2B1PPP/2R1K2R b K",
@@ -17684,7 +18078,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/p4pbp/2p1p1p1/8/3PP3/5N2/P2B1PPP/2R2RK1 b -",
@@ -17697,7 +18092,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/p4pbp/b1p1p1p1/8/3PP3/5N2/P2B1PPP/2R1R1K1 b -",
@@ -17710,7 +18106,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/8/3PP3/4B3/P2K1PPP/2R2BNR b kq",
@@ -17723,7 +18120,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/1B6/3PP3/4B3/P2K1PPP/2R3NR b -",
@@ -17736,7 +18134,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbr2k1/pp2ppbp/6p1/1B6/3PP3/4B3/P2KNPPP/2R4R b -",
@@ -17749,7 +18148,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1br2k1/pp2ppbp/2B3p1/8/3PP3/4B3/P2KNPPP/2R4R b -",
@@ -17762,7 +18162,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1br2k1/p3ppbp/2R3p1/8/3PP3/4B3/P2KNPPP/7R b -",
@@ -17775,7 +18176,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r2r2k1/pbR1ppbp/6p1/8/3PP3/4B3/P2KNPPP/7R b -",
@@ -17788,7 +18190,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r2r2k1/p1R1ppbp/6p1/8/3Pb3/4BP2/P2KN1PP/7R b -",
@@ -17801,7 +18204,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r2r2k1/p3Rpbp/6p1/3b4/3P4/4BP2/P2KN1PP/7R b -",
@@ -17814,7 +18218,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r2r1bk1/p1R2p1p/6p1/3b4/3P4/4BP2/P2KN1PP/7R b -",
@@ -17827,7 +18232,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/8/3PP3/4BN2/P2K1PPP/2R2B1R b -",
@@ -17840,7 +18246,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbr2k1/pp2ppbp/6p1/1B6/3PP3/4BN2/P2K1PPP/2R4R b -",
@@ -17853,7 +18260,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1br2k1/pp2ppbp/2B3p1/8/3PP3/4BN2/P2K1PPP/2R4R b -",
@@ -17866,7 +18274,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1br2k1/p3ppbp/2p3p1/2R5/3PP3/4BN2/P2K1PPP/7R b -",
@@ -17879,7 +18288,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/8/3PP3/3BB3/P2K1PPP/2R3NR b -",
@@ -17892,7 +18302,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbr2k1/pp2ppbp/6p1/8/3PP3/3BB3/P2KNPPP/2R4R b -",
@@ -17905,7 +18316,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1br2k1/pp2ppbp/2n3p1/8/2RPP3/3BB3/P2KNPPP/7R b -",
@@ -17918,7 +18330,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/q1p5/3PP3/2P1B3/P2Q1PPP/1R2KBNR b Kkq",
@@ -17931,7 +18344,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnb1k2r/p3ppbp/1p4p1/qBp5/3PP3/2P1B3/P2Q1PPP/1R2K1NR b Kkq",
@@ -17944,7 +18358,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn2k2r/p2bppbp/1p4p1/q1p5/3PP3/2P1B3/P2QBPPP/1R2K1NR b Kkq",
@@ -17957,7 +18372,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn2k2r/p3ppbp/1pb3p1/q1p5/3PP3/2PBB3/P2Q1PPP/1R2K1NR b Kkq",
@@ -17970,7 +18386,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r3k2r/p2nppbp/1pb3p1/q1p5/3PP3/2PBB3/P2QNPPP/1R2K2R b Kkq",
@@ -17983,7 +18400,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn2k2r/p2bppbp/1p4p1/q1p5/3PP3/2PBB3/P2Q1PPP/1R2K1NR b Kkq",
@@ -17996,7 +18414,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r3k2r/p2bppbp/1pn3p1/q1p5/3PP3/2PBB3/P2QNPPP/1R2K2R b Kkq",
@@ -18009,7 +18428,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/p2bppbp/1pn3p1/q1P5/4P3/2PBB3/P2QNPPP/1R2K2R b K",
@@ -18022,7 +18442,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/p2bppbp/1P4p1/q3n3/4P3/2PBB3/P2QNPPP/1R2K2R b K",
@@ -18035,7 +18456,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r4rk1/3bppbp/1B4p1/q3n3/4P3/2PB4/P2QNPPP/1R2K2R b K",
@@ -18048,7 +18470,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/3PP3/2P1B3/P4PPP/2RQKBNR b Kkq",
@@ -18061,7 +18484,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-the-exchange-variation-7-be3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/5np1/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq",
@@ -18074,7 +18498,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p4/2PP4/1QN2N2/PP2PPPP/R1B1KB1R b KQkq",
@@ -18087,7 +18512,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p4/2PP4/1QN2N2/PP2PPPP/R1B1KB1R b KQkq",
@@ -18100,7 +18526,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/8/2QP4/2N2N2/PP2PPPP/R1B1KB1R b KQkq",
@@ -18113,7 +18540,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/8/2QPP3/2N2N2/PP3PPP/R1B1KB1R b KQ",
@@ -18126,7 +18554,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/8/2QP1B2/2N2N2/PP2PPPP/R3KB1R b KQ",
@@ -18139,7 +18568,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2p2np1/8/2QPPB2/2N2N2/PP3PPP/R3KB1R b KQ",
@@ -18152,7 +18582,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbq1rk1/p3ppbp/2p2np1/1p6/3PPB2/1QN2N2/PP3PPP/R3KB1R b KQ",
@@ -18165,7 +18596,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnb2rk1/p3ppbp/2p2np1/qp6/3PPB2/1QNB1N2/PP3PPP/R3K2R b KQ",
@@ -18178,7 +18610,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p2np1/3P4/3P4/1QN2N2/PP2PPPP/R1B1KB1R b KQkq",
@@ -18191,7 +18624,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/5np1/3p2B1/3P4/1QN2N2/PP2PPPP/R3KB1R b KQkq",
@@ -18204,7 +18638,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp3pbp/4pnp1/3p2B1/3P4/1QN1PN2/PP3PPP/R3KB1R b KQkq",
@@ -18217,7 +18652,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbq1rk1/1pp1ppbp/p4np1/8/2QPP3/2N2N2/PP2BPPP/R1B1K2R b KQ",
@@ -18230,7 +18666,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/2p1ppbp/p4np1/1p6/3PP3/1QN2N2/PP2BPPP/R1B1K2R b KQ",
@@ -18243,7 +18680,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/4ppbp/p4np1/1pP5/4P3/1QN2N2/PP2BPPP/R1B1K2R b KQ",
@@ -18256,7 +18694,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/4ppbp/p3bnp1/1pP5/4P3/2N2N2/PPQ1BPPP/R1B1K2R b KQ",
@@ -18269,7 +18708,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1rk1/3nppbp/p3bnp1/1pP5/4P3/2N1BN2/PPQ1BPPP/R3K2R b KQ",
@@ -18282,7 +18722,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/3nppbp/p3bnp1/1pP5/4P3/2N1BN2/PPQ1BPPP/3RK2R b K",
@@ -18295,7 +18736,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/3nppbp/p3bnp1/2PN4/1p2P3/4BN2/PPQ1BPPP/3RK2R b K",
@@ -18308,7 +18750,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/3nppbp/p4np1/2PP4/1p6/4BN2/PPQ1BPPP/3RK2R b K",
@@ -18321,7 +18764,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/4ppbp/p4np1/2nP4/1p6/4BN2/PPQ1BPPP/3R1RK1 b -",
@@ -18334,7 +18778,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/4ppbp/p4np1/2nP4/1p6/4BN2/PPQ1BPPP/3R1RK1 b -",
@@ -18347,7 +18792,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/4ppbp/p4np1/2nP4/1p6/4BN2/PPQ1BPPP/3R1RK1 b -",
@@ -18360,7 +18806,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/4ppbp/p4np1/3P4/1p2n3/3QBN2/PP2BPPP/3R1RK1 b -",
@@ -18373,7 +18820,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/4ppbp/Q2q1np1/3P4/1p2n3/4BN2/PP2BPPP/3R1RK1 b -",
@@ -18386,7 +18834,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/4ppbp/Q2q1np1/3P4/1p2n3/4BN2/PP2BPPP/3R1RK1 b -",
@@ -18399,7 +18848,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/4ppbp/Q2q1np1/3P4/1p1Bn3/5N2/PPr1BPPP/3R1RK1 b -",
@@ -18412,7 +18862,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/4ppbp/3Q1np1/2nP4/1p1B4/5N2/PPr1BPPP/3R1RK1 b -",
@@ -18425,7 +18876,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/5pbp/3p1np1/1BnP4/1p1B4/5N2/PPr2PPP/3R1RK1 b -",
@@ -18438,7 +18890,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/5pbp/3p2p1/1BnP4/1p1Bn3/5N2/PPr2PPP/2R2RK1 b -",
@@ -18451,7 +18904,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/5pbp/3p2p1/1BnP4/1p1Bn3/5N2/PP3PPP/2R3K1 b -",
@@ -18464,7 +18918,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r5k1/5pBp/3p2p1/1BnP4/1p2n3/5N2/PP3PPP/2R3K1 b -",
@@ -18477,7 +18932,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/4ppbp/3q1np1/1QnP4/1p1B4/5N2/PPr1BPPP/3R1RK1 b -",
@@ -18490,7 +18946,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/4ppbp/2Qq1np1/2nP4/1p1B4/5N2/PPr1BPPP/3R1RK1 b -",
@@ -18503,7 +18960,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "1r4k1/4ppbp/3Q2p1/2nn4/1p1B4/5N2/PPr1BPPP/3R1RK1 b -",
@@ -18516,7 +18974,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/4ppbp/B4np1/3P4/1p2n3/4BN2/PP3PPP/3R1RK1 b -",
@@ -18529,7 +18988,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "5rk1/4ppbp/B4np1/3P4/1p1Bn3/5N2/PPr2PPP/3R1RK1 b -",
@@ -18542,7 +19002,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/4ppbp/p2q1np1/3P4/1p2n3/3QBNP1/PP2BP1P/3R1RK1 b -",
@@ -18555,7 +19016,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rr2k1/4ppbp/p2q1np1/3P4/1p2nB2/3Q1NP1/PP2BP1P/3R1RK1 b -",
@@ -18568,7 +19030,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rr2k1/4ppbp/Q4np1/3q4/1p2nB2/5NP1/PP2BP1P/3R1RK1 b -",
@@ -18581,7 +19044,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "Q1rr2k1/4ppbp/5np1/8/1p2nB2/5NP1/PP2BP1P/3R1RK1 b -",
@@ -18594,7 +19058,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2R2k1/4ppbp/5np1/8/1p2nB2/5NP1/PP2BP1P/5RK1 b -",
@@ -18607,7 +19072,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/4ppbp/p4np1/3P4/1p2n3/4BN2/PP2BPPP/1Q1R1RK1 b -",
@@ -18620,7 +19086,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/4ppbp/p4np1/2nP4/1pB5/4BN2/PP3PPP/1Q1R1RK1 b -",
@@ -18633,7 +19100,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/2q1ppbp/p4np1/2nP4/1pBB4/5N2/PP3PPP/1Q1R1RK1 b -",
@@ -18646,7 +19114,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/4ppbp/p4np1/2BP4/1p6/5N2/PPQ1BPPP/3RK2R b K",
@@ -18659,7 +19128,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/3nppbp/p3bnp1/2P5/Np2P3/4BN2/PPQ1BPPP/3RK2R b K",
@@ -18672,7 +19142,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/3nppbp/p3bnp1/q1P5/Np2P3/4BN2/PPQ1BPPP/3R1RK1 b -",
@@ -18685,7 +19156,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/3nppbp/p3b1p1/q1P5/Np2Q3/4BN2/PP2BPPP/3R1RK1 b -",
@@ -18698,7 +19170,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2r2rk1/3nppbp/p3b1p1/2P3N1/qp2Q3/4B3/PP2BPPP/3R1RK1 b -",
@@ -18711,7 +19184,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "2rq1rk1/3nppbp/p3bnp1/1pP5/1P2P3/2N1BN2/P1Q1BPPP/R3K2R b KQ",
@@ -18724,7 +19198,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/4ppbp/p4np1/1ppP4/4P3/1QN2N2/PP2BPPP/R1B1K2R b KQ",
@@ -18737,7 +19212,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/2p1ppbp/p4np1/1p6/3PP3/2NQ1N2/PP2BPPP/R1B1K2R b KQ",
@@ -18750,7 +19226,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/4ppbp/p4np1/1pP5/4P3/2NQ1N2/PP2BPPP/R1B1K2R b KQ",
@@ -18763,7 +19240,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/4ppbp/p4np1/1pP5/4P3/2NB1N2/PP3PPP/R1B1K2R b KQ",
@@ -18776,7 +19254,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn3rk1/1b2ppbp/p4np1/1pP5/4P3/2NBBN2/PP3PPP/R3K2R b KQ",
@@ -18789,7 +19268,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-be2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1pp1ppbp/p4np1/4P3/2QP4/2N2N2/PP3PPP/R1B1KB1R b KQ",
@@ -18802,7 +19282,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1ppnppbp/p5p1/4P3/2QP4/2N1BN2/PP3PPP/R3KB1R b KQ",
@@ -18815,7 +19296,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/2pnppbp/p5p1/1p2P3/3P4/1QN1BN2/PP3PPP/R3KB1R b KQ",
@@ -18828,7 +19310,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/3nppbp/p3P1p1/1pp5/3P4/1QN1BN2/PP3PPP/R3KB1R b KQ",
@@ -18841,7 +19324,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/3nppbp/p3P1p1/1p6/3N4/1QN1B3/PP3PPP/R3KB1R b KQ",
@@ -18854,7 +19338,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/4pPbp/p5p1/1pn5/3N4/1QN1B3/PP3PPP/R3KB1R b KQ",
@@ -18867,7 +19352,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq2k1/4prbp/p5p1/1pnQ4/3N4/2N1B3/PP3PPP/R3KB1R b KQ",
@@ -18880,7 +19366,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb3k1/4prbp/p5p1/1pnN4/3N4/4B3/PP3PPP/R3KB1R b KQ",
@@ -18893,7 +19380,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/3npPbp/p5p1/1p6/3p4/1QN1BN2/PP3PPP/R3KB1R b KQ",
@@ -18906,7 +19394,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq2k1/3nprbp/p5p1/1p6/3N4/1QN1B3/PP3PPP/R3KB1R b KQ",
@@ -18919,7 +19408,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/3nppbp/p3P1p1/1p6/3B4/1QN2N2/PP3PPP/R3KB1R b KQ",
@@ -18932,7 +19422,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/3npp1p/p3P1p1/1p6/3N4/1QN5/PP3PPP/R3KB1R b KQ",
@@ -18945,7 +19436,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/4pP1p/p5p1/1pn5/3N4/1QN5/PP3PPP/R3KB1R b KQ",
@@ -18958,7 +19450,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq2k1/4pr1p/p5p1/1pnQ4/3N4/2N5/PP3PPP/R3KB1R b KQ",
@@ -18971,7 +19464,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb3k1/4pr1p/p5p1/1pnN4/3N4/8/PP3PPP/R3KB1R b KQ",
@@ -18984,7 +19478,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/3Pppbp/p5p1/1p6/3p4/1QN1BN2/PP3PPP/R3KB1R b KQ",
@@ -18997,7 +19492,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/3qppbp/p5p1/1p6/3p4/1QN1BN2/PP3PPP/3RKB1R b K",
@@ -19010,7 +19506,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/3nppbp/p5p1/1pP1P3/8/1QN1BN2/PP3PPP/R3KB1R b KQ",
@@ -19023,7 +19520,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/4ppbp/p5p1/1pP1N3/8/1QN1B3/PP3PPP/R3KB1R b KQ",
@@ -19036,7 +19534,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/4pp1p/p5p1/1pP1b3/8/1QN1B3/PP3PPP/3RKB1R b K",
@@ -19049,7 +19548,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/2pnppbp/p5p1/1p1QP3/3P4/2N1BN2/PP3PPP/R3KB1R b KQ",
@@ -19062,7 +19562,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/2p1ppbp/pn4p1/1p2P3/3PQ3/2N1BN2/PP3PPP/R3KB1R b KQ",
@@ -19075,7 +19576,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/2p1ppbp/pn4p1/1p2Pb2/3P3Q/2N1BN2/PP3PPP/R3KB1R b KQ",
@@ -19088,7 +19590,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/2p1p1bp/pn3pp1/1p2Pb2/3P2PQ/2N1BN2/PP3P1P/R3KB1R b KQ",
@@ -19101,7 +19604,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/2p1p1bp/pn2bpp1/1p2P3/3P2PQ/2N1BN2/PP3PBP/R3K2R b KQ",
@@ -19114,7 +19618,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/2p1p1bp/pn2bpp1/4P3/1p1PN1PQ/4BN2/PP3PBP/R3K2R b KQ",
@@ -19127,7 +19632,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1ppnppbp/p3P1p1/8/2QP4/2N2N2/PP3PPP/R1B1KB1R b KQ",
@@ -19140,7 +19646,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1ppnp1bp/p3Q1p1/8/3P4/2N2N2/PP3PPP/R1B1KB1R b KQ",
@@ -19153,7 +19660,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1ppnp1bp/p3p1p1/8/2QP4/2N1BN2/PP3PPP/R3KB1R b KQ",
@@ -19166,7 +19674,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1pp1p1bp/pn2p1p1/8/3P4/1QN1BN2/PP3PPP/R3KB1R b KQ",
@@ -19179,7 +19688,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1ppnppbp/p5p1/4P3/2QP4/2N2N2/PP2BPPP/R1B1K2R b KQ",
@@ -19192,7 +19702,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/2pnppbp/p5p1/1p1QP3/3P4/2N2N2/PP2BPPP/R1B1K2R b KQ",
@@ -19205,7 +19716,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/2p1ppbp/pn4p1/1p2P3/3PQ3/2N2N2/PP2BPPP/R1B1K2R b KQ",
@@ -19218,7 +19730,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q1rk1/2p1ppbp/pn4p1/1p2Pb2/3P3Q/2N2N2/PP2BPPP/R1B1K2R b KQ",
@@ -19231,7 +19744,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-e5"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1pp1ppbp/p4np1/8/3PP3/1QN2N2/PP3PPP/R1B1KB1R b KQ",
@@ -19244,7 +19758,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1p2ppbp/p4np1/2P5/4P3/1QN2N2/PP3PPP/R1B1KB1R b KQ",
@@ -19257,7 +19772,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/1p2ppbp/pQ3np1/q1P5/4P3/2N2N2/PP3PPP/R1B1KB1R b KQ",
@@ -19270,7 +19786,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/1p2ppbp/pP3np1/8/4P3/2N2N2/PP3PPP/R1B1KB1R b KQ",
@@ -19283,7 +19800,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p1nppbp/pP3np1/8/4P3/2N1BN2/PP3PPP/R3KB1R b KQ",
@@ -19296,7 +19814,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p1nppbp/pP4p1/6B1/4P1n1/2N2N2/PP3PPP/R3KB1R b KQ",
@@ -19309,7 +19828,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p2Bpbp/pn4p1/8/4P1n1/2N2N2/PP3PPP/R3KB1R b KQ",
@@ -19322,7 +19842,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b2rk1/1p2Bp1p/pn4p1/8/4P1n1/2P2N2/P4PPP/R3KB1R b KQ",
@@ -19335,7 +19856,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-russian-variation-8-qb3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p2B1/2PP4/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -19348,7 +19870,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3P2B1/3Pn3/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -19361,7 +19884,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3P2N1/3P4/2N5/PP2PPPP/R2QKB1R b KQkq",
@@ -19374,7 +19898,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p2B1/2PPN3/5N2/PP2PPPP/R2QKB1R b KQkq",
@@ -19387,7 +19912,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/6B1/2PPp3/8/PP1NPPPP/R2QKB1R b KQkq",
@@ -19400,7 +19926,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb1k2r/ppp1ppbp/6p1/6B1/2Pqp3/8/PP1NPPPP/1R1QKB1R b Kkq",
@@ -19413,7 +19940,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb1k2r/ppp1ppbp/6p1/4q3/2P1p3/4B3/PP1NPPPP/1R1QKB1R b Kkq",
@@ -19426,7 +19954,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp2pbp/4p1p1/3P2N1/3P4/2N5/PP1QPPPP/R3KB1R b KQkq",
@@ -19439,7 +19968,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp2pbp/6p1/3p2N1/3P4/2N1Q3/PP2PPPP/R3KB1R b KQkq",
@@ -19452,7 +19982,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp2pbp/6p1/3p2N1/3P4/2N1Q3/PP2PPPP/R3KB1R b KQkq",
@@ -19465,7 +19996,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp2pbp/6p1/3p2N1/3P4/2N1Q3/PP2PPPP/R3KB1R b KQkq",
@@ -19478,7 +20010,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1k1r/ppp2pbp/6p1/3p2N1/3P1Q2/2N5/PP2PPPP/R3KB1R b KQ",
@@ -19491,7 +20024,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1k1r/ppp2p1p/5bp1/3p2N1/3P1Q1P/2N5/PP2PPP1/R3KB1R b KQ",
@@ -19504,7 +20038,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1k1r/ppp2p2/5bpp/3p4/3P1Q1P/2N2N2/PP2PPP1/R3KB1R b KQ",
@@ -19517,7 +20052,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq3r/ppp2pk1/5bpp/3p4/3P1Q1P/2N2N2/PP2PPP1/2KR1B1R b -",
@@ -19530,7 +20066,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q3r/ppp2pk1/4bbpp/3p4/3P1Q1P/2N1PN2/PP3PP1/2KR1B1R b -",
@@ -19543,7 +20080,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q3r/ppp2pk1/4bbpp/3p4/3PPQ1P/2N2N2/PP3PP1/2KR1B1R b -",
@@ -19556,7 +20094,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q3r/ppp2pk1/4bbpp/8/3PNQ1P/5N2/PP3PP1/2KR1B1R b -",
@@ -19569,7 +20108,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq3r/ppp2pk1/5bpp/3p4/3P1Q1P/2N1PN2/PP3PP1/R3KB1R b KQ",
@@ -19582,7 +20122,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1q3r/ppp2pk1/4bbpp/3p4/3P1Q1P/2NBPN2/PP3PP1/R3K2R b KQ",
@@ -19595,7 +20136,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1k1r/ppp2p2/5bpp/3N2N1/3P1Q1P/8/PP2PPP1/R3KB1R b KQ",
@@ -19608,7 +20150,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1k1r/ppp2p2/6pp/3NQ1b1/3P3P/8/PP2PPP1/R3KB1R b KQ",
@@ -19621,7 +20164,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1k2/ppp2p1r/6pp/3NQ1P1/3P4/8/PP2PPP1/R3KB1R b KQ",
@@ -19634,7 +20178,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1bq1k2/ppp2p1r/2n3pp/3N2P1/3PQ3/8/PP2PPP1/R3KB1R b KQ",
@@ -19647,7 +20192,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1k2/ppp2p1r/2n3pp/3N1bP1/3P4/5Q2/PP2PPP1/R3KB1R b KQ",
@@ -19660,7 +20206,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q1k2/ppp2p1r/6pp/3N1bP1/3n4/Q7/PP2PPP1/R3KB1R b KQ",
@@ -19673,7 +20220,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r2q4/ppp2pkr/6pp/5bP1/3n4/Q3N3/PP2PPP1/R3KB1R b KQ",
@@ -19686,7 +20234,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r7/ppp2pkr/6pp/5bq1/3n4/2Q1N3/PP2PPP1/R3KB1R b KQ",
@@ -19699,7 +20248,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r7/ppp2pkr/5qpp/5b2/3n4/2Q1N3/PP2PPP1/2KR1B1R b -",
@@ -19712,7 +20262,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rn1qk2r/ppp2pbp/4N1p1/3p4/3P4/2N1Q3/PP2PPPP/R3KB1R b KQkq",
@@ -19725,7 +20276,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/ppp1Qpbp/6p1/3p2N1/3P4/2N5/PP2PPPP/R3KB1R b KQkq",
@@ -19738,7 +20290,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-qd2"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp2pbp/4p1p1/3P4/3P4/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -19751,7 +20304,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp2pbp/6p1/3p4/3P4/2N1PN2/PP3PPP/R2QKB1R b KQkq",
@@ -19764,7 +20318,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/1pp2pbp/6p1/p2p4/3P4/2N1PN2/PP2BPPP/R2QK2R b KQkq",
@@ -19777,7 +20332,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1pp2pbp/6p1/p2p4/3P4/2N1PN2/PP2BPPP/R2Q1RK1 b -",
@@ -19790,7 +20346,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqr1k1/1pp2pbp/6p1/p2p4/3P4/P1N1PN2/1P2BPPP/R2Q1RK1 b -",
@@ -19803,7 +20360,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/1pp2pbp/6p1/p2p4/3P4/2NBPN2/PP3PPP/R2QK2R b KQkq",
@@ -19816,7 +20374,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1pp2pbp/6p1/p2p4/3P4/2NBPN2/PP3PPP/R2Q1RK1 b -",
@@ -19829,7 +20388,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbq1rk1/1p3pbp/2p3p1/p2p4/3P4/P1NBPN2/1P3PPP/R2Q1RK1 b -",
@@ -19842,7 +20402,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp2pbp/6p1/3p4/1P1P4/2N2N2/P3PPPP/R2QKB1R b KQkq",
@@ -19855,7 +20416,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/ppp2pbp/3q2p1/3p4/1P1P4/P1N2N2/4PPPP/R2QKB1R b KQkq",
@@ -19868,7 +20430,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/ppp2pbp/3q2p1/3p4/1P1P4/P1N1PN2/5PPP/R2QKB1R b KQ",
@@ -19881,7 +20444,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb2rk1/pp3pbp/2pq2p1/3p4/1P1P4/P1N1PN2/4BPPP/R2QK2R b KQ",
@@ -19894,7 +20458,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnb1k2r/ppp2pbp/3q2p1/3p4/1P1P4/1QN2N2/P3PPPP/R3KB1R b KQkq",
@@ -19907,7 +20472,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/ppp2pbp/2nq2p1/3p4/1P1P4/1QN1PN2/P4PPP/R3KB1R b KQkq",
@@ -19920,7 +20486,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "r1b1k2r/ppp2pbp/2n3p1/3p4/1Q1P4/2N1PN2/P4PPP/R3KB1R b KQkq",
@@ -19933,7 +20500,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-cxd5-8-nf3"
-    ]
+    ],
+    "minPly": 14
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p4/2PPn2B/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -19946,7 +20514,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p4/2PP3B/2P2N2/P3PPPP/R2QKB1R b KQkq",
@@ -19959,7 +20528,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/Q1pP3B/2P2N2/P3PPPP/R3KB1R b KQkq",
@@ -19972,7 +20542,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p3p1/8/2QP3B/2P2N2/P3PPPP/R3KB1R b KQkq",
@@ -19985,7 +20556,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb1k2r/pp2ppbp/2p3p1/q7/2QP3B/2P1PN2/P4PPP/R3KB1R b KQkq",
@@ -19998,7 +20570,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn2k2r/pp2ppbp/2p1b1p1/q7/1Q1P3B/2P1PN2/P4PPP/R3KB1R b KQkq",
@@ -20011,7 +20584,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn2k2r/pp2ppbp/2p1b1p1/8/1P1P3B/4PN2/P4PPP/R3KB1R b KQkq",
@@ -20024,7 +20598,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn2k2r/pp2ppbp/2p1b1p1/q7/3P3B/2PQPN2/P4PPP/R3KB1R b KQkq",
@@ -20037,7 +20612,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/2pP3B/2P1PN2/P4PPP/R2QKB1R b KQkq",
@@ -20050,7 +20626,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/p1p1ppbp/6p1/1p6/P1pP3B/2P1PN2/5PPP/R2QKB1R b KQkq",
@@ -20063,7 +20640,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/p3ppbp/2p3p1/1p6/P1pP3B/2P1P3/3N1PPP/R2QKB1R b KQkq",
@@ -20076,7 +20654,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/4ppbp/p1p3p1/1p6/P1pP3B/2P1P3/3NBPPP/R2QK2R b KQkq",
@@ -20089,7 +20668,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/4ppbp/p1p3p1/1p6/P1pP3B/2P1PB2/3N1PPP/R2QK2R b KQ",
@@ -20102,7 +20682,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "1nbq1rk1/r3ppbp/p1p3p1/1p6/P1pP3B/2P1PB2/3N1PPP/R2Q1RK1 b -",
@@ -20115,7 +20696,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/p3ppbp/2p3p1/1p6/P1pP3B/2P1PN2/4BPPP/R2QK2R b KQkq",
@@ -20128,7 +20710,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bh4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p4/2PPnB2/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -20141,7 +20724,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p4/2PP1B2/2P2N2/P3PPPP/R2QKB1R b KQkq",
@@ -20154,7 +20738,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p4/2PP1B2/2P2N2/P3PPPP/R2QKB1R b KQkq",
@@ -20167,7 +20752,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p4/2PP1B2/2P2N2/P3PPPP/R2QKB1R b KQkq",
@@ -20180,7 +20766,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2pp4/2PP1B2/2P1PN2/P4PPP/R2QKB1R b KQkq",
@@ -20193,7 +20780,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2pP4/3P1B2/2P1PN2/P4PPP/R2QKB1R b KQ",
@@ -20206,7 +20794,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2pP4/3P1B2/2P1PN2/P4PPP/R2QKB1R b KQ",
@@ -20219,7 +20808,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/3P4/3P1B2/4PN2/P4PPP/R2QKB1R b KQ",
@@ -20232,7 +20822,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb2rk1/pp2ppbp/6p1/3q4/3P1B2/4PN2/P3BPPP/R2QK2R b KQ",
@@ -20245,7 +20836,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2n3p1/3q4/3P1B2/4PN2/P3BPPP/R2Q1RK1 b -",
@@ -20258,7 +20850,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/3q1b2/Q2P1B2/4PN2/P3BPPP/R4RK1 b -",
@@ -20271,7 +20864,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/Q4b2/3P1B2/4PN2/P3BPPP/R4RK1 b -",
@@ -20284,7 +20878,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pp2ppbp/6p1/n4b2/3P1B2/4PN2/P3BPPP/R1R3K1 b -",
@@ -20297,7 +20892,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1r3k1/pp2ppbp/6p1/n4b2/3P1B2/4P3/P2NBPPP/R1R3K1 b -",
@@ -20310,7 +20906,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r5k1/pp2ppbp/6p1/n4b2/3P1B2/4P3/P2NBPPP/2R3K1 b -",
@@ -20323,7 +20920,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2R3k1/pp2ppbp/6p1/n4b2/3P1B2/4P3/P2NBPPP/6K1 b -",
@@ -20336,7 +20934,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pp2ppbp/6p1/n4b2/3P1B2/4P3/P2NBPPP/R4RK1 b -",
@@ -20349,7 +20948,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2r2rk1/pp2ppbp/6p1/n4b2/3P1B2/4P3/P2NBPPP/R1R3K1 b -",
@@ -20362,7 +20962,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/q4b2/3P1B2/1Q2PN2/P3BPPP/R4RK1 b -",
@@ -20375,7 +20976,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/5b2/1q1P1B2/1Q2PN2/P3BPPP/R1R3K1 b -",
@@ -20388,7 +20990,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pp2ppbp/2n3p1/5b2/3P1B2/1P2PN2/4BPPP/R1R3K1 b -",
@@ -20401,7 +21004,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2pP4/3P1B2/2P2N2/P3PPPP/R2QKB1R b KQkq",
@@ -20414,7 +21018,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/3P4/3P1B2/5N2/P3PPPP/R2QKB1R b KQkq",
@@ -20427,7 +21032,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb1k2r/pp2ppbp/6p1/3q4/3P1B2/4PN2/P4PPP/R2QKB1R b KQkq",
@@ -20440,7 +21046,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b1k2r/pp2ppbp/2n3p1/3q4/3P1B2/4PN2/P3BPPP/R2QK2R b KQkq",
@@ -20453,7 +21060,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bg5-6-bf4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p4/2PP4/2N1PN2/PP3PPP/R1BQKB1R b KQkq",
@@ -20466,7 +21074,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/2PP4/2N1PN2/PP2BPPP/R1BQK2R b KQ",
@@ -20479,7 +21088,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/8/2BP4/2N1PN2/PP3PPP/R1BQK2R b KQ",
@@ -20492,7 +21102,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2p5/2BP4/2N1PN2/PP3PPP/R1BQ1RK1 b -",
@@ -20505,7 +21116,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/8/2BP4/2N2N2/PP3PPP/R1BQ1RK1 b -",
@@ -20518,7 +21130,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/5np1/8/2BP2b1/2N1BN2/PP3PPP/R2Q1RK1 b -",
@@ -20531,7 +21144,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp2ppbp/2n2np1/3P4/2B3b1/2N1BN2/PP3PPP/R2Q1RK1 b -",
@@ -20544,7 +21158,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp2ppbp/2n2np1/3P4/2B5/2N1BQ2/PP3PPP/R4RK1 b -",
@@ -20557,7 +21172,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp2ppbp/5np1/3Pn3/2B5/2N1B3/PP2QPPP/R4RK1 b -",
@@ -20570,7 +21186,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp2ppbp/5np1/3P4/2Q5/2N1B3/PP3PPP/R4RK1 b -",
@@ -20583,7 +21200,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/5np1/8/2BP2b1/2N2N1P/PP3PP1/R1BQ1RK1 b -",
@@ -20596,7 +21214,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/5np1/8/2BP4/2N2Q1P/PP3PP1/R1B2RK1 b -",
@@ -20609,7 +21228,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/5np1/3P4/2B3b1/2N2N2/PP3PPP/R1BQ1RK1 b -",
@@ -20622,7 +21242,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp1nppbp/5np1/3P4/2B3b1/2N2N2/PP3PPP/R1BQR1K1 b -",
@@ -20635,7 +21256,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2rq1rk1/pp1nppbp/5np1/3P4/6b1/1BN2N2/PP3PPP/R1BQR1K1 b -",
@@ -20648,7 +21270,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/8/2BN4/2N1P3/PP3PPP/R1BQ1RK1 b -",
@@ -20661,7 +21284,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/1p2ppbp/p4np1/8/P1BN4/2N1P3/1P3PPP/R1BQ1RK1 b -",
@@ -20674,7 +21298,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2pP4/2B5/2N1PN2/PP3PPP/R1BQK2R b KQ",
@@ -20687,7 +21312,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp3pbp/4Pnp1/2p5/2B5/2N1PN2/PP3PPP/R1BQK2R b KQ",
@@ -20700,7 +21326,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb2rk1/pp3pbp/4Pnp1/2p5/2B5/2N1PN2/PP3PPP/R1BK3R b -",
@@ -20713,7 +21340,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn3rk1/pp3pbp/4Bnp1/2p5/8/2N1PN2/PP3PPP/R1BK3R b -",
@@ -20726,7 +21354,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp3pbp/4pnp1/2pP4/2B1P3/2N2N2/PP3PPP/R1BQK2R b KQ",
@@ -20739,7 +21368,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp3pbp/5np1/2pP4/2B5/2N2N2/PP3PPP/R1BQK2R b KQ",
@@ -20752,7 +21382,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqr1k1/pp3pbp/5np1/2pP4/2B5/2N1BN2/PP3PPP/R2QK2R b KQ",
@@ -20765,7 +21396,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/8/2pP4/2N1PN2/PP2BPPP/R1BQ1RK1 b -",
@@ -20778,7 +21410,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2P5/2p5/2N1PN2/PP2BPPP/R1BQ1RK1 b -",
@@ -20791,7 +21424,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb2rk1/pp2ppbp/5np1/q1P5/2B5/2N1PN2/PP3PPP/R1BQ1RK1 b -",
@@ -20804,7 +21438,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb2rk1/pp2ppbp/5np1/q1P5/2pQ4/2N1PN2/PP2BPPP/R1B2RK1 b -",
@@ -20817,7 +21452,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp1nppbp/5np1/q1P5/2Q5/2N1PN2/PP2BPPP/R1B2RK1 b -",
@@ -20830,7 +21466,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp1nppbp/5np1/2q5/7Q/2N1PN2/PP2BPPP/R1B2RK1 b -",
@@ -20843,7 +21480,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-be2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3P4/3P4/2N1PN2/PP3PPP/R1BQKB1R b KQ",
@@ -20856,7 +21494,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/6p1/3n4/2BP4/2N1PN2/PP3PPP/R1BQK2R b KQ",
@@ -20869,7 +21508,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/6p1/8/2BP4/2P1PN2/P4PPP/R1BQK2R b KQ",
@@ -20882,7 +21522,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p5/2BP4/2P1PN2/P4PPP/R1BQ1RK1 b -",
@@ -20895,7 +21536,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb2rk1/ppq1ppbp/6p1/2p5/2BP4/2P1PN2/P3QPPP/R1B2RK1 b -",
@@ -20908,7 +21550,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/ppq1ppbp/2n3p1/2p5/2BP4/B1P1PN2/P3QPPP/R4RK1 b -",
@@ -20921,7 +21564,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/ppq1ppbp/2n3p1/2p5/2BP4/B1P1PN2/P3QPPP/R4RK1 b -",
@@ -20934,7 +21578,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/p1q1ppbp/1pn3p1/2p5/2BP4/B1P1PN2/P3QPPP/2R2RK1 b -",
@@ -20947,7 +21592,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pbq1ppbp/1pn3p1/2p5/2BP4/B1P1PN2/P3QPPP/2RR2K1 b -",
@@ -20960,7 +21606,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pbq1ppbp/1p4p1/n1p5/3P4/B1PBPN2/P3QPPP/2RR2K1 b -",
@@ -20973,7 +21620,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pbq1ppbp/Bp4p1/n1p5/3P4/B1P1PN2/P3QPPP/2RR2K1 b -",
@@ -20986,7 +21634,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/p1q1ppbp/Qp4p1/n1p5/3P4/B1P1PN2/P4PPP/2RR2K1 b -",
@@ -20999,7 +21648,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/p1q1ppbp/1pn3p1/2P5/2B5/B1P1PN2/P3QPPP/R4RK1 b -",
@@ -21012,7 +21662,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/p1q1ppbp/2n3p1/2B5/2B5/2P1PN2/P3QPPP/R4RK1 b -",
@@ -21025,7 +21676,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/p1q1ppbp/6p1/2BBn3/8/2P1PN2/P3QPPP/R4RK1 b -",
@@ -21038,7 +21690,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/ppq1ppbp/2n3p1/2p5/2BP4/2P1PN2/P3QPPP/R1BR2K1 b -",
@@ -21051,7 +21704,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1br2k1/ppq1ppbp/2n3p1/2p5/2BP4/2P1PN1P/P3QPP1/R1BR2K1 b -",
@@ -21064,7 +21718,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb2rk1/ppq1ppbp/6p1/2p5/3P4/2P1PN2/P3BPPP/R1BQ1RK1 b -",
@@ -21077,7 +21732,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/2PP4/1QN1PN2/PP3PPP/R1B1KB1R b KQ",
@@ -21090,7 +21746,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp2pbp/4pnp1/3p4/2PP4/1QN1PN2/PP1B1PPP/R3KB1R b KQ",
@@ -21103,7 +21760,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/ppp2pbp/2n1pnp1/3P4/3P4/1QN1PN2/PP1B1PPP/R3KB1R b KQ",
@@ -21116,7 +21774,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/ppp2pbp/2n2np1/3p4/3P4/1QN1PN2/PP1BBPPP/R3K2R b KQ",
@@ -21129,7 +21788,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/ppp1npbp/5np1/3p4/3P4/1QN1PN2/PP1BBPPP/R4RK1 b -",
@@ -21142,7 +21802,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp2pbp/4pnp1/3p4/2PP4/1QN1PN2/PP2BPPP/R1B1K2R b KQ",
@@ -21155,7 +21816,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/p1p2pbp/1p2pnp1/3p4/2PP4/1QN1PN2/PP2BPPP/R1B2RK1 b -",
@@ -21168,7 +21830,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pbp2pbp/1p2pnp1/3p4/2PP4/1QN1PN2/PP2BPPP/R1BR2K1 b -",
@@ -21181,7 +21844,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pbpn1pbp/1p2pnp1/3p4/2PP4/1QN1PN2/PP1BBPPP/R2R2K1 b -",
@@ -21194,7 +21858,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/p1p2pbp/1p2pnp1/3P4/3P4/1QN1PN2/PP2BPPP/R1B1K2R b KQ",
@@ -21207,7 +21872,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/p1p2pbp/1p3np1/3p4/3P4/1QN1PN2/PP2BPPP/R1B2RK1 b -",
@@ -21220,7 +21886,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pbp2pbp/1p3np1/3p4/3P4/1QN1PN2/PP2BPPP/R1BR2K1 b -",
@@ -21233,7 +21900,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pbpn1pbp/1p3np1/3p4/3P4/1QN1PN2/PP1BBPPP/R2R2K1 b -",
@@ -21246,7 +21914,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-qb3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/1PPP4/2N1PN2/P4PPP/R1BQKB1R b KQ",
@@ -21259,7 +21928,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-b4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2p2np1/3p4/1PPP4/2N1PN2/PB3PPP/R2QKB1R b KQ",
@@ -21272,7 +21942,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-b4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/2p2np1/3p4/1PPP2b1/2N1PN1P/PB3PP1/R2QKB1R b KQ",
@@ -21285,7 +21956,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-b4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/2p2np1/3p4/1PPP4/2N1PQ1P/PB3PP1/R3KB1R b KQ",
@@ -21298,7 +21970,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-b4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/1p2ppbp/2p2np1/pP1p4/2PP4/2N1PQ1P/PB3PP1/R3KB1R b KQ",
@@ -21311,7 +21984,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-b4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/2p2np1/3p4/1PPP2b1/1QN1PN2/PB3PPP/R3KB1R b KQ",
@@ -21324,7 +21998,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-b4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/2p2np1/3p4/1PPP4/1QN1PP2/PB3P1P/R3KB1R b KQ",
@@ -21337,7 +22012,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-b4"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/2PP4/2N1PN2/PP1B1PPP/R2QKB1R b KQ",
@@ -21350,7 +22026,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2Pp4/2P5/2N1PN2/PP1B1PPP/R2QKB1R b KQ",
@@ -21363,7 +22040,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp2ppbp/n4np1/2PP4/8/2N1PN2/PP1B1PPP/R2QKB1R b KQ",
@@ -21376,7 +22054,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp2ppbp/5np1/2nP4/2B5/2N1PN2/PP1B1PPP/R2QK2R b KQ",
@@ -21389,7 +22068,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/1p2ppbp/p4np1/2nP4/P1B5/2N1PN2/1P1B1PPP/R2QK2R b KQ",
@@ -21402,7 +22082,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/1p2ppbp/p4np1/2nP1b2/P1B5/2N1PN2/1P1B1PPP/R2Q1RK1 b -",
@@ -21415,7 +22096,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2rq1rk1/1p2ppbp/p4np1/2nP1b2/P1BN4/2N1P3/1P1B1PPP/R2Q1RK1 b -",
@@ -21428,7 +22110,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2rq1rk1/1p2ppbp/p4np1/2nP4/P2N4/2NBP3/1P1B1PPP/R2Q1RK1 b -",
@@ -21441,7 +22124,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2rq1rk1/1p2ppbp/p4np1/2nP1b2/P1B5/2N1PN2/1P1BQPPP/R4RK1 b -",
@@ -21454,7 +22138,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/1p2ppbp/p4np1/2nP4/1PB5/2N1PN2/P2B1PPP/R2QK2R b KQ",
@@ -21467,7 +22152,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/1p2ppbp/p4np1/3P4/1PB1n3/2N1PN2/P2B1PPP/2RQK2R b K",
@@ -21480,7 +22166,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/4ppbp/p4np1/1p1P4/1P2n3/1BN1PN2/P2B1PPP/2RQK2R b K",
@@ -21493,7 +22180,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/1b2ppbp/p4np1/1p1P4/1P2n3/1BN1PN2/P2B1PPP/2RQ1RK1 b -",
@@ -21506,7 +22194,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/1p2ppbp/p4np1/3P4/1PB1N3/4PN2/P2B1PPP/R2QK2R b KQ",
@@ -21519,7 +22208,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/1p2ppbp/p5p1/3P4/1PB1n3/4PN2/P2B1PPP/2RQK2R b K",
@@ -21532,7 +22222,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/4ppbp/p5p1/1p1P4/1P2n3/1B2PN2/P2B1PPP/2RQK2R b K",
@@ -21545,7 +22236,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp2ppbp/5np1/2nP4/8/2N1PN2/PP1BBPPP/R2QK2R b KQ",
@@ -21558,7 +22250,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp2ppbp/n4np1/2Pp4/N1P5/4PN2/PP1B1PPP/R2QKB1R b KQ",
@@ -21571,7 +22264,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2pP4/3P4/2N1PN2/PP1B1PPP/R2QKB1R b KQ",
@@ -21584,7 +22278,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3P4/3N4/2N1P3/PP1B1PPP/R2QKB1R b KQ",
@@ -21597,7 +22292,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3P4/3P4/2N2N2/PP1B1PPP/R2QKB1R b KQ",
@@ -21610,7 +22306,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-e3-6-bd2"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p4/2PP1B2/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -21624,7 +22321,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4",
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/2PP1B2/2N2N2/PP2PPPP/2RQKB1R b K",
@@ -21637,7 +22335,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppbp/4bnp1/3p4/2PP1B2/2N1PN2/PP3PPP/2RQKB1R b K",
@@ -21650,7 +22349,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppbp/4bnp1/6N1/2pP1B2/2N1P3/PP3PPP/2RQKB1R b K",
@@ -21663,7 +22363,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppbp/5np1/3b2N1/2pPPB2/2N5/PP3PPP/2RQKB1R b K",
@@ -21676,7 +22377,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppb1/5npp/3P2N1/2pP1B2/2N5/PP3PPP/2RQKB1R b K",
@@ -21689,7 +22391,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppb1/5np1/3P2B1/2pP4/2N5/PP3PPP/2RQKB1R b K",
@@ -21702,7 +22405,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppb1/6p1/3n2B1/2BP4/2N5/PP3PPP/2RQK2R b K",
@@ -21715,7 +22419,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppb1/1n4p1/6B1/3P4/1BN5/PP3PPP/2RQK2R b K",
@@ -21728,7 +22433,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/ppp1ppb1/1nn3p1/3P2B1/8/1BN5/PP3PPP/2RQK2R b K",
@@ -21741,7 +22447,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/ppp1ppb1/1n4p1/3P2B1/3n4/1BN5/PP3PPP/2RQ1RK1 b -",
@@ -21754,7 +22461,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/ppp1ppb1/1nn3p1/6B1/3P4/1B6/PP2NPPP/2RQK2R b K",
@@ -21767,7 +22475,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/1pp1ppb1/1nn3p1/p5B1/P2P4/1B6/1P2NPPP/2RQK2R b K",
@@ -21780,7 +22489,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2rq1rk1/1pp1ppb1/1nn3p1/p5B1/P2P4/1B6/1P2NPPP/2RQ1RK1 b -",
@@ -21793,7 +22503,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "2rq1rk1/1pp1ppb1/1n4p1/p5B1/P2N4/1B6/1P3PPP/2RQ1RK1 b -",
@@ -21806,7 +22517,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppbp/5np1/3N2N1/2pP1B2/4P3/PP3PPP/2RQKB1R b K",
@@ -21819,7 +22531,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppbp/6p1/3n2N1/2BP1B2/4P3/PP3PPP/2RQK2R b K",
@@ -21832,7 +22545,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppbp/6p1/6N1/2BP1n2/4PQ2/PP3PPP/2R1K2R b K",
@@ -21845,7 +22559,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp2pbp/4p1p1/6N1/2BP1Q2/4P3/PP3PPP/2R1K2R b K",
@@ -21858,7 +22573,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/ppp1ppbp/4bnp1/3p2N1/2PP1B2/2N5/PP2PPPP/2RQKB1R b K",
@@ -21871,7 +22587,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2ppbp/4Nnp1/2pp4/2PP1B2/2N5/PP2PPPP/2RQKB1R b K",
@@ -21884,7 +22601,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rn1q1rk1/pp2p1bp/4pnp1/2pp4/2PP1B2/2N1P3/PP3PPP/2RQKB1R b K",
@@ -21897,7 +22615,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/2PP1B2/2N1PN2/PP3PPP/R2QKB1R b KQ",
@@ -21910,7 +22629,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2Pp4/2P2B2/2N1PN2/PP3PPP/R2QKB1R b KQ",
@@ -21923,7 +22643,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2Pp4/2P1nB2/2N1PN2/PP3PPP/2RQKB1R b K",
@@ -21936,7 +22657,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp1nppbp/6p1/2PP4/4nB2/2N1PN2/PP3PPP/2RQKB1R b K",
@@ -21949,7 +22671,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp1nppbp/6p1/q1PP4/3NnB2/2N1P3/PP3PPP/2RQKB1R b K",
@@ -21962,7 +22685,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp1nppbp/6p1/q1PP4/3N1B2/2P1P3/P4PPP/2RQKB1R b K",
@@ -21975,7 +22699,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp1nppbp/2P3p1/3P4/3N1B2/2P1P3/q4PPP/2RQKB1R b K",
@@ -21988,7 +22713,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2P3p1/2nP4/3N1B2/2P1P3/q3BPPP/2RQK2R b K",
@@ -22001,7 +22727,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2P3p1/2nq4/3N1B2/2P1PB2/5PPP/2RQK2R b K",
@@ -22014,7 +22741,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2P3p1/2n5/2qN1B2/2P1P3/4BPPP/2RQK2R b K",
@@ -22027,7 +22755,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2P3p1/2nP4/2PN1B2/4P3/q4PPP/2RQKB1R b K",
@@ -22040,7 +22769,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2P3p1/q1nP4/2PN1B2/4P3/3Q1PPP/2R1KB1R b K",
@@ -22053,7 +22783,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2P3p1/2nP4/2PN1B2/4P3/3K1PPP/2R2B1R b -",
@@ -22066,7 +22797,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/2P3p1/2nP4/2PN1B2/4P3/3K1PPP/2R2B1R b -",
@@ -22079,7 +22811,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp3pbp/2P1P1p1/2n5/2PN1B2/4P3/3K1PPP/2R2B1R b -",
@@ -22092,7 +22825,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2pp1p/2P3p1/2nP4/2PP1B2/8/3K1PPP/2R2B1R b -",
@@ -22105,7 +22839,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2pp1p/2P3p1/3P4/2PP1B2/1nK5/5PPP/2R2B1R b -",
@@ -22118,7 +22853,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2PpB3/2P1n3/2N1PN2/PP3PPP/R2QKB1R b KQ",
@@ -22131,7 +22867,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2pp1p/6p1/2PpN3/2P1n3/2N1P3/PP3PPP/R2QKB1R b KQ",
@@ -22144,7 +22881,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2pp1p/6p1/2PpN3/2P5/2P1P3/P4PPP/R2QKB1R b KQ",
@@ -22157,7 +22895,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2Pp4/2P1NB2/4PN2/PP3PPP/R2QKB1R b KQ",
@@ -22170,7 +22909,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbQ1rk1/pp2ppbp/6p1/2P5/2P1pB2/4PN2/PP3PPP/R3KB1R b KQ",
@@ -22183,7 +22923,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbr2k1/pp2ppbp/6p1/2P5/2PNpB2/4P3/PP3PPP/R3KB1R b KQ",
@@ -22196,7 +22937,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbr2k1/pp3pbp/6p1/2P1p1B1/2PNp3/4P3/PP3PPP/R3KB1R b KQ",
@@ -22209,7 +22951,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbr2k1/pp4bp/5pp1/1NP1p1B1/2P1p3/4P3/PP3PPP/R3KB1R b KQ",
@@ -22222,7 +22965,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbr2k1/ppN3bp/6p1/2P1p1p1/2P1p3/4P3/PP3PPP/R3KB1R b KQ",
@@ -22235,7 +22979,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "N1br2k1/pp4bp/n5p1/2P1p1p1/2P1p3/4P3/PP3PPP/R3KB1R b KQ",
@@ -22248,7 +22993,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2P5/2PNpB2/4P3/PP3PPP/R2QKB1R b KQ",
@@ -22261,7 +23007,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2P5/2P1pB2/4P3/PP1N1PPP/R2QKB1R b KQ",
@@ -22274,7 +23021,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2pP4/3P1B2/2N1PN2/PP3PPP/R2QKB1R b KQ",
@@ -22287,7 +23035,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2pnB3/3P4/2N1PN2/PP3PPP/R2QKB1R b KQ",
@@ -22300,7 +23049,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/2p1B3/3P4/2P1PN2/P4PPP/R2QKB1R b KQ",
@@ -22313,7 +23063,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2pp1p/6p1/2p1N3/3P4/2P1P3/P4PPP/R2QKB1R b KQ",
@@ -22326,7 +23077,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2pp4/2PP1B2/2N1PN2/PP2BPPP/R2QK2R b KQ",
@@ -22339,7 +23091,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3p4/2PP1B2/2N2N2/PP2BPPP/R2QK2R b KQ",
@@ -22352,7 +23105,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/8/2BP1B2/2N2N2/PP3PPP/R2QK2R b KQ",
@@ -22365,7 +23119,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3p4/2PN1B2/2N1P3/PP2BPPP/R2QK2R b KQ",
@@ -22378,7 +23133,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/8/2BN1B2/2N1P3/PP3PPP/R2QK2R b KQ",
@@ -22391,7 +23147,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-three-knights-variation-5-bf4-6-e3"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/5np1/3p4/2PP1B2/2N5/PP2PPPP/R2QKBNR b KQkq",
@@ -22404,7 +23161,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p4/2PP1B2/2N1P3/PP3PPP/R2QKBNR b KQkq",
@@ -22417,7 +23175,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/2PP1B2/1QN1P3/PP3PPP/R3KBNR b KQ",
@@ -22430,7 +23189,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/2pP4/3P1B2/1QN1P3/PP3PPP/R3KBNR b KQ",
@@ -22443,7 +23203,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3P4/3P1B2/1QN5/PP3PPP/R3KBNR b KQ",
@@ -22456,7 +23217,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "r1bq1rk1/pp1nppbp/5np1/3P4/3P1B2/1QN5/PP2BPPP/R3K1NR b KQ",
@@ -22469,7 +23231,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "r1bq1rk1/pp2ppbp/1n3np1/3P4/3P1B2/1QN2B2/PP3PPP/R3K1NR b KQ",
@@ -22482,7 +23245,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p4/2PP1B2/2N5/PP2PPPP/2RQKBNR b Kkq",
@@ -22495,7 +23259,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p2Bn/2PP4/2N5/PP2PPPP/2RQKBNR b Kkq",
@@ -22508,7 +23273,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppb1/6pp/3p3n/2PP3B/2N5/PP2PPPP/2RQKBNR b Kkq",
@@ -22521,7 +23287,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/pp2ppb1/6pp/2pp3n/2PP3B/2N1P3/PP3PPP/2RQKBNR b Kkq",
@@ -22534,7 +23301,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/pp2ppb1/6pp/3p3n/2PP3B/2N5/PP3PPP/2RQKBNR b Kkq",
@@ -22547,7 +23315,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/pp2ppb1/6pp/3N3n/2Pp3B/4P3/PP3PPP/2RQKBNR b Kkq",
@@ -22560,7 +23329,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "r1bqk2r/pp2ppb1/2n3pp/3N3n/2PP3B/8/PP3PPP/2RQKBNR b Kkq",
@@ -22573,7 +23343,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppb1/6pp/3p3n/2PP4/2N5/PP1BPPPP/2RQKBNR b Kkq",
@@ -22586,7 +23357,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppb1/6pp/7n/2pP4/2N2N2/PP1BPPPP/2RQKB1R b Kkq",
@@ -22599,7 +23371,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3p3n/2PP4/2N5/PP1BPPPP/2RQKBNR b Kkq",
@@ -22612,7 +23385,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3p4/2PP1B2/2N1P3/PP3PPP/2RQKBNR b K",
@@ -22625,7 +23399,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/8/2BP1B2/2N1P3/PP3PPP/2RQK1NR b K",
@@ -22638,7 +23413,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pppnppbp/5np1/8/2BP1B2/2N1PN2/PP3PPP/2RQK2R b K",
@@ -22651,7 +23427,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp1nppbp/5np1/2P5/2B2B2/2N1PN2/PP3PPP/2RQK2R b K",
@@ -22664,7 +23441,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp2ppbp/5np1/2n5/2B2B2/2N1PN2/PP3PPP/2RQ1RK1 b -",
@@ -22677,7 +23455,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp2ppbp/4Bnp1/2n5/5B2/2N1PN2/PP3PPP/2RQ1RK1 b -",
@@ -22690,7 +23469,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp2ppbp/4nnp1/4B3/8/2N1PN2/PP3PPP/2RQ1RK1 b -",
@@ -22703,7 +23483,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r2q1rk1/pp2ppbp/4nnp1/8/8/2N1PNB1/PP3PPP/2RQ1RK1 b -",
@@ -22716,7 +23497,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp1nppbp/5np1/2p5/2BP1B2/2N1PN2/PP3PPP/2RQ1RK1 b -",
@@ -22729,7 +23511,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp1nppbp/5np1/8/2BP1B2/2N2N2/PP3PPP/2RQ1RK1 b -",
@@ -22742,7 +23525,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1bq1rk1/pp2ppbp/1n3np1/8/3P1B2/1BN2N2/PP3PPP/2RQ1RK1 b -",
@@ -22755,7 +23539,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-rc1"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/5np1/3P4/3P1B2/2N1P3/PP3PPP/R2QKBNR b KQ",
@@ -22768,7 +23553,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/6p1/3N4/3P1B2/4P3/PP3PPP/R2QKBNR b KQ",
@@ -22781,7 +23567,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnb2rk1/ppB1ppbp/6p1/3q4/3P4/4P3/PP3PPP/R2QKBNR b KQ",
@@ -22794,7 +23581,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/ppB1ppbp/B5p1/3q4/3P4/4P3/PP3PPP/R2QK1NR b KQ",
@@ -22807,7 +23595,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/ppB1ppbp/B5p1/8/3P4/4PQ2/PP3PqP/R3K1NR b KQ",
@@ -22820,7 +23609,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/ppB1ppbp/B5p1/8/3P4/4PN2/PP3P1P/R3K2R b KQ",
@@ -22833,7 +23623,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/p1B1ppbp/p5p1/8/3P4/4PN2/PP3P1P/2R1K2R b K",
@@ -22846,7 +23637,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/pbB1ppbp/p5p1/8/3P4/4PN2/PP2KP1P/2R4R b -",
@@ -22859,7 +23651,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/p1B1ppbp/p5p1/8/3P4/4PN2/PP3P1P/R3K1R1 b Q",
@@ -22872,7 +23665,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r4rk1/p1B1ppbp/p3b1p1/8/3P4/1P2PN2/P4P1P/R3K1R1 b Q",
@@ -22885,7 +23679,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1r3k1/p1B1ppbp/p3b1p1/8/3P4/1P2PN2/P4P1P/2R1K1R1 b -",
@@ -22898,7 +23693,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1r3k1/p1B1ppbp/4b1p1/p7/3P4/1P2PN2/P3KP1P/2R3R1 b -",
@@ -22911,7 +23707,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1r3k1/p1B1ppbp/4b1p1/8/P2P4/4PN2/P3KP1P/2R3R1 b -",
@@ -22924,7 +23721,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "r1b2rk1/pp2ppbp/n5p1/3q4/3P4/4P1B1/PP3PPP/R2QKBNR b KQ",
@@ -22937,7 +23735,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bf4-variation-6-cxd5"
-    ]
+    ],
+    "minPly": 10
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/5np1/3p2B1/2PP4/2N5/PP2PPPP/R2QKBNR b KQkq",
@@ -22950,7 +23749,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/pp2pp1p/5Bp1/2pp4/2PP4/2N5/PP2PPPP/R2QKBNR b KQkq",
@@ -22963,7 +23763,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/pp3p1p/5pp1/2pP4/3P4/2N5/PP2PPPP/R2QKBNR b KQkq",
@@ -22976,7 +23777,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/1q3pp1/2pP4/3P4/2N1P3/PP3PPP/R2QKBNR b KQkq",
@@ -22989,7 +23791,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/1q3pp1/3P4/3Q4/2N1P3/PP3PPP/R3KBNR b KQkq",
@@ -23002,7 +23805,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/5pp1/3P4/3P4/2N5/PP3PPP/R3KBNR b KQkq",
@@ -23015,7 +23819,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/1q3pp1/1B1P4/3p4/2N1P3/PP3PPP/R2QK1NR b KQkq",
@@ -23028,7 +23833,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "r1b1kb1r/pp1n1p1p/1q3pp1/1B1P4/3Q4/2N1P3/PP3PPP/R3K1NR b KQkq",
@@ -23041,7 +23847,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "r1b1kb1r/pp1n1p1p/5pp1/1B1P4/3P4/2N5/PP3PPP/R3K1NR b KQkq",
@@ -23054,7 +23861,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/1q3pp1/2pP4/3P4/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -23067,7 +23875,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/5pp1/2pP4/3P4/2N2N2/Pq2PPPP/R1Q1KB1R b KQkq",
@@ -23080,7 +23889,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/5pp1/2pP4/3P4/2N2N2/P3PPPP/2R1KB1R b Kkq",
@@ -23093,7 +23903,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/5pp1/3P4/3N4/2N5/P3PPPP/2R1KB1R b Kkq",
@@ -23106,7 +23917,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/1q3pp1/2PP4/8/2N5/PP2PPPP/R2QKBNR b KQkq",
@@ -23119,7 +23931,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/5pp1/2PP4/8/2N5/Pq2PPPP/R1Q1KBNR b KQkq",
@@ -23132,7 +23945,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnb1kb1r/pp3p1p/5pp1/2PP4/8/2N5/P3PPPP/2R1KBNR b Kkq",
@@ -23145,7 +23959,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/pp3p1p/5pp1/2pN4/2PP4/8/PP2PPPP/R2QKBNR b KQkq",
@@ -23158,7 +23973,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/pp3p1p/5pp1/3N4/2PQ4/8/PP2PPPP/R3KBNR b KQkq",
@@ -23171,7 +23987,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/pp3p1p/5pp1/3N4/1bPQ4/8/PP2PPPP/R2K1BNR b kq",
@@ -23184,7 +24001,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/pp2pp1p/5np1/2pp2B1/2PP4/2N1P3/PP3PPP/R2QKBNR b KQkq",
@@ -23197,7 +24015,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/pp2ppbp/5np1/2pp2B1/2PP4/2N1PN2/PP3PPP/R2QKB1R b KQkq",
@@ -23210,7 +24029,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/pp2ppbp/5np1/3p2B1/2PN4/2N1P3/PP3PPP/R2QKB1R b KQkq",
@@ -23223,7 +24043,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/pp2pp1p/5np1/2pp2B1/2PP4/2N2N2/PP2PPPP/R2QKB1R b KQkq",
@@ -23236,7 +24057,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/pp2pp1p/5np1/3p2B1/2PN4/2N5/PP2PPPP/R2QKB1R b KQkq",
@@ -23249,7 +24071,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-bg5-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/5np1/3p4/2PP4/2N1P3/PP3PPP/R1BQKBNR b KQkq",
@@ -23262,7 +24085,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation"
-    ]
+    ],
+    "minPly": 6
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3p4/2PP4/1QN1P3/PP3PPP/R1B1KBNR b KQkq",
@@ -23275,7 +24099,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp2pbp/4pnp1/3p4/2PP4/Q1N1P3/PP3PPP/R1B1KBNR b KQkq",
@@ -23288,7 +24113,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r1bqk2r/ppp2pbp/2n1pnp1/3p4/2PP4/Q1N1PN2/PP3PPP/R1B1KB1R b KQkq",
@@ -23301,7 +24127,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r1bqk2r/ppp1npbp/4pnp1/3p4/2PP4/Q1N1PN2/PP2BPPP/R1B1K2R b KQkq",
@@ -23314,7 +24141,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r1bq1rk1/ppp1npbp/4pnp1/3p4/2PP4/Q1N1PN2/PP2BPPP/R1B2RK1 b -",
@@ -23327,7 +24155,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp2pbp/4pnp1/3p4/2PP4/1QN1PN2/PP3PPP/R1B1KB1R b KQkq",
@@ -23340,7 +24169,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp2pbp/4pnp1/3p4/2PP4/1QN1PN2/PP3PPP/R1B1KB1R b KQkq",
@@ -23353,7 +24183,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r1bqk2r/ppp2pbp/2n1pnp1/3P4/3P4/1QN1PN2/PP3PPP/R1B1KB1R b KQkq",
@@ -23366,7 +24197,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r1bqk2r/ppp2pbp/2n2np1/1B1p4/3P4/1QN1PN2/PP3PPP/R1B1K2R b KQkq",
@@ -23379,7 +24211,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r1bq1rk1/ppp2pbp/2B2np1/3p4/3P4/1QN1PN2/PP3PPP/R1B1K2R b KQ",
@@ -23392,7 +24225,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-qb3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp1ppbp/5np1/3P4/3P4/2N1P3/PP3PPP/R1BQKBNR b KQkq",
@@ -23405,7 +24239,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3N4/3P4/4P3/PP3PPP/R1BQKBNR b KQkq",
@@ -23418,7 +24253,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnb1k2r/ppp1ppbp/6p1/3q4/3P4/4P3/PP2NPPP/R1BQKB1R b KQkq",
@@ -23431,7 +24267,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnb2rk1/ppp1ppbp/6p1/3q4/3P4/2N1P3/PP3PPP/R1BQKB1R b KQ",
@@ -23444,7 +24281,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnb2rk1/ppp1ppbp/3q2p1/8/3P4/2N1P3/PP2BPPP/R1BQK2R b KQ",
@@ -23457,7 +24295,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnb2rk1/pp2ppbp/2pq2p1/8/3P4/2N1P3/PP2BPPP/R1BQ1RK1 b -",
@@ -23470,7 +24309,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnb1k2r/ppp1ppbp/6p1/3q4/3P4/4PN2/PP3PPP/R1BQKB1R b KQkq",
@@ -23483,7 +24323,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3n4/2BP4/2N1P3/PP3PPP/R1BQK1NR b KQkq",
@@ -23496,7 +24337,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/8/2BP4/2P1P3/P4PPP/R1BQK1NR b KQkq",
@@ -23509,7 +24351,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/6p1/2p5/2BP4/2P1PN2/P4PPP/R1BQK2R b KQkq",
@@ -23522,7 +24365,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnb1k2r/ppq1ppbp/6p1/2p5/2BP4/2P1PN2/P3QPPP/R1B1K2R b KQkq",
@@ -23535,7 +24379,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r1b1k2r/ppq1ppbp/2n3p1/2p5/2BP4/2P1PN2/P3QPPP/R1B2RK1 b kq",
@@ -23548,7 +24393,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-4-e3-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq",
@@ -23743,7 +24589,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/6P1/PP2PP1P/RNBQKBNR b KQkq",
@@ -23756,7 +24603,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/6P1/PP2PP1P/RNBQKBNR b KQkq",
@@ -23769,7 +24617,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/6P1/PP2PP1P/RNBQKBNR b KQkq",
@@ -23782,7 +24631,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pp1ppp1p/2p2np1/8/2PP4/6P1/PP2PPBP/RNBQK1NR b KQkq",
@@ -23795,7 +24645,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pp1ppp1p/2p2np1/8/2PP4/5NP1/PP2PP1P/RNBQKB1R b KQkq",
@@ -23809,7 +24660,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation",
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/5np1/3P4/3P4/6P1/PP2PP1P/RNBQKBNR b KQkq",
@@ -23822,7 +24674,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/3n4/3P4/6P1/PP2PPBP/RNBQK1NR b KQkq",
@@ -23835,7 +24688,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3n4/3PP3/6P1/PP3PBP/RNBQK1NR b KQkq",
@@ -23848,7 +24702,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/ppp1ppbp/6p1/3n4/3PP3/6P1/PP3PBP/RNBQK1NR b KQkq",
@@ -23861,7 +24716,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/ppp1ppbp/1n4p1/8/3PP3/6P1/PP2NPBP/RNBQK2R b KQkq",
@@ -23874,7 +24730,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pp2pp1p/2p2np1/3P4/3P4/6P1/PP2PPBP/RNBQK1NR b KQkq",
@@ -23887,7 +24744,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqkb1r/pp2pp1p/5np1/3p4/3P4/5NP1/PP2PPBP/RNBQK2R b KQkq",
@@ -23900,7 +24758,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqkb1r/pp2pp1p/5np1/3p4/3P4/2N3P1/PP2PPBP/R1BQK1NR b KQkq",
@@ -23913,7 +24772,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/5np1/3p4/3P4/2N2NP1/PP2PPBP/R1BQK2R b KQkq",
@@ -23926,7 +24786,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3pN3/3P4/2N3P1/PP2PPBP/R1BQK2R b KQ",
@@ -23940,7 +24801,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3",
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/p3ppbp/1p3np1/3pN3/3P4/2N3P1/PP2PPBP/R1BQ1RK1 b -",
@@ -23953,7 +24815,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn1q1rk1/pb2ppbp/1p3np1/3pN3/3P1B2/2N3P1/PP2PPBP/R2Q1RK1 b -",
@@ -23966,7 +24829,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r2q1rk1/pb2ppbp/1pn2np1/3pN3/3P1B2/2N3P1/PP2PPBP/2RQ1RK1 b -",
@@ -23979,7 +24843,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn1q1rk1/pb2ppbp/1p3np1/3pN3/Q2P4/2N3P1/PP2PPBP/R1B2RK1 b -",
@@ -23992,7 +24857,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3p4/3P4/2N2NP1/PP2PPBP/R1BQ1RK1 b -",
@@ -24006,7 +24872,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3",
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-0-0"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/p3ppbp/1p3np1/3p4/3P1B2/2N2NP1/PP2PPBP/R2Q1RK1 b -",
@@ -24019,7 +24886,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rn1q1rk1/pb2ppbp/1p3np1/3p4/3P1B2/2N2NP1/PP2PPBP/2RQ1RK1 b -",
@@ -24032,7 +24900,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-nc3"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/5np1/3pN3/3P4/6P1/PP2PPBP/RNBQK2R b KQkq",
@@ -24045,7 +24914,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3pN3/3P4/6P1/PP2PPBP/RNBQ1RK1 b -",
@@ -24058,7 +24928,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/5np1/3pN3/3P4/6P1/PP2PPBP/RNBQ1RK1 b -",
@@ -24071,7 +24942,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-0-0"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/3pN3/3Pn3/6P1/PP1NPPBP/R1BQ1RK1 b -",
@@ -24084,7 +24956,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/3pN3/3P4/6P1/PP1BPPBP/R2Q1RK1 b -",
@@ -24097,7 +24970,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp1nppbp/6p1/3pN3/3P4/2B3P1/PP2PPBP/R2Q1RK1 b -",
@@ -24110,7 +24984,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/3pN3/3Pn3/2N3P1/PP2PPBP/R1BQ1RK1 b -",
@@ -24123,7 +24998,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/3pN3/3P4/2P3P1/P3PPBP/R1BQ1RK1 b -",
@@ -24136,7 +25012,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp2ppbp/2N3p1/3p4/3P4/2P3P1/P3PPBP/R1BQ1RK1 b -",
@@ -24149,7 +25026,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/p3ppbp/2p3p1/3p4/Q2P4/2P3P1/P3PPBP/R1B2RK1 b -",
@@ -24162,7 +25040,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/p3ppbp/1qp3p1/3p4/Q2P4/B1P3P1/P3PPBP/R4RK1 b -",
@@ -24175,7 +25054,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1b2rk1/p3ppbp/Q1p3p1/3p4/3P4/B1P3P1/P3PPBP/R4RK1 b -",
@@ -24188,7 +25068,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/6p1/3pN3/3Pn3/5PP1/PP2P1BP/RNBQ1RK1 b -",
@@ -24201,7 +25082,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp2ppbp/3n2p1/3pN3/3P4/2N2PP1/PP2P1BP/R1BQ1RK1 b -",
@@ -24214,7 +25096,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp3pbp/3np1p1/3pN3/3PP3/2N2PP1/PP4BP/R1BQ1RK1 b -",
@@ -24227,7 +25110,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbq1rk1/pp3pbp/3np1p1/4N3/3PP3/2N3P1/PP4BP/R1BQ1RK1 b -",
@@ -24240,7 +25124,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-ne5"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqk2r/pp2ppbp/5np1/3p4/3P4/5NP1/PP2PPBP/RNBQ1RK1 b kq",
@@ -24253,7 +25138,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-0-0"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp1nppbp/5np1/3pN3/3P4/2N3P1/PP2PPBP/R1BQ1RK1 b -",
@@ -24266,7 +25152,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-0-0"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/pp1n1pbp/4pnp1/3pN3/3P1P2/2N3P1/PP2P1BP/R1BQ1RK1 b -",
@@ -24279,7 +25166,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-0-0"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/1p1n1pbp/p3pnp1/3pN3/P2P1P2/2N3P1/1P2P1BP/R1BQ1RK1 b -",
@@ -24292,7 +25180,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-0-0"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "r1bq1rk1/3n1pbp/pp2pnp1/3pN3/P2P1P2/1PN3P1/4P1BP/R1BQ1RK1 b -",
@@ -24305,7 +25194,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-cxd5-7-0-0"
-    ]
+    ],
+    "minPly": 12
   },
   {
     "key": "rnbqkb1r/pp2pp1p/2p2np1/3p4/2PP4/5NP1/PP2PPBP/RNBQK2R b KQkq",
@@ -24319,7 +25209,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3",
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pp2pp1p/2p2np1/8/2pP4/5NP1/PP2PPBP/RNBQ1RK1 b kq",
@@ -24333,7 +25224,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3",
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p2np1/8/P1pP4/5NP1/1P2PPBP/RNBQ1RK1 b kq",
@@ -24347,7 +25239,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3",
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p3p1/8/P1pPn3/5NP1/1PQ1PPBP/RNB2RK1 b kq",
@@ -24361,7 +25254,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3",
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/pp2ppbp/2pn2p1/8/P1pPP3/5NP1/1PQ2PBP/RNB2RK1 b kq",
@@ -24375,7 +25269,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3",
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r1bqk2r/pp2ppbp/n1pn2p1/8/P1pPP3/N4NP1/1PQ2PBP/R1B2RK1 b kq",
@@ -24388,7 +25283,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p3p1/8/P1pPn3/2N2NP1/1P2PPBP/R1BQ1RK1 b kq",
@@ -24401,7 +25297,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2pn2p1/8/P1pPP3/2N2NP1/1P3PBP/R1BQ1RK1 b kq",
@@ -24414,7 +25311,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rn1qk2r/pp2ppbp/2pn2p1/8/P1pPP1b1/2N1BNP1/1P3PBP/R2Q1RK1 b kq",
@@ -24427,7 +25325,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p2np1/4N3/2pP4/6P1/PP2PPBP/RNBQ1RK1 b kq",
@@ -24440,7 +25339,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p3p1/4N3/2pP1Pn1/6P1/PP2P1BP/RNBQ1RK1 b kq",
@@ -24453,7 +25353,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p3p1/4P3/2pP4/6P1/PP2P1BP/RNBQ1RK1 b kq",
@@ -24466,7 +25367,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-nf3"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqkb1r/pp2pp1p/2p2np1/3p4/Q1PP4/6P1/PP2PPBP/RNB1K1NR b KQkq",
@@ -24479,7 +25381,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p2np1/3P4/Q2P4/6P1/PP2PPBP/RNB1K1NR b KQkq",
@@ -24492,7 +25395,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p3p1/3n4/Q2P4/5NP1/PP2PPBP/RNB1K2R b KQkq",
@@ -24505,7 +25409,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/1np3p1/8/3P4/5NP1/PPQ1PPBP/RNB1K2R b KQkq",
@@ -24518,7 +25423,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rn1qk2r/pp2ppbp/1np3p1/8/3P2b1/4PNP1/PPQ2PBP/RNB1K2R b KQkq",
@@ -24531,7 +25437,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rn1q1rk1/pp2ppbp/1np3p1/8/3P2b1/4PNP1/PPQ2PBP/RNB2RK1 b -",
@@ -24544,7 +25451,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "r2q1rk1/pp2ppbp/nnp3p1/8/3P2b1/2N1PNP1/PPQ2PBP/R1B2RK1 b -",
@@ -24557,7 +25465,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/2p3p1/3n4/Q2PP3/6P1/PP3PBP/RNB1K1NR b KQkq",
@@ -24570,7 +25479,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqk2r/pp2ppbp/1np3p1/8/3PP3/6P1/PP3PBP/RNBQK1NR b KQkq",
@@ -24583,7 +25493,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-fianchetto-variation-5-qa4"
-    ]
+    ],
+    "minPly": 8
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/5N2/PP2PPPP/RNBQKB1R b KQkq",
@@ -24596,7 +25507,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/5N2/PP2PPPP/RNBQKB1R b KQkq",
@@ -24609,7 +25521,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pp1ppp1p/2p2np1/8/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq",
@@ -24622,7 +25535,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/pp1pppbp/2p2np1/8/2PPP3/2N2N2/PP3PPP/R1BQKB1R b KQkq",
@@ -24635,7 +25549,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp1pppbp/2p2np1/8/2PPP3/2N2N2/PP2BPPP/R1BQK2R b KQ",
@@ -24648,7 +25563,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2p2np1/3pP3/2PP4/2N2N2/PP2BPPP/R1BQK2R b KQ",
@@ -24661,7 +25577,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2p3p1/3pP3/2PPn3/2N2N2/PP2BPPP/R1BQ1RK1 b -",
@@ -24674,7 +25591,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2p3p1/3pP3/2PP4/2P2N2/P3BPPP/R1BQ1RK1 b -",
@@ -24687,7 +25605,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2p3p1/4P3/2BP4/2P2N2/P4PPP/R1BQ1RK1 b -",
@@ -24700,7 +25619,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp1pppbp/2p2np1/8/2PPP3/2NB1N2/PP3PPP/R1BQK2R b KQ",
@@ -24713,7 +25633,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2pp1np1/8/2PPP3/2NB1N1P/PP3PP1/R1BQK2R b KQ",
@@ -24726,7 +25647,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/1p2ppbp/p1pp1np1/8/2PPP3/2NB1N1P/PP3PP1/R1BQ1RK1 b -",
@@ -24739,7 +25661,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/4ppbp/p1pp1np1/1p2P3/2PP4/2NB1N1P/PP3PP1/R1BQ1RK1 b -",
@@ -24752,7 +25675,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp2ppbp/2pp1np1/8/2PPP3/2NB1N2/PP3PPP/R1BQ1RK1 b -",
@@ -24765,7 +25689,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/pp1pppbp/2p2np1/4P3/2PP4/2N2N2/PP3PPP/R1BQKB1R b KQ",
@@ -24778,7 +25703,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqnrk1/pp1pppbp/2p3p1/4P3/2PP4/2N2N2/PP2BPPP/R1BQK2R b KQ",
@@ -24791,7 +25717,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqnrk1/pp2ppbp/2pp2p1/4P3/2PP1B2/2N2N2/PP2BPPP/R2QK2R b KQ",
@@ -24804,7 +25731,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rn1qnrk1/pp2ppbp/2pp2p1/4P3/2PP1Bb1/2N2N2/PP2BPPP/R2Q1RK1 b -",
@@ -24817,7 +25745,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/5np1/3P4/3P4/5N2/PP2PPPP/RNBQKB1R b KQkq",
@@ -24830,7 +25759,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/3n4/3PP3/5N2/PP3PPP/RNBQKB1R b KQkq",
@@ -24843,7 +25773,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/1n4p1/8/3PP3/5N1P/PP3PP1/RNBQKB1R b KQkq",
@@ -24856,7 +25787,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-nf3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/5P2/PP2P1PP/RNBQKBNR b KQkq",
@@ -24869,7 +25801,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/5P2/PP2P1PP/RNBQKBNR b KQkq",
@@ -24882,7 +25815,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pppppp1p/5np1/8/2PP4/5P2/PP2P1PP/RNBQKBNR b KQkq",
@@ -24895,7 +25829,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/5np1/3P4/3P4/5P2/PP2P1PP/RNBQKBNR b KQkq",
@@ -24908,7 +25843,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/6p1/3n4/3PP3/5P2/PP4PP/RNBQKBNR b KQkq",
@@ -24921,7 +25857,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/ppp1pp1p/1n4p1/8/3PP3/2N2P2/PP4PP/R1BQKBNR b KQkq",
@@ -24934,7 +25871,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/ppp1ppbp/1n4p1/8/3PP3/2N1BP2/PP4PP/R2QKBNR b KQkq",
@@ -24947,7 +25885,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbq1rk1/ppp1ppbp/1n4p1/8/3PP3/2N1BP2/PP1Q2PP/R3KBNR b KQ",
@@ -24960,7 +25899,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r1bq1rk1/ppp1ppbp/1nn3p1/8/3PP3/2N1BP2/PP1Q2PP/2KR1BNR b -",
@@ -24973,7 +25913,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r1bq1rk1/ppp1p1bp/1nn3p1/4Pp2/3P4/2N1BP2/PP1Q2PP/2KR1BNR b -",
@@ -24986,7 +25927,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r1bq1rk1/ppp1p1bp/1n4p1/4Pp2/1n1P4/2N1BP1N/PP1Q2PP/2KR1B1R b -",
@@ -24999,7 +25941,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r2q1rk1/ppp1p1bp/1n2b1p1/4Pp2/1n1P4/2N1BP1N/PP1Q2PP/1K1R1B1R b -",
@@ -25012,7 +25955,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r4rk1/pppqp1bp/1n2b1p1/4Pp2/1n1P1N2/2N1BP2/PP1Q2PP/1K1R1B1R b -",
@@ -25025,7 +25969,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r4rk1/pppqpbbp/1n4p1/4Pp2/1n1P1N2/P1N1BP2/1P1Q2PP/1K1R1B1R b -",
@@ -25038,7 +25983,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r4rk1/pppqpbbp/1n4p1/3NPp2/3P1N2/P3BP2/1P1Q2PP/1K1R1B1R b -",
@@ -25051,7 +25997,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r4rk1/pppqpbbp/6p1/3nPp2/2BP1N2/P3BP2/1P1Q2PP/1K1R3R b -",
@@ -25064,7 +26011,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r4rk1/pppqpBbp/6p1/4Pp2/3P1n2/P3BP2/1P1Q2PP/1K1R3R b -",
@@ -25077,7 +26025,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r5k1/pppqprbp/6p1/4Pp2/3P1B2/P4P2/1P1Q2PP/1K1R3R b -",
@@ -25090,7 +26039,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r5k1/pppq1rbp/4p1p1/4Pp2/3P1B1P/P4P2/1P1Q2P1/1K1R3R b -",
@@ -25103,7 +26053,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r1bq1rk1/ppp1p1bp/1nn3p1/5p2/3PP2P/2N1BP2/PP1Q2P1/2KR1BNR b -",
@@ -25116,7 +26067,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r1bq1rk1/ppp1p1bp/1nn3p1/7P/3Pp3/2N1BP2/PP1Q2P1/2KR1BNR b -",
@@ -25129,7 +26081,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r1bq1rk1/ppp1p1bp/1nn5/7R/3Pp3/2N1BP2/PP1Q2P1/2KR1BN1 b -",
@@ -25142,7 +26095,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "r2q1rk1/ppp1p1bp/1nn5/5bR1/3Pp3/2N1BP2/PP1Q2P1/2KR1BN1 b -",
@@ -25155,7 +26109,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqkb1r/pp1ppp1p/5np1/2pP4/2P5/5P2/PP2P1PP/RNBQKBNR b KQkq",
@@ -25168,7 +26123,8 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   },
   {
     "key": "rnbqk2r/pp1pppbp/5np1/2pP4/2P1P3/5P2/PP4PP/RNBQKBNR b KQkq",
@@ -25181,6 +26137,7 @@ export const BRANDON_BOOK: readonly BrandonBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "brandon-gruenfeld-3-f3-variation"
-    ]
+    ],
+    "minPly": 4
   }
 ];

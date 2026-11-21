@@ -27,7 +27,7 @@ function planFor(
   random: () => number = () => 0.9,
 ): KidPlan | null {
   const { history, fen } = line(sans);
-  return kidPlan(fen, history, style, random);
+  return kidPlan(fen, history, style, 'b', random);
 }
 
 const CANDIDATE = (uci: string, scoreCp: number): PersonalityCandidate => ({
@@ -49,25 +49,30 @@ test('the Pirc keeps 1.e4 and the King’s Indian keeps 1.d4', () => {
 });
 
 test('transpositions from 1.c4 and 1.Nf3 still reach the King’s Indian', () => {
+  /* 1.c4 is already a centre pawn, so the plan answers it. */
   const english = planFor(['c4']);
   assert.ok(english);
   assert.equal(english.moves[0]?.uci, 'g8f6');
 
-  const reti = planFor(['Nf3']);
+  /* 1.Nf3 is not evidence on its own — the plan waits for the centre. */
+  assert.equal(planFor(['Nf3']), null);
+
+  /* Once the centre arrives, the same move order is played as a King's Indian. */
+  const reti = planFor(['Nf3', 'Nf6', 'c4']);
   assert.ok(reti);
-  assert.equal(reti.moves[0]?.uci, 'g8f6');
+  assert.equal(reti.moves[0]?.uci, 'g7g6');
 });
 
 test('it declines the King’s Indian once the structure is not one', () => {
   /* A Queen's Gambit structure: Black has committed to ...d5. */
   const qgd = line(['d4', 'd5', 'c4', 'e6']);
   assert.equal(isKidOpening(qgd.fen, qgd.history), false);
-  assert.equal(kidPlan(qgd.fen, qgd.history, JUNIOR), null);
+  assert.equal(kidPlan(qgd.fen, qgd.history, JUNIOR, 'b'), null);
 
   /* The fianchetto bishop has been developed elsewhere. */
   const game = new Chess();
   for (const san of ['d4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4']) game.move(san);
-  assert.equal(kidPlan(game.fen(), ['d4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4'], JUNIOR), null);
+  assert.equal(kidPlan(game.fen(), ['d4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4'], JUNIOR, 'b'), null);
 });
 
 test('Junior builds the whole setup before breaking', () => {
@@ -128,7 +133,7 @@ test('the plan is legal moves only', () => {
   for (const sans of positions) {
     const { fen, history } = line(sans);
     for (const style of [SOPHOMORE, JUNIOR]) {
-      const plan = kidPlan(fen, history, style, () => 0.5);
+      const plan = kidPlan(fen, history, style, 'b', () => 0.5);
       if (!plan) continue;
       const game = new Chess(fen);
       const legal = new Set(
@@ -152,6 +157,7 @@ test('engine evaluation gates the break, and style sets how strictly', () => {
     fen,
     history,
     style: styleFor('junior', 2150)!,
+    color: 'b',
     elo: 2150,
     candidates,
     random: () => 0.9,
@@ -160,6 +166,7 @@ test('engine evaluation gates the break, and style sets how strictly', () => {
     fen,
     history,
     style: styleFor('sophomore', 1450)!,
+    color: 'b',
     elo: 1450,
     candidates,
     random: () => 0.9,
@@ -175,6 +182,7 @@ test('a preferred move the engine does not list is never played', () => {
     fen,
     history,
     style: styleFor('junior', 2150)!,
+    color: 'b',
     elo: 2150,
     candidates: [CANDIDATE('d2d4', 25), CANDIDATE('c2c4', 20)],
     random: () => 0.9,
@@ -188,6 +196,7 @@ test('the chosen King’s Indian move comes from the engine candidates', () => {
     fen,
     history,
     style: styleFor('junior', 2150)!,
+    color: 'b',
     elo: 2150,
     candidates: [CANDIDATE('g8f6', 30), CANDIDATE('d7d5', 25)],
     random: () => 0.9,

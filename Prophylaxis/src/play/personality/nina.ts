@@ -8,6 +8,7 @@ import {
 } from './engine.ts';
 import type { BookMove } from './repertoires/book.ts';
 import type { PersonalityStyle } from './styles.ts';
+import type { PlayColor } from '../types.ts';
 import { chooseFaadiBookMove } from './faadi.ts';
 import { chooseEdwardBookMove } from './edward.ts';
 import { chooseBrandonFreshmanBookMove } from './brandonFreshman.ts';
@@ -89,14 +90,19 @@ export function ninaPlan(
   fen: string,
   history: readonly string[],
   style: PersonalityStyle,
+  /** The seat this bot owns in this game. */
+  color: PlayColor,
   forgotten = false,
 ): NinaPlan | null {
   if (!isNinaProfile(style.id) || forgotten) return null;
   const game = new Chess(fen);
+  /* Her own plan, her own seat: a mismatch means the board is not hers to
+     move in, so stay silent and let ordinary selection run. */
+  if (game.turn() !== color) return null;
   const moveNumber = history.length;
   if (moveNumber > 12) return null;
 
-  if (game.turn() === 'w') {
+  if (color === 'w') {
     /* Only the Jobava move order: 1.d4 and no other first move. */
     if (history.length > 0 && history[0] !== 'd4') return null;
     if (history.length > 0 && !pawnOnFile(game, 'w', 'd')) return null;
@@ -154,12 +160,14 @@ export function chooseNinaPlanMove(input: {
   fen: string;
   history: readonly string[];
   style: PersonalityStyle;
+  /** The seat this bot owns in this game. */
+  color: PlayColor;
   elo: number;
   candidates: readonly PersonalityCandidate[];
   forgotten?: boolean;
 }): SelectionResult | null {
-  const { fen, history, style, elo, candidates } = input;
-  const plan = ninaPlan(fen, history, style, input.forgotten);
+  const { fen, history, style, color, elo, candidates } = input;
+  const plan = ninaPlan(fen, history, style, color, input.forgotten);
   if (!plan) return null;
 
   const game = new Chess(fen);

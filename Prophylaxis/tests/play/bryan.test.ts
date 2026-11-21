@@ -319,7 +319,7 @@ test('the King’s Indian setup is legal, position-aware and only on 1.d4', () =
   const history = ['d4'];
   assert.equal(isKidOpening(afterD4.fen(), history), true);
 
-  const plan = kidPlan(afterD4.fen(), history, BRYAN_STYLE, () => 0.1);
+  const plan = kidPlan(afterD4.fen(), history, BRYAN_STYLE, 'b', () => 0.1);
   assert.ok(plan);
   assert.equal(plan.moves[0]?.uci, 'g8f6', 'the setup starts with ...Nf6');
   for (const move of plan.moves) assertLegal(afterD4.fen(), move.uci);
@@ -330,7 +330,7 @@ test('the King’s Indian setup is legal, position-aware and only on 1.d4', () =
   const builtHistory = ['d4', 'Nf6', 'Nf3', 'g6', 'c4', 'Bg7', 'Nc3', 'd6', 'e4', 'O-O', 'Be2'];
   const built = position(...builtHistory);
   assert.equal(isKidOpening(built.fen(), builtHistory), true);
-  const builtPlan = kidPlan(built.fen(), builtHistory, BRYAN_STYLE, () => 0.9);
+  const builtPlan = kidPlan(built.fen(), builtHistory, BRYAN_STYLE, 'b', () => 0.9);
   assert.ok(builtPlan);
   assert.equal(builtPlan.setupComplete, true);
   assert.ok(builtPlan.moves.some((move) => move.uci === 'e7e5'), 'the classical break is preferred');
@@ -338,7 +338,7 @@ test('the King’s Indian setup is legal, position-aware and only on 1.d4', () =
 
   /* Against 1.e4 the Pirc book owns the opening; the KID must not fire. */
   assert.equal(isKidOpening(position('e4').fen(), ['e4']), false);
-  assert.equal(kidPlan(position('e4').fen(), ['e4'], BRYAN_STYLE), null);
+  assert.equal(kidPlan(position('e4').fen(), ['e4'], BRYAN_STYLE, 'b'), null);
 
   /* A Queen’s Gambit structure is not a King’s Indian. */
   assert.equal(isKidOpening(position('d4', 'd5').fen(), ['d4', 'd5']), false);
@@ -349,15 +349,15 @@ test('Bryan’s King’s Indian is his own reading, and the others are untouched
   const junior = styleFor('junior', 2150) as PersonalityStyle;
   const sophomore = styleFor('sophomore', 1450) as PersonalityStyle;
 
-  const bryanSetup = kidPlan(afterD4.fen(), ['d4'], BRYAN_STYLE, () => 0.5);
+  const bryanSetup = kidPlan(afterD4.fen(), ['d4'], BRYAN_STYLE, 'b', () => 0.5);
   assert.equal(bryanSetup?.moves[0]?.uci, 'g8f6', 'Bryan builds the setup first');
   assert.equal(
-    kidPlan(afterD4.fen(), ['d4'], junior, () => 0.5)?.moves[0]?.uci,
+    kidPlan(afterD4.fen(), ['d4'], junior, 'b', () => 0.5)?.moves[0]?.uci,
     'g8f6',
     'Junior is unchanged',
   );
   assert.equal(
-    kidPlan(afterD4.fen(), ['d4'], sophomore, () => 0.5)?.moves[0]?.uci,
+    kidPlan(afterD4.fen(), ['d4'], sophomore, 'b', () => 0.5)?.moves[0]?.uci,
     'g8f6',
     'Sophomore is unchanged',
   );
@@ -534,7 +534,7 @@ test('the two Bryans share one voice and one repertoire', () => {
   );
 
   const afterD4 = position('d4');
-  const plan = kidPlan(afterD4.fen(), ['d4'], PRIME_STYLE, () => 0.5);
+  const plan = kidPlan(afterD4.fen(), ['d4'], PRIME_STYLE, 'b', () => 0.5);
   assert.equal(plan?.moves[0]?.uci, 'g8f6', 'the King’s Indian setup is shared too');
   for (const move of plan?.moves ?? []) assertLegal(afterD4.fen(), move.uci);
 });

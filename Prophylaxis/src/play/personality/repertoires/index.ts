@@ -101,6 +101,8 @@ interface CompiledEntry {
   lineIds: string[];
   tags: BookMove['tags'];
   weight: number;
+  /** Plies already played when a FEN-started chapter began. */
+  minPly?: number;
 }
 
 function compiledBooks(entries: readonly CompiledEntry[]): PersonalityBooks {
@@ -114,6 +116,7 @@ function compiledBooks(entries: readonly CompiledEntry[]): PersonalityBooks {
       lineIds: [...entry.lineIds],
       tags: [...entry.tags],
       weight: entry.weight,
+      ...(entry.minPly ? { minPly: entry.minPly } : {}),
     };
     const list = target.get(entry.key);
     if (list) list.push(move);

@@ -386,7 +386,7 @@ test('Black answers 1.d4 with 1...d5 and never a Grünfeld', () => {
     ['dxc4'],
     'Queen’s Gambit Accepted, not a Grünfeld',
   );
-  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE), null);
+  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE, 'b'), null);
 
   /* No Grünfeld: no ...g6/...Bg7 block, and his book never offers ...g6 after
      1.d4 d5. */

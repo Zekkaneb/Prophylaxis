@@ -66,7 +66,7 @@ test('1.d4 is covered by the book, or by the principle-based King’s Indian', (
       0,
       `${id} must not ship a King’s Indian PGN`,
     );
-    const plan = kidPlan(game.fen(), ['d4'], PERSONALITY_STYLES[id]);
+    const plan = kidPlan(game.fen(), ['d4'], PERSONALITY_STYLES[id], 'b');
     assert.ok(plan, `${id} has no King’s Indian preference`);
     assert.equal(plan.moves[0]?.uci, 'g8f6');
   }

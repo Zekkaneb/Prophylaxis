@@ -381,7 +381,7 @@ test('against 1.d4 he builds the King’s Indian setup as a principle', () => {
 
   /* The plan starts with ...Nf6, then the fianchetto, and only commits once the
      structure is built. */
-  const start = kidPlan(position('d4').fen(), ['d4'], STYLE);
+  const start = kidPlan(position('d4').fen(), ['d4'], STYLE, 'b');
   assert.ok(start);
   assert.equal(start.moves[0]?.uci, 'g8f6');
 
@@ -401,7 +401,7 @@ test('against 1.d4 he builds the King’s Indian setup as a principle', () => {
   const plan = kidPlan(
     built.fen(),
     ['d4', 'Nf6', 'c4', 'g6', 'Nc3', 'Bg7', 'e4', 'd6', 'Nf3', 'O-O', 'Be2'],
-    STYLE,
+    STYLE, 'b',
   );
   assert.ok(plan);
   assert.equal(plan.setupComplete, true);
@@ -410,7 +410,7 @@ test('against 1.d4 he builds the King’s Indian setup as a principle', () => {
 
   /* It is a preference, never a script: after 1.e4 a King’s Indian is wrong, so
      the layer declines and ordinary selection takes over. */
-  assert.equal(kidPlan(position('e4').fen(), ['e4'], STYLE), null);
+  assert.equal(kidPlan(position('e4').fen(), ['e4'], STYLE, 'b'), null);
 });
 
 test('his book compiles, stays legal, and borrows nothing from another opponent', () => {

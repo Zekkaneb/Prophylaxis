@@ -44,7 +44,6 @@ import {
   referenceCandidateScores,
   rollPhaseProfile,
   selectHumanBotMove,
-  usesOpeningBook,
   timeControlCategory,
   type Bucket,
   type HumanMoveChoice,
@@ -77,6 +76,7 @@ import {
 import { bookKey, legalBookMoves } from './personality/repertoires/book.ts';
 import { personalityBookFor } from './personality/repertoires/index.ts';
 import { chooseKidMove, kidPlan } from './personality/repertoires/kid.ts';
+import { theoryOpen } from './theory.ts';
 import {
   chooseNinaBookMove,
   chooseNinaPlanMove,
@@ -157,27 +157,9 @@ interface BotTimers {
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-/**
- * Deepest ply of prepared theory a personality may keep following, by rating.
- *
- * A repertoire is a memory, and memory is part of strength: an 1150 who recites
- * twelve moves of grandmaster theory is not an 1150 any more. The cap is checked
- * against the number of plies already played, and it gates every theory source
- * (repertoire, Nina's plan, the King's Indian plan), not just the book table.
- */
-export const BOOK_PLY_CAP = {
-  beginner: 4,
-  club: 6,
-  expert: 8,
-  master: 12,
-} as const;
-
-export function bookPlyLimit(elo: number): number {
-  if (elo <= 1000) return BOOK_PLY_CAP.beginner;
-  if (elo <= 1500) return BOOK_PLY_CAP.club;
-  if (elo <= 2000) return BOOK_PLY_CAP.expert;
-  return BOOK_PLY_CAP.master;
-}
+/* The theory window lives in `theory.ts`, shared with Watch Bots; re-exported
+   here because this hook has always been its public entry point. */
+export { BOOK_PLY_CAP, bookPlyLimit, theoryWindow } from './theory.ts';
 
 /**
  * Opening book for a beginner general bot, and the only book it may read.
@@ -571,7 +553,7 @@ export function usePlayGame(engine: StockfishController) {
     /** Theory is only followed while this rating would still remember it, and
      * only above the random floor: a 200 does not answer 1.e4 with book lines
      * when it is playing two moves in five at random. */
-    const inBookWindow = sansRef.current.length < bookPlyLimit(elo) && usesOpeningBook(elo);
+    const inBookWindow = theoryOpen(elo, sansRef.current.length);
     /** A search that resolves after a rematch must not move in the new game. */
     const searchGameId = gameIdRef.current;
     let uci: string | null = null;
@@ -639,9 +621,10 @@ export function usePlayGame(engine: StockfishController) {
          principle-based system, and only then ordinary engine play. */
       const nina =
         !uci && style && inBookWindow
-          ? ninaPlan(fen, sansRef.current, style, openingMemoryRef.current.forgotten)
+          ? ninaPlan(fen, sansRef.current, style, botColor, openingMemoryRef.current.forgotten)
           : null;
-      const kid = !uci && style && inBookWindow ? kidPlan(fen, sansRef.current, style) : null;
+      const kid =
+        !uci && style && inBookWindow ? kidPlan(fen, sansRef.current, style, botColor) : null;
       const source = openingSource({
         bookMove: Boolean(uci),
         ninaPlan: Boolean(nina),
@@ -775,6 +758,7 @@ export function usePlayGame(engine: StockfishController) {
                 fen,
                 history: sansRef.current,
                 style,
+                color: botColor,
                 elo,
                 candidates: evaluation.candidates,
               })
@@ -834,6 +818,7 @@ export function usePlayGame(engine: StockfishController) {
                 fen,
                 history: sansRef.current,
                 style,
+                color: botColor,
                 elo,
                 candidates: evaluation.candidates,
                 forgotten: openingMemoryRef.current.forgotten,

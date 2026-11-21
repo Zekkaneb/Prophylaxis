@@ -25,22 +25,53 @@ export interface BookMove {
   lineIds: string[];
   tags: OpeningTag[];
   weight: number;
+  /**
+   * Plies already played when the source chapter began; absent means a chapter
+   * that starts from the standard position. A chapter compiled from a mid-line
+   * FEN keeps its knowledge for the depth it was written for and cannot answer
+   * a shallower game that happens to reach the same board.
+   */
+  minPly?: number;
 }
 
 export type PersonalityBook = Map<string, BookMove[]>;
 
 /**
- * Book key: board, side to move and castling rights.
+ * Book key: board, side to move, castling rights, and en passant *when it can
+ * actually be used*.
  *
- * En passant is deliberately dropped. It changes between move orders that
- * reach the same position (after 1.d4 d5 2.c4 vs 1.c4 d5 2.d4), which would
- * otherwise defeat the transposition matching the book exists to provide. Any
- * move taken from the book is still validated against the live position, so a
- * merged key can never produce an illegal move.
+ * En passant is normally dropped: it differs between move orders that reach the
+ * same position (after 1.d4 d5 2.c4 vs 1.c4 d5 2.d4), which would otherwise
+ * defeat the transposition matching the book exists to provide. The exception is
+ * the one case where the field changes the legal moves — a pawn that may be
+ * captured en passant. There the target is part of the position, so a key that
+ * ignored it let a book entry requiring `dxe3` match a board where that capture
+ * is impossible. Positions whose ep target exists but is not capturable (no
+ * adjoining pawn, or the capture would leave the king in check) key identically
+ * to the same position without the target, so nothing is split needlessly.
  */
 export function bookKey(fen: string): string {
   const [board, turn, castling] = fen.trim().split(/\s+/);
-  return `${board} ${turn} ${castling}`;
+  const ep = capturableEnPassant(fen);
+  return ep ? `${board} ${turn} ${castling} ${ep}` : `${board} ${turn} ${castling}`;
+}
+
+/**
+ * The en passant target of `fen` when a legal en passant capture exists, else
+ * null.
+ */
+export function capturableEnPassant(fen: string): string | null {
+  const target = fen.trim().split(/\s+/)[3];
+  if (!target || target === '-') return null;
+  let game: Chess;
+  try {
+    game = new Chess(fen);
+  } catch {
+    return null;
+  }
+  return game.moves({ verbose: true }).some((move) => move.flags.includes('e'))
+    ? target
+    : null;
 }
 
 export interface BookIssue {
@@ -135,7 +166,8 @@ export function findBookMoves(book: PersonalityBook, fen: string): BookMove[] {
  *
  * The declaration is static and tested, but this guard means a future edit can
  * never make the bot attempt an illegal move: if it is not in `game.moves()`,
- * it is not offered.
+ * it is not offered. A move compiled from a mid-line chapter is also withheld
+ * until the game has reached at least the depth that chapter began at.
  */
 export function legalBookMoves(
   book: PersonalityBook,
@@ -144,7 +176,10 @@ export function legalBookMoves(
   const legal = new Set(
     game.moves({ verbose: true }).map((move) => `${move.from}${move.to}${move.promotion ?? ''}`),
   );
-  return findBookMoves(book, game.fen()).filter((move) => legal.has(move.uci));
+  const plies = game.history().length;
+  return findBookMoves(book, game.fen()).filter(
+    (move) => legal.has(move.uci) && plies >= (move.minPly ?? 0),
+  );
 }
 
 export function booksForRepertoire(

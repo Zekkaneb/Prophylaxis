@@ -389,7 +389,7 @@ test('Black answers 1.d4 with 1...d5 and principled development', () => {
     ['e6'],
   );
   /* She declines the King's Indian layer: 1...d5 is her answer. */
-  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE), null);
+  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE, 'b'), null);
 });
 
 test('outside her book she falls back to legal, sensible moves', async () => {

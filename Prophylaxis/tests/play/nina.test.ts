@@ -134,13 +134,13 @@ test('Nina has independent Jobava and Caro-Kann books', () => {
 
 test('the 1...d5 and Jobava first moves are principles, not fabricated lines', () => {
   const start = new Chess();
-  const white = ninaPlan(start.fen(), [], NINA);
+  const white = ninaPlan(start.fen(), [], NINA, 'w');
   assert.deepEqual(white?.moves.map((move) => move.uci), ['d2d4']);
 
   const afterD4 = new Chess();
   afterD4.move('d4');
   assert.deepEqual(
-    ninaPlan(afterD4.fen(), ['d4'], NINA)?.moves.map((move) => move.uci),
+    ninaPlan(afterD4.fen(), ['d4'], NINA, 'b')?.moves.map((move) => move.uci),
     ['d7d5'],
   );
   assert.equal(
@@ -148,6 +148,7 @@ test('the 1...d5 and Jobava first moves are principles, not fabricated lines', (
       fen: afterD4.fen(),
       history: ['d4'],
       style: NINA,
+      color: 'b',
       elo: 1550,
       candidates: [],
     })?.uci,
@@ -157,7 +158,7 @@ test('the 1...d5 and Jobava first moves are principles, not fabricated lines', (
 
   const afterE4 = new Chess();
   afterE4.move('e4');
-  assert.equal(ninaPlan(afterE4.fen(), ['e4'], NINA), null, '1.e4 is the Caro-Kann book');
+  assert.equal(ninaPlan(afterE4.fen(), ['e4'], NINA, 'b'), null, '1.e4 is the Caro-Kann book');
 });
 
 test('opening recall is occasional, branch-sensitive and ends the book for the game', () => {
@@ -224,6 +225,7 @@ test('Nina leaves both book and principles after forgetting and plays a legal en
       fen: start.fen(),
       history: [],
       style: NINA,
+      color: 'w',
       elo: 1550,
       candidates: [],
       forgotten: true,

@@ -623,7 +623,9 @@ test('a forgotten opening move is a deviation: normal play, still a legal move',
     history: ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6'],
     botColor: 'w',
     style: STYLE,
-    elo: 800,
+    /* Six plies of theory need a rating whose window still reaches them: the
+       shared cap is four plies at 1000 and below (see `theory.ts`). */
+    elo: 1600,
     clockMs: null,
     incrementMs: 0,
     initialMs: 0,

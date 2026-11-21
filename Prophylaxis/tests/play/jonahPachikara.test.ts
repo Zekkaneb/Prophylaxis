@@ -340,7 +340,7 @@ test('Black answers 1.d4 with 1...d5 and principled development', () => {
   ).map((move) => move.san);
   assert.ok(afterD5.includes('e6'), 'Queen’s Gambit Declined structure');
   /* He never reaches for the King's Indian layer: 1...d5 is his answer. */
-  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE), null);
+  assert.equal(kidPlan(position('d4').fen(), ['d4'], STYLE, 'b'), null);
 });
 
 test('outside his book he falls back to legal, principled moves', async () => {

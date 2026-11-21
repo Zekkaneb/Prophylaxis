@@ -20,6 +20,7 @@ import {
 import { bryanAlapinPreference } from './bryan.ts';
 import { hasPreparedOpening, openingSource, shouldTakeBlunder } from './opening.ts';
 import { legalBookMoves } from './repertoires/book.ts';
+import { theoryWindow } from '../theory.ts';
 import { personalityBookFor } from './repertoires/index.ts';
 import { chooseKidMove, kidPlan } from './repertoires/kid.ts';
 import {
@@ -114,11 +115,15 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   let forgotten = false;
   let candidates: readonly PersonalityCandidate[] = [];
 
+  /* One window for every theory source, shared with regular Play: repertoire,
+     Nina's skeleton and the King's Indian plan all stop at the same ply. */
+  const theory = theoryWindow(elo, history.length);
+
   if (style) {
     /* Bryan's one stated preference outranks the shared book: 2.c3 against the
        Sicilian, where his borrowed White book would otherwise play Brandon's
        2.Ne2. Null for every other character and every other position. */
-    const alapin = bryanAlapinPreference(fen, history, style);
+    const alapin = theory.open ? bryanAlapinPreference(fen, history, style) : null;
     if (alapin) {
       uci = alapin;
       bookMove = true;
@@ -134,7 +139,9 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
     }
 
     if (!uci) {
-      const moves = legalBookMoves(personalityBookFor(style.id, botColor), game);
+      const moves = theory.open
+        ? legalBookMoves(personalityBookFor(style.id, botColor), game)
+        : [];
       const chosen = chooseNinaBookMove({
         moves,
         style,
@@ -160,10 +167,10 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   }
 
   const nina =
-    !uci && style
-      ? ninaPlan(fen, history, style, input.openingMemory?.forgotten)
+    !uci && style && theory.open
+      ? ninaPlan(fen, history, style, botColor, input.openingMemory?.forgotten)
       : null;
-  const kid = !uci && style ? kidPlan(fen, history, style) : null;
+  const kid = !uci && style && theory.open ? kidPlan(fen, history, style, botColor) : null;
   const source = openingSource({
     bookMove: Boolean(uci),
     ninaPlan: Boolean(nina),
@@ -249,6 +256,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
             fen,
             history,
             style,
+            color: botColor,
             elo,
             candidates: evaluation.candidates,
           })
@@ -301,6 +309,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
             fen,
             history,
             style,
+            color: botColor,
             elo,
             candidates: evaluation.candidates,
             forgotten: input.openingMemory?.forgotten,

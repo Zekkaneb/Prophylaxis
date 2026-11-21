@@ -15,6 +15,8 @@ export interface NinaBookEntry {
   tags: OpeningTag[];
   weight: number;
   lineIds: string[];
+  /** Plies already played when a FEN-started chapter began. */
+  minPly?: number;
 }
 
 export const NINA_BOOK_STATS = {
@@ -2112,7 +2114,7 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     ]
   },
   {
-    "key": "r3k2r/pp1nb1p1/q1p1p2p/3pPp1P/N2P1Bn1/P2P4/1P3PP1/1R1QK1NR w Kkq",
+    "key": "r3k2r/pp1nb1p1/q1p1p2p/3pPp1P/N2P1Bn1/P2P4/1P3PP1/1R1QK1NR w Kkq f6",
     "uci": "f2f3",
     "san": "f3",
     "tags": [
@@ -2266,7 +2268,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-labahn-attack-2-b4",
       "nina-caro-kann-bird-variation-2-f4",
       "nina-caro-kann-st-patrick-s-attack-2-h3-d5-3-nc3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -2302,7 +2305,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-gurgenidze-counterattack-2-d4-d5-3-nc3-b5",
       "nina-caro-kann-von-hennig-gambit-2-d4-d5-3-nc3-dxe4-4-bc4",
       "nina-caro-kann-rasa-studier-gambit-2-d4-d5-3-nc3-dxe4-4-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -2395,7 +2399,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-where-to-start",
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5",
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -2412,7 +2417,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-caveman-attack",
       "nina-caro-kann-bayonet-attack-3-bf5-4-g4",
       "nina-caro-kann-van-der-wiel-shirov-attack-3-bf5-4-nc3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -2453,7 +2459,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-where-to-start",
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq",
@@ -2475,7 +2482,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-alekhine-gambit-4-nf6-5-bd3",
       "nina-caro-kann-von-hennig-gambit-2-d4-d5-3-nc3-dxe4-4-bc4",
       "nina-caro-kann-rasa-studier-gambit-2-d4-d5-3-nc3-dxe4-4-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq",
@@ -2491,7 +2499,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6",
       "nina-caro-kann-gurgenidze-counterattack-2-d4-d5-3-nc3-b5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq",
@@ -2545,7 +2554,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-where-to-start",
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/8/3PN3/8/PPP2PPP/R1BQKBNR b KQkq",
@@ -2562,7 +2572,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-",
       "nina-caro-kann-mar-czy-attack-4-bf5-5-ng3-bg6-6-f4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/8/3PN3/8/PPP2PPP/R1BQKBNR b KQkq",
@@ -2576,7 +2587,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/8/3PN3/8/PPP2PPP/R1BQKBNR b KQkq",
@@ -2593,7 +2605,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6",
       "nina-caro-kann-bronstein-larsen-variation-4-nf6-5-nxf6-gxf6",
       "nina-caro-kann-alekhine-gambit-4-nf6-5-bd3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2pppp/2p5/5b2/3P4/6N1/PPP2PPP/R1BQKBNR b KQkq",
@@ -2610,7 +2623,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-",
       "nina-caro-kann-mar-czy-attack-4-bf5-5-ng3-bg6-6-f4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2pppp/2p3b1/8/3P3P/6N1/PPP2PP1/R1BQKBNR b KQkq",
@@ -2625,7 +2639,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-where-to-start",
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2pppp/2p3b1/8/3P3P/6N1/PPP2PP1/R1BQKBNR b KQkq",
@@ -2657,7 +2672,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-4-nf3",
       "nina-caro-kann-panov-attack-3-cxd5-4-c4",
       "nina-caro-kann-gunderam-attack-4-nf6-5-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3P4/3P4/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -2713,7 +2729,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-",
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6",
       "nina-caro-kann-alekhine-gambit-4-nf6-5-bd3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPPN1PPP/R1BQKBNR b KQkq",
@@ -2760,7 +2777,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5",
       "nina-caro-kann-goldmann-variation-2-nc3-d5-3-qf3",
       "nina-caro-kann-kingside-fianchetto-2-nc3-d5-3-g3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq",
@@ -2827,7 +2845,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-where-to-start",
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3",
       "nina-caro-kann-3-nf6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/4P3/2N2N2/PPPP1PPP/R1BQKB1R b KQkq",
@@ -2843,7 +2862,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3",
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/4P3/2N2N2/PPPP1PPP/R1BQKB1R b KQkq",
@@ -2870,7 +2890,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3",
       "nina-caro-kann-mindeno-variation-3-bg4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/4P3/2N2N2/PPPP1PPP/R1BQKB1R b KQkq",
@@ -2926,7 +2947,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-panov-attack-3-cxd5-4-c4",
       "nina-caro-kann-accelerated-panov-main-line-2-c4-d5",
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/2P1P3/8/PP1P1PPP/RNBQKBNR b KQkq",
@@ -2942,7 +2964,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-panov-attack-3-cxd5-4-c4",
       "nina-caro-kann-accelerated-panov-main-line-2-c4-d5",
       "nina-caro-kann-toikkanen-gambit"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/2P1P3/8/PP1P1PPP/RNBQKBNR b KQkq",
@@ -2956,7 +2979,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-accelerated-panov-main-line-2-c4-d5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/2P1P3/8/PP1P1PPP/RNBQKBNR b KQkq",
@@ -2983,7 +3007,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-where-to-start",
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq",
@@ -2998,7 +3023,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3",
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/8/3p4/3P4/2P5/PP3PPP/RNBQKBNR b KQkq",
@@ -3012,7 +3038,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-exchange-overview-2-d4-d5-3-exd5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/5P2/PPP3PP/RNBQKBNR b KQkq",
@@ -3026,7 +3053,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/5P2/PPP3PP/RNBQKBNR b KQkq",
@@ -3040,7 +3068,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/5P2/PPP3PP/RNBQKBNR b KQkq",
@@ -3080,7 +3109,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p1p3/3p4/3PP3/2N2P2/PPP3PP/R1BQKBNR b KQkq",
@@ -3107,7 +3137,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p5/4p3/3PP3/5N2/PPP3PP/RNBQKB1R b KQkq",
@@ -3121,7 +3152,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p5/4p3/3PP3/5N2/PPP3PP/RNBQKB1R b KQkq",
@@ -3161,7 +3193,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp3ppp/2p2n2/8/2BpP3/5N2/PPP3PP/RNBQ1RK1 b kq",
@@ -3175,7 +3208,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp1n1ppp/2p2n2/8/2BpP3/2P2N2/PP4PP/RNBQ1RK1 b kq",
@@ -3189,7 +3223,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp3ppp/1np2n2/8/3pP3/1BP2N2/PP4PP/RNBQ1RK1 b kq",
@@ -3203,7 +3238,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bQkb1r/pp3ppp/1np2n2/8/4P3/1Bp2N2/PP4PP/RNB2RK1 b kq",
@@ -3217,7 +3253,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-mar-czy-fantasy-2-d4-d5-3-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/3B4/PPP2PPP/RNBQK1NR b KQkq",
@@ -3350,7 +3387,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6",
       "nina-caro-kann-bronstein-larsen-variation-4-nf6-5-nxf6-gxf6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp2pppp/2p2N2/8/3P4/8/PPP2PPP/R1BQKBNR b KQkq",
@@ -3364,7 +3402,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-bronstein-larsen-variation-4-nf6-5-nxf6-gxf6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/1p2pppp/p1p5/3p4/3PP3/2N2N2/PPP2PPP/R1BQKB1R b KQkq",
@@ -3378,7 +3417,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2ppp1/2p4p/3p4/3PP3/2N2N2/PPP2PPP/R1BQKB1R b KQkq",
@@ -3418,7 +3458,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p1p3/3p4/3PP3/2N2N2/PPP2PPP/R1BQKB1R b KQkq",
@@ -3445,7 +3486,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppp1p/2p3p1/8/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq",
@@ -3458,7 +3500,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-variations-overview"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppp1p/2p3p1/8/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq",
@@ -3524,7 +3567,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-accelerated-panov-main-line-2-c4-d5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pp1pppbp/2p3p1/8/2PPP3/2N5/PP3PPP/R1BQKBNR b KQkq",
@@ -3538,7 +3582,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-accelerated-panov-main-line-2-c4-d5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pp1pppbp/2p3p1/8/2PPP3/2N5/PP3PPP/R1BQKBNR b KQkq",
@@ -3552,7 +3597,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-accelerated-panov-main-line-2-c4-d5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pp2ppbp/2p3p1/3pP3/2PP4/2N5/PP3PPP/R1BQKBNR b KQkq",
@@ -3566,7 +3612,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp1ppppp/2p2n2/4P3/3P4/8/PPP2PPP/RNBQKBNR b KQkq",
@@ -3723,7 +3770,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/8/2ppP3/3P4/8/PPP1NPPP/RNBQKB1R b KQkq",
@@ -3764,7 +3812,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-panov-attack-3-cxd5-4-c4",
       "nina-caro-kann-accelerated-panov-main-line-2-c4-d5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/8/3p4/2PP4/8/PP3PPP/RNBQKBNR b KQkq",
@@ -3779,7 +3828,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-panov-attack-3-cxd5-4-c4",
       "nina-caro-kann-gunderam-attack-4-nf6-5-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/8/3p4/2PP4/8/PP3PPP/RNBQKBNR b KQkq",
@@ -3806,7 +3856,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-labahn-attack-2-b4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/1P2P3/8/P1PP1PPP/RNBQKBNR b KQkq",
@@ -3924,7 +3975,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/4P3/6P1/PPPP1P1P/RNBQKBNR b KQkq",
@@ -4523,7 +4575,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-breyer-2-d3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/6B1/4p3/2NP4/PPP2PPP/R2QKBNR b KQkq",
@@ -4563,7 +4616,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-breyer-2-d3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/3P4/8/2N5/PPPP1PPP/R1BQKBNR b KQkq",
@@ -4616,7 +4670,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-variations-overview",
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq",
@@ -4669,7 +4724,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2ppp1/2p3bp/8/3P3P/5NN1/PPP2PP1/R1BQKB1R b KQkq",
@@ -4696,7 +4752,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1npppb/2p4p/7P/3P4/3B1NN1/PPP2PP1/R1BQK2R b KQkq",
@@ -4710,7 +4767,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1nppp1/2p4p/7P/3P4/3Q1NN1/PPP2PP1/R1B1K2R b KQkq",
@@ -4724,7 +4782,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1nppp1/2p4p/7P/3P4/3Q1NN1/PPP2PP1/R1B1K2R b KQkq",
@@ -4738,7 +4797,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1nppp1/2p4p/7P/3P4/3Q1NN1/PPP2PP1/R1B1K2R b KQkq",
@@ -4765,7 +4825,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1n1pp1/2p1p2p/7P/3P4/3Q1NN1/PPPB1PP1/R3K2R b KQkq",
@@ -4779,7 +4840,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp1n1pp1/2p1pn1p/7P/3P4/3Q1NN1/PPPB1PP1/2KR3R b kq",
@@ -4793,7 +4855,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/pp1nbpp1/2p1pn1p/7P/3P4/3Q1NN1/PPPB1PP1/1K1R3R b kq",
@@ -4807,7 +4870,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/pp1nbpp1/2p1pn1p/7P/3P4/3Q1NN1/PPPB1PP1/1K1R3R b kq",
@@ -4834,7 +4898,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2q1rk1/pp1nbpp1/2p1pn1p/7P/3PN3/3Q1N2/PPPB1PP1/1K1R3R b -",
@@ -4848,7 +4913,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2q1rk1/pp1nbpp1/2p1pn1p/7P/3PN3/3Q1N2/PPPB1PP1/1K1R3R b -",
@@ -4875,7 +4941,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2q1rk1/pp2bpp1/2p1pn1p/7P/3P4/5N2/PPPBQPP1/1K1R3R b -",
@@ -4889,7 +4956,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r4rk1/pp2bpp1/2p1pn1p/3qN2P/3P4/8/PPPBQPP1/1K1R3R b -",
@@ -4903,7 +4971,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r4rk1/pp2bpp1/2p1pn1p/3qN2P/3P4/8/PPPBQPP1/1K1R3R b -",
@@ -4943,7 +5012,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r4rk1/pp2bpp1/2p1p2p/4N2P/3Pn3/8/PPP2PP1/1K1RB2R b -",
@@ -5334,7 +5404,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/pp1nbpp1/2p1p2p/7P/3PQ3/5N2/PPPB1PP1/2KR3R b kq",
@@ -5348,7 +5419,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/pp2bpp1/2p1pn1p/7P/3P4/5N2/PPPBQPP1/2KR3R b kq",
@@ -5362,7 +5434,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k2r/pp2bpp1/2p1pn1p/3q3P/2PP4/5N2/PP1BQPP1/2KR3R b kq",
@@ -5376,7 +5449,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k2r/pp2bpp1/2p1pn1p/7P/2PPQ3/5N2/PP1B1PP1/2KR3R b kq",
@@ -5390,7 +5464,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k2r/pp2bpp1/2p1p2p/7P/2PPn3/5N2/PP3PP1/2KRB2R b kq",
@@ -5403,7 +5478,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k2r/pp3pp1/2p1pb1p/4N2P/2PPn3/8/PP3PP1/2KRB2R b kq",
@@ -5585,7 +5661,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1n1pp1/2p1p2p/7P/3P1B2/3Q1NN1/PPP2PP1/R3K2R b KQkq",
@@ -5599,7 +5676,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1n1pp1/2p1p2p/7P/3P1B2/3Q1NN1/PPP2PP1/R3K2R b KQkq",
@@ -5613,7 +5691,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3kbnr/pp1n1pp1/2p1p2p/q6P/3P4/3Q1NN1/PPPB1PP1/R3K2R b KQkq",
@@ -5627,7 +5706,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k1nr/pp1n1pp1/2p1p2p/q6P/1b1P4/2PQ1NN1/PP1B1PP1/R3K2R b KQkq",
@@ -5640,7 +5720,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k1nr/pp1nbpp1/2p1p2p/q6P/2PP4/3Q1NN1/PP1B1PP1/R3K2R b KQkq",
@@ -5653,7 +5734,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k1nr/ppqnbpp1/2p1p2p/7P/2PP4/3Q1NN1/PP1B1PP1/2KR3R b kq",
@@ -5666,7 +5748,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k2r/ppqnbpp1/2p1pn1p/7P/2PP4/3Q1NN1/PP1B1PP1/1K1R3R b kq",
@@ -5679,7 +5762,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp1n1pp1/2p1pn1p/7P/3P1B2/3Q1NN1/PPP2PP1/2KR3R b kq",
@@ -5693,7 +5777,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/pp1nbpp1/2p1pn1p/7P/3PNB2/3Q1N2/PPP2PP1/2KR3R b kq",
@@ -5707,7 +5792,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/pp1nbpp1/2p1pn1p/4N2P/3P1B2/3Q2N1/PPP2PP1/2KR3R b kq",
@@ -5760,7 +5846,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp1nppp1/2p2n1p/7P/3P1B2/3Q1NN1/PPP2PP1/R3K2R b KQkq",
@@ -5774,7 +5861,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp1nppp1/2p2n1p/7P/3P1B2/3Q1NN1/PPP2PP1/R3K2R b KQkq",
@@ -5801,7 +5889,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3kb1r/ppqnppp1/2p2n1p/7P/3P4/3Q1NN1/PPPB1PP1/2KR3R b kq",
@@ -5815,7 +5904,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3kb1r/ppqnppp1/2p2n1p/7P/3P4/3Q1NN1/PPPB1PP1/2KR3R b kq",
@@ -5829,7 +5919,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk2r/pp1nbpp1/2p1pn1p/7P/3P1B2/3Q1NN1/PPP2PP1/1K1R3R b kq",
@@ -5882,7 +5973,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp1nppp1/2p2n1p/7P/3P4/3Q1NN1/PPPB1PP1/R3K2R b KQkq",
@@ -5909,7 +6001,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "2kr1b1r/ppqn1pp1/2p1pn1p/7P/3PN3/3Q1NP1/PPPB1P2/2KR3R b -",
@@ -6234,7 +6327,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2r2k1/pp3pp1/2n1pb1p/2P4P/8/3PBN2/PP3PP1/1K1R3R b -",
@@ -6377,7 +6471,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp3ppb/2p1p2p/4N3/3P3P/3B2N1/PPP2PP1/R1BQK2R b KQkq",
@@ -6390,7 +6485,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp3ppb/2p1p2p/4N3/3P3P/3B2N1/PPP2PP1/R1BQK2R b KQkq",
@@ -6416,7 +6512,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1n1pp1/2p1p2p/4N3/3P1P1P/3Q2N1/PPP3P1/R1B1K2R b KQkq",
@@ -6429,7 +6526,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qk1nr/pp1n1pp1/2p1p2p/4N3/1b1P1P1P/2PQ2N1/PP4P1/R1B1K2R b KQkq",
@@ -7041,7 +7139,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-mar-czy-attack-4-bf5-5-ng3-bg6-6-f4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2pppp/2p3b1/8/3P4/5NN1/PPP2PPP/R1BQKB1R b KQkq",
@@ -7106,7 +7205,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1n1pp1/2p1p1p1/8/3P4/2P3N1/PP3PPP/R1BQKB1R b KQkq",
@@ -7119,7 +7219,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp3ppp/2p1p1b1/8/3P3P/5NN1/PPP2PP1/R1BQKB1R b KQkq",
@@ -7250,7 +7351,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k2r/pp2bpp1/2p1pn1p/3q3P/3P4/5N2/PPPBQPP1/1K1R3R b kq",
@@ -7264,7 +7366,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3k2r/pp2bpp1/2p1pn1p/3q3P/3P4/5N2/PPPBQPP1/1K1R3R b kq",
@@ -7291,7 +7394,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-spassky-variation-4-bf5-5-ng3-bg6-6-h4-h6-7-nf3-"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2q1rk1/pp2bpp1/2p1pn1p/4N2P/3P4/3Q4/PPPB1PP1/2KR3R b -",
@@ -7851,7 +7955,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp1npppp/2p5/6N1/3P4/8/PPP2PPP/R1BQKBNR b KQkq",
@@ -7865,7 +7970,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp1npppp/2p5/6N1/3P4/8/PPP2PPP/R1BQKBNR b KQkq",
@@ -7892,7 +7998,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp1n1ppp/2p1pn2/6N1/3P4/3B1N2/PPP2PPP/R1BQK2R b KQkq",
@@ -7906,7 +8013,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp1npppp/2p2n2/6N1/2BP4/8/PPP2PPP/R1BQK1NR b KQkq",
@@ -7920,7 +8028,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp1n1ppp/2p1pn2/6N1/2BP4/8/PPP1QPPP/R1B1K1NR b KQkq",
@@ -7934,7 +8043,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp1n1ppp/2p1pn2/6N1/2BP4/8/PPP1QPPP/R1B1K1NR b KQkq",
@@ -7961,7 +8071,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp2pppp/2p2n2/6N1/3P2b1/5N1P/PPP2PP1/R1BQKB1R b KQkq",
@@ -7975,7 +8086,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp2pppp/2p2n2/8/3P4/5N1P/PPP2PP1/R1BQKB1R b KQkq",
@@ -7989,7 +8101,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp1npppp/2p5/8/3PN3/5N2/PPP2PPP/R1BQKB1R b KQkq",
@@ -8003,7 +8116,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp1npppp/2p5/8/2BPN3/8/PPP2PPP/R1BQK1NR b KQkq",
@@ -8017,7 +8131,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp1npppp/2p2N2/8/2BP4/8/PPP2PPP/R1BQK1NR b KQkq",
@@ -8031,7 +8146,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp2pppp/2p2n2/8/2BP4/2P5/PP3PPP/R1BQK1NR b KQkq",
@@ -8045,7 +8161,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp2pppp/2p2n2/8/2BP4/2P5/PP3PPP/R1BQK1NR b KQkq",
@@ -8072,7 +8189,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp1npppp/2p5/8/3PN3/8/PPP1QPPP/R1B1KBNR b KQkq",
@@ -8099,7 +8217,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp2pppp/2p5/8/3PQ3/2P5/PP3PPP/R1B1KBNR b KQkq",
@@ -8113,7 +8232,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp2pppp/2p2n2/4Q3/3P4/2P5/PP3PPP/R1B1KBNR b KQkq",
@@ -8127,7 +8247,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1kb1r/pp2pppp/2p2n2/3qQ3/3P4/2P2N2/PP3PPP/R1B1KB1R b KQkq",
@@ -8141,7 +8262,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp2pppp/2p2n2/8/3PN3/5N2/PPP1QPPP/R1B1KB1R b KQkq",
@@ -8155,7 +8277,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp2pppp/2p2n2/8/3PN3/5N2/PPP1QPPP/R1B1KB1R b KQkq",
@@ -8169,7 +8292,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp2pppp/2p2n2/5b2/3P4/5NN1/PPP1QPPP/R1B1KB1R b KQkq",
@@ -8183,7 +8307,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp2pppp/2p2nb1/8/3P4/2P2NN1/PP2QPPP/R1B1KB1R b KQkq",
@@ -8197,7 +8322,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp3ppp/2p1pnb1/8/P2P4/2P2NN1/1P2QPPP/R1B1KB1R b KQkq",
@@ -8211,7 +8337,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp2pppp/2p2N2/5b2/3P4/5N2/PPP1QPPP/R1B1KB1R b KQkq",
@@ -8225,7 +8352,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp2pppp/2p2n2/5b2/3P4/2P2N2/PP2QPPP/R1B1KB1R b KQkq",
@@ -8239,7 +8367,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-main-line-overview-2-d4-d5-3-nc3-dxe4-4-nxe4",
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r4rk1/pp2bpp1/2p1p2p/4N2P/3Pn3/4B3/PPP2PP1/1K1R3R b -",
@@ -10982,7 +11111,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r4k1r/pbqn1pp1/1ppbp2p/8/3P2Q1/1P1B1N2/PBP2PPP/R4RK1 b -",
@@ -10995,7 +11125,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r4k1r/pbq2pp1/1ppbpn1p/8/3P3Q/1P1B1N2/PBP2PPP/R4RK1 b -",
@@ -11008,7 +11139,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-karpov-steinitz-variation-4-nd7"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1k2r/ppqn1pp1/2pbp2p/8/3PQ3/3B1N2/PPP2PPP/R1B2RK1 b kq",
@@ -11151,7 +11283,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqr1k1/pp3ppp/2pb1p2/8/3P4/2PB4/PPQ1NPPP/R1B1K2R b KQ",
@@ -11177,7 +11310,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqr1k1/pp3p1p/2pb1pp1/8/3P3P/2PB4/PPQ1NPP1/R1B1K2R b KQ",
@@ -11242,7 +11376,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qr1k1/pp5p/2pbb1pB/5p2/3P4/2PB4/PPQ1NPP1/R3K2R b KQ",
@@ -11737,7 +11872,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6",
       "nina-caro-kann-3-dxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk2r/pp3ppp/2pb1p2/8/3P4/3B1N2/PPP2PPP/R1BQK2R b KQkq",
@@ -11985,7 +12121,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6",
       "nina-caro-kann-3-dxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbq1rk1/pp3ppp/2pb1p2/8/3P4/5N2/PPP1BPPP/R1BQ1RK1 b -",
@@ -11999,7 +12136,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-tartakower-variation-4-nf6-5-nxf6-exf6",
       "nina-caro-kann-3-dxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqr1k1/pp3ppp/2pb1p2/8/3P4/5N2/PPP1BPPP/R1BQR1K1 b -",
@@ -13442,7 +13580,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp3ppp/2p1p3/3pPb2/3P4/5N2/PPP1BPPP/RNBQK2R b KQkq",
@@ -13833,7 +13972,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5",
       "nina-caro-kann-caveman-attack"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2ppp1/2p5/3pPb1p/2PP3P/8/PP3PP1/RNBQKBNR b KQkq",
@@ -13847,7 +13987,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5",
       "nina-caro-kann-caveman-attack"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp3pp1/2p1p3/3pPb1p/2PP3P/2N5/PP3PP1/R1BQKBNR b KQkq",
@@ -13861,7 +14002,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5",
       "nina-caro-kann-caveman-attack"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2pppp/2p5/3pPb2/3P4/8/PPPN1PPP/R1BQKBNR b KQkq",
@@ -13875,7 +14017,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5",
       "nina-caro-kann-van-der-wiel-shirov-attack-3-bf5-4-nc3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp3ppp/2p1p3/3pPb2/3P4/1N6/PPP2PPP/R1BQKBNR b KQkq",
@@ -14123,7 +14266,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-advance-variation-overview-2-d4-d5-3-e5",
       "nina-caro-kann-van-der-wiel-shirov-attack-3-bf5-4-nc3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnb1kbnr/pp2pppp/1qp5/3pP3/2PP4/8/PP3PPP/RNBQKBNR b KQkq",
@@ -14799,7 +14943,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-caveman-attack"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp3pp1/1q2p3/2ppP1Bp/2PP3P/3Q4/PP1N1PP1/R3K1NR b KQkq",
@@ -14812,7 +14957,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-caveman-attack"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp3pp1/4p3/2ppP1Bp/2PP3P/3Q4/Pq1N1PP1/1R2K1NR b Kkq",
@@ -14825,7 +14971,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-caveman-attack"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp2ppp1/2p1P3/3p2Bp/3P3P/3Q4/PqP2PP1/RN2K1NR b KQkq",
@@ -15827,7 +15974,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-bayonet-attack-3-bf5-4-g4",
       "nina-caro-kann-van-der-wiel-shirov-attack-3-bf5-4-nc3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2pppp/2p5/3pPb2/3P4/2N5/PPP2PPP/R1BQKBNR b KQkq",
@@ -16529,7 +16677,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-van-der-wiel-shirov-attack-3-bf5-4-nc3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkb1r/pp3pp1/2p1p2n/3pP2p/3P4/3Q1N2/PPP1NPPP/R1B1K2R b KQkq",
@@ -16542,7 +16691,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-van-der-wiel-shirov-attack-3-bf5-4-nc3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp2ppp1/2p5/3pPb1p/3P4/2N2N2/PPP2PPP/R1BQKB1R b KQkq",
@@ -17543,7 +17693,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp2pppp/2n5/2PpP3/6b1/2P2N2/PP3PPP/RNBQKB1R b KQkq",
@@ -17556,7 +17707,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp2pppp/2n5/2PpP3/6b1/2P2N2/PP3PPP/RNBQKB1R b KQkq",
@@ -17595,7 +17747,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp3ppp/2n1p3/2PpP3/6b1/2P1BN2/PP3PPP/RN1QKB1R b KQkq",
@@ -17634,7 +17787,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp3ppp/2n1p3/2PpP3/8/2P1BQ2/PP3PPP/RN2KB1R b KQkq",
@@ -17660,7 +17814,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp3ppp/2n1p3/1BPp4/8/2P1BQ2/PP3PPP/RN3RK1 b kq",
@@ -17751,7 +17906,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp3ppp/2n1p3/2PpP3/1P6/2P2Q2/P4PPP/RNB1KB1R b KQkq",
@@ -17764,7 +17920,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp3ppp/4p3/1BPpn3/1P6/2P2Q2/P4PPP/RNB1K2R b KQkq",
@@ -17777,7 +17934,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-botvinnik-carls-defense-3-c5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp3ppp/2n1p3/1BPp4/1P6/2P2Q2/P4PPP/RNB2RK1 b kq",
@@ -19806,7 +19964,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3",
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pp2ppbp/2p3p1/3p4/3PP3/2N2N1P/PPP2PP1/R1BQKB1R b KQkq",
@@ -19820,7 +19979,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3",
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqk1nr/pp2ppbp/2p3p1/3p4/3PP3/2N2N1P/PPP2PP1/R1BQKB1R b KQkq",
@@ -19847,7 +20007,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-two-knights-attack-overview-2-nc3-d5-3-nf3",
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq",
@@ -20682,7 +20843,7 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     ]
   },
   {
-    "key": "rnb1kb1r/pp2pppp/2p5/3qP1N1/3Pp3/8/PPP2PPP/R1BQKB1R b KQkq",
+    "key": "rnb1kb1r/pp2pppp/2p5/3qP1N1/3Pp3/8/PPP2PPP/R1BQKB1R b KQkq d3",
     "uci": "e4d3",
     "san": "exd3",
     "tags": [
@@ -21707,7 +21868,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-mindeno-variation-3-bg4",
       "nina-caro-kann-3-dxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1npppp/2p5/8/4N3/2P2Q1P/PP1P1PP1/R1B1KB1R b KQkq",
@@ -21760,7 +21922,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-mindeno-variation-3-bg4",
       "nina-caro-kann-3-dxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp1npppp/2p2n2/8/3PN3/3B1Q1P/PPP2PP1/R1B1K2R b KQkq",
@@ -22215,7 +22378,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-mindeno-variation-3-bg4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkb1r/pp3p1p/2p1pnp1/3p4/3PP3/2NQ1P1P/PPP2P2/R1B1KBR1 b Qkq",
@@ -22228,7 +22392,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-mindeno-variation-3-bg4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp1n1p1p/2p1pnp1/3p2B1/3PP3/2NQ1P1P/PPP2P2/R3KBR1 b Qkq",
@@ -22241,7 +22406,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-mindeno-variation-3-bg4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1n1ppp/2p1p3/3p4/3PP3/2NQ1P1P/PPP2P2/R1B1KB1R b KQkq",
@@ -22488,7 +22654,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-mindeno-variation-3-bg4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "2rqkbnr/pp2pppp/2n3b1/1B1pN3/3P2P1/2N4P/PPP2P2/R1BQK2R b KQk",
@@ -22501,7 +22668,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-mindeno-variation-3-bg4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "2rqkbnr/pp3ppp/2B1p1b1/3pN3/3P2P1/2N4P/PPP2P2/R1BQK2R b KQk",
@@ -23983,7 +24151,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-3-dxe4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp1n1pp1/2p1p2p/3n4/2BPN3/5N2/PPP1QPPP/R1B1K2R b KQkq",
@@ -24192,7 +24361,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pppp/2p5/6N1/4p3/2N5/PPPP1PPP/R1BQKB1R b KQkq",
@@ -24206,7 +24376,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p5/4p3/4N3/2N5/PPPP1PPP/R1BQKB1R b KQkq",
@@ -24220,7 +24391,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp4pp/2p5/4pp2/8/2N3N1/PPPP1PPP/R1BQKB1R b KQkq",
@@ -24234,7 +24406,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp4pp/2p1b3/4pp2/3P4/2N3N1/PPP2PPP/R1BQKB1R b KQkq",
@@ -24248,7 +24421,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp4pp/2p1b3/4pp2/3Q4/2N3N1/PPP2PPP/R1B1KB1R b KQkq",
@@ -24262,7 +24436,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp4pp/2p1b3/5p2/3p4/6N1/PPP1NPPP/R1B1KB1R b KQkq",
@@ -24276,7 +24451,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp4pp/4b3/2p2p2/3p1N2/6N1/PPP2PPP/R1B1KB1R b KQkq",
@@ -24290,7 +24466,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp3bpp/8/2p2N2/3p1N2/8/PPP2PPP/R1B1KB1R b KQkq",
@@ -24304,7 +24481,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn2kbnr/pp3b1p/6p1/2p5/3p1N2/6N1/PPP2PPP/R1B1KB1R b KQkq",
@@ -24318,7 +24496,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p1p3/8/4N3/2N5/PPPP1PPP/R1BQKB1R b KQkq",
@@ -24332,7 +24511,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p1p3/8/4N3/2N5/PPPP1PPP/R1BQKB1R b KQkq",
@@ -24346,7 +24526,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp4pp/2p1p3/5p2/8/2N3N1/PPPP1PPP/R1BQKB1R b KQkq",
@@ -24360,7 +24541,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/4p3/1Bp5/4N3/2N5/PPPP1PPP/R1BQK2R b KQkq",
@@ -24374,7 +24556,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp1b1ppp/4p3/1Bp5/4N3/2NP4/PPP2PPP/R1BQK2R b KQkq",
@@ -24388,7 +24571,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkbnr/pp3ppp/4p3/1Np5/4N3/3P4/PPP2PPP/R1BQK2R b KQkq",
@@ -24402,7 +24586,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-3-dxe4",
       "nina-caro-kann-hector-gambit-3-dxe4-4-ng5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp3ppp/2p5/4p1N1/4p2P/2N5/PPPP1PP1/R1BQKB1R b KQkq",
@@ -25482,7 +25667,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-4-bd3",
       "nina-caro-kann-4-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkb1r/pp2pppp/2n2n2/3p4/3P2b1/2PB1N2/PP3PPP/RNBQ1RK1 b kq",
@@ -25496,7 +25682,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-4-bd3",
       "nina-caro-kann-4-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1kbnr/ppq1pppp/2n5/3p4/3P4/2PB4/PP2NPPP/RNBQK2R b KQkq",
@@ -26706,7 +26893,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-4-nf3",
       "nina-caro-kann-panov-attack-3-cxd5-4-c4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp2pp1p/2n2np1/3P4/3P4/2N2N2/PP3PPP/R1BQKB1R b KQkq",
@@ -26759,7 +26947,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-4-nf3",
       "nina-caro-kann-panov-attack-3-cxd5-4-c4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp2pp1p/2n3p1/8/2BP4/1Qn2N2/PP3PPP/R1B1K2R b KQkq",
@@ -29359,7 +29548,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-panov-attack-3-cxd5-4-c4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r4rk1/pp1qppb1/1n5p/3P1bpB/3P4/1QN4P/PP3PP1/R1B1R1K1 b -",
@@ -30334,7 +30524,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-panov-attack-3-cxd5-4-c4"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp2pp1p/6p1/3n4/3P4/1QN5/PP3PPP/R1B1KBNR b KQkq",
@@ -37146,7 +37337,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-toikkanen-gambit"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn3b2/p1k1p1pp/2p1B3/1p6/8/8/PP1PNPqP/RNB1K1R1 b Q",
@@ -37159,7 +37351,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-toikkanen-gambit"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn3bnr/p2kpPpp/2p5/1p6/3q4/1B6/PP1PNPPP/RNB1K2R b KQ",
@@ -37615,7 +37808,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-toikkanen-gambit",
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1p1ppp/2p5/4p3/2P1P3/5N2/PP1P1PPP/RNBQKB1R b KQkq",
@@ -37654,7 +37848,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 3,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp1p1ppp/2p2n2/4p3/2P1P3/2N2N2/PP1P1PPP/R1BQKB1R b KQkq",
@@ -37719,7 +37914,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbq1rk1/pp1p1ppp/2p2n2/8/1bP1P3/2N2N2/PP1P1PPP/R1BQKB1R b KQ",
@@ -38434,7 +38630,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqk2r/pp1nbppp/2pp1n2/4p3/2PPP3/2N2N2/PP2BPPP/R1BQ1RK1 b kq",
@@ -38447,7 +38644,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp3ppp/2pp1n2/4p3/2PPP3/2N2N2/PP3PPP/R1BQKB1R b KQkq",
@@ -38486,7 +38684,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkb1r/pp3ppp/2pp1n2/4p3/2PPP1b1/2N1BN2/PP3PPP/R2QKB1R b KQkq",
@@ -38694,7 +38893,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnb2rk1/pp1p1ppp/1qp5/4N3/2PPn3/8/PP2BPPP/R1BQK2R b KQ",
@@ -38707,7 +38907,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnb2rk1/pp1p1ppp/2p5/4N3/1qPPn3/8/PP2BPPP/R1BQ1K1R b -",
@@ -38720,7 +38921,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnb2rk1/pp3ppp/2pp4/8/1qPPn3/5N2/PP2BPPP/R1BQ1K1R b -",
@@ -38733,7 +38935,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbq1rk1/pp1p1ppp/2p5/4N3/1bPPn3/8/PP1NBPPP/R1BQK2R b KQ",
@@ -39292,7 +39495,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-open-2-c4-e5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bq1rk1/pp1nbppp/2pp1n2/4p3/2PPP3/2N2N2/PP2BPPP/R1BQR1K1 b -",
@@ -40410,7 +40614,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkbnr/pp2pppp/2n5/1B1pN3/8/8/PPPP1PPP/RNBQK2R b KQkq",
@@ -40423,7 +40628,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r2qkbnr/pp1Npppp/2n5/1B1p4/8/8/PPPP1PPP/RNBQK2R b KQkq",
@@ -40436,7 +40642,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3kbnr/pp1qpppp/2n5/1B1p4/3P4/8/PPP2PPP/RNBQK2R b KQkq",
@@ -40501,7 +40708,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3kbnr/1p1qpppp/p1n5/3p4/3P4/8/PPP1BPPP/RNBQK2R b KQkq",
@@ -40592,7 +40800,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1kbnr/ppq2ppp/2n1p3/1B1pN3/3P1B2/8/PPP2PPP/RN1QK2R b KQkq",
@@ -40605,7 +40814,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1k1nr/ppq2ppp/2nbp3/1B1pN3/3P1BQ1/8/PPP2PPP/RN2K2R b KQkq",
@@ -40618,7 +40828,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-king-s-knight-apocalypse-attack-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1k1nr/ppq2ppp/2nbp3/1B1pN3/3P1BQ1/8/PPP2PPP/RN2K2R b KQkq",
@@ -42608,7 +42819,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6",
       "nina-caro-kann-gurgenidze-counterattack-2-d4-d5-3-nc3-b5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/p3pppp/2p5/1p6/3PN3/P7/1PP2PPP/R1BQKBNR b KQkq",
@@ -42622,7 +42834,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6",
       "nina-caro-kann-gurgenidze-counterattack-2-d4-d5-3-nc3-b5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/p3pppp/2p5/1p6/3PN3/P7/1PP2PPP/R1BQKBNR b KQkq",
@@ -42662,7 +42875,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-gurgenidze-system-2-d4-d5-3-nc3-g6",
       "nina-caro-kann-gurgenidze-counterattack-2-d4-d5-3-nc3-b5"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp2pp1p/2p3p1/3p4/3PP3/5N2/PPPN1PPP/R1BQKB1R b KQkq",
@@ -43053,7 +43267,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-von-hennig-gambit-2-d4-d5-3-nc3-dxe4-4-bc4",
       "nina-caro-kann-rasa-studier-gambit-2-d4-d5-3-nc3-dxe4-4-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkb1r/pp2pppp/2p2n2/4Nb2/2BP4/2N5/PPP3PP/R1BQK2R b KQkq",
@@ -43067,7 +43282,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-von-hennig-gambit-2-d4-d5-3-nc3-dxe4-4-bc4",
       "nina-caro-kann-rasa-studier-gambit-2-d4-d5-3-nc3-dxe4-4-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkb1r/pp3ppp/2p1pn2/4Nb2/2BP2P1/2N5/PPP4P/R1BQK2R b KQkq",
@@ -43081,7 +43297,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "lineIds": [
       "nina-caro-kann-von-hennig-gambit-2-d4-d5-3-nc3-dxe4-4-bc4",
       "nina-caro-kann-rasa-studier-gambit-2-d4-d5-3-nc3-dxe4-4-f3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rn1qkb1r/pp3ppp/2p1pn2/4Nb2/2BP2P1/2N5/PPP4P/R1BQK2R b KQkq",
@@ -46877,7 +47094,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp2pppp/2p2n2/3p4/2P5/5NP1/PP1PPPBP/RNBQK2R b KQkq",
@@ -46890,7 +47108,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkb1r/pp2pppp/2p2n2/8/2p5/5NP1/PP1PPPBP/RNBQ1RK1 b kq",
@@ -46903,7 +47122,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "rnbqkbnr/pp1ppppp/2p5/8/2P5/6P1/PP1PPP1P/RNBQKBNR b KQkq",
@@ -46981,7 +47201,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/pp2pppp/1np2n2/8/P1p5/5NP1/1PQPPPBP/RNB2RK1 b kq",
@@ -46994,7 +47215,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1bqkb1r/1p2pppp/1np2n2/p7/P1p5/N4NP1/1PQPPPBP/R1B2RK1 b kq",
@@ -47007,7 +47229,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r1b1kb1r/1p2pppp/1np2n2/p2q4/P1p5/N5P1/1PQPPPBP/R1B1NRK1 b kq",
@@ -47020,7 +47243,8 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     "weight": 1,
     "lineIds": [
       "nina-caro-kann-english-caro-kann-system-1-c4-c6-2-nf3"
-    ]
+    ],
+    "minPly": 0
   },
   {
     "key": "r3kb1r/1p2pppp/1np2n2/p2B1b2/P1p5/N5P1/1PQPPP1P/R1B1NRK1 b kq",
@@ -47751,7 +47975,7 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     ]
   },
   {
-    "key": "rnbqkbnr/pp2pppp/2p5/8/3Pp3/2N4P/PPP2PP1/R1BQKBNR b KQkq",
+    "key": "rnbqkbnr/pp2pppp/2p5/8/3Pp3/2N4P/PPP2PP1/R1BQKBNR b KQkq d3",
     "uci": "f7f5",
     "san": "f5",
     "tags": [
@@ -47764,7 +47988,7 @@ export const NINA_BOOK: readonly NinaBookEntry[] = [
     ]
   },
   {
-    "key": "rnbqkbnr/pp2pppp/2p5/8/3Pp3/2N4P/PPP2PP1/R1BQKBNR b KQkq",
+    "key": "rnbqkbnr/pp2pppp/2p5/8/3Pp3/2N4P/PPP2PP1/R1BQKBNR b KQkq d3",
     "uci": "e4d3",
     "san": "exd3",
     "tags": [

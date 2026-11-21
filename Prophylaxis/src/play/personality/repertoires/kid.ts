@@ -6,6 +6,7 @@ import {
   type SelectionResult,
 } from '../engine.ts';
 import type { PersonalityStyle } from '../styles.ts';
+import type { PlayColor } from '../../types.ts';
 
 /**
  * King's Indian preferences for Sophomore and Junior (Black vs 1.d4).
@@ -88,6 +89,21 @@ function pawnOnFile(game: Chess, color: 'w' | 'b', file: string): boolean {
   return false;
 }
 
+/**
+ * Has White actually built a centre? A c- or d-file pawn that has left its
+ * home square counts (c4, c5, d4, d5 …); the untouched c2/d2 pawns do not,
+ * because every game starts with those. This is what separates a real King's
+ * Indian from `1.Nf3 Nf6 2.h4`, where nothing has happened in the centre yet.
+ */
+function hasCentreStructure(game: Chess): boolean {
+  for (const file of ['c', 'd']) {
+    for (const rank of ['4', '5', '6', '7']) {
+      if (pawnOn(game, 'w', `${file}${rank}`)) return true;
+    }
+  }
+  return false;
+}
+
 function at(game: Chess, square: string, type: string, color: 'w' | 'b'): boolean {
   const piece = game.get(square as Square);
   return Boolean(piece && piece.type === type && piece.color === color);
@@ -121,10 +137,15 @@ export function isKidOpening(fen: string, history: readonly string[]): boolean {
   const first = firstWhiteMove(history);
   if (first !== null && !KID_FIRST_MOVES.has(first)) return false;
 
-  /* The structure needs White's d4/c4 centre. 1.Nf3 and 1.g3 are flexible
-     enough that ...Nf6 can still lead to it. */
-  const flexible = first === 'Nf3' || first === 'g3';
-  if (!pawnOn(game, 'w', 'd4') && !pawnOn(game, 'w', 'c4') && !flexible) return false;
+  /* White's centre is the premise of the whole plan, so it is read off the
+     board in front of us instead of being inferred from move one. A c- or
+     d-file pawn, on any rank, is the minimum: a push to d5/c5 still counts, and
+     so does a genuine transposition (1.Nf3 or 1.g3 followed by ...d4/...c4).
+     What does not count is 1.Nf3 and 1.g3 on their own — after `1.Nf3 Nf6 2.h4`
+     there is no King's Indian on the board, and the plan must not pretend
+     otherwise. Because this is the current position, the plan also stops the
+     moment White trades that centre away. */
+  if (!hasCentreStructure(game)) return false;
 
   /* ...d5 means a Queen's Gambit-type structure, not a King's Indian. A
      ...e5 pawn is the classical King's Indian centre, but only once the d6
@@ -153,6 +174,7 @@ export function kidPlan(
   fen: string,
   history: readonly string[],
   style: PersonalityStyle,
+  color: PlayColor,
   random: () => number = Math.random,
 ): KidPlan | null {
   if (
@@ -168,7 +190,11 @@ export function kidPlan(
   }
   if (!isKidOpening(fen, history)) return null;
 
+  /* The plan describes Black's development. If the board is not this bot's
+     turn the caller has the wrong seat — say nothing and let normal selection
+     run rather than offer a move that cannot be the bot's. */
   const game = new Chess(fen);
+  if (color !== 'b' || game.turn() !== color) return null;
   const junior = style.id === 'junior';
   /* Junior and both Bryan profiles build the structure before any break. */
   const patient =
@@ -278,14 +304,16 @@ export function chooseKidMove(input: {
   fen: string;
   history: readonly string[];
   style: PersonalityStyle;
+  /** The seat this bot owns in this game. */
+  color: PlayColor;
   elo: number;
   candidates: readonly PersonalityCandidate[];
   random?: () => number;
 }): SelectionResult | null {
-  const { fen, history, style, elo, candidates } = input;
+  const { fen, history, style, color, elo, candidates } = input;
   if (candidates.length === 0) return null;
 
-  const plan = kidPlan(fen, history, style, input.random);
+  const plan = kidPlan(fen, history, style, color, input.random);
   if (!plan || plan.moves.length === 0) return null;
 
   const game = new Chess(fen);
