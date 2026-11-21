@@ -174,13 +174,6 @@
   color: var(--text-muted);
 }
 
-.gr-depth__current {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--soft);
-}
-
 .gr-depth__options {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -754,8 +747,6 @@
   white-space: nowrap;
 }
 
-
-
 .gr-retry {
   display: flex;
   flex-direction: column;
@@ -849,16 +840,6 @@
 .gr-rail--right .gr-moves-card {
   flex: 1 1 auto;
   min-height: 0;
-}
-
-.gr-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
 }
 
 .gr-card__head {
@@ -1175,24 +1156,6 @@
   background: var(--surface-1);
 }
 
-.gr-candidate__rank {
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 6px;
-  background: var(--surface-raised);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.gr-candidate:first-child .gr-candidate__rank {
-  background: color-mix(in srgb, var(--accent) 18%, transparent);
-  color: var(--accent);
-}
-
 .gr-candidate__san {
   min-width: 0;
   overflow: hidden;
@@ -1239,22 +1202,10 @@
   line-height: 1;
 }
 
-
-
 .gr-coach__actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-}
-
-.gr-notice {
-  margin: 0;
-  padding: 7px 10px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
-  color: var(--gold);
-  font-size: 0.75rem;
 }
 
 /* Confirmation toast for deck exports. */
@@ -1403,7 +1354,6 @@
 .gr-tone--clutch .gr-active__glyph {
   font-size: 1.4rem;
 }
-
 
 .gr-keymove {
   display: grid;

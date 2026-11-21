@@ -456,61 +456,6 @@
   transform: translateY(-1px);
 }
 
-/* Account + sync --------------------------------------------------------- */
-
-.settings__account {
-  display: grid;
-  gap: 8px;
-}
-
-.settings__account-input {
-  width: 100%;
-  border: 1px solid var(--line-soft);
-  border-radius: 12px;
-  background: var(--surface-1);
-  color: var(--text);
-  font: inherit;
-  font-size: 13px;
-  padding: 10px 12px;
-}
-
-.settings__account-input::placeholder {
-  color: var(--muted);
-}
-
-.settings__account-input:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.settings__account-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-top: 2px;
-}
-
-.settings__account-row .settings__done {
-  padding: 9px 20px;
-  font-size: 12px;
-}
-
-.settings__account-row .settings__done:disabled {
-  opacity: 0.6;
-}
-
-.settings__account-status {
-  margin: 12px 0 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-.settings__account-status.is-error {
-  color: var(--danger);
-}
-
 @media (max-width: 480px) {
   .settings__panel {
     width: 100%;

@@ -83,11 +83,6 @@
   text-transform: none;
 }
 
-.wp__head-actions {
-  display: flex;
-  gap: 8px;
-}
-
 .wp__board-wrap {
   /* Rigid viewport for the globally sized board: the info panel next to it can
      never resize it, and an oversized board pans here. */
@@ -299,16 +294,6 @@
   background: var(--surface-raised);
   color: var(--text-muted);
   font-size: 0.7rem;
-}
-
-.wp-chip--good {
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  color: var(--accent);
-}
-
-.wp-chip--warn {
-  border-color: color-mix(in srgb, var(--gold) 40%, transparent);
-  color: var(--gold);
 }
 
 /* Feedback ---------------------------------------------------------------- */

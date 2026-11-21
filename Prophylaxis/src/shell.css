@@ -40,6 +40,18 @@
   margin-bottom: 0;
 }
 
+/* The account pill floats over every page's top-right corner, so the heading and
+   its actions keep clear of it instead of sitting underneath. */
+.page-heading {
+  padding-right: 132px;
+}
+
+@media (max-width: 640px) {
+  .page-heading {
+    padding-right: 56px;
+  }
+}
+
 /* Review and Puzzles are workbenches, not landing pages. Their own panel
    headings already say what the screen does, so the page intro only repeats it
    and pushes the first useful control below the fold. Keep the heading in the
@@ -72,49 +84,6 @@
 .heading-actions .secondary-btn {
   cursor: pointer;
   white-space: nowrap;
-}
-
-/* --------------------------------- tools ---------------------------------- */
-
-.tools-tabs {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface-1);
-  align-self: flex-start;
-  max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.tools-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.tools-tab {
-  flex: none;
-  padding: 7px 14px;
-  border: 0;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--muted);
-  font-size: 12.8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition:
-    background 160ms var(--ease),
-    color 160ms var(--ease);
-}
-
-.tools-tab:hover {
-  color: var(--text);
-}
-
-.tools-tab.is-active {
-  background: var(--accent-dark);
-  color: var(--accent-strong);
 }
 
 /* -------------------------------- dashboard ------------------------------- */
@@ -471,147 +440,6 @@
   box-shadow: var(--shadow-card);
 }
 
-/* -------------------------------- classroom ------------------------------- */
-
-.class-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
-  gap: 14px;
-}
-
-.class-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  padding: 16px 18px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: linear-gradient(165deg, var(--panel-2), var(--panel));
-}
-
-.class-card header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.class-card__step {
-  font-family: var(--font-sans);
-  font-size: 13.5px;
-  font-style: italic;
-  letter-spacing: 0.01em;
-  color: var(--accent-strong);
-}
-
-.class-card__pct {
-  font-size: 11px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.class-card h3 {
-  font-size: 15.5px;
-  line-height: 1.35;
-}
-
-.class-card p {
-  margin: 0;
-  font-size: 11.5px;
-  color: var(--muted);
-}
-
-.class-card__bar {
-  height: 3px;
-  border-radius: 999px;
-  background: var(--line-soft);
-  overflow: hidden;
-}
-
-.class-card__bar span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent), var(--gold));
-}
-
-.class-card .primary-btn {
-  /* Sits on the card floor so a two-line title never skews the row. */
-  margin-top: auto;
-  align-self: flex-start;
-  padding: 7px 14px;
-  font-size: 12.5px;
-  cursor: pointer;
-}
-
-/* ---------------------------------- how to -------------------------------- */
-
-.howto-grid {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-}
-
-.howto-step {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  min-width: 0;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: linear-gradient(165deg, var(--panel-2), var(--panel));
-}
-
-.howto-step__n {
-  font-family: var(--font-sans);
-  font-size: 22px;
-  color: var(--accent);
-  line-height: 1;
-}
-
-.howto-step h3 {
-  font-size: 14px;
-}
-
-.howto-step p {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-.shortcuts {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.shortcuts > div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.shortcuts dt {
-  display: flex;
-  gap: 4px;
-  flex: none;
-}
-
-.shortcuts dd {
-  margin: 0;
-  font-size: 12px;
-  color: var(--muted);
-  text-align: right;
-}
-
 kbd {
   display: inline-block;
   min-width: 22px;
@@ -703,15 +531,6 @@ kbd {
     justify-content: flex-end;
   }
 
-  .shortcuts > div {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .shortcuts dd {
-    text-align: left;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

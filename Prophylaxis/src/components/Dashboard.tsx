@@ -11,6 +11,7 @@ import {
 } from '../profile/playerProfile.ts';
 import { updatePlayerProfile, usePlayerProfile } from '../profile/usePlayerProfile.ts';
 import { syncProfileToAccount } from '../sync/profileMirror.ts';
+import { useSessionEmail } from '../sync/useSessionEmail.ts';
 import type { TabId } from './SideNav';
 
 /**
@@ -57,6 +58,7 @@ function Dashboard({
   /* The player's own card: the name and rating that appear on their side of
      the board and in exported PGN headers. Drafts are local until saved. */
   const profile = usePlayerProfile();
+  const accountEmail = useSessionEmail();
   const [firstName, setFirstName] = useState(profile.firstName);
   const [lastName, setLastName] = useState(profile.lastName);
   const [eloDraft, setEloDraft] = useState(String(profile.elo));
@@ -233,7 +235,10 @@ function Dashboard({
       </div>
 
       {/* The player's own card, above the statistics: this is the name and
-          rating the board and the exported PGNs print for them. */}
+          rating the board and the exported PGNs print for them. Signed in, the
+          account panel owns exactly these fields, so the card would be a
+          second form writing the same values. */}
+      {!accountEmail && (
       <section className="block dash-profile" aria-labelledby="dash-profile-title">
         <header className="block__head">
           <h2 id="dash-profile-title">Your profile</h2>
@@ -298,6 +303,7 @@ function Dashboard({
           </div>
         </form>
       </section>
+      )}
 
       {/* The training numbers first: what is active right now, how clean it is,
           and whether the habit held this week. */}

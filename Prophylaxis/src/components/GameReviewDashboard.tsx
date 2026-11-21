@@ -601,11 +601,10 @@ export default function GameReviewDashboard({
           />
 
           <div className="gr-depth" role="group" aria-label="Review depth">
+            {/* The selected option already prints its label and depth right
+                below, so the head only names the control. */}
             <div className="gr-depth__head">
               <p className="gr-depth__title">Review depth</p>
-              <span className="gr-depth__current">
-                {reviewProfile.label} · depth {reviewProfile.depth}
-              </span>
             </div>
             <div className="gr-depth__options">
               {REVIEW_PROFILE_IDS.map((id) => {

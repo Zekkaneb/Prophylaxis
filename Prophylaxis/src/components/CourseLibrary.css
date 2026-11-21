@@ -244,11 +244,6 @@
   border-color: color-mix(in srgb, var(--gold) 40%, transparent);
 }
 
-.course-card__side--b {
-  border-color: rgba(120, 160, 220, 0.35);
-  color: var(--info);
-}
-
 .course-card__delete {
   width: 26px;
   min-width: 26px;

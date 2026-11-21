@@ -590,12 +590,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.study__of {
-  font-size: 11.5px;
-  font-weight: 400;
-  color: var(--muted);
-}
-
 .study__panel-actions {
   display: flex;
   gap: 6px;
@@ -956,7 +950,6 @@
 }
 
 @media (max-width: 560px) {
-
   .study__banner {
     flex-direction: column;
     align-items: stretch;

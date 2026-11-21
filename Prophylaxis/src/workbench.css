@@ -343,12 +343,6 @@
   flex: none;
 }
 
-.wp__rules {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-}
-
 .wp-history-block {
   flex: 0 1 auto;
   min-height: 0;
@@ -910,7 +904,6 @@
 /* ==========================================================================
    Review — accuracy rail · board · coaching rail
    ========================================================================== */
-
 
 .gr {
   /* Nameplates (58) + transport (40) + gaps (18) + the room's padding: the one
@@ -1506,7 +1499,6 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
-
 
 @media (prefers-reduced-motion: reduce) {
   .wp-banner {

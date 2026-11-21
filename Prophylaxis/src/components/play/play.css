@@ -1416,12 +1416,6 @@
   background: var(--surface-1);
 }
 
-.play-side__section {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .play-side__head {
   display: flex;
   align-items: baseline;
@@ -2227,7 +2221,6 @@
     height: clamp(140px, 22vh, 220px);
   }
 }
-
 
 @media (max-width: 860px) {
   .play-opponent__style {
