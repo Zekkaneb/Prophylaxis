@@ -348,24 +348,14 @@
   }
 
   /* The ladder is thirteen cards tall and Start Game sits under it, so on a
-     phone the summary is moved above the list and pinned beneath the app bar:
-     the chosen personality and the action stay in reach the whole way down.
-     Tapping a card (see `NewGameView`) scrolls the page back up to this pin. */
-  .play-setup {
-    display: flex;
-    flex-direction: column;
-  }
+     phone the summary is moved above the list: the chosen personality and the
+     action are the first thing on the screen instead of the last.
 
+     It stays in normal flow (`grid` + `order`, not `sticky`): as a flex item a
+     sticky aside is offset by its own `top` inset even at rest, which left a
+     124px band of dead space above the card. */
   .play-preview {
     order: -1;
-    position: sticky;
-    /* Clears the sticky app bar: the same 124px `scroll-padding-top` uses,
-       plus the safe-area inset the bar's own padding adds. */
-    top: calc(124px + env(safe-area-inset-top));
-    z-index: 20;
-    /* The page colour behind the pin, so cards sliding under it disappear
-       rather than showing through the gaps around the card's rounded edge. */
-    background: var(--bg);
   }
 
   /* ------------------------------- dashboard ------------------------------ */
