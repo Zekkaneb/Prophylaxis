@@ -88,9 +88,11 @@ evaluation or a search.
 | id | `christian-hernandez` |
 | Name / subtext | Christian Hernandez · Senior |
 | Rating | 950, Beginner band (100–1000) |
-| Opening | White: London System. Black: none |
+| White | London System: 1.d4, ...Bf4 outside the pawn chain, ...e3, knights on f3/d2, kingside castling |
+| Black vs 1.e4 | No repertoire at all: the book is empty and principled selection answers with a legal move |
+| Black vs 1.d4 | No repertoire at all: `kid.ts` declines for his id, so the same principled selection plays |
 | Profile file | `src/play/personality/styles.ts` (`christian-hernandez`) |
-| Repertoire file | `src/play/personality/repertoires/christianHernandez.ts` |
+| Repertoire | `src/play/personality/repertoires/christianHernandez.ts` |
 | Dialogue | `DIALOGUE_BANKS['christian-hernandez']` in `src/play/personality/dialogue.ts` |
 | Portrait | `public/opponents/christian-hernandez.webp` (monogram `CH` if missing) |
 
@@ -114,11 +116,13 @@ and d2, small pawn centre, kingside castling, in three short lines (main setup,
 versus ...g6, early Nf3). The lines are short on purpose: the book runs out where
 a 950's knowledge does, and the shared selection takes over.
 
-**Black: no repertoire at all.** `asBlack` is empty, so `personalityBookFor` is
-empty for him in both colours, and `repertoires/kid.ts` does not list his id, so
-no formal defence can arrive through the principle-based layer either. His Black
-moves come from the same scorer as move forty, which still favours development,
-the centre, king safety and reasonable exchanges — improvised, never random.
+**Black: no repertoire at all.** `asBlack` is empty, so `personalityBookFor('christian-hernandez', 'b')`
+is empty from the first ply, and `repertoires/kid.ts` does not list his id, so
+no formal defence can arrive through the principle-based layer either. (His
+White book is only the three London lines above: outside them, or with Black,
+the book is empty.) His Black moves come from the same scorer as move forty,
+which still favours development, the centre, king safety and reasonable
+exchanges — improvised, never random.
 
 Dialogue runs through the existing event layer and `maybeReact`, on the shared
 cadence (`ordinaryGap: 3`, `repeatGap: 8`), so he is not the chattiest card.

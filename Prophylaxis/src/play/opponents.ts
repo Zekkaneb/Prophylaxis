@@ -159,8 +159,8 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
   /* Christian Hernandez (Senior), 950 — the Natural.
 
      The strongest card of the Beginner band, and the only one of the three
-     Seniors with no theory behind him: the London is his one prepared idea and
-     everything else is whatever feels natural. `christian-hernandez` is his own
+     Seniors who plays mostly unprepared chess: the London is his one prepared
+     idea and everything else is whatever feels natural. `christian-hernandez` is his own
      id, so a saved game can never resolve him to Edward Chen or Johnfer Quispe,
      the other two "Senior" cards. */
   {
