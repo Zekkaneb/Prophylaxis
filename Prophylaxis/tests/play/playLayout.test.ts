@@ -105,14 +105,14 @@ test('the General Bot leads the list in its own headed section', () => {
   assert.doesNotMatch(rule('.play-engine'), /border-top/);
 });
 
-test('each category has opponents and the Big 4 label is gone', () => {
+test('each category has opponents and the Big 4 is the featured group', () => {
   for (const group of OPPONENT_CATEGORIES) {
     assert.ok(
       PERSONALITY_OPPONENTS.some((opponent) => opponent.category === group.id),
       `${group.label} has at least one card`,
     );
   }
-  assert.equal(OPPONENT_CATEGORIES.find((group) => group.id === 'big-3')?.label, 'The Big 3');
+  assert.equal(OPPONENT_CATEGORIES.find((group) => group.id === 'big-4')?.label, 'The Big 4');
 
   const offenders: string[] = [];
   const walk = (dir: string) => {
@@ -124,9 +124,9 @@ test('each category has opponents and the Big 4 label is gone', () => {
         continue;
       }
       if (!/\.(ts|tsx|css)$/.test(entry)) continue;
-      if (/big-4|big\s4/i.test(readFileSync(path, 'utf8'))) offenders.push(path);
+      if (/big-3/i.test(readFileSync(path, 'utf8'))) offenders.push(path);
     }
   };
   walk('src');
-  assert.deepEqual(offenders, [], 'no stale Big 4 references in the app');
+  assert.deepEqual(offenders, [], 'no stale Big 3 references in the app');
 });

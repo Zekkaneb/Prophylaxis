@@ -62,15 +62,15 @@ function seeded(seed: number): () => number {
 
 /* ------------------------------- registration ------------------------------ */
 
-test('Faadi is registered once, in the Beginners group, with his own id', () => {
+test('Faadi is registered once, in the Beginner band, with his own id', () => {
   assert.ok(FAADI, 'the catalogue knows him');
   assert.equal(FAADI.id, 'faadi');
   assert.equal(FAADI.kind, 'personality');
   assert.equal(FAADI.name, 'Faadi Granillo Garcia');
   assert.equal(FAADI.title, 'Prime');
   assert.equal(opponentStage(FAADI), 'Prime', 'the card prints the subtext on its own line');
-  assert.equal(FAADI.elo, 1100);
-  assert.equal(FAADI.category, 'beginners');
+  assert.equal(FAADI.elo, 700);
+  assert.equal(FAADI.category, 'beginner');
   assert.equal(FAADI.portraitPath, 'opponents/faadi.webp');
   assert.ok(fs.existsSync('public/opponents/faadi.webp'), 'the supplied portrait is installed');
   assert.equal(FAADI.initials, 'FG', 'monogram fallback if the portrait file is missing');
@@ -78,7 +78,7 @@ test('Faadi is registered once, in the Beginners group, with his own id', () => 
   assert.match(FAADI.style, /wildcard/i);
 
   assert.equal(opponentFullName(FAADI), 'Faadi Granillo Garcia (Prime)');
-  assert.equal(opponentMeta(FAADI), 'Prime · 1100 Elo');
+  assert.equal(opponentMeta(FAADI), 'Prime · 700 Elo');
 
   assert.equal(PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'faadi').length, 1);
   assert.equal(
@@ -89,7 +89,7 @@ test('Faadi is registered once, in the Beginners group, with his own id', () => 
     'no other opponent shares his stored-game label',
   );
   assert.equal(
-    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'beginners')
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'beginner')
       .map((opponent) => opponent.id)
       .includes('faadi'),
     true,

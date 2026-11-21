@@ -62,7 +62,7 @@ test('Bryan (Junior) is on the roster at 1800 with a unique id', () => {
   assert.equal(BRYAN.name, 'Bryan Martinez-Hernandez');
   assert.equal(BRYAN.elo, 1800);
   assert.equal(BRYAN.kind, 'personality');
-  assert.equal(BRYAN.category, 'strong');
+  assert.equal(BRYAN.category, 'varsity');
   assert.equal(BRYAN.title, 'Junior');
   assert.equal(BRYAN.initials, 'BM', 'the monogram fallback survives a missing portrait');
   assert.equal(BRYAN.portraitPath, 'opponents/bryan-junior.webp');
@@ -86,11 +86,15 @@ test('Bryan (Junior) is on the roster at 1800 with a unique id', () => {
 test('the roster keeps its ratings and ids', () => {
   const ratings = PERSONALITY_OPPONENTS.map((opponent) => [opponent.id, opponent.elo]);
   assert.deepEqual(ratings, [
+    ['emmanuel', 400],
+    ['edward', 800],
+    ['faadi', 700],
+    ['nina-freshman', 1200],
     ['freshman', 1250],
-    ['sophomore', 1450],
-    ['faadi', 1100],
-    ['nina-freshman', 1150],
+    ['alex-tang', 1100],
     ['bryan-sophomore', 1350],
+    ['bryan-widjaja', 1400],
+    ['sophomore', 1450],
     ['nina', 1550],
     ['brandon-freshman', 1600],
     ['bryan', 1800],
@@ -98,7 +102,7 @@ test('the roster keeps its ratings and ids', () => {
     ['brandon', 2350],
     ['junior', 2150],
     ['bryan-prime', 2000],
-    ['edward', 800],
+    ['mabinti', 1550],
   ]);
 });
 
@@ -479,12 +483,12 @@ test('dialogue only speaks on real events, with cooldowns and no repeats', () =>
 
 /* --------------------------- Bryan Prime (2000) --------------------------- */
 
-test('Bryan Prime is its own id at 2000 in The Big 3', () => {
+test('Bryan Prime is its own id at 2000 in The Big 4', () => {
   assert.ok(PRIME);
   assert.equal(PRIME.id, 'bryan-prime');
   assert.equal(PRIME.name, 'Bryan Martinez-Hernandez');
   assert.equal(PRIME.elo, 2000);
-  assert.equal(PRIME.category, 'big-3');
+  assert.equal(PRIME.category, 'big-4');
   assert.equal(PRIME.title, 'Prime');
   assert.equal(PRIME.initials, 'BM');
   assert.equal(PRIME.kind, 'personality');

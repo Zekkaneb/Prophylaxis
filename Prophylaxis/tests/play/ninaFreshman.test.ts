@@ -78,19 +78,19 @@ function fakeBookMove(san: string, weight: number, lineIds = ['line']): BookMove
 
 /* ------------------------------ registration ------------------------------ */
 
-test('Nina Yang (Freshman) is registered once, at 1150, in the beginners group', () => {
+test('Nina Yang (Freshman) is registered once, at 1200, in the Novice band', () => {
   assert.ok(FRESHMAN);
   assert.equal(FRESHMAN.id, 'nina-freshman', 'a stable id of her own');
   assert.equal(FRESHMAN.kind, 'personality');
   assert.equal(FRESHMAN.name, 'Nina Yang');
   assert.equal(FRESHMAN.title, 'Freshman');
-  assert.equal(FRESHMAN.elo, 1150);
-  assert.equal(FRESHMAN.category, 'beginners');
+  assert.equal(FRESHMAN.elo, 1200);
+  assert.equal(FRESHMAN.category, 'novice');
   assert.equal(FRESHMAN.initials, 'NY');
   assert.equal(FRESHMAN.usesRepertoire, false);
   assert.doesNotMatch(FRESHMAN.name, /\(/, 'the card prints name and subtext as two fields');
   assert.equal(opponentFullName(FRESHMAN), 'Nina Yang (Freshman)');
-  assert.equal(opponentMeta(FRESHMAN), 'Freshman · 1150 Elo');
+  assert.equal(opponentMeta(FRESHMAN), 'Freshman · 1200 Elo');
   assert.match(FRESHMAN.style, /balanced/i);
 
   assert.equal(PERSONALITY_OPPONENTS.length, 17);
@@ -126,12 +126,12 @@ test('a saved game resolves her to Freshman, never to Sophomore', () => {
   const record = profileFromRecord({
     opponent_id: 'nina-freshman',
     opponent_name: 'Nina Yang (Freshman)',
-    opponent_elo: 1150,
+    opponent_elo: 1200,
     opponent_kind: 'personality',
   });
   assert.equal(record.id, 'nina-freshman');
   assert.equal(record.title, 'Freshman');
-  assert.equal(record.elo, 1150);
+  assert.equal(record.elo, 1200);
 
   const sophomore = profileFromRecord({
     opponent_id: 'nina',
@@ -502,7 +502,7 @@ test('Sophomore keeps her identity, strength and repertoire', () => {
   assert.ok(SOPHOMORE);
   assert.equal(SOPHOMORE.id, 'nina');
   assert.equal(SOPHOMORE.elo, 1550);
-  assert.equal(SOPHOMORE.category, 'strong');
+  assert.equal(SOPHOMORE.category, 'intermediate');
   assert.equal(SOPHOMORE.title, 'Sophomore');
   assert.equal(opponentFullName(SOPHOMORE), 'Nina Yang (Sophomore)');
 
@@ -543,8 +543,8 @@ test('Sophomore keeps her identity, strength and repertoire', () => {
 });
 
 test('the rest of the roster is unchanged', () => {
-  assert.equal(getOpponent('faadi')?.elo, 1100);
-  assert.equal(getOpponent('faadi')?.category, 'beginners');
+  assert.equal(getOpponent('faadi')?.elo, 700);
+  assert.equal(getOpponent('faadi')?.category, 'beginner');
   assert.equal(getOpponent('bryan-sophomore')?.elo, 1350);
   assert.equal(getOpponent('bryan-sophomore')?.category, 'intermediate');
   assert.equal(getOpponent('bryan')?.elo, 1800);

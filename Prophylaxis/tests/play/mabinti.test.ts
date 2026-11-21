@@ -113,14 +113,14 @@ function engineWith(candidates: Array<{ uci: string; scoreCp: number }>): Stockf
 
 /* ------------------------- 1-3. identity and card ------------------------- */
 
-test('Mabinti Mansaray is on the roster as Junior, 1550, in the Strong group', () => {
+test('Mabinti Mansaray is on the roster as Junior, 1550, in The Big 4', () => {
   assert.ok(MABINTI);
   assert.equal(MABINTI.id, 'mabinti', 'her own stable id');
   assert.equal(MABINTI.kind, 'personality');
   assert.equal(MABINTI.name, 'Mabinti Mansaray');
   assert.equal(MABINTI.title, 'Junior', 'the subtext is exactly Junior');
   assert.equal(MABINTI.elo, 1550);
-  assert.equal(MABINTI.category, 'strong');
+  assert.equal(MABINTI.category, 'big-4');
   assert.equal(MABINTI.initials, 'MM');
   assert.equal(MABINTI.usesRepertoire, false);
 
@@ -146,12 +146,19 @@ test('her id is unique across the whole roster and stable across lookups', () =>
   assert.notEqual(opponentFullName(MABINTI), opponentFullName(getOpponent('bryan')!));
 });
 
-test('she is listed in the Strong section beside the other 1550', () => {
-  const strong = PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'strong');
-  assert.ok(strong.some((opponent) => opponent.id === 'mabinti'));
+test('she is listed in The Big 4, by designation rather than by rating', () => {
+  const big = PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'big-4');
+  assert.ok(big.some((opponent) => opponent.id === 'mabinti'));
+  assert.equal(big[big.length - 1], MABINTI, 'the fourth featured card');
+  /* Same rating as Nina, different band: both cards exist, both selectable. */
   assert.equal(getOpponent('nina')?.elo, 1550);
-  /* Same rating, different character: both cards exist, both are selectable. */
-  assert.equal(strong.filter((opponent) => opponent.elo === 1550).length, 2);
+  assert.equal(getOpponent('nina')?.category, 'intermediate');
+  assert.equal(big.filter((opponent) => opponent.elo === 1550).length, 1);
+  assert.equal(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.elo === 1550).length,
+    2,
+    'the two 1550s are still both on the roster',
+  );
 });
 
 test('her portrait is her own file, with the monogram kept as the fallback', () => {
@@ -612,7 +619,7 @@ test('a saved game and its PGN keep her name, subtext, colour and rating', () =>
   assert.equal(profile.name, 'Mabinti Mansaray');
   assert.equal(profile.title, 'Junior');
   assert.equal(profile.elo, 1550);
-  assert.equal(profile.category, 'strong');
+  assert.equal(profile.category, 'big-4');
   assert.equal(opponentMeta(profile), 'Junior · 1550 Elo');
 });
 
@@ -622,14 +629,14 @@ test('every other opponent and the General Bot are untouched', () => {
   assert.equal(PERSONALITY_OPPONENTS.length, 17);
   assert.equal(ALL_OPPONENTS.length, 18);
   const expected: Array<[string, string, string, number, string]> = [
-    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'beginners'],
+    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],
     ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450, 'intermediate'],
-    ['nina', 'Nina Yang', 'Sophomore', 1550, 'strong'],
-    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'strong'],
-    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'strong'],
-    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-3'],
-    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-3'],
-    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-3'],
+    ['nina', 'Nina Yang', 'Sophomore', 1550, 'intermediate'],
+    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'varsity'],
+    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'varsity'],
+    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-4'],
+    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-4'],
+    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-4'],
   ];
   for (const [id, name, title, elo, category] of expected) {
     const opponent = getOpponent(id);

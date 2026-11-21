@@ -115,7 +115,7 @@ test('the new opponent is Bryan Martinez-Hernandez, Sophomore, 1350', () => {
 
 test('he is grouped with the other mid-rated opponents, not the strong ones', () => {
   const beginners = PERSONALITY_OPPONENTS.filter(
-    (opponent) => opponent.category === 'beginners',
+    (opponent) => opponent.category === 'beginner',
   );
   const intermediate = PERSONALITY_OPPONENTS.filter(
     (opponent) => opponent.category === 'intermediate',
@@ -138,7 +138,7 @@ test('he is grouped with the other mid-rated opponents, not the strong ones', ()
   assert.ok(Math.max(...beginners.map((opponent) => opponent.elo)) < SOPHOMORE.elo);
 
   const strong = PERSONALITY_OPPONENTS.filter(
-    (opponent) => opponent.category === 'strong' || opponent.category === 'big-3',
+    (opponent) => opponent.category === 'varsity' || opponent.category === 'big-4',
   );
   for (const opponent of strong) {
     assert.ok(opponent.elo > SOPHOMORE.elo, `${opponent.id} is stronger than him`);
@@ -152,10 +152,10 @@ test('Junior and Prime are untouched additions, not replacements', () => {
   assert.ok(prime);
   assert.equal(junior.elo, 1800);
   assert.equal(junior.title, 'Junior');
-  assert.equal(junior.category, 'strong');
+  assert.equal(junior.category, 'varsity');
   assert.equal(prime.elo, 2000);
   assert.equal(prime.title, 'Prime');
-  assert.equal(prime.category, 'big-3');
+  assert.equal(prime.category, 'big-4');
 
   assert.equal(new Set([junior.id, prime.id, SOPHOMORE.id]).size, 3);
   assert.equal(

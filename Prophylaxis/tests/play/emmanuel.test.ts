@@ -128,14 +128,14 @@ function engineWith(candidates: StubCandidate[], seen?: { depth: number; multipv
 
 /* ----------------------- 1-3. identity, name, rating ----------------------- */
 
-test('Emmanuel Domah is on the roster as Senior, 400, in the Easy group', () => {
+test('Emmanuel Domah is on the roster as Senior, 400, in the Beginner band', () => {
   assert.ok(EMMANUEL);
   assert.equal(EMMANUEL.id, 'emmanuel', 'his own stable id');
   assert.equal(EMMANUEL.kind, 'personality');
   assert.equal(EMMANUEL.name, 'Emmanuel Domah');
   assert.equal(EMMANUEL.title, 'Senior', 'the subtext is exactly Senior');
   assert.equal(EMMANUEL.elo, 400);
-  assert.equal(EMMANUEL.category, 'easy');
+  assert.equal(EMMANUEL.category, 'beginner');
   assert.equal(EMMANUEL.initials, 'ED');
   assert.equal(EMMANUEL.usesRepertoire, false);
 
@@ -173,14 +173,15 @@ test('his portrait is his own file, with the monogram kept as the fallback', () 
   }
 });
 
-/* ------------------------ 4. Easy category integration -------------------- */
+/* ----------------------- 4. Beginner band integration --------------------- */
 
-test('Easy is a real ladder group, listed first, and holds only him', () => {
+test('Beginner is the first ladder band and holds the lowest ratings', () => {
   assert.deepEqual(
     OPPONENT_CATEGORIES.map((group) => group.label),
-    ['Easy', 'Beginners', 'Intermediate', 'Strong', 'The Big 3'],
+    ['Beginner', 'Novice', 'Intermediate', 'Varsity', 'The Big 4'],
   );
-  assert.equal(OPPONENT_CATEGORIES[0].id, 'easy');
+  assert.equal(OPPONENT_CATEGORIES[0].id, 'beginner');
+  assert.equal(OPPONENT_CATEGORIES[0].hint, '100–1000 Elo');
   assert.ok(OPPONENT_CATEGORIES.every((group) => group.hint.length > 0));
 
   const declared = new Set(OPPONENT_CATEGORIES.map((group) => group.id));
@@ -189,35 +190,36 @@ test('Easy is a real ladder group, listed first, and holds only him', () => {
   }
 
   assert.deepEqual(
-    PERSONALITY_OPPONENTS.filter((o) => o.category === 'easy').map((o) => o.id),
-    ['emmanuel'],
+    PERSONALITY_OPPONENTS.filter((o) => o.category === 'beginner').map((o) => o.id),
+    ['emmanuel', 'edward', 'faadi'],
   );
-  /* The groups below and above are untouched by the new one. */
+  /* Every band above is unchanged by the roster rearrangement. */
   assert.deepEqual(
-    PERSONALITY_OPPONENTS.filter((o) => o.category === 'beginners').map((o) => o.id),
-    ['freshman', 'faadi', 'nina-freshman', 'edward', 'alex-tang'],
+    PERSONALITY_OPPONENTS.filter((o) => o.category === 'novice').map((o) => o.id),
+    ['nina-freshman', 'freshman', 'alex-tang'],
   );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((o) => o.category === 'intermediate').map((o) => o.id),
-    ['sophomore', 'bryan-sophomore'],
+    ['bryan-sophomore', 'bryan-widjaja', 'sophomore', 'nina', 'brandon-freshman'],
   );
   assert.deepEqual(
-    PERSONALITY_OPPONENTS.filter((o) => o.category === 'strong').map((o) => o.id),
-    ['nina', 'mabinti', 'brandon-freshman', 'bryan', 'senior'],
+    PERSONALITY_OPPONENTS.filter((o) => o.category === 'varsity').map((o) => o.id),
+    ['bryan', 'senior'],
   );
   assert.equal(
-    PERSONALITY_OPPONENTS.filter((o) => o.category === 'big-3').length,
-    3,
-    'the featured row is still exactly three',
+    PERSONALITY_OPPONENTS.filter((o) => o.category === 'big-4').length,
+    4,
+    'the featured row holds exactly four',
   );
 
-  /* Every existing opponent keeps the group it had: membership is a field. */
+  /* Membership is a field, never a rating range. */
   const groups = new Map(PERSONALITY_OPPONENTS.map((o) => [o.id, o.category]));
-  assert.equal(groups.get('edward'), 'beginners');
-  assert.equal(groups.get('faadi'), 'beginners');
-  assert.equal(groups.get('nina'), 'strong');
-  assert.equal(groups.get('senior'), 'strong');
-  assert.equal(groups.get('bryan-prime'), 'big-3');
+  assert.equal(groups.get('edward'), 'beginner');
+  assert.equal(groups.get('faadi'), 'beginner');
+  assert.equal(groups.get('nina'), 'intermediate');
+  assert.equal(groups.get('senior'), 'varsity');
+  assert.equal(groups.get('mabinti'), 'big-4');
+  assert.equal(groups.get('bryan-prime'), 'big-4');
   assert.equal(GENERAL_BOT.kind, 'general', 'the General Bot is not a ladder member');
 });
 
@@ -777,7 +779,7 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
   assert.equal(profile.name, 'Emmanuel Domah');
   assert.equal(profile.title, 'Senior');
   assert.equal(profile.elo, 400);
-  assert.equal(profile.category, 'easy');
+  assert.equal(profile.category, 'beginner');
   assert.equal(opponentMeta(profile), 'Senior · 400 Elo');
 
   /* A dropped record still shows a name and a rating, never a crash. */
@@ -801,20 +803,20 @@ test('every other opponent and the General Bot are untouched', () => {
   assert.equal(ALL_OPPONENTS.length, 18);
 
   const expected: Array<[string, string, string, number, string]> = [
-    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'beginners'],
+    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],
     ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450, 'intermediate'],
-    ['faadi', 'Faadi Granillo Garcia', 'Prime', 700, 'beginners'],
-    ['nina-freshman', 'Nina Yang', 'Freshman', 1200, 'beginners'],
+    ['faadi', 'Faadi Granillo Garcia', 'Prime', 700, 'beginner'],
+    ['nina-freshman', 'Nina Yang', 'Freshman', 1200, 'novice'],
     ['bryan-sophomore', 'Bryan Martinez-Hernandez', 'Sophomore', 1350, 'intermediate'],
-    ['nina', 'Nina Yang', 'Sophomore', 1550, 'strong'],
-    ['mabinti', 'Mabinti Mansaray', 'Junior', 1550, 'strong'],
-    ['brandon-freshman', 'Brandon Tran', 'Freshman', 1600, 'strong'],
-    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'strong'],
-    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'strong'],
-    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-3'],
-    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-3'],
-    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-3'],
-    ['edward', 'Edward Chen', 'Senior', 800, 'beginners'],
+    ['nina', 'Nina Yang', 'Sophomore', 1550, 'intermediate'],
+    ['mabinti', 'Mabinti Mansaray', 'Junior', 1550, 'big-4'],
+    ['brandon-freshman', 'Brandon Tran', 'Freshman', 1600, 'intermediate'],
+    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'varsity'],
+    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'varsity'],
+    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-4'],
+    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-4'],
+    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-4'],
+    ['edward', 'Edward Chen', 'Senior', 800, 'beginner'],
   ];
   for (const [id, name, title, elo, category] of expected) {
     const opponent = getOpponent(id);

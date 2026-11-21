@@ -13,13 +13,28 @@ plays the user's imported courses and never reads anything on this page.
 | Junior | The Strategist | 2150 | Catalan (supplied) | Pirc (supplied) | King's Indian, principles |
 | Senior | The Tactician | 2250 | Catalan (supplied) | Pirc (supplied) | Grünfeld (supplied) |
 
-## Emmanuel Domah (Senior) — 400, Easy
+## Ladder bands
+
+The Play screen lists the cards in five headed bands, in this order. Membership
+is an explicit field on each profile, never a rating lookup: a card can sit
+above its band's range by designation (Mabinti) or beside a stronger one in the
+same band.
+
+| Band | Range | Cards, in display order |
+|---|---|---|
+| Beginner | 100–1000 Elo | Emmanuel Domah, Edward Chen, Faadi Granillo Garcia |
+| Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang |
+| Intermediate | 1301–1600 Elo | Bryan Martinez-Hernandez (Sophomore), Bryan Widjaja, Johnfer Quispe (Sophomore), Nina Yang (Sophomore), Brandon Tran (Freshman) |
+| Varsity | 1601–2000 Elo | Bryan Martinez-Hernandez (Junior), Johnfer Quispe (Senior) |
+| The Big 4 | Special designation | Brandon Tran (Prime), Johnfer Quispe (Junior), Bryan Martinez-Hernandez (Prime), Mabinti Mansaray |
+
+## Emmanuel Domah (Senior) — 400, Beginner
 
 | | |
 |---|---|
 | id | `emmanuel` |
 | Name / subtext | Emmanuel Domah · Senior |
-| Rating | 400, Easy group (below Beginners) |
+| Rating | 400, Beginner band (100–1000) |
 | Opening | none — no book, no theory, no bias |
 | Profile file | `src/play/personality/styles.ts` (`emmanuel`) |
 | Dialogue | `DIALOGUE_BANKS.emmanuel` in `src/play/personality/dialogue.ts` |
@@ -66,7 +81,7 @@ evaluation or a search.
 |---|---|
 | id | `mabinti` |
 | Name / subtext | Mabinti Mansaray · Junior |
-| Rating | 1550, Strong group |
+| Rating | 1550, The Big 4 (special designation) |
 | White | Queen's Gambit: 1.d4, 2.c4, normal development |
 | Black vs 1.e4 | 1...e5, classical development (Ruy Lopez, Italian, Scotch) |
 | Black vs 1.d4 | 1...d5, Queen's Gambit Declined / Semi-Slav set-up |
@@ -122,7 +137,7 @@ search. His aggression, risk and tactical tendencies are unchanged.
 |---|---|
 | id | `bryan-widjaja` |
 | Name / subtext | Bryan Widjaja · Prime |
-| Rating | 1400, Intermediate group |
+| Rating | 1400, Intermediate band (1301–1600) |
 | White | Queen's Gambit: 1.d4, 2.c4, sound development |
 | Black vs 1.e4 | Caro-Kann: 1...c6, then 2...d5 (Classical, Advance, Exchange) |
 | Black vs 1.d4 | King's Indian set-up: ...Nf6, ...g6, ...Bg7, ...d6, ...O-O, then ...e5 or ...c5 |
@@ -169,13 +184,13 @@ cadence (`ordinaryGap: 8`, `repeatGap: 18`): short, chill, understated lines,
 never a narrated tactic, an evaluation or a number, and never a cue to the move
 chooser. The never-repeat-a-line pool and the once-per-game events still apply.
 
-## Alex Tang (Sophomore) — 1100, Beginners
+## Alex Tang (Sophomore) — 1100, Novice
 
 | | |
 |---|---|
 | id | `alex-tang` |
 | Name / subtext | Alex Tang · Sophomore |
-| Rating | 1100, Beginners group ("Novice" in the brief; the catalogue has no separate Novice section) |
+| Rating | 1100, Novice band (1001–1300) |
 | White | London System: 1.d4, ...Bf4, ...e3, ...Nf3/...Nbd2, ...c3, kingside castling |
 | Black vs 1.e4 | No assigned repertoire: the book is empty and principled selection plays a legal move |
 | Black vs 1.d4 | King's Indian setup: ...Nf6, ...g6, ...Bg7, ...d6, ...O-O, then ...e5 or ...c5 |

@@ -128,14 +128,14 @@ function engineWith(candidates: Array<{ uci: string; scoreCp: number }>): Stockf
 
 /* ------------------------------ registration ------------------------------ */
 
-test('Edward Chen is on the roster as Senior, 800, in the Beginners group', () => {
+test('Edward Chen is on the roster as Senior, 800, in the Beginner band', () => {
   assert.ok(EDWARD);
   assert.equal(EDWARD.id, 'edward', 'his own stable id, never a re-used “senior”');
   assert.equal(EDWARD.kind, 'personality');
   assert.equal(EDWARD.name, 'Edward Chen');
   assert.equal(EDWARD.title, 'Senior', 'the subtext is exactly Senior');
   assert.equal(EDWARD.elo, 800);
-  assert.equal(EDWARD.category, 'beginners');
+  assert.equal(EDWARD.category, 'beginner');
   assert.equal(EDWARD.initials, 'EC');
   assert.equal(EDWARD.usesRepertoire, false);
 
@@ -145,7 +145,7 @@ test('Edward Chen is on the roster as Senior, 800, in the Beginners group', () =
   assert.equal(opponentStage(EDWARD), 'Senior');
   assert.equal(opponentMeta(EDWARD), 'Senior · 800 Elo');
   assert.equal(opponentFullName(EDWARD), 'Edward Chen (Senior)');
-  assert.match(EDWARD.style, /principled|beginner/i);
+  assert.match(EDWARD.style, /balanced|oversight/i);
   assert.ok(EDWARD.style.length > 0);
 });
 
@@ -161,7 +161,7 @@ test('his “Senior” is not Johnfer Quispe’s Senior', () => {
   assert.ok(johnfer);
   assert.equal(johnfer.name, 'Johnfer Quispe');
   assert.equal(johnfer.elo, 2000);
-  assert.equal(johnfer.category, 'strong');
+  assert.equal(johnfer.category, 'varsity');
   assert.notEqual(johnfer.id, EDWARD.id);
   assert.notEqual(opponentFullName(johnfer), opponentFullName(EDWARD));
   /* The shared word is a stage, and the full labels still tell them apart. */
@@ -188,31 +188,31 @@ test('his “Senior” is not Johnfer Quispe’s Senior', () => {
 
 test('the roster gains him once, without disturbing any existing id', () => {
   assert.equal(PERSONALITY_OPPONENTS.length, 17);
-  assert.equal(ALL_OPPONENTS.length, 17, 'seventeen personalities plus the General Bot');
+  assert.equal(ALL_OPPONENTS.length, 18, 'seventeen personalities plus the General Bot');
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'edward').length,
     1,
   );
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 17);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 18);
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    14,
+    17,
     'saved games and PGN headers can always tell two opponents apart',
   );
 
   /* Every pre-existing entry keeps its id, rating, stage and group. */
   const expected: Array<[string, string, string, number, string]> = [
-    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'beginners'],
+    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],
     ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450, 'intermediate'],
-    ['faadi', 'Faadi Granillo Garcia', 'Prime', 1100, 'beginners'],
-    ['nina-freshman', 'Nina Yang', 'Freshman', 1150, 'beginners'],
+    ['faadi', 'Faadi Granillo Garcia', 'Prime', 700, 'beginner'],
+    ['nina-freshman', 'Nina Yang', 'Freshman', 1200, 'novice'],
     ['bryan-sophomore', 'Bryan Martinez-Hernandez', 'Sophomore', 1350, 'intermediate'],
-    ['nina', 'Nina Yang', 'Sophomore', 1550, 'strong'],
-    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'strong'],
-    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'strong'],
-    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-3'],
-    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-3'],
-    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-3'],
+    ['nina', 'Nina Yang', 'Sophomore', 1550, 'intermediate'],
+    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'varsity'],
+    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'varsity'],
+    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-4'],
+    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-4'],
+    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-4'],
   ];
   for (const [id, name, title, elo, category] of expected) {
     const opponent = getOpponent(id);
@@ -226,16 +226,22 @@ test('the roster gains him once, without disturbing any existing id', () => {
   assert.equal(GENERAL_BOT.usesRepertoire, false);
 });
 
-test('he is selectable in every Beginners section, and the lowest rated card', () => {
-  assert.ok(OPPONENT_CATEGORIES.some((group) => group.id === 'beginners'));
+test('he is selectable in the Beginner section, which holds the lowest ratings', () => {
+  assert.ok(OPPONENT_CATEGORIES.some((group) => group.id === 'beginner'));
   const beginners = PERSONALITY_OPPONENTS.filter(
-    (opponent) => opponent.category === 'beginners',
+    (opponent) => opponent.category === 'beginner',
   );
-  assert.ok(beginners.some((opponent) => opponent.id === 'edward'));
-  assert.equal(Math.min(...beginners.map((opponent) => opponent.elo)), EDWARD.elo);
-  assert.ok(
-    Math.min(...PERSONALITY_OPPONENTS.map((opponent) => opponent.elo)) === EDWARD.elo,
-    'he is the entry point to the ladder',
+  assert.deepEqual(
+    beginners.map((opponent) => opponent.id),
+    ['emmanuel', 'edward', 'faadi'],
+  );
+  assert.ok(beginners.every((opponent) => opponent.elo <= 1000));
+  /* Emmanuel is the weakest card now; Edward is still the stronger beginner. */
+  assert.ok(EDWARD.elo > getOpponent('emmanuel')!.elo);
+  assert.equal(
+    Math.max(...beginners.map((opponent) => opponent.elo)),
+    EDWARD.elo,
+    'the strongest card of the Beginner band',
   );
 });
 
@@ -824,7 +830,7 @@ test('a bot-vs-bot game saves and exports him by name, colour and rating', () =>
   assert.equal(profile.name, 'Edward Chen');
   assert.equal(profile.title, 'Senior');
   assert.equal(profile.elo, 800);
-  assert.equal(profile.category, 'beginners');
+  assert.equal(profile.category, 'beginner');
   assert.equal(opponentMeta(profile), 'Senior · 800 Elo');
   assert.equal(profileFromRecord(record).id, 'edward');
 

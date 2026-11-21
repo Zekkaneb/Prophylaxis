@@ -123,14 +123,14 @@ function engineWith(candidates: Array<{ uci: string; scoreCp: number }>): Stockf
 
 /* ------------------------------ identity ---------------------------------- */
 
-test('Freshman Brandon is his own opponent, 1600, in the Strong group', () => {
+test('Freshman Brandon is his own opponent, 1600, in the Intermediate band', () => {
   assert.ok(FRESH);
   assert.equal(FRESH.id, 'brandon-freshman');
   assert.equal(FRESH.kind, 'personality');
   assert.equal(FRESH.name, 'Brandon Tran');
   assert.equal(FRESH.title, 'Freshman');
   assert.equal(FRESH.elo, 1600);
-  assert.equal(FRESH.category, 'strong');
+  assert.equal(FRESH.category, 'intermediate');
   assert.equal(FRESH.shortName, 'Brandon Frosh');
   assert.equal(FRESH.initials, 'BT');
   assert.equal(FRESH.usesRepertoire, false);
@@ -150,7 +150,7 @@ test('Prime is untouched and the two Brandons stay separately selectable', () =>
   assert.equal(PRIME.id, 'brandon');
   assert.equal(PRIME.title, 'Prime');
   assert.equal(PRIME.elo, 2350);
-  assert.equal(PRIME.category, 'big-3');
+  assert.equal(PRIME.category, 'big-4');
   assert.equal(PRIME.portraitPath, 'opponents/brandon.webp');
   assert.notEqual(PRIME.id, FRESH.id);
   assert.notEqual(opponentFullName(PRIME), opponentFullName(FRESH));
@@ -166,11 +166,11 @@ test('Prime is untouched and the two Brandons stay separately selectable', () =>
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.name === 'Brandon Tran').length,
     2,
   );
-  const strong = PERSONALITY_OPPONENTS.filter(
-    (opponent) => opponent.category === 'strong',
+  const intermediate = PERSONALITY_OPPONENTS.filter(
+    (opponent) => opponent.category === 'intermediate',
   ).map((opponent) => opponent.id);
-  assert.ok(strong.includes('brandon-freshman'));
-  assert.ok(strong.indexOf('brandon-freshman') < strong.indexOf('bryan'));
+  assert.ok(intermediate.includes('brandon-freshman'));
+  assert.equal(intermediate[intermediate.length - 1], 'brandon-freshman');
   assert.equal(ALL_OPPONENTS.length, 18);
   assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 18);
 });
@@ -191,7 +191,7 @@ test('saved games resolve each Brandon to his own version', () => {
   assert.equal(prime.title, 'Prime');
   assert.equal(fresh.title, 'Freshman');
   assert.equal(fresh.elo, 1600);
-  assert.equal(fresh.category, 'strong');
+  assert.equal(fresh.category, 'intermediate');
   assert.notEqual(prime.id, fresh.id);
 });
 

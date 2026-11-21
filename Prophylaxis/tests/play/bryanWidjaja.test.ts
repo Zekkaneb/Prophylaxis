@@ -706,16 +706,17 @@ test('every other opponent and the General Bot are untouched', () => {
   assert.equal(PERSONALITY_OPPONENTS.length, 17);
   assert.equal(ALL_OPPONENTS.length, 18);
   const expected: Array<[string, string, string, number, string]> = [
-    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'beginners'],
+    ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],
     ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450, 'intermediate'],
-    ['nina', 'Nina Yang', 'Sophomore', 1550, 'strong'],
-    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'strong'],
-    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'strong'],
-    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-3'],
-    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-3'],
-    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-3'],
+    ['nina', 'Nina Yang', 'Sophomore', 1550, 'intermediate'],
+    ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800, 'varsity'],
+    ['senior', 'Johnfer Quispe', 'Senior', 2000, 'varsity'],
+    ['brandon', 'Brandon Tran', 'Prime', 2350, 'big-4'],
+    ['junior', 'Johnfer Quispe', 'Junior', 2150, 'big-4'],
+    ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000, 'big-4'],
     ['bryan-sophomore', 'Bryan Martinez-Hernandez', 'Sophomore', 1350, 'intermediate'],
-    ['edward', 'Edward Chen', 'Senior', 800, 'beginners'],
+    ['mabinti', 'Mabinti Mansaray', 'Junior', 1550, 'big-4'],
+    ['edward', 'Edward Chen', 'Senior', 800, 'beginner'],
   ];
   for (const [id, name, title, elo, category] of expected) {
     const opponent = getOpponent(id);

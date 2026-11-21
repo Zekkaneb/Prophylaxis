@@ -28,11 +28,15 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
       opponent.elo,
     ]),
     [
+      ['emmanuel', 'Emmanuel Domah', 'Senior', 400],
+      ['edward', 'Edward Chen', 'Senior', 800],
+      ['faadi', 'Faadi Granillo Garcia', 'Prime', 700],
+      ['nina-freshman', 'Nina Yang', 'Freshman', 1200],
       ['freshman', 'Johnfer Quispe', 'Freshman', 1250],
-      ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450],
-      ['faadi', 'Faadi Granillo Garcia', 'Prime', 1100],
-      ['nina-freshman', 'Nina Yang', 'Freshman', 1150],
+      ['alex-tang', 'Alex Tang', 'Sophomore', 1100],
       ['bryan-sophomore', 'Bryan Martinez-Hernandez', 'Sophomore', 1350],
+      ['bryan-widjaja', 'Bryan Widjaja', 'Prime', 1400],
+      ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450],
       ['nina', 'Nina Yang', 'Sophomore', 1550],
       ['brandon-freshman', 'Brandon Tran', 'Freshman', 1600],
       ['bryan', 'Bryan Martinez-Hernandez', 'Junior', 1800],
@@ -40,11 +44,11 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
       ['brandon', 'Brandon Tran', 'Prime', 2350],
       ['junior', 'Johnfer Quispe', 'Junior', 2150],
       ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000],
-      ['edward', 'Edward Chen', 'Senior', 800],
+      ['mabinti', 'Mabinti Mansaray', 'Junior', 1550],
     ],
   );
 
-  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 14);
+  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 17);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.doesNotMatch(opponent.name, /\(/, 'the name carries no parenthetical suffix');
     assert.ok(opponent.title, `${opponent.id} has a subtext`);
@@ -60,18 +64,18 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
      two Bryans apart, which is how saved games are labelled. */
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    13,
+    17,
   );
 });
 
-test('categories are explicitly configured, complete and free of Big 4', () => {
+test('categories are explicitly configured, complete and ordered by band', () => {
   assert.deepEqual(
     OPPONENT_CATEGORIES.map((group) => group.label),
-    ['Easy', 'Beginners', 'Intermediate', 'Strong', 'The Big 3'],
+    ['Beginner', 'Novice', 'Intermediate', 'Varsity', 'The Big 4'],
   );
-  assert.ok(
-    !OPPONENT_CATEGORIES.some((group) => /big\s*4/i.test(group.label)),
-    'the old label is gone',
+  assert.deepEqual(
+    OPPONENT_CATEGORIES.map((group) => group.hint),
+    ['100–1000 Elo', '1001–1300 Elo', '1301–1600 Elo', '1601–2000 Elo', 'Special designation'],
   );
 
   const declared = new Set(OPPONENT_CATEGORIES.map((group) => group.id));
@@ -79,30 +83,36 @@ test('categories are explicitly configured, complete and free of Big 4', () => {
     assert.ok(declared.has(opponent.category), `${opponent.id} sits in a real group`);
   }
 
-  /* Easy is its own group: the card below Beginners, and only that card. */
+  /* Every band, in the order the cards are listed inside it. */
   assert.deepEqual(
-    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'easy').map(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'beginner').map(
       (opponent) => opponent.id,
     ),
-    ['emmanuel'],
+    ['emmanuel', 'edward', 'faadi'],
   );
   assert.deepEqual(
-    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'beginners').map(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'novice').map(
       (opponent) => opponent.id,
     ),
-    ['freshman', 'faadi', 'nina-freshman', 'edward', 'alex-tang'],
+    ['nina-freshman', 'freshman', 'alex-tang'],
   );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'intermediate').map(
       (opponent) => opponent.id,
     ),
-    ['sophomore', 'bryan-sophomore', 'bryan-widjaja'],
+    ['bryan-sophomore', 'bryan-widjaja', 'sophomore', 'nina', 'brandon-freshman'],
   );
   assert.deepEqual(
-    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'strong').map(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'varsity').map(
       (opponent) => opponent.id,
     ),
-    ['nina', 'mabinti', 'brandon-freshman', 'bryan', 'senior'],
+    ['bryan', 'senior'],
+  );
+  assert.deepEqual(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'big-4').map(
+      (opponent) => opponent.id,
+    ),
+    ['brandon', 'junior', 'bryan-prime', 'mabinti'],
   );
 
   /* Two 2000s, two different groups: membership is a field, never the rating. */
@@ -111,19 +121,20 @@ test('categories are explicitly configured, complete and free of Big 4', () => {
   assert.notEqual(getOpponent('senior')?.category, getOpponent('bryan-prime')?.category);
 });
 
-test('The Big 3 holds exactly Brandon, Johnfer and Bryan Prime', () => {
-  const big = PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'big-3');
-  assert.equal(big.length, 3, 'no fourth card');
+test('The Big 4 holds exactly Brandon, Johnfer, Bryan Prime and Mabinti', () => {
+  const big = PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'big-4');
+  assert.equal(big.length, 4, 'no fifth card');
   assert.deepEqual(
     big.map((opponent) => [opponent.name, opponent.title, opponent.elo]),
     [
       ['Brandon Tran', 'Prime', 2350],
       ['Johnfer Quispe', 'Junior', 2150],
       ['Bryan Martinez-Hernandez', 'Prime', 2000],
+      ['Mabinti Mansaray', 'Junior', 1550],
     ],
     'the featured row reads strongest first',
   );
-  assert.equal(new Set(big.map((opponent) => opponent.id)).size, 3);
+  assert.equal(new Set(big.map((opponent) => opponent.id)).size, 4);
   assert.ok(!big.some((opponent) => opponent.id === 'senior'), 'Senior is not featured');
   assert.equal(
     big.filter((opponent) => opponent.id === 'bryan-prime').length,
@@ -141,23 +152,23 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
   assert.deepEqual(
     PERSONALITY_OPPONENTS.map((opponent) => opponent.portraitPath),
     [
-      'opponents/freshman.webp',
-      'opponents/sophomore.webp',
+      'opponents/emmanuel.webp',
+      'opponents/edward.webp',
       'opponents/faadi.webp',
       'opponents/nina-freshman.webp',
+      'opponents/freshman.webp',
+      'opponents/alex-tang.webp',
       'opponents/bryan-sophomore.webp',
       'opponents/bryan-widjaja.webp',
+      'opponents/sophomore.webp',
       'opponents/nina.webp',
-      'opponents/mabinti.webp',
       'opponents/brandon-freshman.webp',
       'opponents/bryan-junior.webp',
       'opponents/senior.webp',
       'opponents/brandon.webp',
       'opponents/junior.webp',
       'opponents/bryan-prime.webp',
-      'opponents/emmanuel.webp',
-      'opponents/edward.webp',
-      'opponents/alex-tang.webp',
+      'opponents/mabinti.webp',
     ],
   );
 
@@ -251,7 +262,7 @@ test('saved games keep resolving after the restructure', () => {
     opponent_kind: 'personality',
   });
   assert.equal(prime.id, 'bryan-prime');
-  assert.equal(prime.category, 'big-3');
+  assert.equal(prime.category, 'big-4');
 
   /* A record for an opponent that no longer exists is rebuilt, not dropped. */
   const dropped = profileFromRecord({
@@ -262,7 +273,7 @@ test('saved games keep resolving after the restructure', () => {
   });
   assert.equal(dropped.id, 'retired-bot');
   assert.equal(dropped.elo, 1900);
-  assert.equal(dropped.category, 'strong');
+  assert.equal(dropped.category, 'varsity');
   assert.equal(dropped.initials, 'RE');
 });
 

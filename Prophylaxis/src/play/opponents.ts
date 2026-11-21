@@ -28,11 +28,11 @@ export type OpponentKind = 'personality' | 'general';
  * to different groups on purpose.
  */
 export type OpponentCategory =
-  | 'easy'
-  | 'beginners'
+  | 'beginner'
+  | 'novice'
   | 'intermediate'
-  | 'strong'
-  | 'big-3';
+  | 'varsity'
+  | 'big-4';
 
 export interface OpponentCategoryGroup {
   id: OpponentCategory;
@@ -41,13 +41,14 @@ export interface OpponentCategoryGroup {
 }
 
 export const OPPONENT_CATEGORIES: readonly OpponentCategoryGroup[] = [
-  /* Below the beginners: the opponent who is not studying the game at all, for
-     a first game that can be won without knowing an opening. */
-  { id: 'easy', label: 'Easy', hint: 'Learning the pieces, taking it easy' },
-  { id: 'beginners', label: 'Beginners', hint: 'Room to recover from a mistake' },
-  { id: 'intermediate', label: 'Intermediate', hint: 'Sharper tactics, real conversion' },
-  { id: 'strong', label: 'Strong', hint: 'Deep calculation, few concessions' },
-  { id: 'big-3', label: 'The Big 3', hint: 'The top of the ladder' },
+  /* Bands of the ladder, from the first game that can be won without knowing an
+     opening to the featured four. Each band is its own headed section in the
+     Play screen, and the cards inside it read in the order listed here. */
+  { id: 'beginner', label: 'Beginner', hint: '100–1000 Elo' },
+  { id: 'novice', label: 'Novice', hint: '1001–1300 Elo' },
+  { id: 'intermediate', label: 'Intermediate', hint: '1301–1600 Elo' },
+  { id: 'varsity', label: 'Varsity', hint: '1601–2000 Elo' },
+  { id: 'big-4', label: 'The Big 4', hint: 'Special designation' },
 ] as const;
 
 export interface OpponentProfile {
@@ -87,8 +88,8 @@ export const PLAYER_NAME = 'Johnfer Quispe';
 
 /*
  * Order inside a group is the display order. Group order comes from
- * `OPPONENT_CATEGORIES`, so the ladder reads Beginners → Intermediate → Strong →
- * The Big 3 however this array is arranged.
+ * `OPPONENT_CATEGORIES`, so the ladder reads Beginner → Novice → Intermediate →
+ * Varsity → The Big 4 however this array is arranged.
  *
  * `bryan` is the original Bryan profile (now "Junior") and keeps its id so saved
  * games and PGNs still resolve; `bryan-prime` and `bryan-sophomore` are the
@@ -96,39 +97,55 @@ export const PLAYER_NAME = 'Johnfer Quispe';
  * one match and stay distinguishable in one history list.
  */
 export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
+  /* Emmanuel Domah (Senior), 400 — the Reluctant Player.
+
+     The first card of the Beginner band: he is not a beginner who studies, he
+     is someone who turned up. `emmanuel` is his own id, so a saved game can
+     never resolve him to Edward Chen, the other "Senior". No repertoire at all:
+     `PERSONALITY_REPERTOIRES` deliberately has no entry for him. */
   {
-    id: 'freshman',
+    id: 'emmanuel',
     kind: 'personality',
-    category: 'beginners',
-    name: 'Johnfer Quispe',
-    shortName: 'Freshman',
-    title: 'Freshman',
-    elo: 1250,
-    style: 'Solid, natural moves. Punishes loose pieces but gives you room to recover.',
-    portraitPath: 'opponents/freshman.webp',
-    initials: 'F',
+    category: 'beginner',
+    name: 'Emmanuel Domah',
+    shortName: 'Emmanuel',
+    title: 'Senior',
+    elo: 400,
+    style:
+      'The greatest player of all time.',
+    portraitPath: 'opponents/emmanuel.webp',
+    /* He is the one portrait framed taller than it is wide, and it is already
+       painted tight: the shared 1.2 zoom would crop the beanie and the hood. */
+    portraitScale: 1,
+    initials: 'ED',
     usesRepertoire: false,
   },
+  /* Edward Chen (Senior), 800 — the principled beginner. His id is `edward`,
+     never a re-used `senior`, so saved games and PGNs can never resolve him to
+     Johnfer Quispe (Senior) — the two share the word "Senior" and nothing else. */
   {
-    id: 'sophomore',
+    id: 'edward',
     kind: 'personality',
-    category: 'intermediate',
-    name: 'Johnfer Quispe',
-    shortName: 'Sophomore',
-    title: 'Sophomore',
-    elo: 1450,
-    style: 'Sharper tactics and better conversion. Mistakes are punished more often.',
-    portraitPath: 'opponents/sophomore.webp',
-    initials: 'S',
+    category: 'beginner',
+    name: 'Edward Chen',
+    shortName: 'Edward',
+    title: 'Senior',
+    elo: 800,
+    style:
+      'Very balanced but has slight oversights',
+    portraitPath: 'opponents/edward.webp',
+    initials: 'EC',
     usesRepertoire: false,
   },
   /* Listed after Sophomore so the Bot vs. Bot default pairing stays Freshman
      against Sophomore; the Beginners group is built by category, so he still
      appears directly beneath the Freshman card. */
+  /* Faadi Granillo Garcia (Prime), 700 — the wildcard: loose, instinctive and
+     happy to improvise. */
   {
     id: 'faadi',
     kind: 'personality',
-    category: 'beginners',
+    category: 'beginner',
     name: 'Faadi Granillo Garcia',
     shortName: 'Faadi',
     title: 'Prime',
@@ -145,10 +162,13 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
   /* Nina before she found her confidence. Same character, an earlier profile:
      the beginners' balanced opponent, so a first game meets someone who plays
      normally rather than a dedicated attacker or defender. */
+  /* Nina before she found her confidence. Same character, an earlier profile:
+     the Novice band's balanced opponent, so a first game meets someone who plays
+     normally rather than a dedicated attacker or defender. */
   {
     id: 'nina-freshman',
     kind: 'personality',
-    category: 'beginners',
+    category: 'novice',
     name: 'Nina Yang',
     shortName: 'Nina Frosh',
     title: 'Freshman',
@@ -159,9 +179,55 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'NY',
     usesRepertoire: false,
   },
+  /* Johnfer Quispe (Freshman), 1250 — the Novice band's anchor: solid, natural
+     moves, with room to recover from a mistake. */
+  {
+    id: 'freshman',
+    kind: 'personality',
+    category: 'novice',
+    name: 'Johnfer Quispe',
+    shortName: 'Freshman',
+    title: 'Freshman',
+    elo: 1250,
+    style: 'Solid, natural moves. Punishes loose pieces but gives you room to recover.',
+    portraitPath: 'opponents/freshman.webp',
+    initials: 'F',
+    usesRepertoire: false,
+  },
+  /* Alex Tang (Sophomore), 1100 — the energetic goofball.
+
+     A different person from the Johnfer Sophomore and from Bryan (Sophomore):
+     `alex-tang` is his own id, so a saved game can never resolve him to either
+     of them. He is a Beginners card at 1100 and a straightforward beginner at
+     the board — the loud, funny personality lives in his dialogue only. */
+  /* Alex Tang (Sophomore), 1100 — the energetic goofball.
+
+     A different person from the Johnfer Sophomore and from Bryan (Sophomore):
+     `alex-tang` is his own id, so a saved game can never resolve him to either
+     of them. The loud, funny personality lives in his dialogue only. */
+  {
+    id: 'alex-tang',
+    kind: 'personality',
+    category: 'novice',
+    name: 'Alex Tang',
+    shortName: 'Alex',
+    title: 'Sophomore',
+    elo: 1100,
+    style:
+      'The energetic beginner: develops naturally, takes the centre and castles when he can — straightforward, understandable chess with the occasional tactical oversight.',
+    portraitPath: 'opponents/alex-tang.webp',
+    /* Painted tight in the source file, like Mabinti's and Bryan Widjaja's, so
+       the shared 1.2 zoom would crop him twice. */
+    portraitScale: 1,
+    initials: 'AT',
+    usesRepertoire: false,
+  },
   /* The earlier Bryan. Same name and portrait, a defend-first game: he sits in
      the intermediate group, beside the 1450 Johnfer — the step where a player
      has to convert an advantage against someone who does not hand it back. */
+  /* The earlier Bryan. Same name and portrait, a defend-first game — the step
+     where a player has to convert an advantage against someone who does not
+     hand it back. */
   {
     id: 'bryan-sophomore',
     kind: 'personality',
@@ -183,6 +249,12 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
      Intermediate group at 1400 by category, never by rating order, and
      `bryan-widjaja` is his own stable id, so a saved game can never resolve
      him to any other Bryan card. */
+  /* Bryan Widjaja (Prime), 1400 — the Wall.
+
+     A different Bryan and a different player from the three
+     Martinez-Hernandez profiles: defence is his speciality. He sits in
+     Intermediate by category, never by rating order, and `bryan-widjaja` is his
+     own stable id, so a saved game can never resolve him to any other Bryan. */
   {
     id: 'bryan-widjaja',
     kind: 'personality',
@@ -200,10 +272,25 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'BW',
     usesRepertoire: false,
   },
+  /* Johnfer Quispe (Sophomore), 1450 — sharper tactics and better conversion. */
+  {
+    id: 'sophomore',
+    kind: 'personality',
+    category: 'intermediate',
+    name: 'Johnfer Quispe',
+    shortName: 'Sophomore',
+    title: 'Sophomore',
+    elo: 1450,
+    style: 'Sharper tactics and better conversion. Mistakes are punished more often.',
+    portraitPath: 'opponents/sophomore.webp',
+    initials: 'S',
+    usesRepertoire: false,
+  },
+  /* Nina Yang (Sophomore), 1550 — charismatic, playful and initiative-first. */
   {
     id: 'nina',
     kind: 'personality',
-    category: 'strong',
+    category: 'intermediate',
     name: 'Nina Yang',
     shortName: 'Nina',
     title: 'Sophomore',
@@ -217,14 +304,117 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'NY',
     usesRepertoire: false,
   },
+  /* Brandon before Prime: the same person and the same portrait, one rung down
+     the ladder. He belongs to the Strong group at 1600, between Nina and Bryan
+     Junior, because his chess is promising rather than polished. The shared
+     portrait is deliberate — it is the same player at an earlier stage — and
+     the subtext and rating are what tell the two cards apart. */
+  /* Brandon before Prime: the same person and the same portrait, one rung down
+     the ladder at 1600. The shared portrait is deliberate — it is the same
+     player at an earlier stage — and the subtext and rating tell the two cards
+     apart. */
+  {
+    id: 'brandon-freshman',
+    kind: 'personality',
+    category: 'intermediate',
+    name: 'Brandon Tran',
+    shortName: 'Brandon Frosh',
+    title: 'Freshman',
+    elo: 1600,
+    style:
+      'The funky attacker: same ideas as Prime, less behind them. Checks, sacrifices and strange attacking moves, and not always the calculation to back it up.',
+    portraitPath: 'opponents/brandon-freshman.webp',
+    initials: 'BT',
+    usesRepertoire: false,
+  },
+  /* Bryan Martinez-Hernandez (Junior), 1800 — the balanced all-rounder with
+     intuitive decision-making. `bryan` is the original Bryan profile and keeps
+     its id so saved games and PGNs still resolve. */
+  {
+    id: 'bryan',
+    kind: 'personality',
+    category: 'varsity',
+    name: 'Bryan Martinez-Hernandez',
+    shortName: 'Bryan Jr',
+    title: 'Junior',
+    elo: 1800,
+    style:
+      'Balanced all-rounder with intuitive decision-making. Reasonable in every phase, occasionally short on calculation or a long-term plan.',
+    portraitPath: 'opponents/bryan-junior.webp',
+    initials: 'BM',
+    usesRepertoire: false,
+  },
+  /* Johnfer Quispe (Senior), 2000 — aggressive, dynamic and tactically
+     ambitious. A different group from Bryan (Prime) at the same rating on
+     purpose. */
+  {
+    id: 'senior',
+    kind: 'personality',
+    category: 'varsity',
+    name: 'Johnfer Quispe',
+    shortName: 'Senior',
+    title: 'Senior',
+    elo: 2000,
+    style: 'Aggressive, dynamic and tactically ambitious. Comfortable in complex positions, with the calculation to back it up.',
+    portraitPath: 'opponents/senior.webp',
+    initials: 'S',
+    usesRepertoire: false,
+  },
+  /* The Big 3, in the order the featured row shows them. */
+  /* The Big 4, strongest first. Membership is a special designation, never a
+     rating band: Mabinti's 1550 sits here by invitation, not by Elo. */
+  {
+    id: 'brandon',
+    kind: 'personality',
+    category: 'big-4',
+    name: 'Brandon Tran',
+    shortName: 'Brandon',
+    title: 'Prime',
+    elo: 2350,
+    style: 'Aggressive, tactical, charismatic. Seeks complications, sacrifices and the initiative.',
+    portraitPath: 'opponents/brandon.webp',
+    initials: 'BT',
+    usesRepertoire: false,
+  },
+  /* Johnfer Quispe (Junior), 2150. */
+  {
+    id: 'junior',
+    kind: 'personality',
+    category: 'big-4',
+    name: 'Johnfer Quispe',
+    shortName: 'Junior',
+    title: 'Junior',
+    elo: 2150,
+    style: 'Deep, punishing calculation with very few concessions in the middlegame.',
+    portraitPath: 'opponents/junior.webp',
+    initials: 'J',
+    usesRepertoire: false,
+  },
+  /* Bryan Martinez-Hernandez (Prime), 2000 — the polished Bryan. */
+  {
+    id: 'bryan-prime',
+    kind: 'personality',
+    category: 'big-4',
+    name: 'Bryan Martinez-Hernandez',
+    shortName: 'Bryan Prime',
+    title: 'Prime',
+    elo: 2000,
+    style:
+      'The polished Bryan: same relaxed feel at the board, far steadier calculation and a clearer eye for the long-term plan.',
+    portraitPath: 'opponents/bryan-prime.webp',
+    initials: 'BM',
+    usesRepertoire: false,
+  },
   /* Mabinti Mansaray, the Strong group's balanced player: 1550, the same
      rating as Nina but a completely different character — principled rather
      than initiative-first. `mabinti` is her own id: it never resolves to
      another character's card, saved games or PGN. */
+  /* Mabinti Mansaray (Junior), 1550 — the featured four's fourth card, by
+     designation rather than by rating. */
   {
     id: 'mabinti',
     kind: 'personality',
-    category: 'strong',
+    category: 'big-4',
     name: 'Mabinti Mansaray',
     shortName: 'Mabinti',
     title: 'Junior',
@@ -236,159 +426,6 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
        would crop her braids twice. */
     portraitScale: 1,
     initials: 'MM',
-    usesRepertoire: false,
-  },
-  /* Brandon before Prime: the same person and the same portrait, one rung down
-     the ladder. He belongs to the Strong group at 1600, between Nina and Bryan
-     Junior, because his chess is promising rather than polished. The shared
-     portrait is deliberate — it is the same player at an earlier stage — and
-     the subtext and rating are what tell the two cards apart. */
-  {
-    id: 'brandon-freshman',
-    kind: 'personality',
-    category: 'strong',
-    name: 'Brandon Tran',
-    shortName: 'Brandon Frosh',
-    title: 'Freshman',
-    elo: 1600,
-    style:
-      'The funky attacker: same ideas as Prime, less behind them. Checks, sacrifices and strange attacking moves, and not always the calculation to back it up.',
-    portraitPath: 'opponents/brandon-freshman.webp',
-    initials: 'BT',
-    usesRepertoire: false,
-  },
-  {
-    id: 'bryan',
-    kind: 'personality',
-    category: 'strong',
-    name: 'Bryan Martinez-Hernandez',
-    shortName: 'Bryan Jr',
-    title: 'Junior',
-    elo: 1800,
-    style:
-      'Balanced all-rounder with intuitive decision-making. Reasonable in every phase, occasionally short on calculation or a long-term plan.',
-    portraitPath: 'opponents/bryan-junior.webp',
-    initials: 'BM',
-    usesRepertoire: false,
-  },
-  {
-    id: 'senior',
-    kind: 'personality',
-    category: 'strong',
-    name: 'Johnfer Quispe',
-    shortName: 'Senior',
-    title: 'Senior',
-    elo: 2000,
-    style: 'Aggressive, dynamic and tactically ambitious. Comfortable in complex positions, with the calculation to back it up.',
-    portraitPath: 'opponents/senior.webp',
-    initials: 'S',
-    usesRepertoire: false,
-  },
-  /* The Big 3, in the order the featured row shows them. */
-  {
-    id: 'brandon',
-    kind: 'personality',
-    category: 'big-3',
-    name: 'Brandon Tran',
-    shortName: 'Brandon',
-    title: 'Prime',
-    elo: 2350,
-    style: 'Aggressive, tactical, charismatic. Seeks complications, sacrifices and the initiative.',
-    portraitPath: 'opponents/brandon.webp',
-    initials: 'BT',
-    usesRepertoire: false,
-  },
-  {
-    id: 'junior',
-    kind: 'personality',
-    category: 'big-3',
-    name: 'Johnfer Quispe',
-    shortName: 'Junior',
-    title: 'Junior',
-    elo: 2150,
-    style: 'Deep, punishing calculation with very few concessions in the middlegame.',
-    portraitPath: 'opponents/junior.webp',
-    initials: 'J',
-    usesRepertoire: false,
-  },
-  {
-    id: 'bryan-prime',
-    kind: 'personality',
-    category: 'big-3',
-    name: 'Bryan Martinez-Hernandez',
-    shortName: 'Bryan Prime',
-    title: 'Prime',
-    elo: 2000,
-    style:
-      'The polished Bryan: same relaxed feel at the board, far steadier calculation and a clearer eye for the long-term plan.',
-    portraitPath: 'opponents/bryan-prime.webp',
-    initials: 'BM',
-    usesRepertoire: false,
-  },
-  /* The entry point to the ladder: a real beginner who plays principled chess.
-     Appended last so the Bot vs. Bot defaults (Freshman vs. Sophomore) stay as
-     they were; his group comes from `category`, so the Beginners section still
-     lists him. His id is `edward`, not a re-used `senior`, so saved games and
-     PGNs can never resolve him to Johnfer Quispe (Senior) — the two share the
-     word "Senior" and nothing else. */
-  /* Emmanuel Domah (Senior), 400 — the Reluctant Player.
-
-     The group below Beginners, and the only card in it: he is not a beginner
-     who studies, he is someone who turned up. `emmanuel` is his own id, so a
-     saved game can never resolve him to Edward Chen, the other "Senior".
-     No repertoire: `PERSONALITY_REPERTOIRES` deliberately has no entry for him. */
-  {
-    id: 'emmanuel',
-    kind: 'personality',
-    category: 'beginners',
-    name: 'Emmanuel Domah',
-    shortName: 'Emmanuel',
-    title: 'Senior',
-    elo: 250,
-    style:
-      'The greatest player of all time.',
-    portraitPath: 'opponents/emmanuel.webp',
-    /* He is the one portrait framed taller than it is wide, and it is already
-       painted tight: the shared 1.2 zoom would crop the beanie and the hood. */
-    portraitScale: 1,
-    initials: 'ED',
-    usesRepertoire: false,
-  },
-  {
-    id: 'edward',
-    kind: 'personality',
-    category: 'beginners',
-    name: 'Edward Chen',
-    shortName: 'Edward',
-    title: 'Senior',
-    elo: 800,
-    style:
-      'Very balanced but has slight oversights',
-    portraitPath: 'opponents/edward.webp',
-    initials: 'EC',
-    usesRepertoire: false,
-  },
-  /* Alex Tang (Sophomore), 1100 — the energetic goofball.
-
-     A different person from the Johnfer Sophomore and from Bryan (Sophomore):
-     `alex-tang` is his own id, so a saved game can never resolve him to either
-     of them. He is a Beginners card at 1100 and a straightforward beginner at
-     the board — the loud, funny personality lives in his dialogue only. */
-  {
-    id: 'alex-tang',
-    kind: 'personality',
-    category: 'beginners',
-    name: 'Alex Tang',
-    shortName: 'Alex',
-    title: 'Sophomore',
-    elo: 1100,
-    style:
-      'The energetic beginner: develops naturally, takes the centre and castles when he can — straightforward, understandable chess with the occasional tactical oversight.',
-    portraitPath: 'opponents/alex-tang.webp',
-    /* Painted tight in the source file, like Mabinti's and Bryan Widjaja's, so
-       the shared 1.2 zoom would crop him twice. */
-    portraitScale: 1,
-    initials: 'AT',
     usesRepertoire: false,
   },
 ] as const;
@@ -474,8 +511,17 @@ export function profileFromRecord(input: {
     id: input.opponent_id,
     kind: input.opponent_kind,
     /* A dropped catalogue entry has no group of its own; park it on the ladder
-       step its rating belongs to. */
-    category: elo < 1350 ? 'beginners' : elo <= 1700 ? 'intermediate' : elo <= 2000 ? 'strong' : 'big-3',
+       band its rating belongs to. */
+    category:
+      elo <= 1000
+        ? 'beginner'
+        : elo <= 1300
+          ? 'novice'
+          : elo <= 1600
+            ? 'intermediate'
+            : elo <= 2000
+              ? 'varsity'
+              : 'big-4',
     name: input.opponent_name,
     shortName: input.opponent_name,
     elo: input.opponent_elo,
