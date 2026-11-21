@@ -187,16 +187,16 @@ test('his “Senior” is not Johnfer Quispe’s Senior', () => {
 });
 
 test('the roster gains him once, without disturbing any existing id', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 21);
-  assert.equal(ALL_OPPONENTS.length, 22, 'twenty-one personalities plus the General Bot');
+  assert.equal(PERSONALITY_OPPONENTS.length, 22);
+  assert.equal(ALL_OPPONENTS.length, 23, 'twenty-two personalities plus the General Bot');
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'edward').length,
     1,
   );
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 22);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 23);
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    21,
+    22,
     'saved games and PGN headers can always tell two opponents apart',
   );
 
@@ -233,14 +233,15 @@ test('he is selectable in the Beginner section, which holds the lowest ratings',
   );
   assert.deepEqual(
     beginners.map((opponent) => opponent.id),
-    ['emmanuel', 'edward', 'faadi'],
+    ['emmanuel', 'edward', 'faadi', 'christian-hernandez'],
   );
   assert.ok(beginners.every((opponent) => opponent.elo <= 1000));
-  /* Emmanuel is the weakest card now; Edward is still the stronger beginner. */
+  /* Emmanuel is the weakest card now, and Edward is no longer the top of the
+     band: Christian Hernandez's 950 is. */
   assert.ok(EDWARD.elo > getOpponent('emmanuel')!.elo);
   assert.equal(
     Math.max(...beginners.map((opponent) => opponent.elo)),
-    EDWARD.elo,
+    getOpponent('christian-hernandez')!.elo,
     'the strongest card of the Beginner band',
   );
 });

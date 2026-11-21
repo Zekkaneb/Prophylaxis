@@ -176,8 +176,8 @@ test('Prime is untouched and the two Brandons stay separately selectable', () =>
     'brandon-freshman',
     'the Freshman Brandon is the lower of the two Brandons',
   );
-  assert.equal(ALL_OPPONENTS.length, 22);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 22);
+  assert.equal(ALL_OPPONENTS.length, 23);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 23);
 });
 
 test('saved games resolve each Brandon to his own version', () => {

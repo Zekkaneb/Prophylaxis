@@ -665,8 +665,8 @@ test('a saved game and its PGN keep the Sophomore apart from the other two', () 
 /* ---------------------------- 9. regressions ---------------------------- */
 
 test('both other Brandons and every other opponent are untouched', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 21);
-  assert.equal(ALL_OPPONENTS.length, 22);
+  assert.equal(PERSONALITY_OPPONENTS.length, 22);
+  assert.equal(ALL_OPPONENTS.length, 23);
 
   /* The two existing Brandons keep their identity, Elo, portrait and dials. */
   assert.equal(FRESHMAN.elo, 1600);

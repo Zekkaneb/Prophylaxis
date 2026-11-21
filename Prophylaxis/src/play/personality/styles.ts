@@ -32,7 +32,8 @@ export type PersonalityId =
   | 'erik-wiessmann'
   | 'jonah-pachikara'
   | 'sophia-kuan'
-  | 'brandon-varsity';
+  | 'brandon-varsity'
+  | 'christian-hernandez';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -581,6 +582,41 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 88,
     activePieces: 88,
     openingBias: { sharp: 27, initiative: 21, developing: 6, solid: -17, positional: -7 },
+  },
+  /* Christian Hernandez (Senior), 950 — the Natural.
+
+     No dial is a speciality, and that is the character: with nothing at either
+     end of the table, `choosePersonalityMove` has no taste to push against the
+     engine's view, so he plays whatever the position in front of him suggests
+     instead of steering towards a plan of his own.
+
+     Two numbers do say something. `simplification: 72` is the trade preference —
+     he is comfortable taking a reasonable exchange — and `positional: 35` is the
+     flip side of it: he follows the idea in front of him rather than a long
+     plan. Neither is a rule, and neither outvotes a clearly better move or a
+     forced mate.
+
+     Nothing here is strength: accuracy is still `accuracyForElo(950)`, there is
+     no `depthCap` and no `mistakeChance`, so his misses are the shared rating
+     curve's slips and his occasional good idea comes from the same candidate
+     list any other 950 sees. `openingBias` is mild and positive only on solid,
+     developing chess, because the London is his one prepared idea. */
+  'christian-hernandez': {
+    ...BASE,
+    id: 'christian-hernandez',
+    aggression: 38,
+    risk: 35,
+    positional: 35,
+    tactical: 38,
+    defensive: 45,
+    initiative: 45,
+    simplification: 72,
+    complexity: 30,
+    kingSafety: 60,
+    material: 65,
+    sacrifice: 20,
+    activePieces: 55,
+    openingBias: { solid: 18, developing: 16, positional: 6, initiative: 4, sharp: -14 },
   },
 };
 

@@ -73,8 +73,8 @@ test('Bryan (Junior) is on the roster at 1800 with a unique id', () => {
   assert.match(BRYAN.style, /balanced/i);
   assert.match(BRYAN.style, /intuitive/i);
 
-  assert.equal(PERSONALITY_OPPONENTS.length, 21);
-  assert.equal(ALL_OPPONENTS.length, 22, 'twenty-one personalities plus the General Bot');
+  assert.equal(PERSONALITY_OPPONENTS.length, 22);
+  assert.equal(ALL_OPPONENTS.length, 23, 'twenty-two personalities plus the General Bot');
   assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 22);
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'bryan').length,
@@ -89,6 +89,7 @@ test('the roster keeps its ratings and ids', () => {
     ['emmanuel', 150],
     ['edward', 800],
     ['faadi', 700],
+    ['christian-hernandez', 950],
     ['nina-freshman', 1200],
     ['freshman', 1250],
     ['alex-tang', 1100],

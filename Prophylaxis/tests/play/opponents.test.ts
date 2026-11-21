@@ -31,6 +31,7 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
       ['emmanuel', 'Emmanuel Domah', 'Senior', 150],
       ['edward', 'Edward Chen', 'Senior', 800],
       ['faadi', 'Faadi Granillo Garcia', 'Prime', 700],
+      ['christian-hernandez', 'Christian Hernandez', 'Senior', 950],
       ['nina-freshman', 'Nina Yang', 'Freshman', 1200],
       ['freshman', 'Johnfer Quispe', 'Freshman', 1250],
       ['alex-tang', 'Alex Tang', 'Sophomore', 1100],
@@ -52,7 +53,7 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
     ],
   );
 
-  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 21);
+  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 22);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.doesNotMatch(opponent.name, /\(/, 'the name carries no parenthetical suffix');
     /* Jonah has no specified subtext by design: no title, so no invented stage. */
@@ -72,7 +73,7 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
      two Bryans apart, which is how saved games are labelled. */
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    21,
+    22,
   );
 });
 
@@ -96,7 +97,7 @@ test('categories are explicitly configured, complete and ordered by band', () =>
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'beginner').map(
       (opponent) => opponent.id,
     ),
-    ['emmanuel', 'edward', 'faadi'],
+    ['emmanuel', 'edward', 'faadi', 'christian-hernandez'],
   );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'novice').map(
@@ -163,6 +164,7 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
       'opponents/emmanuel.webp',
       'opponents/edward.webp',
       'opponents/faadi.webp',
+      'opponents/christian-hernandez.webp',
       'opponents/nina-freshman.webp',
       'opponents/freshman.webp',
       'opponents/alex-tang.webp',
@@ -294,8 +296,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
   assert.equal(GENERAL_BOT.usesRepertoire, false);
-  assert.equal(ALL_OPPONENTS.length, 22);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 22);
+  assert.equal(ALL_OPPONENTS.length, 23);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 23);
   assert.equal(GENERAL_BOT_ELO.min, 100);
   assert.equal(GENERAL_BOT_ELO.max, 2800);
 });

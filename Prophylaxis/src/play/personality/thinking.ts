@@ -230,6 +230,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* A real attacking calculation, deeper than Freshman's glance but well
          short of what Prime allows himself. */
       return 0.86 + (profile.tactical ? 0.3 : 0.08) * profile.complexity;
+    case 'christian-hernandez':
+      /* Plays on instinct: a quick, interested look, and only a genuinely sharp
+         position buys him a slightly longer one. */
+      return 0.86 + (profile.tactical ? 0.12 : 0.04) * profile.complexity;
   }
 }
 
@@ -294,6 +298,10 @@ function deliberationFactor(style: PersonalityStyle): number {
       return 0.98;
     case 'brandon-varsity':
       /* Confident and quick, but not as instant as Prime. */
+      return 0.86;
+    case 'christian-hernandez':
+      /* Relaxed: he moves when the move feels right, not once every line has
+         been checked. */
       return 0.86;
   }
 }

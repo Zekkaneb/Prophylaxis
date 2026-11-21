@@ -22,7 +22,7 @@ same band.
 
 | Band | Range | Cards, in display order |
 |---|---|---|
-| Beginner | 100–1000 Elo | Emmanuel Domah, Edward Chen, Faadi Granillo Garcia |
+| Beginner | 100–1000 Elo | Emmanuel Domah, Edward Chen, Faadi Granillo Garcia, Christian Hernandez (Senior) |
 | Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang, Erik Wiessmann, Sophia Kuan (Senior) |
 | Intermediate | 1301–1600 Elo | Bryan Martinez-Hernandez (Sophomore), Bryan Widjaja, Johnfer Quispe (Sophomore), Nina Yang (Sophomore), Brandon Tran (Freshman), Jonah Pachikara |
 | Varsity | 1601–2000 Elo | Bryan Martinez-Hernandez (Junior), Johnfer Quispe (Senior), Brandon Tran (Sophomore) |
@@ -80,6 +80,51 @@ cadence is the shared one (`ordinaryGap: 3`, `repeatGap: 8`), so he talks as
 often as everyone else. Lines stay casual and understated in a lost
 position as well as a won one, and none of them references a tactic, an
 evaluation or a search.
+
+## Christian Hernandez (Senior) — 950, Beginner
+
+| | |
+|---|---|
+| id | `christian-hernandez` |
+| Name / subtext | Christian Hernandez · Senior |
+| Rating | 950, Beginner band (100–1000) |
+| Opening | White: London System. Black: none |
+| Profile file | `src/play/personality/styles.ts` (`christian-hernandez`) |
+| Repertoire file | `src/play/personality/repertoires/christianHernandez.ts` |
+| Dialogue | `DIALOGUE_BANKS['christian-hernandez']` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/christian-hernandez.webp` (monogram `CH` if missing) |
+
+The natural. He plays what feels right in front of him, and the tendency table is
+written to say exactly that: no dial is a speciality, so `choosePersonalityMove`
+has no taste to argue with the engine's evaluation and he adapts to the position
+instead of steering it. Two numbers are deliberate and neither is a rule —
+`simplification: 72`, the highest in his row, is a preference for reasonable
+trades (`choosePersonalityMove`'s trade term, still outvoted by a clearly better
+move or a forced mate), and `positional: 35` is the flip side of it: he follows
+the idea in front of him rather than a long plan.
+
+Nothing there is strength. Accuracy is `accuracyForElo(950)`, there is no
+`depthCap` and no `mistakeChance`, so his slips are the shared rating curve's
+and his occasional good idea comes from the same candidate list any other 950
+sees. `characterFactor` and `deliberationFactor` give him a quick, relaxed beat
+in `thinking.ts`.
+
+**White: the London System** — 1.d4, `Bf4` outside the pawn chain, knights on f3
+and d2, small pawn centre, kingside castling, in three short lines (main setup,
+versus ...g6, early Nf3). The lines are short on purpose: the book runs out where
+a 950's knowledge does, and the shared selection takes over.
+
+**Black: no repertoire at all.** `asBlack` is empty, so `personalityBookFor` is
+empty for him in both colours, and `repertoires/kid.ts` does not list his id, so
+no formal defence can arrive through the principle-based layer either. His Black
+moves come from the same scorer as move forty, which still favours development,
+the centre, king safety and reasonable exchanges — improvised, never random.
+
+Dialogue runs through the existing event layer and `maybeReact`, on the shared
+cadence (`ordinaryGap: 3`, `repeatGap: 8`), so he is not the chattiest card.
+His voice is chill and reassuring — a mistake gets the same shrug as a good move
+— and his two known phrases, "Gracias." and "Don't even trip dawg.", appear once
+each in the whole bank rather than as a reflex.
 
 ## Mabinti Mansaray (Junior) — 1550, Strong
 

@@ -209,7 +209,7 @@ test('Beginner is the first ladder band and holds the lowest ratings', () => {
 
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((o) => o.category === 'beginner').map((o) => o.id),
-    ['emmanuel', 'edward', 'faadi'],
+    ['emmanuel', 'edward', 'faadi', 'christian-hernandez'],
   );
   /* Every band above is unchanged by the roster rearrangement. */
   assert.deepEqual(
@@ -863,8 +863,8 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
 /* --------------------------- 14. regressions --------------------------- */
 
 test('every other opponent and the General Bot are untouched', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 21);
-  assert.equal(ALL_OPPONENTS.length, 22);
+  assert.equal(PERSONALITY_OPPONENTS.length, 22);
+  assert.equal(ALL_OPPONENTS.length, 23);
 
   const expected: Array<[string, string, string, number, string]> = [
     ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],

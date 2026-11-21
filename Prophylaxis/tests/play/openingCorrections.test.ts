@@ -374,7 +374,7 @@ test('the principle layers refuse a seat the board does not agree with', () => {
 /* ------------------------------ 8. regression ---------------------------- */
 
 test('identities and repertoire assignments are untouched', () => {
-  assert.equal(Object.keys(PERSONALITY_STYLES).length, 21);
+  assert.equal(Object.keys(PERSONALITY_STYLES).length, 22);
   assert.ok(!('emmanuel' in PERSONALITY_REPERTOIRES), 'Emmanuel still has no repertoire');
   /* Bryan's three strength profiles still share one book and one KID plan. */
   assert.ok(!('bryan' in PERSONALITY_REPERTOIRES));

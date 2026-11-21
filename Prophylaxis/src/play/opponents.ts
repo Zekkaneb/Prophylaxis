@@ -156,6 +156,26 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'FG',
     usesRepertoire: false,
   },
+  /* Christian Hernandez (Senior), 950 — the Natural.
+
+     The strongest card of the Beginner band, and the only one of the three
+     Seniors with no theory behind him: the London is his one prepared idea and
+     everything else is whatever feels natural. `christian-hernandez` is his own
+     id, so a saved game can never resolve him to Edward Chen or Johnfer Quispe,
+     the other two "Senior" cards. */
+  {
+    id: 'christian-hernandez',
+    kind: 'personality',
+    category: 'beginner',
+    name: 'Christian Hernandez',
+    shortName: 'Christian',
+    title: 'Senior',
+    elo: 950,
+    style: 'No theory, no plan, just whatever feels right. Can you outplay the Natural?',
+    portraitPath: 'opponents/christian-hernandez.webp',
+    initials: 'CH',
+    usesRepertoire: false,
+  },
   /* Nina before she found her confidence. Same character, an earlier profile:
      the Novice band's balanced opponent, so a first game meets someone who plays
      normally rather than a dedicated attacker or defender. */
