@@ -495,6 +495,14 @@ With `s = (clamp(elo, 100, 2800) - 100) / 2700`:
 - **Excellent** (`⦿`, under 2%, non-#1) `0.02 + 0.34 * s^1.05`
 - **Best** (`*`, the #1 move only) `max(0.01, 1 - the other five)`
 
+**Below 400 USCF** a share of turns is not model play at all:
+`randomMoveChance(elo) = ((400 - elo) / 300) ^ 1.8` - 100% at 100 USCF, ~48% at
+200, ~14% at 300 and 0 from 400 up. On that roll `selectHumanBotMove` ignores
+the candidates, the reference pass and the bucket model entirely and plays a
+uniformly random legal move. The turn is booked at the blunder floor
+(`RANDOM_MOVE_WIN_DROP` 20) rather than at 0, so accuracy accounting cannot read
+a random legal move as if it were the engine's first choice.
+
 **Below 200 USCF** the curves are replaced by one tier rather than interpolated
 between them: `BOTTOM_TIER_SHARES` rolls 65% blunder, 25% mistake and under 10%
 for everything else (`inaccuracy` 4, `good` 4, `excellent` 1.5, `best` 0.5), and
@@ -518,8 +526,10 @@ ends close: blunders leave the distribution entirely at 2100 USCF and mistakes a
 Phase and time control only scale the three error buckets; the displaced mass
 moves proportionally into good, excellent and best and the six are re-normalized,
 so a fast game makes the same player worse rather than differently rated. At 100
-USCF a bot blunders 65% of the time and errs on 94% of turns; at 300 it is back
-on the smooth curve (34% blunders, 74% overall); at 700 it is 16% blunders and
+USCF every turn is a random legal move, so the tier's weights never get to
+fire; at 200 the tier blunders 65% of the time and errs on 94% of the turns the
+random roll misses, and about half of all turns are random anyway; at 300 it is
+back on the smooth curve (34% blunders, 74% overall); at 700 it is 16% blunders and
 54% overall; at 1800, 1.5% blunders and 22% overall; at 2800 it has no blunder or
 mistake bucket left at all.
 

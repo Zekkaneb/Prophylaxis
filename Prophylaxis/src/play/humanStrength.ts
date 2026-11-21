@@ -1156,6 +1156,32 @@ export function freeHangAfter(fen: string, uci: string): boolean {
 
 export type HumanMoveKind = 'forced' | 'recapture' | 'probe' | Bucket;
 
+/** From here down a bot may abandon the model and play a random legal move. */
+export const RANDOM_FLOOR_ELO = 400;
+
+/**
+ * Chance a sub-400 bot ignores the position entirely.
+ *
+ * `((400 - elo) / 300) ^ 1.8`: 1.0 at 100 USCF (pure random play), ~0.48 at
+ * 200, ~0.14 at 300 and 0 at 400, where the six-bucket model takes over with no
+ * random turns at all. The exponent makes the collapse steep at the bottom: a
+ * 100 has no model left to fall back on, a 350 almost always plays the model.
+ */
+export function randomMoveChance(elo: number): number {
+  const target = clampElo(elo);
+  if (target >= RANDOM_FLOOR_ELO) return 0;
+  return Math.pow((RANDOM_FLOOR_ELO - target) / (RANDOM_FLOOR_ELO - ELO_MIN), 1.8);
+}
+
+/**
+ * Nominal severity booked for a random move.
+ *
+ * The move is deliberately unjudged — no reference pass runs — so it is booked
+ * at the blunder floor rather than at 0, which would let accuracy accounting
+ * read a random legal move as if it were the engine's first choice.
+ */
+export const RANDOM_MOVE_WIN_DROP = 20;
+
 export interface HumanCandidate {
   uci: string;
   /** White's point of view, as the engine reports it. */
@@ -1364,6 +1390,17 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
   /* 1. Forced move. */
   if (legal.length <= 1) {
     return finish(legal.length === 1 ? uciOf(legal[0]) : null, 'forced', 0, 0, []);
+  }
+
+  /* 1b. The pure-random floor. Below 400 USCF the bot may ignore the position
+     completely and play any legal move, uniformly: no reference pass, no
+     bucket, no intent filter. This is the behavioural floor of the scale — a
+     100 hangs a piece, walks into a check or pushes a pawn at random, because
+     that is what a player who does not yet see the board actually does. */
+  const randomChance = randomMoveChance(elo);
+  if (randomChance > 0 && random() < randomChance) {
+    const index = Math.min(legal.length - 1, Math.floor(random() * legal.length));
+    return finish(uciOf(legal[index]), 'blunder', 0, RANDOM_MOVE_WIN_DROP, []);
   }
 
   const candidates = input.candidates

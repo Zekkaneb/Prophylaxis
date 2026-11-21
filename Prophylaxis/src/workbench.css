@@ -791,6 +791,24 @@
   overflow: visible;
 }
 
+/* Bot vs bot is the one board view with two plates: the live game's 243px
+   budget only pays for one, so on a window tall enough for the column to stop
+   binding, the board grew past the space between the plates and the bottom
+   profile ended up inside its band. 320px is the measured cost of everything
+   except the board itself - the room's topbar, both plates, the eval lane and
+   the gaps - with a little slack. */
+.bot-match {
+  --board-chrome: 320px;
+  --board-px: max(220px, min(100%, calc(100dvh - var(--board-chrome))));
+}
+
+/* The column shrinks its children when the room is short. Letting the board's
+   row shrink made the square overflow it, and the next plate was then placed
+   where the row *ended* - under the board. The row keeps its height instead. */
+.bot-match .play-board-wrap {
+  flex: none;
+}
+
 .bot-match__board {
   position: relative;
   display: flex;

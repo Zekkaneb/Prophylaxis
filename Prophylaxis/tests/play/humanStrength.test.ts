@@ -21,6 +21,7 @@ import {
   PHASE_DISTINCT_ELO,
   PHASE_LEVELS_META,
   PHASE_ONE_BAD_ELO,
+  RANDOM_MOVE_WIN_DROP,
   SELECTION_BANDS,
   SELF_MATE_GUARD_ELO,
   allowsMateInOne,
@@ -49,6 +50,7 @@ import {
   positionKind,
   probeMoveCandidates,
   qualityShares,
+  randomMoveChance,
   recaptureChance,
   recaptureTrade,
   rollPhaseProfile,
@@ -122,6 +124,55 @@ test('the six quality buckets sum to 1 across the whole range', () => {
       assert.ok(shares[key] >= 0 && shares[key] <= 1, `${key} out of range at ${elo}`);
     }
   }
+});
+
+test('below 400 USCF a bot plays uniformly random legal moves', () => {
+  assert.equal(randomMoveChance(100), 1);
+  assert.ok(Math.abs(randomMoveChance(200) - 0.4824) < 0.005, `${randomMoveChance(200)}`);
+  assert.ok(Math.abs(randomMoveChance(300) - 0.1385) < 0.005, `${randomMoveChance(300)}`);
+  assert.equal(randomMoveChance(400), 0);
+  assert.equal(randomMoveChance(1200), 0);
+
+  const legal = new Chess(START_FEN)
+    .moves({ verbose: true })
+    .map((move) => `${move.from}${move.to}${move.promotion ?? ''}`);
+
+  /* At 100 the roll always lands: the move is legal, unjudged and booked at the
+     blunder floor, whatever the candidate list says. */
+  for (const roll of [0, 0.35, 0.99]) {
+    const pick = selectHumanBotMove({
+      fen: START_FEN,
+      elo: 100,
+      candidates: [candidate('e2e4', 0), candidate('d2d4', -40)],
+      plan: plan(100),
+      random: () => roll,
+    });
+    assert.ok(pick.uci && legal.includes(pick.uci), `not a legal move: ${pick.uci}`);
+    assert.equal(pick.kind, 'blunder');
+    assert.equal(pick.winDrop, RANDOM_MOVE_WIN_DROP);
+  }
+
+  /* At 200 the same roll can miss and hand the turn to the bucket model. */
+  const missed = selectHumanBotMove({
+    fen: START_FEN,
+    elo: 200,
+    candidates: [candidate('e2e4', 0), candidate('d2d4', -40)],
+    plan: plan(200),
+    random: () => 0.9,
+  });
+  assert.notEqual(missed.winDrop, RANDOM_MOVE_WIN_DROP);
+
+  /* At 400 and up there is no random turn at all: the same low roll spends the
+     bucket on a listed move. */
+  const calibrated = selectHumanBotMove({
+    fen: START_FEN,
+    elo: 400,
+    candidates: [candidate('e2e4', 0), candidate('a2a3', -400)],
+    plan: plan(400),
+    random: () => 0.01,
+  });
+  assert.ok(['e2e4', 'a2a3'].includes(calibrated.uci!));
+  assert.notEqual(calibrated.winDrop, RANDOM_MOVE_WIN_DROP);
 });
 
 test('the sub-200 tier is the worst of the worst', () => {
@@ -740,7 +791,9 @@ test('the #1 line is damped below 1500 and quality picks stay inside their band'
     });
 
   const strong = play(2200);
-  const weak = play(100);
+  /* 450, not 100: below 400 the turn can be a random legal move, which has no
+     softmax weights to compare. The damping still applies up to 1500. */
+  const weak = play(450);
   assert.ok(strong.weights[0].weight > weak.weights[0].weight);
   const total = weak.weights.reduce((sum, entry) => sum + entry.weight, 0);
   assert.ok(Math.abs(total - 1) < 1e-9);
