@@ -47,7 +47,6 @@ const BANKS: Record<
     | 'edward'
     | 'brandon-freshman'
     | 'mabinti'
-    | 'emmanuel'
   >,
   Bank
 > = {
@@ -129,12 +128,12 @@ const BANKS: Record<
   },
   brandon: {
     book: ['Alright, let’s make this interesting.', 'Hope you brought your calculator.'],
-    deviation: ['Off script already? Good.', 'Now we get to improvise.'],
-    mistake: ['Okay, that one is on me.', 'Hm. I will remember that.'],
+    deviation: ['Off script already? Good.', 'Now we get to improvise.', 'Perchance...'],
+    mistake: ['Oh shit...', 'Fuck', 'oh shittings'],
     strong: ['There it is.', 'That is the one.'],
     brilliant: ['Okay, respect.', 'Oh, that is nice.'],
     winning: ['I like where this is going.', 'Now we are talking.'],
-    losing: ['Okay, okay. I will give you that one.', 'You are making this harder than I expected.'],
+    losing: ['FUCK!', 'Shit...'],
     defense: ['Fine, I will defend. For now.', 'Hold on, let me deal with this.'],
     attack: ['You might wanna check on your king.', 'Now we are getting somewhere.', 'This is getting fun.'],
     'attack-fail': ['Well. That did not go according to plan.', 'Okay, that was too much.'],
@@ -142,7 +141,7 @@ const BANKS: Record<
     'material-won': ['Thank you very much.', 'I will take that.'],
     'material-lost': ['That is fine. I have ideas.', 'Material is temporary.'],
     win: ['Haha, that was fun.', 'You see what happens when you give me an opening?', 'Good game. Rematch?'],
-    loss: ['Okay, okay. I will give you that one.', 'Well, that did not go according to plan.', 'You are making this harder than I expected.'],
+    loss: ['I played like shit', 'Well, that did not go according to plan.', 'You are making this harder than I expected.'],
     draw: ['Not bad. We will settle this next time.', 'A draw? Fine. Rematch.'],
   },
   nina: {
@@ -266,6 +265,7 @@ const BANKS: Record<
       'I might’ve thrown.',
       'How did I not see that?',
       'Well, that wasn’t ideal.',
+      'oh shittings',
     ],
     strong: ['Wait, hold on.', 'Okay, that works.', 'Nah, I kinda like this.', 'Lowkey, that might be good.'],
     brilliant: ['I knew there was something there.', 'Okay, I’ll give you that.', 'Nah, that’s actually clean.'],
@@ -335,21 +335,21 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
      no slang: where Bryan shrugs things off, Edward simply accepts them. The
      quieter cadence below means most of these lines are never heard in a game. */
   edward: {
-    book: ['Okay, this is normal.', 'I know the first few moves.'],
-    deviation: ["I don't know what I'm doing", 'Random bullshit go!!.'],
+    book: ['Okay..'],
+    deviation: ["I don't know what I'm doing"],
     mistake: ['Oh frick.', 'Oh shoot.', 'I messed up.', "That wasn't good."],
     strong: ['I think this is okay.', "Okay, let's see."],
     brilliant: ["I didn't expect that.", 'Hmm.', "Wait, why's this good"],
-    winning: ['I think this is okay.'],
-    losing: ['It is fine.', "Okay, let's see."],
-    defense: ['I should defend here.', 'It is fine.','Hmm'],
+    winning: ['....'],
+    losing: ['It is not fine.', "Shoot."],
+    defense: ['Imma defend.', 'It is fine.','Hmm'],
     attack: ["Okay, let's see."],
     'attack-fail': ["That wasn't good."],
     sacrifice: ['Hmm.'],
     'material-won': ['Oh. Okay.'],
     'material-lost': ['Oh frick.', 'I messed up.', 'Oopsies.'],
-    win: ['Good game.', 'It is fine.'],
-    loss: ['Good game.', "That wasn't good.", 'It is not fine.'],
+    win: ['Good game.'],
+    loss: ['Good game.', "That wasn't good.", 'It is very not fine.'],
     draw: ['Wow.'],
   },
   /* Mabinti Mansaray: warm, outgoing and genuinely delighted to be playing.
@@ -402,40 +402,36 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
      (he does not have one) and never a claim about the evaluation (he could not
      read it). A lost position gets the same shrug as a won one. */
   emmanuel: {
-    book: ['Alright, let’s get this over with.', 'Okay, what are we doing?', 'I have no idea what I’m doing, by the way.'],
+    book: ['I am 8,000 elo by the way.', 'I have no idea what I’m doing, by the way.'],
     deviation: [
-      'Why would you do that?',
-      'Interesting. I don’t know what that means.',
-      'Okay, sure.',
+      'Hmm.',
     ],
     mistake: [
       'Oh. That’s probably bad.',
       'Wait, what did I just do?',
       'I might have messed up.',
-      'That was not the plan. There was no plan.',
+      "I'm so good that you can't handle it",
     ],
-    strong: ['Okay, sure.', 'Huh. That worked.', 'I’ll take it.'],
+    strong: ['Okay, sure.', 'I’m a demon.'],
     brilliant: [
       'Bro this is abuse.',
       'Nah, you’re doing too much.',
       'Why are you attacking me like that?',
     ],
-    winning: ['Wait, I’m actually cooking?', 'No way that worked.', 'Okay, I see myself.'],
-    losing: ['Yeah, I’m not winning this.', 'Bro, I’m getting cooked.', 'This is unfortunate.'],
+    winning: ['You so petite'],
+    losing: ['Yeah, you got it gang.', 'Bro.'],
     defense: [
-      'You do that, I’m gonna tickle you.',
-      'Bro, relax.',
-      'This is getting personal.',
-      'I’m just gonna move this guy back.',
+      'I’m gonna tickle you.',
+      'I might have to pants you.'
     ],
-    attack: ['Alright, I’ll try something.', 'Let’s see what happens.'],
-    'attack-fail': ['Yeah, that went how I expected.', 'Okay. We move on.'],
-    sacrifice: ['I did not mean to do that.', 'Well. That is a piece, I guess.'],
-    'material-won': ['Oh. Free stuff.', 'Okay, sure.'],
-    'material-lost': ['Yeah, that’s gone.', 'Hm. That seems bad for me.'],
-    win: ['Wait, I actually won?', 'Bro... okay.', 'That was something.'],
-    loss: ['Bro...', 'Yeah, never playing this again.', 'That was something.'],
-    draw: ['A draw. Sure.', 'That was something.', 'Yeah, I’ll take that.'],
+    attack: ['I’m gonna tickle you.'],
+    'attack-fail': ['I did not see that'],
+    sacrifice: ['...'],
+    'material-won': ["I'm a genius", 'Okay, sure.'],
+    'material-lost': ["You're a terrorist.", 'Hm. That seems bad for me.'],
+    win: ["I don't even play chess.", 'Gimme my money'],
+    loss: ['Bro...', 'Yeah, never playing this again.', 'Play me in Rock Paper Scissors Shoot', 'Uno is more skilled'],
+    draw: ['Good game.', 'That was something.'],
   },
   /* The earlier Bryan inherits his voice verbatim — the same object, the same
      lines — and adds only what a defender says. A separate object so Junior and
@@ -501,12 +497,10 @@ const CADENCE: Partial<
   /* Edward barely talks: a remark every five full moves at most, and the same
      event only once in a long while. */
   edward: { ordinaryGap: 10, repeatGap: 22 },
+};
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except
      the game ending. */
-  emmanuel: { ordinaryGap: 8, repeatGap: 18 },
-};
-
 export interface ReactOptions {
   ply: number;
   state: DialogueState;

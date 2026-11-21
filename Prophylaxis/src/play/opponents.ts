@@ -316,13 +316,13 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
   {
     id: 'emmanuel',
     kind: 'personality',
-    category: 'easy',
+    category: 'beginners',
     name: 'Emmanuel Domah',
     shortName: 'Emmanuel',
     title: 'Senior',
-    elo: 400,
+    elo: 250,
     style:
-      'The reluctant player: here for the vibes. Knows the rules, not the plans — loose pieces, missed threats, the odd accidental good move, and no theory to fall back on.',
+      'The greatest player of all time.',
     portraitPath: 'opponents/emmanuel.webp',
     /* He is the one portrait framed taller than it is wide, and it is already
        painted tight: the shared 1.2 zoom would crop the beanie and the hood. */
@@ -339,7 +339,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Senior',
     elo: 800,
     style:
-      'The principled beginner: develops, castles and holds his material, but sees only a little ahead and misses what is in front of him.',
+      'Very balanced but has slight oversights',
     portraitPath: 'opponents/edward.webp',
     initials: 'EC',
     usesRepertoire: false,
