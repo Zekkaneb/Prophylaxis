@@ -58,6 +58,14 @@
   min-height: 0;
 }
 
+/* Puzzles is a dashboard, not a board: its panels can need more room than the
+   window has, and the frame hides overflow. Without this the last row of the
+   page is simply unreachable — no scrollbar, no way to reach the set list. */
+.app-shell--locked .page--puzzles {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 /* Play says its name in the tab strip; the page intro only repeats it. */
 .page--play .page-heading {
   position: absolute;

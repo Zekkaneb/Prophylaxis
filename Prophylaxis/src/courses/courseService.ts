@@ -9,6 +9,7 @@
 import { Chess } from 'chess.js';
 import { countNodes, mainline, parsePgn, type PgnNode } from '../pgn/index.ts';
 import { db } from '../db';
+import { recordSyncedChange } from '../sync/outbox.ts';
 import type { CourseChapter, CoursePly, CourseVariation, PgnCourseRecord } from './types';
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -227,6 +228,7 @@ export async function importCoursePgn(
   };
 
   await db.pgn_courses.put(record);
+  await recordSyncedChange('pgn_courses', record.course_id, false);
   return record;
 }
 
@@ -246,6 +248,7 @@ export async function setCourseColor(courseId: string, color: 'w' | 'b'): Promis
   const course = await db.pgn_courses.get(courseId);
   if (!course) return;
   await db.pgn_courses.put({ ...course, repertoire_color: color });
+  await recordSyncedChange('pgn_courses', courseId, false);
 }
 
 /* ------------------------------- quiz lines ------------------------------- */
@@ -394,8 +397,10 @@ export async function recordDrill(
     last_drilled: Date.now(),
     mastery,
   });
+  await recordSyncedChange('line_progress', id, false);
 }
 
 export async function deleteCourse(courseId: string): Promise<void> {
   await db.pgn_courses.delete(courseId);
+  await recordSyncedChange('pgn_courses', courseId, true);
 }

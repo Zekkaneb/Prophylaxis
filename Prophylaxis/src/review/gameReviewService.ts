@@ -7,6 +7,7 @@ import {
   type WoodpeckerSet,
 } from '../db';
 import { isMoveClassification, type MoveClassification } from '../config/moveClassifications';
+import { recordSyncedChange } from '../sync/outbox.ts';
 import type { EngineEvaluation } from '../engine/useStockfish';
 import { sampleLessons } from '../lessons/sampleLessons';
 import { mainline, parsePgn as parsePgnText } from '../pgn';
@@ -1143,6 +1144,7 @@ export async function analyzeGame(
   };
 
   await db.saved_reviews.put(review);
+  await recordSyncedChange('saved_reviews', review.game_id, false);
 
   return { review, summary };
 }
@@ -1354,6 +1356,7 @@ export async function exportTacticToWoodpecker(
       created_at: Date.now(),
     };
     await db.woodpecker_sets.add(set);
+    await recordSyncedChange('woodpecker_sets', set.set_id, false);
     return {
       setId: MY_GAME_BLUNDERS_SET_ID,
       setName: MY_GAME_BLUNDERS_SET_NAME,
@@ -1377,6 +1380,7 @@ export async function exportTacticToWoodpecker(
     ...existing,
     puzzle_ids: [...existing.puzzle_ids, puzzleId],
   });
+  await recordSyncedChange('woodpecker_sets', existing.set_id, false);
 
   return {
     setId: MY_GAME_BLUNDERS_SET_ID,

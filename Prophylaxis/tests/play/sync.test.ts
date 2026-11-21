@@ -16,6 +16,8 @@ import {
 } from '../../src/sync/outbox.ts';
 import { collapsePending, mergeRemoteRow, toWireRow } from '../../src/sync/sync.ts';
 import { deleteTrainingSet } from '../../src/puzzles/trainingSets.ts';
+import { clearActiveGame, saveActiveGame } from '../../src/play/gameStore.ts';
+import type { ActiveGameRecord } from '../../src/play/types.ts';
 
 test('a change is stamped forward, never backwards', () => {
   const first = changeStamp();
@@ -80,6 +82,51 @@ test('a counter row keeps the higher cycle when two devices disagree', () => {
 
   const unaffected = mergeRemoteRow('played_games', { game_id: 'g' }, { game_id: 'g', pgn: 'x' });
   assert.deepEqual(unaffected, { game_id: 'g', pgn: 'x' }, 'other tables take the row as it comes');
+});
+
+test('drill and lesson progress only ever move forward', () => {
+  const drill = mergeRemoteRow(
+    'line_progress',
+    { id: 'c1:ch1', attempts: 9, best_percent: 100, mastery: 3, last_percent: 40 },
+    { id: 'c1:ch1', attempts: 4, best_percent: 80, mastery: 2, last_percent: 100 },
+  );
+  assert.equal(drill.attempts, 9, 'attempts never fall');
+  assert.equal(drill.best_percent, 100, 'a best score is never replaced by a worse one');
+  assert.equal(drill.mastery, 3);
+  assert.equal(drill.last_percent, 100, 'the latest result is not a counter');
+
+  const lesson = mergeRemoteRow(
+    'lesson_progress',
+    { lesson_id: 'l1', is_completed: true, last_practiced: 300 },
+    { lesson_id: 'l1', is_completed: false, last_practiced: 100 },
+  );
+  assert.equal(lesson.is_completed, true, 'completing a lesson on either device keeps it done');
+  assert.equal(lesson.last_practiced, 300);
+});
+
+test('the live game is tombstoned when it is archived or cleared', async () => {
+  await db.active_game.clear();
+  await db.played_games.clear();
+  await db.sync_outbox.clear();
+
+  await saveActiveGame({
+    game_id: 'live-one',
+    updated_at: Date.now(),
+    status: 'playing',
+  } as unknown as ActiveGameRecord);
+
+  let changes = await db.sync_outbox.toArray();
+  assert.ok(changes.some((c) => c.table_name === 'active_game' && c.row_id === 'live-one' && !c.deleted));
+
+  await db.sync_outbox.clear();
+  await clearActiveGame();
+
+  changes = await db.sync_outbox.toArray();
+  assert.deepEqual(
+    changes.map((c) => [c.table_name, c.row_id, c.deleted]),
+    [['active_game', 'live-one', true]],
+    'the other devices must hear that the live game is gone',
+  );
 });
 
 test('deleting a training set queues tombstones for its tables', async () => {

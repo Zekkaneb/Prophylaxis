@@ -76,24 +76,42 @@ export function collapsePending(pending: SyncOutboxRow[]): SyncOutboxRow[] {
  * Folds an incoming row into the local one before it is written.
  *
  * Almost every synced row is independent, so the server's newest-wins answer is
- * taken as-is. `puzzle_sets.current_cycle` is the exception: it is a counter,
- * and last-write-wins would let a device whose clock ran a few seconds ahead
- * move a trainer backwards through its cycles. The higher value wins there,
- * everything else still comes from the incoming row.
+ * taken as-is. The exceptions are the counters — a trainer's cycle, a drill's
+ * attempt count and best score, a lesson's recency — where last-write-wins
+ * would let a device whose clock ran a few seconds ahead move progress
+ * backwards. Those fields only ever grow; everything else still comes from the
+ * incoming row.
  */
+/** Fields that only ever grow, per table: a merge must never lower them. */
+const GROWING_FIELDS: Record<string, readonly string[]> = {
+  puzzle_sets: ['current_cycle'],
+  line_progress: ['attempts', 'best_percent', 'mastery', 'last_drilled'],
+  lesson_progress: ['last_practiced'],
+};
+
 export function mergeRemoteRow(
   table: string,
   local: Record<string, unknown> | undefined,
   remote: Record<string, unknown>,
 ): Record<string, unknown> {
-  if (table === 'puzzle_sets' && local) {
-    const ours = local.current_cycle;
-    const theirs = remote.current_cycle;
+  if (!local) return remote;
+
+  const merged: Record<string, unknown> = { ...remote };
+
+  for (const field of GROWING_FIELDS[table] ?? []) {
+    const ours = local[field];
+    const theirs = remote[field];
     if (typeof ours === 'number' && typeof theirs === 'number' && ours > theirs) {
-      return { ...remote, current_cycle: ours };
+      merged[field] = ours;
     }
   }
-  return remote;
+
+  /* Completion is a latch: finishing a lesson on either device keeps it done. */
+  if (table === 'lesson_progress' && local.is_completed === true) {
+    merged.is_completed = true;
+  }
+
+  return merged;
 }
 
 /** The shape `push_sync_rows` expects for one change. */

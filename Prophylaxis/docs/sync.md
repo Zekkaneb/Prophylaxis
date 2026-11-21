@@ -125,37 +125,56 @@ Accounts ship in the hosted build served over https.
 
 ## Order of work
 
-1. Server schema + RLS (done — `supabase/migrations/0001_sync.sql` and
-   `0002_sync_cursor.sql`; run both in the project's SQL editor, in order).
+1. Server schema + RLS (done — `supabase/migrations/0001_sync.sql`,
+   `0002_sync_cursor.sql` and `0003_woodpecker_sets.sql`; run them in order).
 2. Auth: client, session persistence, sign-in in Settings (done —
    `src/sync/client.ts`, `src/sync/useSync.ts`, the Account section).
 3. Outbox + push, for `played_games` only, then pull on sign-in (done —
    `src/sync/outbox.ts`, `src/sync/sync.ts`, `src/play/gameStore.ts`).
-4. The remaining nine tables. `gameStore` is the only seam `played_games` needed;
-   the rest will need the general capture point described above, plus the `max()`
-   handling for the two counter rows.
-5. Tombstone sweep across all tables and the legacy-database claim on first
-   sign-in (not started).
+4. The remaining tables (done — see "What syncs today").
+5. Tombstones and the legacy-database claim (done: deletes queue tombstones,
+   and `claimLocalRows` copies the anonymous database into a new account
+   database once).
 
 ## What syncs today
 
-`played_games`, `puzzle_sets`, `puzzle_cycles`, `puzzle_attempts`. The puzzle
-rows are the ones a training set owns, so a set never arrives without its
-cycles. Rows saved *before* a table was synced are queued once by
+Every table that belongs to one person: `played_games`, `puzzle_sets`,
+`puzzle_cycles`, `puzzle_attempts`, `woodpecker_sets`, `pgn_courses`,
+`custom_lessons`, `line_progress`, `lesson_progress`, `saved_reviews`,
+`active_game`.
+
+`woodpecker_sets` is not legacy: the Puzzles page's "Available sets" list is
+built from it, so freezing a set there is the row that has to travel. Migration
+`0003_woodpecker_sets.sql` adds it to the server's allow-list.
+
+Rows saved *before* a table was synced are queued once by
 `backfillSyncedRows()` (`src/sync/accountDatabase.ts`), which runs at boot and
 marks the database so it never repeats — otherwise last week's puzzle set would
 stay invisible to every other device.
 
-`puzzle_sets.current_cycle` is merged with `max()` on the way in (see
-`mergeRemoteRow`): last-write-wins would let a clock that ran a few seconds ahead
-move a trainer backwards through its cycles.
+### Rows that need a merge, not a winner
 
-## What does not sync yet
+`mergeRemoteRow` takes the incoming row for everything except the fields that
+only ever grow:
 
-* Courses, drill history, lesson progress, reviews and the active game are saved
-  locally and stay there.
-* Changes are captured where a table is written (`src/play/gameStore.ts`,
-  `src/puzzles/trainingSets.ts`), not centrally. Those are the only write seams
-  for the four synced tables; the remaining tables are written from many places
-  and will need the general capture point.
+* `puzzle_sets.current_cycle`
+* `line_progress.attempts`, `best_percent`, `mastery`, `last_drilled`
+* `lesson_progress.last_practiced`, and `is_completed` as a latch (finished on
+  either device stays finished)
+
+A clock a few seconds ahead must not move a trainer back a cycle or wipe a best
+score. `active_game` needs the opposite care: it is tombstoned when archived or
+cleared, or another device keeps offering to resume a game that is over.
+
+## What does not sync
+
+`puzzles` and `puzzle_shards` only — the shared reference corpus, seeded per
+device from `/public/puzzles/*.json`.
+
+Changes are captured where a table is written (`src/play/gameStore.ts`,
+`src/puzzles/trainingSets.ts`, `src/puzzles/woodpeckerService.ts`,
+`src/courses/courseService.ts`, `src/review/gameReviewService.ts`,
+`src/components/GameReviewDashboard.tsx`). Those are the only writer functions
+for the synced tables; a new write path would have to call
+`recordSyncedChange` itself.
 * There is no conflict UI: the newest write wins silently, as designed.

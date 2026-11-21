@@ -96,7 +96,11 @@ export async function claimLocalRows(
   return copied;
 }
 
-const BACKFILL_KEY = 'backfill:1';
+/* Keyed by the table list, not a fixed version: adding a table to
+   `SYNCED_TABLES` must re-run the backfill once, or rows saved under the old
+   set (a course imported last week) would never be queued. Re-sending rows is
+   harmless — the server keeps the newest and the push collapses duplicates. */
+const BACKFILL_KEY = `backfill:${SYNCED_TABLES.join(',')}`;
 
 /**
  * Queues the rows that existed before this table was synced.

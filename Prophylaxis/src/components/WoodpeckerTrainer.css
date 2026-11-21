@@ -373,9 +373,18 @@
    and the room scrolls instead of clipping. */
 .page--puzzles .wp-dashboard {
   min-height: 100%;
-  /* Grows into the spare height, never shrinks below what the panels need, so
-     a short window scrolls rather than spilling out of the cards. */
-  grid-template-rows: auto minmax(min-content, 1fr);
+  /* `minmax(0, 1fr)`, not `min-content`: a row that cannot shrink below its
+     content makes the whole page taller than the frame, and the frame hides
+     overflow — a long set list then simply has no scrollbar and no way to
+     reach the older sets. With a 0 minimum the panel stays the height of the
+     room and the list scrolls inside it. */
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+/* Each panel is its own scroll box, like every other workbench rail. */
+.page--puzzles .wp-panel {
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* Selection hub: one wide strip above the two panels that names the set the

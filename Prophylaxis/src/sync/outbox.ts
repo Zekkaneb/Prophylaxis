@@ -10,8 +10,29 @@ import { db } from '../db.ts';
  * collapses into a single upload of its latest state.
  */
 
-/** Tables this build syncs: game history and everything a puzzle set owns. */
-export const SYNCED_TABLES = ['played_games', 'puzzle_sets', 'puzzle_cycles', 'puzzle_attempts'] as const;
+/**
+ * Every table whose rows belong to one person.
+ *
+ * `puzzles` and `puzzle_shards` are absent on purpose: that is the shared
+ * reference corpus, seeded per device.
+ *
+ * `woodpecker_sets` is here because the Puzzles page's "Available sets" list is
+ * still built from it, not from `puzzle_sets` — a set frozen there is the one
+ * the trainer replays, so leaving it out would mean a set that never travels.
+ */
+export const SYNCED_TABLES = [
+  'played_games',
+  'puzzle_sets',
+  'puzzle_cycles',
+  'puzzle_attempts',
+  'woodpecker_sets',
+  'pgn_courses',
+  'custom_lessons',
+  'line_progress',
+  'lesson_progress',
+  'saved_reviews',
+  'active_game',
+] as const;
 export type SyncedTable = (typeof SYNCED_TABLES)[number];
 
 /** Fired whenever a change is queued, so the UI can show the real count. */

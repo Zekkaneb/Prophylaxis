@@ -6,6 +6,7 @@ import EmptyBoardArt from './EmptyBoardArt';
 import { BoardSlot, useBoardHandle } from '../board/PersistentBoard';
 import BoardScaleBar from './BoardScaleBar';
 import { db, type MoveEvaluation, type SavedReview } from '../db';
+import { recordSyncedChange } from '../sync/outbox.ts';
 import { useStockfish, type EngineCandidate } from '../engine/useStockfish';
 import { getPlayedGame } from '../play/gameStore';
 import {
@@ -347,7 +348,10 @@ export default function GameReviewDashboard({
       });
       abortRef.current = null;
       // Re-review replaces the old row with the freshly analysed game.
-      if (source) await db.saved_reviews.delete(source.game_id);
+      if (source) {
+        await db.saved_reviews.delete(source.game_id);
+        await recordSyncedChange('saved_reviews', source.game_id, true);
+      }
       openReview(result.review);
       await refreshReviews();
     } catch (cause) {
@@ -413,6 +417,7 @@ export default function GameReviewDashboard({
     if (!window.confirm('Delete this saved game review?')) return;
     try {
       await db.saved_reviews.delete(review.game_id);
+      await recordSyncedChange('saved_reviews', review.game_id, true);
       if (active?.game_id === review.game_id) {
         setActive(null);
         setSummary(null);

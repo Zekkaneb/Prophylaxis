@@ -57,6 +57,9 @@ export async function finalizePlayedGame(record: PlayedGameRecord): Promise<void
     });
   });
   await recordSyncedChange('played_games', record.game_id, false);
+  /* The live game is gone once it is archived, and the other devices need to
+     hear that or they keep offering to resume it. */
+  await recordSyncedChange('active_game', record.game_id, true);
 }
 
 /* ------------------------------- active game ------------------------------ */
@@ -66,12 +69,22 @@ export async function finalizePlayedGame(record: PlayedGameRecord): Promise<void
  * here is the same "one live game" rule the UI enforces with its confirmation.
  */
 export async function saveActiveGame(record: ActiveGameRecord): Promise<void> {
+  let removed: string[] = [];
+
   await enqueue(async () => {
     await db.transaction('rw', db.active_game, async () => {
+      /* Named before the clear: the row it replaces has to be tombstoned, and
+         after the clear there is nothing left to name it. */
+      removed = (await db.active_game.toCollection().primaryKeys()).map(String);
       await db.active_game.clear();
       await db.active_game.put(record);
     });
   });
+
+  await recordSyncedChange('active_game', record.game_id, false);
+  for (const id of removed) {
+    if (id !== record.game_id) await recordSyncedChange('active_game', id, true);
+  }
 }
 
 export async function loadActiveGame(): Promise<ActiveGameRecord | undefined> {
@@ -83,14 +96,22 @@ export async function loadActiveGame(): Promise<ActiveGameRecord | undefined> {
 
 /** Removes the active row (optionally only when it is still `gameId`). */
 export async function clearActiveGame(gameId?: string): Promise<void> {
+  const removed: string[] = [];
+
   await enqueue(async () => {
     if (gameId) {
       const current = await db.active_game.get(gameId);
-      if (current) await db.active_game.delete(gameId);
+      if (current) {
+        await db.active_game.delete(gameId);
+        removed.push(gameId);
+      }
       return;
     }
+    removed.push(...(await db.active_game.toCollection().primaryKeys()).map(String));
     await db.active_game.clear();
   });
+
+  for (const id of removed) await recordSyncedChange('active_game', id, true);
 }
 
 /* ---------------------------------- pgn ----------------------------------- */

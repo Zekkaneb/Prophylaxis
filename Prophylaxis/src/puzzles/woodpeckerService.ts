@@ -4,6 +4,7 @@ import {
   type WoodpeckerCycleResult,
   type WoodpeckerSet,
 } from '../db';
+import { recordSyncedChange } from '../sync/outbox.ts';
 import { buildFallbackPuzzles, type PuzzleTier } from './puzzleTiers';
 import { assetUrl } from '../assets/assetUrl';
 import { normalizePuzzle } from './shardPlan.ts';
@@ -246,6 +247,7 @@ export async function createWoodpeckerSet(
   };
 
   await db.woodpecker_sets.add(set);
+  await recordSyncedChange('woodpecker_sets', set.set_id, false);
   return { set, seed, available: pool.length };
 }
 
@@ -255,6 +257,7 @@ export async function listWoodpeckerSets(): Promise<WoodpeckerSet[]> {
 
 export async function deleteWoodpeckerSet(setId: string): Promise<void> {
   await db.woodpecker_sets.delete(setId);
+  await recordSyncedChange('woodpecker_sets', setId, true);
 }
 
 export async function getPuzzle(puzzleId: string): Promise<Puzzle | undefined> {
@@ -299,5 +302,6 @@ export async function completeCycle(
   };
 
   await db.woodpecker_sets.put(updated);
+  await recordSyncedChange('woodpecker_sets', updated.set_id, false);
   return { set: updated, result };
 }
