@@ -37,11 +37,14 @@ export interface SyncReport {
   /** Changes the server refused outright (a constraint, a bad table name). */
   pushRejected: number;
   pushError: string | null;
+  /** `table/row` for the refused changes, so the message names them. */
+  pushRejectedRows: string[];
 }
 
 interface PushResult {
   sent: number;
   rejected: number;
+  rejectedRows: string[];
   error: string | null;
 }
 
@@ -140,10 +143,10 @@ const rowKey = (change: { table_name: string; row_id: string }) =>
   `${change.table_name}\u0000${change.row_id}`;
 
 async function pushOnce(): Promise<PushResult> {
-  if (!supabase) return { sent: 0, rejected: 0, error: null };
+  if (!supabase) return { sent: 0, rejected: 0, rejectedRows: [], error: null };
 
   const pending = await db.sync_outbox.orderBy('id').limit(PUSH_BATCH).toArray();
-  if (pending.length === 0) return { sent: 0, rejected: 0, error: null };
+  if (pending.length === 0) return { sent: 0, rejected: 0, rejectedRows: [], error: null };
 
   const rows = [];
   for (const change of collapsePending(pending)) {
@@ -154,13 +157,13 @@ async function pushOnce(): Promise<PushResult> {
 
   if (rows.length === 0) {
     await db.sync_outbox.bulkDelete(pending.map((change) => change.id as number));
-    return { sent: 0, rejected: 0, error: null };
+    return { sent: 0, rejected: 0, rejectedRows: [], error: null };
   }
 
   const { error } = await supabase.rpc('push_sync_rows', { p_rows: rows });
   if (!error) {
     await db.sync_outbox.bulkDelete(pending.map((change) => change.id as number));
-    return { sent: rows.length, rejected: 0, error: null };
+    return { sent: rows.length, rejected: 0, rejectedRows: [], error: null };
   }
 
   /*
@@ -177,6 +180,7 @@ async function pushOnce(): Promise<PushResult> {
   let sent = 0;
   let rejected = 0;
   let firstError: string | null = null;
+  const rejectedRows: string[] = [];
   const accepted = new Set<string>();
 
   for (const row of rows) {
@@ -184,6 +188,8 @@ async function pushOnce(): Promise<PushResult> {
     if (single.error) {
       rejected += 1;
       firstError ??= single.error.message;
+      /* The generic SQL message never says which row it was; the table does. */
+      if (rejectedRows.length < 3) rejectedRows.push(row.table_name);
     } else {
       sent += 1;
       accepted.add(rowKey(row));
@@ -195,7 +201,7 @@ async function pushOnce(): Promise<PushResult> {
     await db.sync_outbox.bulkDelete(done.map((change) => change.id as number));
   }
 
-  return { sent, rejected, error: firstError };
+  return { sent, rejected, rejectedRows, error: firstError };
 }
 
 /* ---------------------------------- pull ---------------------------------- */
@@ -270,6 +276,7 @@ export async function runSync(userId: string): Promise<SyncReport> {
       pullError: null,
       pushRejected: 0,
       pushError: null,
+      pushRejectedRows: [],
     };
   }
 
@@ -285,12 +292,16 @@ export async function runSync(userId: string): Promise<SyncReport> {
   let pushed = 0;
   let rejected = 0;
   let pushError: string | null = null;
+  const rejectedRows: string[] = [];
 
   for (;;) {
     const result = await pushOnce();
     pushed += result.sent;
     rejected += result.rejected;
     pushError ??= result.error;
+    for (const table of result.rejectedRows) {
+      if (!rejectedRows.includes(table)) rejectedRows.push(table);
+    }
     /* Stop when the batch was not full, or when nothing moved: a queue made
        entirely of rejected rows would otherwise loop forever. */
     if (result.sent + result.rejected < PUSH_BATCH || result.sent === 0) break;
@@ -303,6 +314,7 @@ export async function runSync(userId: string): Promise<SyncReport> {
     pullError: pull.error,
     pushRejected: rejected,
     pushError,
+    pushRejectedRows: rejectedRows,
   };
 }
 
