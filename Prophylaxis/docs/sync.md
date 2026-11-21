@@ -37,6 +37,12 @@ the first one did.
 Supabase Auth, email + password (magic link is a config change, not code).
 `@supabase/supabase-js` in the SPA; the session is what every sync call carries.
 
+The project URL and publishable key are committed as defaults in
+`src/sync/client.ts`; `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` override
+them. A publishable key is not a secret — it ships in the bundle by design and
+grants nothing without RLS — and hard-coding it means a build cannot come out
+account-free just because the dev server started before `.env.local` existed.
+
 The anon key ships in the bundle — that is expected. It grants nothing on its
 own: every read and write is filtered by RLS on `sync_rows`, which compares
 `auth.uid()` to the row's `user_id`. No client code filters by user id.

@@ -17,8 +17,21 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
    guard: the test runner imports this module in plain Node, where it is absent. */
 const env = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {};
 
-const url = env.VITE_SUPABASE_URL?.trim();
-const anonKey = env.VITE_SUPABASE_ANON_KEY?.trim();
+/**
+ * The project this build talks to.
+ *
+ * Committed defaults rather than env-only, because a publishable key is not a
+ * secret: it is designed to ship in the bundle, it grants nothing on its own,
+ * and every row is protected by the RLS policy in the migrations. Env vars
+ * still win when set, so a fork can point at its own project without editing
+ * code — but a build cannot silently come out account-free just because the
+ * dev server started before `.env.local` existed.
+ */
+const DEFAULT_URL = 'https://pldugqseqokbruvsorca.supabase.co';
+const DEFAULT_ANON_KEY = 'sb_publishable_x2kj4MuEQ1nWDRV4Y7XbmA_8Iv8OJdt';
+
+const url = env.VITE_SUPABASE_URL?.trim() || DEFAULT_URL;
+const anonKey = env.VITE_SUPABASE_ANON_KEY?.trim() || DEFAULT_ANON_KEY;
 
 /*
  * The single-file build (`opening-lab.html`) opens from `file://`, where there
