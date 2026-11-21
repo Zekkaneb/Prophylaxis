@@ -337,13 +337,16 @@ export function CurrentGameView({
                 className={`play-seat__dot play-seat__dot--${opponentColor === 'w' ? 'white' : 'black'}`}
                 aria-hidden="true"
               />
-              {session.opponent.name}
+              <span className="play-seat__label" title={session.opponent.name}>
+                {session.opponent.name}
+              </span>
+              <span className="play-seat__elo" title="Rating">
+                {session.opponent.elo}
+              </span>
             </span>
-            <span className="play-seat__meta">
-              {opponentMeta(session.opponent)} ·{' '}
-              {opponentColor === 'w' ? 'White' : 'Black'}
-              {botThinking ? ' · thinking' : ''}
-            </span>
+            {/* Only transient state lives on this line: the dot already says the
+                colour and the pill already says the rating. */}
+            <span className="play-seat__meta">{botThinking ? 'thinking' : ''}</span>
             <CapturedPieces
               pieces={browser.captured[opponentColor]}
               color={session.playerColor}
@@ -427,11 +430,14 @@ export function CurrentGameView({
                 className={`play-seat__dot play-seat__dot--${session.playerColor === 'w' ? 'white' : 'black'}`}
                 aria-hidden="true"
               />
-              {playerDisplayName(profile)}
+              <span className="play-seat__label" title={playerDisplayName(profile)}>
+                {playerDisplayName(profile)}
+              </span>
+              <span className="play-seat__elo" title="Rating">
+                {profile.elo}
+              </span>
             </span>
-            <span className="play-seat__meta">
-              You · {session.playerColor === 'w' ? 'White' : 'Black'} · {profile.elo}
-            </span>
+            <span className="play-seat__meta">You</span>
             <CapturedPieces
               pieces={browser.captured[session.playerColor]}
               color={opponentColor}

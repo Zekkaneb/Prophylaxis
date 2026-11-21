@@ -1116,6 +1116,29 @@
   text-overflow: ellipsis;
 }
 
+/* The name is the only thing allowed to shrink; the rating pill keeps its size
+   and sits directly after it, the way the Game review player bar does. */
+.play-seat__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Rating as a pill beside the name — the same shape as `.gr-player__elo`. */
+.play-seat__elo {
+  flex: none;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+
 .play-seat__meta {
   font-size: 11px;
   color: var(--muted);

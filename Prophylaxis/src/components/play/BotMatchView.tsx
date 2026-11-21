@@ -4,7 +4,6 @@ import type { StockfishController } from '../../engine/useStockfish';
 import { formatEvaluation, whiteAdvantagePercent } from '../../review/gameReviewService';
 import type { ClockSnapshot } from '../../play/clock.ts';
 import { formatClock, timeControlLabel } from '../../play/timeControls.ts';
-import { opponentMeta } from '../../play/opponents.ts';
 import { resultReasonLabel, type PlayColor } from '../../play/types.ts';
 import type { BotMatchSession, MatchSpeed } from '../../play/useBotMatch.ts';
 import { CapturedPieces } from './CapturedPieces.tsx';
@@ -145,12 +144,15 @@ export function BotMatchView({
               className={`play-seat__dot play-seat__dot--${color === 'w' ? 'white' : 'black'}`}
               aria-hidden="true"
             />
-            {opponent.name}
+            <span className="play-seat__label" title={opponent.name}>
+              {opponent.name}
+            </span>
+            <span className="play-seat__elo" title="Rating">
+              {opponent.elo}
+            </span>
           </span>
-          <span className="play-seat__meta">
-            {opponentMeta(opponent)} · {color === 'w' ? 'White' : 'Black'}
-            {thinking ? ' · thinking' : ''}
-          </span>
+          {/* Colour is the dot, rating is the pill; this line is state only. */}
+          <span className="play-seat__meta">{thinking ? 'thinking' : ''}</span>
           <CapturedPieces
             pieces={browser.captured[color]}
             color={color === 'w' ? 'b' : 'w'}
