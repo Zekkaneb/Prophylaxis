@@ -219,6 +219,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* An ordinary, methodical look: he reads the position, not the tactics
          first, and a busy board earns a slightly longer check of the threats. */
       return 0.92 + (profile.tactical ? 0.1 : 0.04) * profile.complexity;
+    case 'jonah-pachikara':
+      /* Quiet reading, then a real look once the position sharpens — his tactic
+         only appears if the placement was right. */
+      return 0.9 + (profile.tactical ? 0.24 : 0.06) * profile.complexity;
   }
 }
 
@@ -275,6 +279,9 @@ function deliberationFactor(style: PersonalityStyle): number {
     case 'erik-wiessmann':
       /* Unhurried but never slow: he wants the move to make sense. */
       return 0.95;
+    case 'jonah-pachikara':
+      /* Very chill: no rush, no ceremony. */
+      return 0.92;
   }
 }
 

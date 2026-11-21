@@ -417,6 +417,28 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'EW',
     usesRepertoire: false,
   },
+  /* Jonah Pachikara, 1400 — the silent threat.
+
+     No subtext has been specified for him, so the card follows the project's
+     convention for an unspecified stage: no `title`, and a `shortName` that is
+     already part of the name, which makes `opponentStage` return null instead
+     of inventing a school-year label. His full stored label is therefore just
+     "Jonah Pachikara". */
+  {
+    id: 'jonah-pachikara',
+    kind: 'personality',
+    category: 'intermediate',
+    name: 'Jonah Pachikara',
+    shortName: 'Jonah',
+    elo: 1400,
+    style:
+      'The silent threat: quiet, improving positional moves that hide real tactical intent. Presses patiently, then strikes when the position allows it.',
+    portraitPath: 'opponents/jonah-pachikara.webp',
+    /* Framed tight in the source file: the whole head shows at 1. */
+    portraitScale: 1,
+    initials: 'JP',
+    usesRepertoire: false,
+  },
 ] as const;
 
 export const GENERAL_BOT: OpponentProfile = {

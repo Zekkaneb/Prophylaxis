@@ -24,7 +24,7 @@ same band.
 |---|---|---|
 | Beginner | 100–1000 Elo | Emmanuel Domah, Edward Chen, Faadi Granillo Garcia |
 | Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang, Erik Wiessmann |
-| Intermediate | 1301–1600 Elo | Bryan Martinez-Hernandez (Sophomore), Bryan Widjaja, Johnfer Quispe (Sophomore), Nina Yang (Sophomore), Brandon Tran (Freshman) |
+| Intermediate | 1301–1600 Elo | Bryan Martinez-Hernandez (Sophomore), Bryan Widjaja, Johnfer Quispe (Sophomore), Nina Yang (Sophomore), Brandon Tran (Freshman), Jonah Pachikara |
 | Varsity | 1601–2000 Elo | Bryan Martinez-Hernandez (Junior), Johnfer Quispe (Senior) |
 | The Big 4 | Special designation | Brandon Tran (Prime), Johnfer Quispe (Junior), Bryan Martinez-Hernandez (Prime), Mabinti Mansaray |
 
@@ -259,6 +259,49 @@ Dialogue is event-driven through the existing layer with a reserved cadence
 (`ordinaryGap: 7`, `repeatGap: 16`): relaxed, friendly and quietly competitive,
 with no lecturing, no digits and no engine or theory vocabulary. The
 never-repeat-a-line pool and the once-per-game events still apply.
+
+## Jonah Pachikara — 1400, Intermediate
+
+| | |
+|---|---|
+| id | `jonah-pachikara` |
+| Name / subtext | Jonah Pachikara · *(none specified)* |
+| Rating | 1400, Intermediate band (1301–1600) |
+| White | Jobava London (1.d4, Bf4, Nc3, e3) |
+| Black vs 1.e4 | 1...d5, Scandinavian (...Qa5, ...Qd8 and the ...Nf6 recapture) |
+| Black vs 1.d4 | 1...d5, Queen's Gambit Declined structure |
+| Profile file | `src/play/personality/styles.ts` (`jonah-pachikara`) |
+| Repertoire | `src/play/personality/repertoires/jonahPachikara.ts` |
+| Dialogue | `DIALOGUE_BANKS['jonah-pachikara']` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/jonah-pachikara.webp` (monogram `JP` if missing) |
+
+No subtext has been specified for him, so he follows the convention used by the
+General Bot: no `title`, and a `shortName` already contained in the name, which
+makes `opponentStage` return `null`. The card prints the name and `1400 Elo`
+alone, PGN headers carry `Jonah Pachikara`, and no school-year label is invented.
+
+The silent threat. Positional 90 and tactical 85 are the whole character:
+improving, quiet moves that keep the pieces working, and the same profile makes
+him notice the tactics that appear once the placement is right. Defence 75, king
+safety 80, simplification 60 and sacrifice 20 keep him from speculative attacks,
+and aggression stays at 55 — he pressures, he does not blitz.
+
+None of that changes his strength. `accuracyForElo(1400)` = 1.05, the standard
+1400 candidate gap and the ordinary slip curve (no `depthCap`, no
+`mistakeChance`): high tactical ambition means he looks at tactical candidates
+more often, not that he calculates like a master.
+
+White plays the Jobava London in three short lines: 1.d4, bishop to f4, knight
+to c3, e3, then a solid centre and quiet pressure. Black answers 1.e4 with the
+Scandinavian 1...d5 — the ...Qa5 main line with the long castle, the ...Qd8
+version and the ...Nf6 recapture — and 1.d4 with 1...d5 into a Queen's Gambit
+Declined structure, plus a calm answer to the London. No King's Indian layer.
+Outside the book the ordinary engine choice and his tendencies take over.
+
+Dialogue is event-driven with `ordinaryGap: 6`, `repeatGap: 15`: understated,
+casual, occasionally dry ("Oh, okay.", "That's interesting.", "I think there's
+something here."), level in won and lost games, and free of theory or engine
+talk. The anti-repetition pool and once-per-game events apply.
 
 ## Repertoire data
 

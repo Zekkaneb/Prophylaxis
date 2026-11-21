@@ -54,6 +54,7 @@ const BANKS: Record<
     | 'bryan-widjaja'
     | 'alex-tang'
     | 'erik-wiessmann'
+    | 'jonah-pachikara'
   >,
   Bank
 > = {
@@ -620,6 +621,58 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     loss: ['Good game.', 'Haha, fair enough.', 'Fine. You got me there.'],
     draw: ['Fair result.', 'Good game.', 'Haha, fair enough.'],
   },
+  /* Jonah Pachikara, 1400: the silent threat.
+
+     Extremely chill and understated, with a dry sense of humour and no
+     theatrics. He notices a position out loud only once in a while, stays level
+     in won and lost games alike, and never explains a tactic, an evaluation or
+     a line of theory. */
+  'jonah-pachikara': {
+    book: ['Oh, okay.', 'Let’s see what happens.', 'Hmm, I don’t mind this.'],
+    deviation: [
+      'That’s interesting.',
+      'I wasn’t expecting that.',
+      'Okay, that’s fair.',
+    ],
+    mistake: [
+      'Hmm. That’s not ideal.',
+      'Yeah, that might be a problem.',
+      'Oh well.',
+    ],
+    strong: ['Yeah, I see it.', 'That’s interesting.', 'I think we’re alright.'],
+    brilliant: [
+      'Interesting move.',
+      'I think there’s something here.',
+      'Yeah, I see it.',
+    ],
+    winning: [
+      'I think we’re alright.',
+      'Quietly, this is going well.',
+      'Let’s see what happens.',
+    ],
+    losing: [
+      'Yeah, that might be a problem.',
+      'I think there’s something here.',
+      'Not worried yet.',
+    ],
+    defense: ['Yeah, I see it.', 'I don’t mind this.', 'Okay, that’s fair.'],
+    attack: [
+      'I think there’s something here.',
+      'Let’s see what happens.',
+      'This is getting interesting.',
+    ],
+    'attack-fail': ['Okay, that’s fair.', 'I wasn’t expecting that.', 'Oh, okay.'],
+    sacrifice: ['I think there’s something here.', 'We’ll see.'],
+    'material-won': ['Oh, okay.', 'That’s interesting.', 'I think we’re alright.'],
+    'material-lost': [
+      'That’s not ideal.',
+      'Yeah, that might be a problem.',
+      'Oh, okay.',
+    ],
+    win: ['Good game.', 'That was interesting.', 'Okay, that’s fair.'],
+    loss: ['Good game.', 'That was interesting.', 'Yeah, that might be a problem.'],
+    draw: ['Good game.', 'Okay, that’s fair.', 'That was interesting.'],
+  },
 };
 
 export interface DialogueState {
@@ -680,6 +733,9 @@ const CADENCE: Partial<
   /* Erik is relaxed, not chatty: a remark every seven plies at most, and the
      same kind of observation only after a long stretch. */
   'erik-wiessmann': { ordinaryGap: 7, repeatGap: 16 },
+  /* Jonah is quiet by nature: a remark every six plies at most, and the same
+     kind of remark only after a long stretch. */
+  'jonah-pachikara': { ordinaryGap: 6, repeatGap: 15 },
 };
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except

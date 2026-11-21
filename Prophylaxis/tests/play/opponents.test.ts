@@ -46,16 +46,21 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
       ['bryan-prime', 'Bryan Martinez-Hernandez', 'Prime', 2000],
       ['mabinti', 'Mabinti Mansaray', 'Junior', 1550],
       ['erik-wiessmann', 'Erik Wiessmann', 'Teacher', 1100],
+      ['jonah-pachikara', 'Jonah Pachikara', undefined, 1400],
     ],
   );
 
-  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 18);
+  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 19);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.doesNotMatch(opponent.name, /\(/, 'the name carries no parenthetical suffix');
+    /* Jonah has no specified subtext by design: no title, so no invented stage. */
+    if (opponent.id === 'jonah-pachikara') {
+      assert.equal(opponent.title, undefined, 'no invented school-year label');
+      continue;
+    }
     assert.ok(opponent.title, `${opponent.id} has a subtext`);
-    assert.notEqual(opponent.title, undefined);
     assert.equal(
-      opponent.name.toLowerCase().includes((opponent.title as string).toLowerCase()),
+      opponent.name.toLowerCase().includes(opponent.title.toLowerCase()),
       false,
       'the name does not repeat its subtext',
     );
@@ -65,7 +70,7 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
      two Bryans apart, which is how saved games are labelled. */
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    18,
+    19,
   );
 });
 
@@ -101,7 +106,7 @@ test('categories are explicitly configured, complete and ordered by band', () =>
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'intermediate').map(
       (opponent) => opponent.id,
     ),
-    ['bryan-sophomore', 'bryan-widjaja', 'sophomore', 'nina', 'brandon-freshman'],
+    ['bryan-sophomore', 'bryan-widjaja', 'sophomore', 'nina', 'brandon-freshman', 'jonah-pachikara'],
   );
   assert.deepEqual(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'varsity').map(
@@ -171,6 +176,7 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
       'opponents/bryan-prime.webp',
       'opponents/mabinti.webp',
       'opponents/erik-wiessmann.webp',
+      'opponents/jonah-pachikara.webp',
     ],
   );
 
@@ -284,8 +290,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
   assert.equal(GENERAL_BOT.usesRepertoire, false);
-  assert.equal(ALL_OPPONENTS.length, 19);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 19);
+  assert.equal(ALL_OPPONENTS.length, 20);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 20);
   assert.equal(GENERAL_BOT_ELO.min, 100);
   assert.equal(GENERAL_BOT_ELO.max, 2800);
 });

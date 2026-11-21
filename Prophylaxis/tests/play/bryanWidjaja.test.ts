@@ -171,9 +171,16 @@ test('he sits in Intermediate at exactly 1400, beside the other defenders', () =
   /* The group is not rating-sorted, and his rating is his own. */
   assert.equal(WIDJAJA.elo, 1400);
   assert.equal(
-    PERSONALITY_OPPONENTS.filter((opponent) => opponent.elo === 1400).length,
+    PERSONALITY_OPPONENTS.filter(
+      (opponent) => opponent.elo === 1400 && opponent.id === 'bryan-widjaja',
+    ).length,
     1,
-    'no other card shares his rating by accident',
+    'his own rating is recorded once',
+  );
+  assert.equal(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.elo === 1400).length,
+    2,
+    'only the other declared 1400 shares his rating',
   );
 });
 
@@ -703,8 +710,8 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
 /* ---------------------------- 16. regressions ---------------------------- */
 
 test('every other opponent and the General Bot are untouched', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 18);
-  assert.equal(ALL_OPPONENTS.length, 19);
+  assert.equal(PERSONALITY_OPPONENTS.length, 19);
+  assert.equal(ALL_OPPONENTS.length, 20);
   const expected: Array<[string, string, string, number, string]> = [
     ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],
     ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450, 'intermediate'],

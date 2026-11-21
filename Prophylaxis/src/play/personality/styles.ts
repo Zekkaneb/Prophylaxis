@@ -29,7 +29,8 @@ export type PersonalityId =
   | 'emmanuel'
   | 'bryan-widjaja'
   | 'alex-tang'
-  | 'erik-wiessmann';
+  | 'erik-wiessmann'
+  | 'jonah-pachikara';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -496,6 +497,33 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 10,
     activePieces: 55,
     openingBias: { developing: 20, solid: 18, positional: 14, sharp: -22, initiative: -12 },
+  },
+  /* Jonah Pachikara, 1400 — the silent threat.
+
+     Positional 90 and tactical 85 together are the whole character: he builds
+     with quiet, improving moves, and the same profile makes him notice the
+     tactics that appear once the pieces are placed. Defence 75 and king safety
+     80 keep the pressure sound, simplification stays at 60 and sacrifice at 20,
+     so he is not a speculative attacker. `accuracy` is still
+     `accuracyForElo(1400)`: tactical ambition is how often he looks, never how
+     well he calculates. */
+  'jonah-pachikara': {
+    ...BASE,
+    id: 'jonah-pachikara',
+    aggression: 55,
+    risk: 40,
+    positional: 90,
+    tactical: 85,
+    defensive: 75,
+    initiative: 55,
+    simplification: 60,
+    complexity: 55,
+    kingSafety: 80,
+    material: 70,
+    /* He will give a pawn for a concrete initiative, not a piece on a hunch. */
+    sacrifice: 20,
+    activePieces: 65,
+    openingBias: { positional: 24, developing: 16, solid: 10, initiative: 6, sharp: 4 },
   },
 };
 

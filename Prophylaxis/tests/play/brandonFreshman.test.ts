@@ -170,9 +170,13 @@ test('Prime is untouched and the two Brandons stay separately selectable', () =>
     (opponent) => opponent.category === 'intermediate',
   ).map((opponent) => opponent.id);
   assert.ok(intermediate.includes('brandon-freshman'));
-  assert.equal(intermediate[intermediate.length - 1], 'brandon-freshman');
-  assert.equal(ALL_OPPONENTS.length, 19);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 19);
+  assert.equal(
+    intermediate.filter((id) => id.startsWith('brandon')).at(-1),
+    'brandon-freshman',
+    'the Freshman Brandon is the lower of the two Brandons',
+  );
+  assert.equal(ALL_OPPONENTS.length, 20);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 20);
 });
 
 test('saved games resolve each Brandon to his own version', () => {
