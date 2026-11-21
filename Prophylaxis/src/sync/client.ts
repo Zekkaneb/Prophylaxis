@@ -20,7 +20,14 @@ const env = (import.meta as ImportMeta & { env?: Record<string, string | undefin
 const url = env.VITE_SUPABASE_URL?.trim();
 const anonKey = env.VITE_SUPABASE_ANON_KEY?.trim();
 
-export const syncConfigured = Boolean(url && anonKey);
+/*
+ * The single-file build (`opening-lab.html`) opens from `file://`, where there
+ * is no origin for an auth redirect and each file has its own storage bucket.
+ * Even when the env vars are baked in, that build stays account-free.
+ */
+const fileBuild = typeof window !== 'undefined' && window.location.protocol === 'file:';
+
+export const syncConfigured = Boolean(url && anonKey) && !fileBuild;
 
 export const supabase: SupabaseClient | null = syncConfigured
   ? createClient(url as string, anonKey as string, {
