@@ -14,6 +14,9 @@ import { db } from '../db.ts';
 export const SYNCED_TABLES = ['played_games', 'puzzle_sets', 'puzzle_cycles', 'puzzle_attempts'] as const;
 export type SyncedTable = (typeof SYNCED_TABLES)[number];
 
+/** Fired whenever a change is queued, so the UI can show the real count. */
+export const QUEUE_EVENT = 'openinglab:sync-queued';
+
 export function isSyncedTable(name: string): name is SyncedTable {
   return (SYNCED_TABLES as readonly string[]).includes(name);
 }
@@ -66,6 +69,12 @@ export async function recordSyncedChange(
       updated_at: changeStamp(),
       deleted,
     });
+    /* Lets the Account panel show the queue as it fills, instead of only after
+       the next sync. A page-level event rather than a subscription, because
+       the writers are plain functions with no React context. */
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event(QUEUE_EVENT));
+    }
   } catch {
     /* sync bookkeeping is best-effort; the row itself is already saved */
   }

@@ -331,9 +331,13 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
                       : 'Sign in to carry your games between devices. Everything still works offline, signed in or not.'}
                 </p>
               </div>
-              {sync.email && (
+              {sync.configured && (
                 <span className="settings__value">
-                  {sync.status === 'syncing' ? 'Syncing…' : `${sync.pending} to upload`}
+                  {sync.status === 'syncing'
+                    ? 'Syncing…'
+                    : sync.email
+                      ? `${sync.pending} to upload`
+                      : `${sync.pending} queued`}
                 </span>
               )}
             </div>
@@ -407,6 +411,10 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
               <p className="settings__account-status" role="status">
                 {sync.message}
               </p>
+            ) : null}
+
+            {sync.configured && import.meta.env.DEV && sync.database ? (
+              <p className="settings__account-status">{sync.database}</p>
             ) : null}
           </section>
         </div>

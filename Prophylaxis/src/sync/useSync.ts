@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import { activeDatabaseName } from '../db.ts';
 import { ensureDatabaseFor, readDatabaseOwner, LOCAL_OWNER } from './accountDatabase.ts';
 import { supabase, syncConfigured, syncDisabledReason, type SyncDisabledReason } from './client.ts';
+import { QUEUE_EVENT } from './outbox.ts';
 import { pendingChangeCount, runSync } from './sync.ts';
 
 /**
@@ -28,6 +30,8 @@ export interface SyncController {
   message: string | null;
   /** Local changes not yet uploaded. */
   pending: number;
+  /** Which local database the count belongs to. */
+  database: string;
   signIn: (email: string, password: string) => Promise<string | null>;
   signUp: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
@@ -47,6 +51,7 @@ export function useSync(): SyncController {
   const [status, setStatus] = useState<SyncStatus>('idle');
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(0);
+  const [database, setDatabase] = useState(() => (syncConfigured ? activeDatabaseName() : ''));
   const busyRef = useRef(false);
 
   const refreshPending = useCallback(async () => {
@@ -125,9 +130,26 @@ export function useSync(): SyncController {
     };
   }, []);
 
-  /* Keep the pending count honest even when signed out. */
+  /*
+   * Keep the pending count honest even when signed out.
+   *
+   * The event is what makes it live: a puzzle set created while the panel is
+   * open must show up as "2 to upload" immediately, not only after the next
+   * sync. The interval is a slow safety net for writes that bypass the outbox
+   * helpers, and it also picks up a database switch.
+   */
   useEffect(() => {
     void refreshPending();
+    setDatabase(syncConfigured ? activeDatabaseName() : '');
+
+    const onQueued = () => void refreshPending();
+    window.addEventListener(QUEUE_EVENT, onQueued);
+    const timer = window.setInterval(() => void refreshPending(), 15_000);
+
+    return () => {
+      window.removeEventListener(QUEUE_EVENT, onQueued);
+      window.clearInterval(timer);
+    };
   }, [refreshPending]);
 
   /*
@@ -210,6 +232,7 @@ export function useSync(): SyncController {
     status,
     message,
     pending,
+    database,
     signIn,
     signUp,
     signOut,
