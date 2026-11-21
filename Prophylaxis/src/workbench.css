@@ -35,6 +35,11 @@
   overflow: hidden;
 }
 
+/* A workbench runs edge to edge, so the chip takes the rail's own inset. */
+.app-shell--locked {
+  --account-inset: clamp(10px, 1.4vw, 24px);
+}
+
 .app-shell .view {
   min-height: 0;
 }

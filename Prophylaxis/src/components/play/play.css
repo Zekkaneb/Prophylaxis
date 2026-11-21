@@ -615,6 +615,12 @@
   font-size: inherit;
 }
 
+/* A player's own photo is already squared by the picker, so it keeps the
+   artwork's optical zoom out of the way. */
+.play-avatar__photo {
+  transform: none;
+}
+
 .play-avatar--xs {
   width: 26px;
   height: 26px;

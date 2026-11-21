@@ -215,6 +215,9 @@ function SeatPlate({
         <input
           className="gr-player__name gr-player__input"
           type="text"
+          /* The field is only as wide as what it holds, so the rating chip
+             follows the name instead of floating at a fixed 20ch. */
+          size={Math.max(seat.name.length, 3)}
           value={seat.name}
           aria-label={`${label} player name`}
           title={`${label} player name`}

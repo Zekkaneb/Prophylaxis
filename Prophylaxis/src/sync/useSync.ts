@@ -112,6 +112,16 @@ export function useSync(): SyncController {
         return;
       }
 
+      /* A row every other device can read but this one cannot store is worth
+         saying out loud, even though the rest of the pass succeeded. */
+      if (report.pullSkipped > 0) {
+        setStatus('error');
+        setMessage(
+          `Synced ${report.pushed} up, ${report.pulled} down, but ${report.pullSkipped} row(s) could not be applied here. Your games are still safe on the server.`,
+        );
+        return;
+      }
+
       setStatus('idle');
       setMessage(
         report.pushed + report.pulled === 0

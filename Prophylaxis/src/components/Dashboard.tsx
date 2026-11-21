@@ -8,8 +8,10 @@ import {
   PLAYER_ELO_RANGE,
   PLAYER_NAME_MAX,
   playerDisplayName,
+  playerInitials,
 } from '../profile/playerProfile.ts';
 import { updatePlayerProfile, usePlayerProfile } from '../profile/usePlayerProfile.ts';
+import AvatarPicker from './AvatarPicker';
 import { syncProfileToAccount } from '../sync/profileMirror.ts';
 import { useSessionEmail } from '../sync/useSessionEmail.ts';
 import type { TabId } from './SideNav';
@@ -186,6 +188,7 @@ function Dashboard({
       firstName,
       lastName,
       elo: Number.isFinite(draftElo) ? draftElo : profile.elo,
+      ...(profile.avatar ? { avatar: profile.avatar } : {}),
     });
     setFirstName(saved.firstName);
     setLastName(saved.lastName);
@@ -248,6 +251,20 @@ function Dashboard({
         </header>
 
         <form className="dash-profile__form" onSubmit={handleProfileSave}>
+          <AvatarPicker
+            avatar={profile.avatar}
+            initials={playerInitials({ firstName, lastName, elo: profile.elo })}
+            onChange={(avatar) => {
+              updatePlayerProfile({
+                firstName,
+                lastName,
+                elo: Number.isFinite(draftElo) ? draftElo : profile.elo,
+                ...(avatar ? { avatar } : {}),
+              });
+            }}
+            onStatus={setProfileStatus}
+          />
+
           <label className="dash-profile__field">
             <span>First name</span>
             <input

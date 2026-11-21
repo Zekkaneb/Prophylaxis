@@ -18,6 +18,8 @@
   .app-shell {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
+    /* A hand's gutter is 12px, not the desk's percentage. */
+    --account-inset: 12px;
   }
 
   .sidenav {

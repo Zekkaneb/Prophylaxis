@@ -292,7 +292,11 @@ export function GameReviewView({ gameId, onBack, onDeleted }: GameReviewViewProp
             <OpponentAvatar opponent={whiteBot} size="md" loading="eager" />
           ) : (
             <span className="play-avatar play-avatar--md play-avatar--self" aria-hidden="true">
-              <span className="play-avatar__initial">{playerInitials(profile)}</span>
+              {profile.avatar ? (
+                <img className="play-avatar__photo" src={profile.avatar} alt="" />
+              ) : (
+                <span className="play-avatar__initial">{playerInitials(profile)}</span>
+              )}
             </span>
           )}
           <div className="play-seat__id">

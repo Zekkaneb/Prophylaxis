@@ -15,6 +15,8 @@ export interface PlayerProfile {
   lastName: string;
   /** Display rating. A label on the player's side, never an engine setting. */
   elo: number;
+  /** The player's own picture, already squared and shrunk to a data URL. */
+  avatar?: string;
 }
 
 export interface ProfileStorage {
@@ -29,6 +31,12 @@ export const PLAYER_NAME_MAX = 32;
 
 export const PLAYER_ELO_RANGE = { min: 100, max: 3000 } as const;
 
+/**
+ * A 256px JPEG lands around 8–25 KB once encoded. The cap keeps a stray
+ * full-resolution file from filling the profile's localStorage slot.
+ */
+export const AVATAR_MAX_LENGTH = 160_000;
+
 export const DEFAULT_PLAYER_PROFILE: PlayerProfile = Object.freeze({
   firstName: '',
   lastName: '',
@@ -39,6 +47,11 @@ export const DEFAULT_PLAYER_PROFILE: PlayerProfile = Object.freeze({
 export function normalisePlayerName(value: unknown): string {
   if (typeof value !== 'string') return '';
   return value.replace(/\s+/g, ' ').trim().slice(0, PLAYER_NAME_MAX);
+}
+
+export function normaliseAvatar(value: unknown): string | undefined {
+  if (typeof value !== 'string' || !value.startsWith('data:image/')) return undefined;
+  return value.length <= AVATAR_MAX_LENGTH ? value : undefined;
 }
 
 export function clampPlayerElo(value: unknown): number {
@@ -56,11 +69,19 @@ export function normalisePlayerProfile(input: {
   firstName?: unknown;
   lastName?: unknown;
   elo?: unknown;
+  avatar?: unknown;
 } | null | undefined): PlayerProfile {
   const firstName = normalisePlayerName(input?.firstName);
   const lastName = normalisePlayerName(input?.lastName);
-  if (!firstName && !lastName) return { ...DEFAULT_PLAYER_PROFILE };
-  return { firstName, lastName, elo: clampPlayerElo(input?.elo) };
+  const avatar = normaliseAvatar(input?.avatar);
+  /* A picture without a name still belongs to the player: keep it instead of
+     resetting the whole profile to the defaults. */
+  if (!firstName && !lastName) {
+    return avatar ? { ...DEFAULT_PLAYER_PROFILE, avatar } : { ...DEFAULT_PLAYER_PROFILE };
+  }
+  return avatar
+    ? { firstName, lastName, elo: clampPlayerElo(input?.elo), avatar }
+    : { firstName, lastName, elo: clampPlayerElo(input?.elo) };
 }
 
 export function parsePlayerProfile(raw: string | null): PlayerProfile {

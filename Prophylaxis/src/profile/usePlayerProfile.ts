@@ -47,7 +47,8 @@ if (typeof window !== 'undefined') {
     if (
       fromStorage.firstName === snapshot.firstName &&
       fromStorage.lastName === snapshot.lastName &&
-      fromStorage.elo === snapshot.elo
+      fromStorage.elo === snapshot.elo &&
+      fromStorage.avatar === snapshot.avatar
     ) {
       return;
     }

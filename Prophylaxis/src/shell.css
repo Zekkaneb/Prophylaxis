@@ -10,6 +10,9 @@
   min-height: 100dvh;
   min-width: 0;
   column-gap: 0;
+  /* The account chip's right edge follows the page gutter, so it lines up with
+     the content column instead of hanging outside it. */
+  --account-inset: clamp(18px, 3.2%, 48px);
 }
 
 .app-shell__body {

@@ -1,9 +1,12 @@
 /* Account corner ---------------------------------------------------------- */
 
+/* Sits on the content's own right gutter and top rhythm rather than hanging at
+   the window edge: on a page it lines up with the heading it shares a row with,
+   and on a full-height workbench it takes the rail's tighter inset. */
 .account-corner {
   position: fixed;
-  top: 14px;
-  right: 18px;
+  top: 12px;
+  right: var(--account-inset, 24px);
   z-index: 60;
 }
 
@@ -12,9 +15,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 42px;
-  height: 42px;
-  padding: 0 14px 0 6px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 14px 0 5px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
@@ -23,7 +26,8 @@
   font-weight: 600;
   letter-spacing: 0.01em;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  /* A quiet edge, not a floating bubble: the chip belongs to the chrome. */
+  box-shadow: 0 2px 10px rgb(0 0 0 / 12%);
   transition: border-color 200ms var(--ease), transform 200ms var(--ease);
 }
 
@@ -299,4 +303,9 @@
     width: auto;
     max-height: 82vh;
   }
+}
+
+/* The photo row sits above the profile form, at the same rhythm the form uses. */
+.account-popover .avatar-picker {
+  margin-top: 16px;
 }

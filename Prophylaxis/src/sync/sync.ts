@@ -3,6 +3,7 @@ import { readDatabaseOwner } from './accountDatabase.ts';
 import { supabase } from './client.ts';
 import { isSyncedTable, withRemoteApply } from './outbox.ts';
 import { applyRemotePreference } from './preferences.ts';
+import { withRowKey } from './rowKey.ts';
 
 /**
  * Push local changes, then pull everyone else's.
@@ -35,6 +36,8 @@ export interface SyncReport {
    */
   pullFailed: boolean;
   pullError: string | null;
+  /** Rows that arrived but could not be stored on this device. */
+  pullSkipped: number;
   /** Changes the server refused outright (a constraint, a bad table name). */
   pushRejected: number;
   pushError: string | null;
@@ -211,13 +214,16 @@ export interface PullResult {
   pulled: number;
   failed: boolean;
   error: string | null;
+  /** Rows the server sent that this device could not apply. */
+  skipped: number;
 }
 
 async function pullOnce(userId: string): Promise<PullResult> {
-  if (!supabase) return { pulled: 0, failed: false, error: null };
+  if (!supabase) return { pulled: 0, failed: false, error: null, skipped: 0 };
 
   let cursor = await readCursor(userId);
   let pulled = 0;
+  let skipped = 0;
 
   for (;;) {
     const { data, error } = await supabase
@@ -229,7 +235,7 @@ async function pullOnce(userId: string): Promise<PullResult> {
 
     /* A mid-page failure keeps the cursor where it was, so the next attempt
        re-asks for the same rows rather than skipping them. */
-    if (error) return { pulled, failed: true, error: error.message };
+    if (error) return { pulled, failed: true, error: error.message, skipped };
 
     const page = (data ?? []) as RemoteSyncRow[];
     if (page.length === 0) break;
@@ -239,18 +245,41 @@ async function pullOnce(userId: string): Promise<PullResult> {
         if (!isSyncedTable(row.table_name)) continue;
         if (row.deleted) {
           await db.table(row.table_name).delete(row.row_id);
-        } else if (row.table_name === 'prefs') {
+          continue;
+        }
+
+        /* The payload must carry the table's key or IndexedDB refuses the
+           write; `row_id` restores it when an older upload left it out. */
+        const payload =
+          row.payload && typeof row.payload === 'object'
+            ? withRowKey(row.table_name, row.row_id, row.payload)
+            : null;
+        if (!payload) {
+          skipped += 1;
+          continue;
+        }
+
+        if (row.table_name === 'prefs') {
           /* A preference is not just a row: the screen has to pick it up. */
-          const key = row.payload?.key;
-          const value = row.payload?.value;
+          const key = payload.key;
+          const value = payload.value;
           if (typeof key === 'string' && typeof value === 'string') {
             await applyRemotePreference(key, value);
+          } else {
+            skipped += 1;
           }
-        } else if (row.payload) {
-          const local = (await db.table(row.table_name).get(row.row_id)) as
-            | Record<string, unknown>
-            | undefined;
-          await db.table(row.table_name).put(mergeRemoteRow(row.table_name, local, row.payload));
+          continue;
+        }
+
+        const local = (await db.table(row.table_name).get(row.row_id)) as
+          | Record<string, unknown>
+          | undefined;
+        try {
+          await db.table(row.table_name).put(mergeRemoteRow(row.table_name, local, payload));
+        } catch {
+          /* One row this device cannot store must not wedge the cursor: later
+             rows would never arrive. It is counted and reported instead. */
+          skipped += 1;
         }
       }
     });
@@ -262,7 +291,7 @@ async function pullOnce(userId: string): Promise<PullResult> {
     if (page.length < PULL_PAGE) break;
   }
 
-  return { pulled, failed: false, error: null };
+  return { pulled, failed: false, error: null, skipped };
 }
 
 /* ---------------------------------- sync ---------------------------------- */
@@ -282,6 +311,7 @@ export async function runSync(userId: string): Promise<SyncReport> {
       pulled: 0,
       pullFailed: false,
       pullError: null,
+      pullSkipped: 0,
       pushRejected: 0,
       pushError: null,
       pushRejectedRows: [],
@@ -320,6 +350,7 @@ export async function runSync(userId: string): Promise<SyncReport> {
     pulled: pull.pulled,
     pullFailed: pull.failed,
     pullError: pull.error,
+    pullSkipped: pull.skipped,
     pushRejected: rejected,
     pushError,
     pushRejectedRows: rejectedRows,

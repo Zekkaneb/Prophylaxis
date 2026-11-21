@@ -10,6 +10,7 @@ import {
   type PlayerProfile,
 } from '../profile/playerProfile.ts';
 import { updatePlayerProfile, usePlayerProfile } from '../profile/usePlayerProfile.ts';
+import AvatarPicker from './AvatarPicker';
 import './AccountMenu.css';
 
 /**
@@ -130,6 +131,7 @@ export default function AccountMenu() {
       firstName: normalisePlayerName(firstName),
       lastName: normalisePlayerName(lastName),
       elo: elo.trim() ? clampPlayerElo(elo) : 0,
+      ...(profile.avatar ? { avatar: profile.avatar } : {}),
     };
 
     /* Local first: the nameplate updates instantly, online or not. */
@@ -184,9 +186,13 @@ export default function AccountMenu() {
   };
 
   const displayName = playerDisplayName(profile);
-  /* The pill is a face and a name: the account's given name, never the whole
-     address. */
-  const nameLabel = profile.firstName || profile.lastName;
+  /* The pill is a face and a full name, signed in or not: the profile is local,
+     so the corner already knows who is using this device. Only a brand-new
+     profile with no name falls back to the call to action. */
+  const nameLabel = displayName || (sync.email ? 'Account' : 'Sign in');
+  /* No session, no name and no photo is a brand-new visitor: the corner stays
+     the plain call to action instead of showing a placeholder face. */
+  const hasIdentity = Boolean(sync.email || displayName || profile.avatar);
 
   return (
     <div className="account-corner">
@@ -198,16 +204,16 @@ export default function AccountMenu() {
         onClick={() => (open ? close() : setOpen(true))}
         title={sync.email ? `Signed in as ${sync.email}` : 'Sign in or create an account'}
       >
-        {sync.email ? (
-          <>
-            <span className="account-trigger__avatar">
-              {avatarUrl ? <img src={avatarUrl} alt="" /> : playerInitials(profile)}
-            </span>
-            {nameLabel ? <span className="account-trigger__name">{nameLabel}</span> : null}
-          </>
-        ) : (
-          'Sign in'
-        )}
+        {hasIdentity ? (
+          <span className="account-trigger__avatar">
+            {profile.avatar || avatarUrl ? (
+              <img src={profile.avatar ?? avatarUrl ?? ''} alt="" />
+            ) : (
+              playerInitials(profile)
+            )}
+          </span>
+        ) : null}
+        <span className="account-trigger__name">{nameLabel}</span>
       </button>
 
       {open && (
@@ -317,6 +323,13 @@ export default function AccountMenu() {
 
             {mode === 'profile' && sync.email && (
               <>
+                <AvatarPicker
+                  avatar={profile.avatar}
+                  initials={playerInitials(profile)}
+                  onChange={(avatar) => updatePlayerProfile({ ...profile, avatar })}
+                  onStatus={setNotice}
+                />
+
                 <form className="account-form" onSubmit={saveProfile}>
                   <div className="account-row">
                     <label className="account-field">
