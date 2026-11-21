@@ -51,6 +51,7 @@ import {
   probeMoveCandidates,
   qualityShares,
   randomMoveChance,
+  usesOpeningBook,
   recaptureChance,
   recaptureTrade,
   rollPhaseProfile,
@@ -132,6 +133,13 @@ test('below 400 USCF a bot plays uniformly random legal moves', () => {
   assert.ok(Math.abs(randomMoveChance(300) - 0.1385) < 0.005, `${randomMoveChance(300)}`);
   assert.equal(randomMoveChance(400), 0);
   assert.equal(randomMoveChance(1200), 0);
+
+  /* No book under the floor: a 100 must not answer 1.e4 with a prepared line. */
+  assert.equal(usesOpeningBook(100), false);
+  assert.equal(usesOpeningBook(250), false);
+  assert.equal(usesOpeningBook(399), false);
+  assert.equal(usesOpeningBook(400), true);
+  assert.equal(usesOpeningBook(1500), true);
 
   const legal = new Chess(START_FEN)
     .moves({ verbose: true })

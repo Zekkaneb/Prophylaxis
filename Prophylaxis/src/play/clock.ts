@@ -102,6 +102,37 @@ export class ChessClock {
     return this.snapshot(now);
   }
 
+  /**
+   * Charges a fixed cost to `side` - a premove's tenth of a second.
+   *
+   * Elapsed time is banked first, so the running clock is not charged twice,
+   * then the cost is taken. A side that does not have the cost does not pay it
+   * and the call returns `false`: the clock freezes at the cost and the caller
+   * must not play the premove.
+   */
+  penalize(side: PlayColor, ms: number, now: number): boolean {
+    if (!this.started) this.start(now);
+    const cost = Math.max(0, Math.round(ms));
+
+    if (this.active === side) {
+      const elapsed = Math.max(0, now - this.lastTick);
+      if (side === 'w') this.whiteMs = Math.max(0, this.whiteMs - elapsed);
+      else this.blackMs = Math.max(0, this.blackMs - elapsed);
+      this.lastTick = now;
+    }
+
+    const remaining = side === 'w' ? this.whiteMs : this.blackMs;
+    if (remaining <= cost) {
+      if (side === 'w') this.whiteMs = cost;
+      else this.blackMs = cost;
+      return false;
+    }
+
+    if (side === 'w') this.whiteMs = remaining - cost;
+    else this.blackMs = remaining - cost;
+    return true;
+  }
+
   /** Freezes the clock (leaving the board view). Time already spent is banked. */
   pause(now: number): ClockSnapshot {
     if (this.active) {

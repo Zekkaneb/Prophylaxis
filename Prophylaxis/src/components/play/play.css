@@ -1051,6 +1051,10 @@
      make it taller and push the board off its square. */
   min-height: 58px;
   box-sizing: border-box;
+  /* Nothing a player card holds — a long name, a rating, a capture run, a
+     remark — may paint outside its own plate and collide with the board or
+     the next plate. */
+  overflow: hidden;
   margin-inline: auto;
   padding: 8px 10px;
   border: 1px solid var(--line);
@@ -2407,7 +2411,8 @@
   align-items: center;
   min-width: 0;
   /* Fixed height: a two-line style blurb cannot grow the header band. */
-  min-height: 76px;
+  height: 76px;
+  overflow: hidden;
 }
 
 /* The text column is the only thing allowed to shrink, so a long name

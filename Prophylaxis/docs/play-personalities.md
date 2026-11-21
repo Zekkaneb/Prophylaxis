@@ -503,6 +503,14 @@ uniformly random legal move. The turn is booked at the blunder floor
 (`RANDOM_MOVE_WIN_DROP` 20) rather than at 0, so accuracy accounting cannot read
 a random legal move as if it were the engine's first choice.
 
+The same floor switches the opening book off: `usesOpeningBook(elo)` is false
+whenever `randomMoveChance(elo) > 0`, and `usePlayGame` gates both book paths
+(the personality repertoire and the beginner table) on it. A sub-400 bot
+improvises from move one — no prepared lines, no positional plan — so the
+random roll and the bucket model, not a book, are what a 100 to 399 actually
+plays. At 400 the book comes back, which is where the structured model takes
+over completely.
+
 **Below 200 USCF** the curves are replaced by one tier rather than interpolated
 between them: `BOTTOM_TIER_SHARES` rolls 65% blunder, 25% mistake and under 10%
 for everything else (`inaccuracy` 4, `good` 4, `excellent` 1.5, `best` 0.5), and

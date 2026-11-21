@@ -505,8 +505,13 @@
   /* Fit to the column, then the user's board scale — but never taller than the
      height the stage actually has, so a zoomed board can pan sideways without
      pushing the transport off the floor. */
+  /* The fitted size: the column, the window height left over once the chrome
+     is subtracted, and a hard 540px ceiling so the square never balloons on a
+     large monitor. The user's zoom multiplies the fitted size, so a zoomed
+     board can still grow past the ceiling it was fitted to. */
+  --board-fit: min(100%, calc(100dvh - var(--board-chrome)), 540px);
   --board-px: min(
-    calc(min(100%, calc(100dvh - var(--board-chrome))) * var(--board-zoom, 1)),
+    calc(var(--board-fit) * var(--board-zoom, 1)),
     calc(100dvh - var(--board-chrome))
   );
   display: grid;

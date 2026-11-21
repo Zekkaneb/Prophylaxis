@@ -20,6 +20,7 @@ import { playSoundEvent } from './audio/soundManager.ts';
 import { classifyMoveSound, moveSoundFacts } from './audio/soundEvents.ts';
 import {
   enqueuePremove,
+  PREMOVE_CLOCK_COST_MS,
   premoveQueueFen,
   resolvePremoveQueue,
   type Premove,
@@ -43,6 +44,7 @@ import {
   referenceCandidateScores,
   rollPhaseProfile,
   selectHumanBotMove,
+  usesOpeningBook,
   timeControlCategory,
   type Bucket,
   type HumanMoveChoice,
@@ -566,8 +568,10 @@ export function usePlayGame(engine: StockfishController) {
     const phaseLevel = phaseProfile[phase];
     const elo = getEffectivePhaseElo(baseElo, phaseLevel);
 
-    /** Theory is only followed while this rating would still remember it. */
-    const inBookWindow = sansRef.current.length < bookPlyLimit(elo);
+    /** Theory is only followed while this rating would still remember it, and
+     * only above the random floor: a 200 does not answer 1.e4 with book lines
+     * when it is playing two moves in five at random. */
+    const inBookWindow = sansRef.current.length < bookPlyLimit(elo) && usesOpeningBook(elo);
     /** A search that resolves after a rematch must not move in the new game. */
     const searchGameId = gameIdRef.current;
     let uci: string | null = null;
@@ -1161,6 +1165,21 @@ export function usePlayGame(engine: StockfishController) {
         if (latest) publish({ ...latest, premoves: resolution.remaining });
 
         if (resolution.move) {
+          /* Every executed premove costs a tenth of a second, the way live chess
+             charges it. A clock with nothing left to spend freezes at the cost
+             and the premove does not fire: the player moves by hand. */
+          const charged = clockRef.current?.penalize(
+            playerColorRef.current,
+            PREMOVE_CLOCK_COST_MS,
+            Date.now(),
+          );
+          if (charged === false) {
+            premovesRef.current = [];
+            const current = sessionRef.current;
+            if (current) publish({ ...current, premoves: [] });
+            setClockView(clockRef.current?.snapshot(Date.now()) ?? ChessClock.empty());
+            return true;
+          }
           premoveCommitRef.current = true;
           commitRef.current(
             resolution.move.from,

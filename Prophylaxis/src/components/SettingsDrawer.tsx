@@ -9,6 +9,7 @@ import {
   type ColorMode,
 } from '../theme/ThemeProvider';
 import { PIECE_SETS, type PieceSetId } from '../theme/pieceSets';
+import { savePremovesEnabled, usePremovesEnabled } from '../play/premovePrefs.ts';
 import { assetUrl } from '../assets/assetUrl';
 import './SettingsDrawer.css';
 
@@ -40,6 +41,8 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
     setSoundVolume,
     reset,
   } = useAppearance();
+
+  const premovesEnabled = usePremovesEnabled();
 
   const panelRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -263,6 +266,28 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
                 onChange={(event) => setSoundVolume(Number(event.target.value) / 100)}
               />
               <span className="settings__value">{Math.round(soundVolume * 100)}%</span>
+            </div>
+          </section>
+
+          <section className="settings__section" style={{ animationDelay: '220ms' }}>
+            <div className="settings__label-row">
+              <div>
+                <h3>Premoves</h3>
+                <p className="settings__hint">
+                  Queue moves during your opponent's turn. Each executed premove costs 0.1
+                  seconds on the clock.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={premovesEnabled}
+                aria-label={premovesEnabled ? 'Disable premoves' : 'Enable premoves'}
+                className={`settings-switch ${premovesEnabled ? 'is-on' : ''}`}
+                onClick={() => savePremovesEnabled(!premovesEnabled)}
+              >
+                <span />
+              </button>
             </div>
           </section>
         </div>

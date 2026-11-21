@@ -124,7 +124,10 @@ export function BotMatchSetupView({ onStart, onCancel }: BotMatchSetupViewProps)
                         else setBlackId(opponent.id);
                       }}
                     >
-                      <OpponentAvatar opponent={opponent} size="sm" />
+                      {/* Every roster cell is on screen at once and small:
+                          lazy loading here leaves blank frames in the rows
+                          below the fold. */}
+                      <OpponentAvatar opponent={opponent} size="sm" loading="eager" />
                       <span>{opponent.shortName}</span>
                       <small>{opponent.elo}</small>
                     </button>

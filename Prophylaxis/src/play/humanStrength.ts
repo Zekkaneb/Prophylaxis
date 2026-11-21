@@ -1174,6 +1174,18 @@ export function randomMoveChance(elo: number): number {
 }
 
 /**
+ * Whether a bot at this rating still reads an opening book.
+ *
+ * Sub-400 play is the floor of the scale: there is no book and no positional
+ * structure, only the random roll above and then whatever the buckets think.
+ * A 100 with a clean book would stop behaving like a beginner on move one, so
+ * the book is switched off entirely below the floor rather than thinned out.
+ */
+export function usesOpeningBook(elo: number): boolean {
+  return randomMoveChance(elo) === 0;
+}
+
+/**
  * Nominal severity booked for a random move.
  *
  * The move is deliberately unjudged — no reference pass runs — so it is booked

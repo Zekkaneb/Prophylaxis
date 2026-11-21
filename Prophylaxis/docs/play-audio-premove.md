@@ -72,46 +72,61 @@ pointer or key press primes the cache.
 
 ## Premoves
 
-One premove at a time, stored as `{ from, to, promotion? }` in hook state and
+A queue of up to `MAX_PREMOVES` (5), stored as `{ from, to, promotion? }` and
 mirrored on the session for rendering. It is **not** persisted: the active-game
 record has no premove field, so a reload never restores or executes one against
 a position it was not chosen for.
 
-Selection: while the opponent is to move, clicking (or dragging) one of your
-pieces highlights it and its plausible destinations; choosing a destination
-queues the move. `premoveTargets` generates those destinations by loading the
-current FEN with your side to move, so blocked squares, castling and captures
-behave normally. Nothing is applied: the FEN, SAN history, move list and clock
-are untouched until execution.
+**Targets are geometric, not legal.** `geometricTargets` reads the piece's
+movement pattern and nothing else: a rook, bishop or queen runs a ray to the
+edge of the board through any blocker, a knight offers all eight jumps, a pawn
+gets both pushes and both forward diagonals whether or not anything stands
+there, and a king may step onto an attacked square. `premoveTargets` adds
+castling when the rook is still on its corner. Own pieces are legal
+destinations and do not block — that is how a recapture is queued onto the piece
+about to be taken, and how a premove lands on top of one of your own pieces.
+Legality is decided when the move fires.
 
-The queued move is drawn as an overlay above the squares and below the
-classification badges — dashed blue outlines on both squares plus a dashed
-arrow, positioned by percentage and mirrored automatically for the black
-orientation. It never covers a piece, and it scales with the board.
+**The board draws the queue by moving the pieces.** `premoveDisplayFen` applies
+the queue to a *copy* of the placement: each piece sits on its target
+immediately, an en-passant premove removes the pawn beside it, castling moves
+the rook too, and a pawn reaching the last rank is drawn as a queen. The side to
+move is left as it is, so the board still knows it is the opponent's turn; the
+board is told `premovesProjected` so a chained premove can be picked up from the
+projected square instead of being projected twice. The real FEN, SAN history,
+move list and clock are untouched.
 
-Cancellation: Escape; clicking any other square; selecting another piece;
-choosing "Clear premove"; starting a new game; resigning, drawing or otherwise
-finishing; leaving the board view. Cancelling never plays a sound.
+**Marks.** `PersistentBoard.css` paints `.board-premove__square--from/--to` in
+chess.com red — the square the piece left and the square it went to, the
+destination the stronger of the two — as an overlay above the square fills that
+scales with the board and mirrors with the orientation. The head of the queue
+is opaque, later entries are dimmed.
 
-Execution: after the bot's move is fully committed (SAN, session, clock,
-persistence path), `commit` re-validates the premove with chess.js against the
-new FEN and only then calls the normal commit path. That means an executed
-premove gets ordinary clock charges, Fischer increment, last-move highlight,
-PGN/history and the ordinary sound. If the move is no longer legal — piece
-captured, line blocked, king exposed, destination changed — it is dropped
-silently. A queued premove is cleared before the game-over check runs, so a bot
-move that ends the game never executes it.
+Cancellation: right-click anywhere on the board, Escape, clicking an empty
+square, choosing "Clear premove", starting a new game, resigning, drawing or
+finishing. Cancelling never plays a sound. When the opponent's move makes the
+**head** illegal the whole queue is dropped (`resolvePremoveQueue`), because
+every move behind it was chosen on the assumption it would be played.
 
-Engine and clock: queueing only writes interaction state. The bot keeps
-searching, its clock is untouched, and the player's clock keeps running as it
-always did. Execution in the same commit call avoids stale timers and extra
-time. A game that has ended or been abandoned is guarded by the existing
-`statusRef`/`gameIdRef` checks.
+Execution: after the bot's move is fully committed, `resolvePremoveQueue`
+re-validates the head with chess.js against the new FEN and plays it through the
+normal commit path, one premove per opponent reply. An executed premove gets
+ordinary clock charges, increment, last-move highlight, PGN/history and sound,
+plus the premove cost: `PREMOVE_CLOCK_COST_MS` (0.1s) is taken by
+`ChessClock.penalize`, which banks the running time first so nothing is charged
+twice. A clock with nothing to spend freezes at 0.1s and the premove does not
+fire — the player moves by hand.
 
-Promotion: a premove pawn reaching the last rank opens the existing promotion
-picker, and the chosen piece is stored with the premove. If a promotion premove
-somehow reaches execution without a piece, `resolvePremove` defaults to a queen.
+Promotion: a premove to the last rank needs no picker. `needsPromotion` detects
+it and `resolvePremove` promotes to a queen (`DEFAULT_PROMOTION`), so a time
+scramble never opens a modal.
 
-Known limits: one premove only; no en-passant premoves (the target list clears
-the en-passant square); a premove is dropped when the board view is left, by
-design.
+Setting: `src/play/premovePrefs.ts` persists "Enable premoves" (default on)
+and the settings drawer exposes it as a switch. With it off the board never
+enters the premove state — `premoveColor` is null and no queue is drawn or
+played.
+
+Known limits: tapping the premoved piece to cancel is not wired (tapping an
+empty square, Escape or right-click clears the queue); a premove onto one of
+your own pieces shows the premoving piece on top rather than both, because a FEN
+holds one piece per square.

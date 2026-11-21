@@ -91,6 +91,11 @@ export interface ChessBoardWrapperProps {
   premoveColor?: 'w' | 'b' | null;
   /** The queued premoves, drawn but never applied by the board itself. */
   premoves?: BoardMove[];
+  /**
+   * The controlled `fen` already has the queued premoves applied to it, so the
+   * board must not project them a second time before reading a chained premove.
+   */
+  premovesProjected?: boolean;
   /** Append a premove to the chain, or clear it with `null`. */
   onPremoveChange?: (move: BoardMove | null) => void;
   /** Controlled position. The board also advances itself when a move is played. */
@@ -133,18 +138,6 @@ const CHECK_STYLE: CSSProperties = {
 
 const SELECTED_STYLE: CSSProperties = {
   background: 'rgba(120, 190, 255, 0.38)',
-};
-
-/* Queued premove: a blue edge on the piece and a hollow ring on the target, so
-   it reads as an intention rather than a played move and never hides a piece. */
-const PREMOVE_FROM_STYLE: CSSProperties = {
-  boxShadow: 'inset 0 0 0 3px rgba(122, 162, 255, 0.9)',
-  background: 'rgba(122, 162, 255, 0.16)',
-};
-
-const PREMOVE_TO_STYLE: CSSProperties = {
-  backgroundImage: 'radial-gradient(circle, rgba(122, 162, 255, 0.62) 17%, transparent 19%)',
-  boxShadow: 'inset 0 0 0 2px rgba(122, 162, 255, 0.65)',
 };
 
 /** Square index in the rendered orientation, for percentage overlays. */
@@ -243,6 +236,7 @@ export const ChessBoardWrapper = forwardRef<
     soundFeedback = true,
     premoveColor = null,
     premoves = [],
+    premovesProjected = false,
     onPremoveChange,
     onMove,
     onIllegalMove,
@@ -383,10 +377,10 @@ export const ChessBoardWrapper = forwardRef<
    */
   const previewFen = useMemo(
     () =>
-      premoveActive && premoveColor
+      premoveActive && premoveColor && !premovesProjected
         ? premoveQueueFen(currentFen, premoves as Premove[], premoveColor)
         : currentFen,
-    [currentFen, premoveActive, premoveColor, premoves],
+    [currentFen, premoveActive, premoveColor, premoves, premovesProjected],
   );
 
   /** Appends a premove to the chain instead of playing it. Never mutates the game. */
@@ -621,11 +615,6 @@ export const ChessBoardWrapper = forwardRef<
     if (checkSquare) {
       styles[checkSquare] = { ...styles[checkSquare], ...CHECK_STYLE };
     }
-    const firstPremove = premoves[0] ?? null;
-    if (firstPremove) {
-      styles[firstPremove.from] = { ...styles[firstPremove.from], ...PREMOVE_FROM_STYLE };
-      styles[firstPremove.to] = { ...styles[firstPremove.to], ...PREMOVE_TO_STYLE };
-    }
     if (selected) {
       styles[selected] = { ...styles[selected], ...SELECTED_STYLE };
       for (const target of legalTargets) {
@@ -643,6 +632,9 @@ export const ChessBoardWrapper = forwardRef<
     premoves,
     selected,
   ]);
+
+  /* The premove marks are drawn by the overlay layer below, which follows the
+     board's scale and sits above the square fills; no square styles needed. */
 
   const boardArrows = useMemo<Arrow[]>(
     () =>

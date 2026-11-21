@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { ChessClock } from '../../src/play/clock.ts';
 
+
 test('does not charge either side before the first move', () => {
   const clock = new ChessClock(300, 0);
   const snapshot = clock.snapshot(30_000);
@@ -63,6 +64,26 @@ test('flags the active side once its time is gone', () => {
   const flagged = clock.snapshot(12_000);
   assert.equal(flagged.flagged, 'b');
   assert.equal(flagged.blackMs, 0);
+});
+
+test('a premove costs a tenth of a second and never dips below its cost', () => {
+  const clock = new ChessClock(60, 0);
+  clock.start(0);
+  clock.afterMove('w', 'b', 1_000);
+  clock.afterMove('b', 'w', 2_000);
+
+  assert.equal(clock.penalize('w', 100, 2_050), true);
+  assert.equal(clock.snapshot(2_050).whiteMs, 58_850);
+
+  /* With only the cost left, the premove does not fire and the clock freezes
+     at 0.1s instead of flagging the player. */
+  const tiny = new ChessClock(0.2, 0);
+  tiny.start(0);
+  assert.equal(tiny.penalize('w', 100, 0), true);
+  assert.equal(tiny.snapshot(0).whiteMs, 100);
+  assert.equal(tiny.penalize('w', 100, 0), false);
+  assert.equal(tiny.snapshot(0).whiteMs, 100);
+  assert.equal(tiny.snapshot(0).flagged, null);
 });
 
 test('pause banks elapsed time and resume charges only new time', () => {

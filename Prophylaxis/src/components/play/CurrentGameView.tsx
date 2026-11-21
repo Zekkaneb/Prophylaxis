@@ -11,7 +11,13 @@ import type { ClockSnapshot } from '../../play/clock.ts';
 import { opponentMeta } from '../../play/opponents.ts';
 import { playerDisplayName, playerInitials } from '../../profile/playerProfile.ts';
 import { usePlayerProfile } from '../../profile/usePlayerProfile.ts';
-import { describePremoveQueue, isPromotionPiece, type Premove } from '../../play/premove.ts';
+import {
+  describePremoveQueue,
+  isPromotionPiece,
+  premoveDisplayFen,
+  type Premove,
+} from '../../play/premove.ts';
+import { usePremovesEnabled } from '../../play/premovePrefs.ts';
 import { formatClock, formatDuration, timeControlLabel } from '../../play/timeControls.ts';
 import type { PlaySession } from '../../play/usePlayGame';
 import { resultReasonLabel, type PlayResult } from '../../play/types.ts';
@@ -145,6 +151,9 @@ export function CurrentGameView({
   const interactive = playing;
   const opponentColor = session.playerColor === 'w' ? 'b' : 'w';
   const premoves = session.premoves;
+  /* The gameplay setting: with premoves off the board never enters the queued
+     state, and an existing queue is simply not shown or played. */
+  const premovesEnabled = usePremovesEnabled();
   /* Stepping back replays the SAN list: the board shows that snapshot and stops
      accepting moves until the cursor returns to the live position. */
   const browser = usePlyBrowser(session.sans, session.fen, {
@@ -183,6 +192,20 @@ export function CurrentGameView({
   /* The board's position decides the bar, so stepping back through history
      scores the snapshot on screen rather than the live game behind it. */
   const shownFen = browser.fen;
+
+  /* Chess.com draws the queue by moving the pieces: each premoved piece sits on
+     its target immediately, with the origin and destination marked in red. The
+     board is fed that projection and told not to project it again, so a chained
+     premove can be picked up from the square the previous one reached. The real
+     position is untouched - `usePlayGame` still judges the head of the queue
+     against it when the opponent's move lands. */
+  const boardFen = useMemo(
+    () =>
+      reviewing || premoves.length === 0
+        ? browser.fen
+        : premoveDisplayFen(browser.fen, premoves, session.playerColor),
+    [browser.fen, premoves, reviewing, session.playerColor],
+  );
   useEffect(() => {
     /* `idle` is fine: the first request starts the worker. Only a failed engine
        leaves the bar at the score it already shows. */
@@ -360,7 +383,8 @@ export function CurrentGameView({
             props={{
               /* While reviewing, the board shows the replayed snapshot and is
                  read-only; the live position is one click away. */
-              fen: browser.fen,
+              fen: boardFen,
+              premovesProjected: true,
               orientation: session.orientation,
               interactive: interactive && !reviewing,
               highlightLastMove: true,
@@ -369,8 +393,9 @@ export function CurrentGameView({
               /* The hook scores moves (it knows who moved and whether the game
                  just ended), so the board must not also cue them. */
               soundFeedback: false,
-              premoveColor: playing && !reviewing ? session.playerColor : null,
-              premoves: reviewing ? [] : premoves,
+              premoveColor:
+                playing && !reviewing && premovesEnabled ? session.playerColor : null,
+              premoves: reviewing || !premovesEnabled ? [] : premoves,
               onPremoveChange: (move) =>
                 onPremove(
                   move

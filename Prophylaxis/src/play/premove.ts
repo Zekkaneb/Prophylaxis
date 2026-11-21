@@ -37,63 +37,147 @@ function sideToMoveFen(fen: string, color: PlayColor): string | null {
   return parts.join(' ');
 }
 
-/**
- * Placement with the opponent's non-king pieces removed.
- *
- * Chess.com-style premoves depend on the piece's position and type, not on the
- * rest of the position: you may premove a recapture before the capture exists,
- * or a move that would currently walk into check. Removing the enemy material
- * gives exactly that: our own pieces still block, enemy pieces do not, and the
- * king cannot be in check from pieces that are no longer on the board.
- * `resolvePremove` still validates against the real position when it executes.
- */
-function ownSideFen(fen: string, color: PlayColor): string | null {
-  const parts = fen.trim().split(/\s+/);
-  if (parts.length < 6) return null;
-  const enemy = color === 'w' ? 'b' : 'w';
+/* --------------------------------------------------------------------------
+   Geometry
 
-  const rows = parts[0].split('/').map((row) => {
-    let out = '';
-    let empties = 0;
-    const flush = () => {
-      if (empties > 0) {
-        out += empties;
-        empties = 0;
-      }
-    };
+   A premove is queued from the piece's *movement pattern*, not from the
+   position: chess.com lets you slide a rook through a blocker, capture onto one
+   of your own pieces, push a pawn diagonally onto an empty square in hope of an
+   en-passant, or castle as long as the rook is still on its corner. Legality
+   is decided later, when the opponent's move lands.
+   -------------------------------------------------------------------------- */
 
+/** grid[0] is rank 8, grid[row][col] a piece letter or null. */
+type Grid = Array<Array<string | null>>;
+
+const FILES = 'abcdefgh';
+const KNIGHT_STEPS = [
+  [-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1],
+];
+const KING_STEPS = [
+  [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1],
+];
+const RAYS: Record<string, ReadonlyArray<readonly [number, number]>> = {
+  r: [[-1, 0], [1, 0], [0, -1], [0, 1]],
+  b: [[-1, -1], [-1, 1], [1, -1], [1, 1]],
+  q: [[-1, -1], [-1, 1], [1, -1], [1, 1], [-1, 0], [1, 0], [0, -1], [0, 1]],
+};
+
+function gridFromFen(fen: string): Grid | null {
+  const placement = fen.trim().split(/\s+/)[0];
+  if (!placement) return null;
+  const rows = placement.split('/');
+  if (rows.length !== 8) return null;
+  const grid: Grid = [];
+  for (const row of rows) {
+    const line: Array<string | null> = [];
     for (const char of row) {
       if (/\d/.test(char)) {
-        empties += Number(char);
-        continue;
+        for (let i = 0; i < Number(char); i += 1) line.push(null);
+      } else {
+        line.push(char);
       }
-      const pieceColor = char === char.toLowerCase() ? 'b' : 'w';
-      const isEnemyKing = pieceColor === enemy && char.toLowerCase() === 'k';
-      if (pieceColor === enemy && !isEnemyKing) {
-        empties += 1;
-        continue;
-      }
-      flush();
-      out += char;
     }
-    flush();
-    return out || '8';
-  });
+    if (line.length !== 8) return null;
+    grid.push(line);
+  }
+  return grid;
+}
 
-  parts[0] = rows.join('/');
-  parts[1] = color;
-  parts[3] = '-';
+function gridToFen(grid: Grid, fen: string): string {
+  const parts = fen.trim().split(/\s+/);
+  parts[0] = grid
+    .map((row) => {
+      let out = '';
+      let empty = 0;
+      for (const cell of row) {
+        if (!cell) {
+          empty += 1;
+          continue;
+        }
+        if (empty) {
+          out += empty;
+          empty = 0;
+        }
+        out += cell;
+      }
+      return empty ? out + empty : out;
+    })
+    .join('/');
   return parts.join(' ');
 }
 
-/** The two diagonal squares a pawn of `color` could capture towards. */
-function pawnDiagonals(from: Square, color: PlayColor): string[] {
-  const file = from.charCodeAt(0) - 97;
-  const rank = Number(from[1]) + (color === 'w' ? 1 : -1);
-  if (rank < 1 || rank > 8) return [];
-  return [file - 1, file + 1]
-    .filter((index) => index >= 0 && index <= 7)
-    .map((index) => `${String.fromCharCode(97 + index)}${rank}`);
+function cellOf(square: string): { row: number; col: number } | null {
+  if (!/^[a-h][1-8]$/.test(square)) return null;
+  return { row: 8 - Number(square[1]), col: square.charCodeAt(0) - 97 };
+}
+
+function squareOf(row: number, col: number): string | null {
+  if (row < 0 || row > 7 || col < 0 || col > 7) return null;
+  return `${FILES[col]}${8 - row}`;
+}
+
+function isOwn(piece: string, color: PlayColor): boolean {
+  return color === 'w' ? piece === piece.toUpperCase() : piece === piece.toLowerCase();
+}
+
+/**
+ * Destination squares for a piece, from its movement pattern alone.
+ *
+ * Nothing in the position is consulted: rays run to the edge of the board, a
+ * knight's jumps are all offered, and a pawn gets its pushes plus both forward
+ * diagonals whether or not anything stands there. Own and enemy pieces are all
+ * legal destinations, because the premove is stored as from→to and judged
+ * against the real board when it fires.
+ */
+export function geometricTargets(piece: string, from: string): string[] {
+  const start = cellOf(from);
+  if (!start) return [];
+  const type = piece.toLowerCase();
+  const out: string[] = [];
+
+  if (type === 'n') {
+    for (const [dr, dc] of KNIGHT_STEPS) {
+      const square = squareOf(start.row + dr, start.col + dc);
+      if (square) out.push(square);
+    }
+    return out;
+  }
+
+  if (type === 'k') {
+    for (const [dr, dc] of KING_STEPS) {
+      const square = squareOf(start.row + dr, start.col + dc);
+      if (square) out.push(square);
+    }
+    return out;
+  }
+
+  if (type === 'p') {
+    const forward = piece === piece.toUpperCase() ? -1 : 1;
+    const one = squareOf(start.row + forward, start.col);
+    if (one) out.push(one);
+    const home = piece === piece.toUpperCase() ? 6 : 1;
+    const two = squareOf(start.row + forward * 2, start.col);
+    if (two && start.row === home) out.push(two);
+    for (const dc of [-1, 1]) {
+      const capture = squareOf(start.row + forward, start.col + dc);
+      if (capture) out.push(capture);
+    }
+    return out;
+  }
+
+  for (const [dr, dc] of RAYS[type] ?? []) {
+    let row = start.row + dr;
+    let col = start.col + dc;
+    for (;;) {
+      const square = squareOf(row, col);
+      if (!square) break;
+      out.push(square);
+      row += dr;
+      col += dc;
+    }
+  }
+  return out;
 }
 
 /**
@@ -101,31 +185,29 @@ function pawnDiagonals(from: Square, color: PlayColor): string[] {
  * legality against the real position is checked when the move executes.
  */
 export function premoveTargets(fen: string, from: string, color: PlayColor): string[] {
-  const pseudo = ownSideFen(fen, color);
-  if (!pseudo) return [];
-  try {
-    const game = new Chess(pseudo);
-    const piece = game.get(from as Square);
-    if (!piece || piece.color !== color) return [];
+  const grid = gridFromFen(fen);
+  const start = cellOf(from);
+  if (!grid || !start) return [];
+  const piece = grid[start.row]?.[start.col];
+  if (!piece || !isOwn(piece, color)) return [];
 
-    const targets = new Set<string>(
-      game.moves({ square: from as Square, verbose: true }).map((move) => move.to),
-    );
+  const targets = new Set(geometricTargets(piece, from));
 
-    /* Pawn captures are allowed onto empty squares: without them the classic
-       "premove the recapture before the opponent takes" is impossible. */
-    if (piece.type === 'p') {
-      for (const square of pawnDiagonals(from as Square, color)) {
-        const occupant = game.get(square as Square);
-        if (occupant && occupant.type === 'k' && occupant.color !== color) continue;
-        targets.add(square);
+  /* Castling is geometry too: the king moves two squares toward a rook of
+     ours that is still standing on its corner. */
+  if (piece.toLowerCase() === 'k') {
+    const home = color === 'w' ? 7 : 0;
+    const rookLetter = color === 'w' ? 'R' : 'r';
+    if (start.row === home) {
+      for (const [rookCol, kingCol] of [[0, 2], [7, 6]] as const) {
+        if (grid[home]?.[rookCol] !== rookLetter) continue;
+        const square = squareOf(home, kingCol);
+        if (square) targets.add(square);
       }
     }
-
-    return [...targets];
-  } catch {
-    return [];
   }
+
+  return [...targets];
 }
 
 /** True when this from/to is a pawn reaching the last rank. */
@@ -145,6 +227,76 @@ export function needsPromotion(fen: string, from: string, to: string, color: Pla
 /** True when from/to is a plausible premove for a piece of `color`. */
 export function isPremovable(fen: string, from: string, to: string, color: PlayColor): boolean {
   return premoveTargets(fen, from, color).includes(to);
+}
+
+/** What one executed premove costs on the clock: a tenth of a second. */
+export const PREMOVE_CLOCK_COST_MS = 100;
+
+/**
+ * The position the queue *looks* like, piece by piece.
+ *
+ * This is presentation only: every queued move is applied as a piece sliding
+ * from its square to its target, removing whatever stood there (a friendly
+ * piece included: chess.com shows the premoving piece on top of it), promoting
+ * to a queen, and taking the pawn beside a diagonally-premoved pawn (en
+ * passant). Nothing is validated here — that is the point. The real position is
+ * untouched and `resolvePremoveQueue` still judges the move when it fires.
+ */
+export function premoveDisplayFen(
+  fen: string,
+  queue: PremoveQueue,
+  color: PlayColor,
+): string {
+  if (queue.length === 0) return fen;
+  const grid = gridFromFen(fen);
+  if (!grid) return fen;
+
+  for (const move of queue) {
+    const from = cellOf(move.from);
+    const to = cellOf(move.to);
+    if (!from || !to) continue;
+    const piece = grid[from.row]?.[from.col];
+    if (!piece) continue;
+
+    /* A pawn landing diagonally on an empty square takes the pawn beside it:
+       that is the en-passant premove, drawn before the target exists. */
+    if (piece.toLowerCase() === 'p' && from.col !== to.col && !grid[to.row][to.col]) {
+      const victim = grid[from.row]?.[to.col];
+      if (victim && victim.toLowerCase() === 'p' && !isOwn(victim, color)) {
+        grid[from.row][to.col] = null;
+      }
+    }
+
+    /* Castling moves the rook as well, so the projected board is complete. */
+    if (piece.toLowerCase() === 'k' && Math.abs(to.col - from.col) === 2) {
+      const rookCol = to.col > from.col ? 7 : 0;
+      const rookTo = to.col > from.col ? to.col - 1 : to.col + 1;
+      const rook = grid[from.row][rookCol];
+      if (rook && rook.toLowerCase() === 'r' && isOwn(rook, color)) {
+        grid[from.row][rookTo] = rook;
+        grid[from.row][rookCol] = null;
+      }
+    }
+
+    const promoting = piece.toLowerCase() === 'p' && to.row === (color === 'w' ? 0 : 7);
+    grid[to.row][to.col] = promoting ? (color === 'w' ? 'Q' : 'q') : piece;
+    grid[from.row][from.col] = null;
+  }
+
+  /* The side to move is left alone on purpose: it is still the opponent's
+     turn, and the board routes clicks to the premove path only while that is
+     true. Only the placement is projected. */
+  return gridToFen(grid, fen);
+}
+
+/** Every square a queued premove touches: its origin and its destination. */
+export function premoveTintSquares(queue: PremoveQueue): string[] {
+  const squares = new Set<string>();
+  for (const move of queue) {
+    squares.add(move.from);
+    squares.add(move.to);
+  }
+  return [...squares];
 }
 
 export interface PremoveResolution {

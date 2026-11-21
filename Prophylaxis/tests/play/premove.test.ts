@@ -14,7 +14,9 @@ import {
   isPremovable,
   needsPromotion,
   premoveQueueFen,
+  premoveDisplayFen,
   premoveTargets,
+  premoveTintSquares,
   resolvePremove,
   resolvePremoveQueue,
   samePremove,
@@ -38,9 +40,11 @@ test('a piece can only premove to squares it could reach', () => {
   assert.equal(isPremovable(START, 'e7', 'e5', 'w'), false);
 });
 
-test('targets stop at pieces and include castling', () => {
+test('targets are geometric and include castling', () => {
+  /* The knight jumps to a3 and c3, and onto our own d2 pawn: a premove may
+     land on a friendly piece, which is how a recapture is queued. */
   const targets = premoveTargets(START, 'b1', 'w');
-  assert.deepEqual(targets.sort(), ['a3', 'c3']);
+  assert.deepEqual(targets.sort(), ['a3', 'c3', 'd2']);
 
   const castlingFen = 'r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1';
   assert.ok(premoveTargets(castlingFen, 'e1', 'w').includes('g1'));
@@ -63,11 +67,66 @@ test('premove targets depend on the piece, not on the enemy pieces', () => {
     null,
   );
 
-  /* Our own pieces still block, and the enemy king is never a target. */
+  /* Own pieces do not stop a premove either: the piece slides through the
+     blocker on the assumption that it will have moved. */
   const blocked = '4k3/8/8/8/8/8/P7/R3K3 w - - 0 1';
-  assert.equal(premoveTargets(blocked, 'a1', 'w').includes('a2'), false);
+  assert.ok(premoveTargets(blocked, 'a1', 'w').includes('a2'));
+  assert.ok(premoveTargets(blocked, 'a1', 'w').includes('a8'));
   assert.ok(premoveTargets(blocked, 'a1', 'w').includes('b1'));
+  /* A pawn still only moves forward: no leaps across the board. */
   assert.equal(premoveTargets(START, 'e2', 'w').includes('e8'), false);
+});
+
+test('the queue is drawn as moved pieces, with the side to move untouched', () => {
+  const empty = premoveDisplayFen(START, [], 'w');
+  assert.equal(empty, START);
+
+  /* Nf3: the knight sits on f3 straight away, and it is still Black's turn. */
+  const knight = premoveDisplayFen(START, [{ from: 'g1', to: 'f3' }], 'w');
+  assert.equal(knight.split(' ')[1], 'w');
+  assert.equal(knight.split(' ')[0], 'rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R');
+
+  /* A premoved capture takes the enemy piece off its square in the picture. */
+  const captured = premoveDisplayFen(
+    '4k3/8/8/8/8/5p2/6P1/4K3 w - - 0 1',
+    [{ from: 'g2', to: 'f3' }],
+    'w',
+  );
+  assert.equal(captured.split(' ')[0], '4k3/8/8/8/8/5P2/8/4K3');
+
+  /* Onto one of our own pieces: the premoving piece is the one shown (chess.com
+     stacks them; a FEN can only hold the top piece). */
+  const stacked = premoveDisplayFen(START, [{ from: 'g1', to: 'f1' }], 'w');
+  assert.equal(stacked.split(' ')[0], 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKN1R');
+});
+
+test('the projection carries castling, en passant and the automatic queen', () => {
+  const castle = premoveDisplayFen(
+    'r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1',
+    [{ from: 'e1', to: 'g1' }],
+    'w',
+  );
+  assert.equal(castle.split(' ')[0], 'r3k2r/8/8/8/8/8/8/R4RK1');
+
+  const enPassant = premoveDisplayFen(
+    '4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1',
+    [{ from: 'e5', to: 'd6' }],
+    'w',
+  );
+  assert.equal(enPassant.split(' ')[0], '4k3/8/3P4/8/8/8/8/4K3');
+
+  const promotion = premoveDisplayFen(
+    '4k3/1P6/8/8/8/8/8/4K3 w - - 0 1',
+    [{ from: 'b7', to: 'b8' }],
+    'w',
+  );
+  assert.ok(promotion.split(' ')[0].startsWith('1Q2k3'));
+
+  assert.deepEqual(premoveTintSquares([{ from: 'g1', to: 'f3' }, { from: 'f3', to: 'e5' }]), [
+    'g1',
+    'f3',
+    'e5',
+  ]);
 });
 
 test('pawn moves to the last rank need a promotion choice', () => {
