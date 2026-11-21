@@ -4,7 +4,6 @@ import type { Move } from 'chess.js';
 import { START_FEN } from './ChessBoardWrapper';
 import EmptyBoardArt from './EmptyBoardArt';
 import { BoardSlot, useBoardHandle } from '../board/PersistentBoard';
-import BoardScaleBar from './BoardScaleBar';
 import { db, type MoveEvaluation, type SavedReview } from '../db';
 import { recordSyncedChange } from '../sync/outbox.ts';
 import { useStockfish, type EngineCandidate } from '../engine/useStockfish';
@@ -71,6 +70,13 @@ export interface GameReviewDashboardProps {
   initialGameId?: string | null;
   /** Called once the handed-over game has been picked up. */
   onInitialConsumed?: () => void;
+  /**
+   * A PGN handed over from the Analysis sandbox: the line on that board, graded
+   * the moment this tab opens instead of making the player paste it again.
+   */
+  initialPgn?: string | null;
+  /** Called once the handed-over PGN has been picked up. */
+  onInitialPgnConsumed?: () => void;
 }
 
 /*
@@ -160,6 +166,8 @@ function outcomeSentence(entry: MoveEvaluation, bestSan: string): string | null 
 export default function GameReviewDashboard({
   initialGameId = null,
   onInitialConsumed,
+  initialPgn = null,
+  onInitialPgnConsumed,
 }: GameReviewDashboardProps = {}) {
   const stockfish = useStockfish();
   const [reviewProfile, setReviewProfile] = useReviewProfile();
@@ -395,6 +403,19 @@ export default function GameReviewDashboard({
       }
     })();
   }, [initialGameId, onInitialConsumed, stockfish.status]);
+
+  /* The sandbox hands a line over as PGN; it runs through the same pipeline as
+     a pasted game, so the tab opens on its graded moves. */
+  const autoPgn = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!initialPgn || stockfish.status === 'loading') return;
+    if (autoPgn.current === initialPgn) return;
+    autoPgn.current = initialPgn;
+    onInitialPgnConsumed?.();
+    setPgnText(initialPgn);
+    void runAnalysisRef.current(undefined, initialPgn);
+  }, [initialPgn, onInitialPgnConsumed, stockfish.status]);
 
   const cancelAnalysis = () => {
     abortRef.current?.abort();
@@ -1064,9 +1085,6 @@ export default function GameReviewDashboard({
                   >
                     ±
                   </button>
-                  {/* The same global board scale as the top bar, next to the
-                      navigation it changes the look of. */}
-                  <BoardScaleBar />
                 </div>
               )}
         </div>

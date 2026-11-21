@@ -1,0 +1,322 @@
+/* --------------------------------------------------------------------------
+   Analysis sandbox — the review room's board grammar, two columns instead of
+   three: board column on the left, engine + move history rail on the right.
+
+   The board shell, plates, evaluation lane, transport, candidate rows and move
+   list all come from GameReviewDashboard.css, so both rooms stay one app.
+   -------------------------------------------------------------------------- */
+
+.view:has(.gr-analysis) {
+  max-width: none;
+  padding-inline: clamp(10px, 1.4vw, 24px);
+  padding-block: 0 8px;
+}
+
+.gr.gr-analysis {
+  /* Plates, transport and the page margins only: the board takes every pixel
+     left between them, so the room reads top to bottom with a small gap. */
+  --board-chrome: 160px;
+  --board-px: calc(min(100%, calc(100dvh - var(--board-chrome))) * var(--board-zoom, 1));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 404px);
+  grid-template-areas: 'board right';
+  gap: 16px;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+.gr-analysis .gr-board-col {
+  grid-area: board;
+  /* The board column hugs the board (plus the evaluation band) instead of
+     swallowing the whole free width: the bar then sits beside the board, the
+     way it does in Review, rather than floating in dead space. */
+  justify-self: center;
+  width: min(
+    100%,
+    calc(
+      min(calc(100vw - 560px), calc(100dvh - var(--board-chrome))) + 80px
+    )
+  );
+}
+
+.gr-analysis .gr-side {
+  grid-area: right;
+}
+
+.gr-analysis .gr-rail__card {
+  background: var(--surface);
+  /* The account pill floats over the top-right corner of every page; starting
+     the rail's text below it keeps the depth readout readable. */
+  padding-top: 40px;
+}
+
+/* The sandbox board is played on, and it lives in the persistent board layer
+   underneath this column. The review column raises itself above that layer so
+   its own chrome paints over the board; here the reserved slot must stay
+   transparent to the pointer so a click lands on the real board. */
+.gr-analysis .gr-board-col,
+.gr-analysis .gr-board-shell,
+.gr-analysis .gr-board-row,
+.gr-analysis .gr-board-wrap,
+.gr-analysis .gr-board-stack,
+.gr-analysis .board-slot {
+  pointer-events: none;
+}
+
+.gr-analysis .gr-player,
+.gr-analysis .gr-player *,
+.gr-analysis .gr-nav,
+.gr-analysis .gr-nav *,
+.gr-analysis .gr-eval-wrap {
+  pointer-events: auto;
+}
+
+/* Top moves opens the card now that the Position bubble is gone, so it has no
+   divider of its own to sit on. */
+.gr-analysis .gr-active__engine {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* ------------------------------ player fields ----------------------------- */
+
+/* The plate's name and rating are fields now: same type, same colours, a
+   hairline that only appears under the pointer or the caret. */
+.gr-analysis .gr-player__input {
+  min-width: 0;
+  padding: 1px 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+}
+
+.gr-analysis .gr-player__id {
+  gap: 4px;
+}
+
+.gr-analysis .gr-player__name {
+  /* The rating chip follows the name, as on the review plate, instead of being
+     pushed to the far end of a stretched field. */
+  flex: 0 1 auto;
+  width: auto;
+  max-width: 100%;
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+}
+
+.gr-analysis .gr-player__input:hover,
+.gr-analysis .gr-player__input:focus-visible {
+  border-color: var(--line-soft);
+  background: var(--surface-2);
+}
+
+.gr-analysis .gr-player__elo {
+  /* The chip is a flex box so the rating sits on its own centre line instead of
+     riding the name's baseline. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 8px;
+  line-height: 1;
+}
+
+.gr-analysis .gr-player__elo-input {
+  width: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.gr-analysis .gr-player__elo-input::-webkit-outer-spin-button,
+.gr-analysis .gr-player__elo-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.gr-analysis .gr-player__elo-input:focus-visible {
+  background: transparent;
+  border-color: transparent;
+  outline: none;
+  color: var(--text);
+}
+
+/* ---------------------------- engine continuations ------------------------ */
+
+/* Each principal variation is a row of move chips: clicking one plays the line
+   up to that move, so a candidate is explorable without retyping it. */
+.gr-analysis__pv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2px;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  line-height: 1.45;
+}
+
+.gr-analysis__pv-move {
+  padding: 0 2px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gr-analysis__pv-move:hover,
+.gr-analysis__pv-move:focus-visible {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.gr-analysis__error {
+  color: var(--danger);
+}
+
+/* -------------------------------- variations ------------------------------ */
+
+.gr-analysis__variations {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.gr-analysis__variations-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gr-analysis__variations-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.gr-analysis__chip {
+  padding: 3px 9px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--soft);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.gr-analysis__chip:hover {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.gr-analysis__chip.is-active {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent);
+}
+
+/* ---------------------------------- tools --------------------------------- */
+
+.gr-analysis__tools {
+  gap: 10px;
+  /* The tools sit on the rail's floor instead of leaving a gap under Moves. */
+  margin-top: auto;
+}
+
+.gr-analysis__buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+/* The hand-off gets its own line; the tools below pair up evenly. */
+.gr-analysis__buttons .gr-analysis__send {
+  grid-column: 1 / -1;
+}
+
+.gr-analysis__buttons .button.is-active {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  color: var(--accent);
+}
+
+.gr-analysis__fen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.gr-analysis__fen-input {
+  flex: 1 1 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: 7px;
+  background: var(--panel);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.gr-analysis__fen-error {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--danger);
+}
+
+.gr-analysis__note {
+  min-height: 15px;
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* -------------------------------- narrow --------------------------------- */
+
+/* Below three-column width the shell scrolls (workbench.css); the sandbox
+   stacks its rail under the board and keeps the board fitted to the window. */
+@media (max-width: 1149px) {
+  .gr.gr-analysis {
+    --board-chrome: 248px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: auto;
+    max-width: 760px;
+    margin-inline: auto;
+  }
+
+  .gr-analysis .gr-board-col,
+  .gr-analysis .gr-side {
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .gr-analysis .gr-side {
+    max-height: none;
+  }
+
+  .gr-analysis__tools {
+    margin-top: 0;
+  }
+}

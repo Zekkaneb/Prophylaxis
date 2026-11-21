@@ -7,6 +7,7 @@ import Drill from './components/Drill';
 import PlayPage from './components/PlayPage';
 import WoodpeckerTrainer from './components/WoodpeckerTrainer';
 import GameReviewDashboard from './components/GameReviewDashboard';
+import AnalysisPage from './components/AnalysisPage';
 import SettingsDrawer from './components/SettingsDrawer';
 import AccountMenu from './components/AccountMenu';
 import { PersistentBoardProvider } from './board/PersistentBoard';
@@ -26,10 +27,18 @@ interface Route {
   courseId: string | null;
 }
 
-const TAB_IDS: TabId[] = ['dashboard', 'courses', 'drill', 'play', 'review', 'puzzles'];
+const TAB_IDS: TabId[] = [
+  'dashboard',
+  'courses',
+  'drill',
+  'play',
+  'review',
+  'analysis',
+  'puzzles',
+];
 
 /** Tabs that are a fixed-height board room: the window never scrolls there. */
-const WORKBENCH_TABS: TabId[] = ['play', 'review', 'puzzles'];
+const WORKBENCH_TABS: TabId[] = ['play', 'review', 'analysis', 'puzzles'];
 
 /**
  * Old links keep working: the tools hub and the retired How To / Classroom
@@ -44,6 +53,7 @@ const LEGACY_HASHES: Record<string, string> = {
   '#/openings': '#/courses',
   '#/woodpecker': '#/puzzles',
   '#/review': '#/review',
+  '#/tools/analysis': '#/analysis',
 };
 
 function parseRoute(hash: string): Route {
@@ -78,9 +88,11 @@ export default function App() {
   const [query, setQuery] = useState('');
   /* A finished game handed from Play to Review, analysed as soon as it opens. */
   const [reviewGameId, setReviewGameId] = useState<string | null>(null);
+  /* A line handed from the sandbox to Review, analysed the same way. */
+  const [reviewPgn, setReviewPgn] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [busy, setBusy] = useState<'export' | 'import' | null>(null);
-  const { soundOn, setSoundOn } = useAppearance();
+  const { soundOn, setSoundOn, fitBoard } = useAppearance();
   const [toast, setToast] = useState<{ message: string; tone: 'success' | 'error' } | null>(
     null,
   );
@@ -200,6 +212,15 @@ export default function App() {
     [go],
   );
   const clearReviewGame = useCallback(() => setReviewGameId(null), []);
+  const startPgnReview = useCallback(
+    (pgn: string) => {
+      setReviewGameId(null);
+      setReviewPgn(pgn);
+      go({ tab: 'review', courseId: null });
+    },
+    [go],
+  );
+  const clearReviewPgn = useCallback(() => setReviewPgn(null), []);
   const openDrill = useCallback(() => go({ tab: 'drill', courseId: null }), [go]);
   const openPuzzles = useCallback(() => go({ tab: 'puzzles', courseId: null }), [go]);
   const handleSearchSubmit = useCallback(
@@ -209,6 +230,12 @@ export default function App() {
   const handleToggleSound = useCallback(() => setSoundOn(!soundOn), [setSoundOn, soundOn]);
   const handleExportClick = useCallback(() => void handleExport(), [handleExport]);
   const handleImportClick = useCallback(() => fileInput.current?.click(), []);
+
+  /* Every room opens on a fitted board: the corner grip is the only manual
+     adjustment left, so a stale size never follows the user into a new board. */
+  useEffect(() => {
+    fitBoard();
+  }, [fitBoard, route.tab]);
 
   /* A board room holds the whole window; a document page scrolls inside it. */
   const locked = WORKBENCH_TABS.includes(route.tab) || Boolean(route.tab === 'courses' && course);
@@ -304,7 +331,27 @@ export default function App() {
               <GameReviewDashboard
                 initialGameId={reviewGameId}
                 onInitialConsumed={clearReviewGame}
+                initialPgn={reviewPgn}
+                onInitialPgnConsumed={clearReviewPgn}
               />
+            </div>
+          )}
+
+          {route.tab === 'analysis' && (
+            <div className="page page--analysis">
+              <div className="page-heading">
+                <div>
+                  <p className="eyebrow">Analysis</p>
+                  <h1>
+                    Explore the <em>position.</em>
+                  </h1>
+                  <p className="subheading">
+                    A scratchpad board with a live engine — nothing is saved and no game is
+                    touched.
+                  </p>
+                </div>
+              </div>
+              <AnalysisPage onSendToReview={startPgnReview} />
             </div>
           )}
 

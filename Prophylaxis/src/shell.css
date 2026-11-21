@@ -57,6 +57,7 @@
    and pushes the first useful control below the fold. Keep the heading in the
    accessibility tree (and off-screen) so the page still has a real h1. */
 .page--review .page-heading,
+.page--analysis .page-heading,
 .page--puzzles .page-heading {
   position: absolute;
   width: 1px;
@@ -70,6 +71,7 @@
 }
 
 .page--review,
+.page--analysis,
 .page--puzzles {
   gap: 16px;
 }

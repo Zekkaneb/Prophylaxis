@@ -677,31 +677,13 @@
   row-gap: 4px;
 }
 
-/* The board scaler borrows the transport's own surface instead of drawing a
-   second pill inside it. */
-.gr-nav .board-zoom {
-  flex: 0 1 auto;
-  min-width: 0;
-  margin-left: 4px;
-  padding: 0;
-  border-color: transparent;
-  background: transparent;
-}
-
-/* A phone cannot fit seven buttons and a slider on one line: the scaler keeps
-   its own row at the right edge instead of clipping the transport. */
+/* A narrow transport folds onto a second line instead of clipping its
+   buttons; the corner grip is the only size control, so nothing else has to
+   share the row. */
 @media (max-width: 900px) {
   .gr-nav {
     flex-wrap: wrap;
     row-gap: 4px;
-  }
-
-  .gr-nav .board-zoom {
-    flex: 1 0 100%;
-    justify-content: flex-end;
-    margin-left: 0;
-    padding-top: 4px;
-    border-top: 1px solid var(--line-soft);
   }
 }
 

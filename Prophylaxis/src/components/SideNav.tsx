@@ -1,8 +1,7 @@
 import { memo, useEffect, useRef, useState } from 'react';
-import BoardUtility from './BoardUtility';
 import './SideNav.css';
 
-export type TabId = 'dashboard' | 'courses' | 'drill' | 'play' | 'review' | 'puzzles';
+export type TabId = 'dashboard' | 'courses' | 'drill' | 'play' | 'review' | 'analysis' | 'puzzles';
 
 interface TabDef {
   id: TabId;
@@ -23,15 +22,8 @@ const TABS: TabDef[] = [
   { id: 'puzzles', label: 'Puzzles', href: '#/puzzles', glyph: '✧' },
   { id: 'play', label: 'Play', href: '#/play', glyph: '♟' },
   { id: 'review', label: 'Review', href: '#/review', glyph: '⌕' },
+  { id: 'analysis', label: 'Analysis', href: '#/analysis', glyph: '⌗' },
 ];
-
-/**
- * Tabs that render a board and have no size control of their own, so the rail
- * carries one. Review is not here: its board is sized from the transport under
- * it and by dragging the arrow on its bottom-right corner, and the rail's
- * popover was a second, redundant set of the same controls.
- */
-const BOARD_TABS: TabId[] = ['courses', 'drill', 'play', 'puzzles'];
 
 /** Typing is instant; the filter commit waits for a pause. */
 const SEARCH_DEBOUNCE_MS = 140;
@@ -252,8 +244,6 @@ function SideNavComponent({
       </div>
 
       <div className="sidebar-bottom">
-        {BOARD_TABS.includes(tab) ? <BoardUtility /> : null}
-
         <button
           type="button"
           className="nav-item sidenav__action"
