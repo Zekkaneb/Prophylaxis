@@ -1,4 +1,5 @@
 import { db } from '../db.ts';
+import { recordSyncedChange } from '../sync/outbox.ts';
 import type { ActiveGameRecord, PlayedGameRecord } from './types.ts';
 
 /**
@@ -25,6 +26,7 @@ function enqueue<T>(task: () => Promise<T>): Promise<T> {
 
 export async function savePlayedGame(record: PlayedGameRecord): Promise<void> {
   await enqueue(() => db.played_games.put(record));
+  await recordSyncedChange('played_games', record.game_id, false);
 }
 
 export async function listPlayedGames(limit = 100): Promise<PlayedGameRecord[]> {
@@ -37,6 +39,7 @@ export async function getPlayedGame(gameId: string): Promise<PlayedGameRecord | 
 
 export async function deletePlayedGame(gameId: string): Promise<void> {
   await enqueue(() => db.played_games.delete(gameId));
+  await recordSyncedChange('played_games', gameId, true);
 }
 
 /**
@@ -53,6 +56,7 @@ export async function finalizePlayedGame(record: PlayedGameRecord): Promise<void
       await db.active_game.delete(record.game_id);
     });
   });
+  await recordSyncedChange('played_games', record.game_id, false);
 }
 
 /* ------------------------------- active game ------------------------------ */

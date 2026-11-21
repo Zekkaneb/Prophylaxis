@@ -1,0 +1,79 @@
+/**
+ * The sync bookkeeping, exercised against fake-indexeddb and without a network:
+ * what lands in the outbox, how a burst of writes collapses, and how a delete
+ * becomes a tombstone instead of a missing row.
+ */
+
+import 'fake-indexeddb/auto';
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { db } from '../../src/db.ts';
+import {
+  changeStamp,
+  isApplyingRemote,
+  recordSyncedChange,
+  withRemoteApply,
+} from '../../src/sync/outbox.ts';
+import { collapsePending, toWireRow } from '../../src/sync/sync.ts';
+
+test('a change is stamped forward, never backwards', () => {
+  const first = changeStamp();
+  const second = changeStamp();
+  const third = changeStamp();
+  assert.ok(second > first);
+  assert.ok(third > second);
+  assert.ok(third >= Date.now() - 1000, 'the stamp stays near wall-clock time');
+});
+
+test('remote writes are not recorded as local changes', async () => {
+  assert.equal(isApplyingRemote(), false);
+  const before = await db.sync_outbox.count();
+
+  await withRemoteApply(async () => {
+    assert.equal(isApplyingRemote(), true);
+    await recordSyncedChange('played_games', 'pulled-row', false);
+  });
+
+  assert.equal(isApplyingRemote(), false);
+  assert.equal(await db.sync_outbox.count(), before, 'the puller must not re-upload');
+});
+
+test('a local change is queued once per write', async () => {
+  await db.sync_outbox.clear();
+  await recordSyncedChange('played_games', 'g1', false);
+  await recordSyncedChange('played_games', 'g1', false);
+
+  const rows = await db.sync_outbox.toArray();
+  assert.equal(rows.length, 2, 'both writes are recorded; collapsing happens at push time');
+  assert.ok(rows[1].updated_at > rows[0].updated_at);
+});
+
+test('a burst of writes collapses to the newest change per row', () => {
+  const collapsed = collapsePending([
+    { id: 1, table_name: 'played_games', row_id: 'a', updated_at: 10, deleted: false },
+    { id: 2, table_name: 'played_games', row_id: 'b', updated_at: 11, deleted: false },
+    { id: 3, table_name: 'played_games', row_id: 'a', updated_at: 12, deleted: false },
+    { id: 4, table_name: 'played_games', row_id: 'a', updated_at: 9, deleted: false },
+  ]);
+
+  assert.equal(collapsed.length, 2);
+  const a = collapsed.find((change) => change.row_id === 'a');
+  assert.equal(a?.updated_at, 12, 'the newest entry wins, out-of-order included');
+});
+
+test('a delete becomes a tombstone, a re-create becomes a row', () => {
+  const tombstone = toWireRow(
+    { table_name: 'played_games', row_id: 'gone', updated_at: 5, deleted: true },
+    undefined,
+  );
+  assert.equal(tombstone.deleted, true);
+  assert.deepEqual(tombstone.payload, {}, 'a tombstone carries no payload');
+  assert.equal(tombstone.updated_at, new Date(5).toISOString());
+
+  const recreated = toWireRow(
+    { table_name: 'played_games', row_id: 'back', updated_at: 6, deleted: true },
+    { game_id: 'back', pgn: '1. e4' },
+  );
+  assert.equal(recreated.deleted, false, 'the row exists again, so it uploads');
+  assert.deepEqual(recreated.payload, { game_id: 'back', pgn: '1. e4' });
+});

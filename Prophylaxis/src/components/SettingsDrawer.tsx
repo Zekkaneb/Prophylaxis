@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
   ACCENTS,
   BOARD_PALETTES,
@@ -10,6 +10,7 @@ import {
 } from '../theme/ThemeProvider';
 import { PIECE_SETS, type PieceSetId } from '../theme/pieceSets';
 import { savePremovesEnabled, usePremovesEnabled } from '../play/premovePrefs.ts';
+import { useSync } from '../sync/useSync.ts';
 import { assetUrl } from '../assets/assetUrl';
 import './SettingsDrawer.css';
 
@@ -43,6 +44,31 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
   } = useAppearance();
 
   const premovesEnabled = usePremovesEnabled();
+
+  /* Accounts are optional: without a session the app is the offline app. */
+  const sync = useSync();
+  const [accountEmail, setAccountEmail] = useState('');
+  const [accountPassword, setAccountPassword] = useState('');
+  const [accountMode, setAccountMode] = useState<'sign-in' | 'sign-up'>('sign-in');
+  const [accountBusy, setAccountBusy] = useState(false);
+  const [accountError, setAccountError] = useState<string | null>(null);
+
+  const submitAccount = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (accountBusy) return;
+    setAccountBusy(true);
+    setAccountError(null);
+    const failure =
+      accountMode === 'sign-in'
+        ? await sync.signIn(accountEmail.trim(), accountPassword)
+        : await sync.signUp(accountEmail.trim(), accountPassword);
+    setAccountBusy(false);
+    if (failure) {
+      setAccountError(failure);
+      return;
+    }
+    setAccountPassword('');
+  };
 
   const panelRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -289,6 +315,97 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
                 <span />
               </button>
             </div>
+          </section>
+
+          <section className="settings__section" style={{ animationDelay: '260ms' }}>
+            <div className="settings__label-row">
+              <div>
+                <h3>Account</h3>
+                <p className="settings__hint">
+                  {!sync.configured
+                    ? 'This build has no backend, so everything stays on this device.'
+                    : sync.email
+                      ? `Signed in as ${sync.email}. Your games sync to your other devices.`
+                      : 'Sign in to carry your games between devices. Everything still works offline, signed in or not.'}
+                </p>
+              </div>
+              {sync.email && (
+                <span className="settings__value">
+                  {sync.status === 'syncing' ? 'Syncing…' : `${sync.pending} to upload`}
+                </span>
+              )}
+            </div>
+
+            {sync.configured && !sync.email && (
+              <form className="settings__account" onSubmit={submitAccount}>
+                <input
+                  className="settings__account-input"
+                  type="email"
+                  value={accountEmail}
+                  onChange={(event) => setAccountEmail(event.target.value)}
+                  placeholder="you@example.com"
+                  aria-label="Email"
+                  autoComplete="email"
+                  required
+                />
+                <input
+                  className="settings__account-input"
+                  type="password"
+                  value={accountPassword}
+                  onChange={(event) => setAccountPassword(event.target.value)}
+                  placeholder="Password"
+                  aria-label="Password"
+                  autoComplete={accountMode === 'sign-up' ? 'new-password' : 'current-password'}
+                  minLength={6}
+                  required
+                />
+                <div className="settings__account-row">
+                  <button type="submit" className="settings__done" disabled={accountBusy}>
+                    {accountBusy
+                      ? 'Working…'
+                      : accountMode === 'sign-in'
+                        ? 'Sign in'
+                        : 'Create account'}
+                  </button>
+                  <button
+                    type="button"
+                    className="settings__reset"
+                    onClick={() => {
+                      setAccountMode(accountMode === 'sign-in' ? 'sign-up' : 'sign-in');
+                      setAccountError(null);
+                    }}
+                  >
+                    {accountMode === 'sign-in' ? 'Create an account' : 'I have an account'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {sync.email && (
+              <div className="settings__account-row">
+                <button
+                  type="button"
+                  className="settings__reset"
+                  disabled={sync.status === 'syncing'}
+                  onClick={() => void sync.syncNow()}
+                >
+                  Sync now
+                </button>
+                <button type="button" className="settings__reset" onClick={() => void sync.signOut()}>
+                  Sign out
+                </button>
+              </div>
+            )}
+
+            {accountError ? (
+              <p className="settings__account-status is-error" role="alert">
+                {accountError}
+              </p>
+            ) : sync.message ? (
+              <p className="settings__account-status" role="status">
+                {sync.message}
+              </p>
+            ) : null}
           </section>
         </div>
 

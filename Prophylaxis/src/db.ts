@@ -20,7 +20,29 @@ import type {
 import { LICHESS_TO_CHESSCOM_SHIFT } from './puzzles/tiers.ts';
 
 export const DB_NAME = 'chess-trainer-db';
-export const DB_SCHEMA_VERSION = 9;
+export const DB_SCHEMA_VERSION = 10;
+
+/**
+ * One local change waiting to be uploaded.
+ *
+ * No payload is stored: push reads the row's current state from its own table,
+ * so a row written many times while it is being used uploads once. See
+ * `src/sync/outbox.ts`.
+ */
+export interface SyncOutboxRow {
+  id?: number;
+  table_name: string;
+  row_id: string;
+  /** Epoch ms on this device, monotonic within a session. */
+  updated_at: number;
+  deleted: boolean;
+}
+
+/** Small key/value scratch space for sync cursors. */
+export interface SyncMetaRow {
+  key: string;
+  value: string;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                  Puzzles                                   */
@@ -269,6 +291,16 @@ const schemaV8 = {
  */
 const schemaV9 = { ...schemaV8 } as const;
 
+/**
+ * v10 adds the sync bookkeeping. Purely additive: two new stores, no existing
+ * row touched, so a device that never signs in simply carries an empty outbox.
+ */
+const schemaV10 = {
+  ...schemaV9,
+  sync_outbox: '++id, table_name, row_id, updated_at',
+  sync_meta: 'key',
+} as const;
+
 export const db = new Dexie(DB_NAME) as Dexie & {
   puzzles: EntityTable<Puzzle, 'puzzle_id'>;
   woodpecker_sets: EntityTable<WoodpeckerSet, 'set_id'>;
@@ -283,6 +315,8 @@ export const db = new Dexie(DB_NAME) as Dexie & {
   puzzle_shards: EntityTable<PuzzleShardState, 'id'>;
   played_games: EntityTable<PlayedGameRecord, 'game_id'>;
   active_game: EntityTable<ActiveGameRecord, 'game_id'>;
+  sync_outbox: EntityTable<SyncOutboxRow, 'id'>;
+  sync_meta: EntityTable<SyncMetaRow, 'key'>;
 };
 
 db.version(1).stores(schemaV1);
@@ -294,7 +328,7 @@ db.version(6).stores(schemaV6);
 db.version(7).stores(schemaV7);
 db.version(8).stores(schemaV8);
 db.version(DB_SCHEMA_VERSION)
-  .stores(schemaV9)
+  .stores(schemaV10)
   .upgrade((tx) =>
     tx
       .table('puzzles')
