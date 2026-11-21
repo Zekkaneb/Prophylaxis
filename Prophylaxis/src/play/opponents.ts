@@ -112,7 +112,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Senior',
     elo: 150,
     style:
-      'The greatest player of all time.',
+      'The greatest player of all time (Not really). How fast can you win?',
     portraitPath: 'opponents/emmanuel.webp',
     /* He is the one portrait framed taller than it is wide, and it is already
        painted tight: the shared 1.2 zoom would crop the beanie and the hood. */
@@ -132,7 +132,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Senior',
     elo: 800,
     style:
-      'Very balanced but has slight oversights',
+      'Edward has great raw potential, but his tunnel vision makes him vulnerable. Can you best him?',
     portraitPath: 'opponents/edward.webp',
     initials: 'EC',
     usesRepertoire: false,
@@ -148,7 +148,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Prime',
     elo: 700,
     style:
-      'The wildcard: loose, instinctive and happy to improvise. Chaotic tactics, sudden attacks, passive moments — and a comeback he is certain is coming.',
+      'The polyglot of video games and a total wildcard of playstyles. Is chess actually the one game you can beat him in?',
     portraitPath: 'opponents/faadi.webp',
     /* Painted tighter than the others, so the shared zoom pushed his hair and
        chin out of the frame. At 1 the whole square shows. */
@@ -168,7 +168,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Freshman',
     elo: 1200,
     style:
-      'The developing all-rounder: balanced, a little cautious, still learning where the pieces belong. Natural moves, basic tactics, the occasional passive choice.',
+      'Starting as a humble 200-rated underdog with a lot of heart. Can you spot her hidden potential before she surprises you?',
     portraitPath: 'opponents/nina-freshman.webp',
     initials: 'NY',
     usesRepertoire: false,
@@ -183,7 +183,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     shortName: 'Freshman',
     title: 'Freshman',
     elo: 1250,
-    style: 'Solid, natural moves. Punishes loose pieces but gives you room to recover.',
+    style: 'The recurring casual player is finally studying the books. Can you take him down one last time before he becomes a real threat?',
     portraitPath: 'opponents/freshman.webp',
     initials: 'F',
     usesRepertoire: false,
@@ -202,7 +202,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Sophomore',
     elo: 1100,
     style:
-      'The energetic beginner: develops naturally, takes the centre and castles when he can — straightforward, understandable chess with the occasional tactical oversight.',
+      'Just here for a good time with zero pressure. Can your calculations handle his pure intuition?',
     portraitPath: 'opponents/alex-tang.webp',
     /* Painted tight in the source file, like Mabinti's and Bryan Widjaja's, so
        the shared 1.2 zoom would crop him twice. */
@@ -222,7 +222,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Sophomore',
     elo: 1350,
     style:
-      'The defender: protects his king and his material far better than he spots a tactic of his own. Hard to break down, slow to punish you.',
+      'An ambitious newcomer who’s growing fast. Will you feed his win streak, or prove him wrong?',
     portraitPath: 'opponents/bryan-sophomore.webp',
     initials: 'BM',
     usesRepertoire: false,
@@ -242,7 +242,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Prime',
     elo: 1400,
     style:
-      'The Wall: exceptionally hard to break down. Protects his king and his material, defends cramped positions calmly and refuses to hand you a weakness — but he misses tactics a stronger player would see.',
+      'The OG team member whose legendary defense has kept him locked in for 4 years. Can you finally break his fortress?',
     portraitPath: 'opponents/bryan-widjaja.webp',
     /* Framed tight in the source file, like Mabinti's: at 1 the whole head
        shows instead of being cropped twice. */
@@ -259,7 +259,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     shortName: 'Sophomore',
     title: 'Sophomore',
     elo: 1450,
-    style: 'Sharper tactics and better conversion. Mistakes are punished more often.',
+    style: 'The rising player whose intense training finally proves he isn’t a force to reckon with. Can you stop him?',
     portraitPath: 'opponents/sophomore.webp',
     initials: 'S',
     usesRepertoire: false,
@@ -274,7 +274,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Sophomore',
     elo: 1550,
     style:
-      'Charismatic, playful and outgoing. Initiative-focused, tactically capable, selectively cautious.',
+      'A rapidly improving player whose heavy training has turned her into a serious threat. Will she prove herself against you?',
     portraitPath: 'opponents/nina.webp',
     /* Painted close in, like Faadi's: the shared zoom would crop her hair, so
        the whole square shows and her face reads at the same size as theirs. */
@@ -295,7 +295,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Freshman',
     elo: 1600,
     style:
-      'The funky attacker: same ideas as Prime, less behind them. Checks, sacrifices and strange attacking moves, and not always the calculation to back it up.',
+      'Starting off strong in his freshman year, but his signature "funk" throws opponents off completely. Will you smell the funk and falter?',
     portraitPath: 'opponents/brandon-freshman.webp',
     initials: 'BT',
     usesRepertoire: false,
@@ -312,7 +312,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Junior',
     elo: 1800,
     style:
-      'Balanced all-rounder with intuitive decision-making. Reasonable in every phase, occasionally short on calculation or a long-term plan.',
+      'A player who was dragged through the dirt but proved himself to the best. Will you tarnish his name?',
     portraitPath: 'opponents/bryan-junior.webp',
     initials: 'BM',
     usesRepertoire: false,
@@ -328,7 +328,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     shortName: 'Senior',
     title: 'Senior',
     elo: 2000,
-    style: 'Aggressive, dynamic and tactically ambitious. Comfortable in complex positions, with the calculation to back it up.',
+    style: 'A player with nothing to lose and everything to gain. Will his hard-earned experience grind you down?',
     portraitPath: 'opponents/senior.webp',
     initials: 'S',
     usesRepertoire: false,
@@ -343,7 +343,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     shortName: 'Brandon',
     title: 'Prime',
     elo: 2350,
-    style: 'Aggressive, tactical, charismatic. Seeks complications, sacrifices and the initiative.',
+    style: 'A player who once rivaled with the best of the best. Do you actually have what it takes to best him in his prime?',
     portraitPath: 'opponents/brandon.webp',
     initials: 'BT',
     usesRepertoire: false,
@@ -357,7 +357,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     shortName: 'Junior',
     title: 'Junior',
     elo: 2150,
-    style: 'Deep, punishing calculation with very few concessions in the middlegame.',
+    style: 'A positional beast who once rivaled with Brandon at his absolute best. Has his deep calculation already predicted your loss?',
     portraitPath: 'opponents/junior.webp',
     initials: 'J',
     usesRepertoire: false,
@@ -372,7 +372,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Prime',
     elo: 2000,
     style:
-      'The polished Bryan: same relaxed feel at the board, far steadier calculation and a clearer eye for the long-term plan.',
+      "With intense training pushing him closer to the summit, he's breathing down the neck of the top players. Can you take him down before he reaches the peak?",
     portraitPath: 'opponents/bryan-prime.webp',
     initials: 'BM',
     usesRepertoire: false,
@@ -388,7 +388,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Junior',
     elo: 1550,
     style:
-      'The enthusiast: balanced, principled chess — sound development, a solid centre and sensible defence, with an initiative when one appears and no taste for unnecessary complications.',
+      'A veteran player whose vast experience outmatches almost anyone. Can you go the distance and last?',
     portraitPath: 'opponents/mabinti.webp',
     /* The portrait is painted close in the source file, so the shared 1.2 zoom
        would crop her braids twice. */
@@ -410,7 +410,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Teacher',
     elo: 1100,
     style:
-      'The chill logician: plays the principled move — develop, take the centre, castle, keep the pieces — and explains it only when the position is interesting.',
+      'A fiercely competitive teacher who claims he only plays for fun. Will beating him earn you some extra credit?',
     portraitPath: 'opponents/erik-wiessmann.webp',
     /* Framed tight in the source file: the whole head shows at 1. */
     portraitScale: 1,
@@ -432,7 +432,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     shortName: 'Jonah',
     elo: 1400,
     style:
-      'The silent threat: quiet, improving positional moves that hide real tactical intent. Presses patiently, then strikes when the position allows it.',
+      'His straightforward play and iron patience make opponents crack under pressure. Can you outlast him?',
     portraitPath: 'opponents/jonah-pachikara.webp',
     /* Framed tight in the source file: the whole head shows at 1. */
     portraitScale: 1,
@@ -449,7 +449,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Senior',
     elo: 1300,
     style:
-      'The gentle defender: cautious, kind and happiest in a simple position. Trades into safety, protects her king and avoids unnecessary complications.',
+      'A retired veteran whose hard-earned experience is what intimidates opponents the most. Do you have what it takes?',
     portraitPath: 'opponents/sophia-kuan.webp',
     /* Framed tight in the source file: the whole head shows at 1. */
     portraitScale: 1,
@@ -468,7 +468,7 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     title: 'Sophomore',
     elo: 1850,
     style:
-      'The funky attacker: sharp Vienna gambits, French counterattacks and a taste for complications, with more calculation than the Freshman and more patience with material than the Prime.',
+      'A dangerous mix of ice-cold discipline and unpredictable "funk." Can you survive his unpredictable attacks and sacrifices?',
     portraitPath: 'opponents/brandon-varsity.webp',
     /* Framed tight in the source file: the whole head shows at 1. */
     portraitScale: 1,
