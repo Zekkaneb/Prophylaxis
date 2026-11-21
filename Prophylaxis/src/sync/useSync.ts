@@ -89,6 +89,17 @@ export function useSync(): SyncController {
         return;
       }
 
+      /* Some rows were refused outright. Say so plainly and point at the
+         queue: they are not lost, but they will not arrive either. */
+      if (report.pushRejected > 0) {
+        setStatus('error');
+        setMessage(
+          `The server refused ${report.pushRejected} change(s): ${report.pushError ?? 'unknown error'}. ` +
+            `They stay queued here; ${report.pushed} other change(s) were uploaded.`,
+        );
+        return;
+      }
+
       setStatus('idle');
       setMessage(
         report.pushed + report.pulled === 0

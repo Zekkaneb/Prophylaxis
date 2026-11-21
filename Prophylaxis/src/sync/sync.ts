@@ -34,6 +34,15 @@ export interface SyncReport {
    */
   pullFailed: boolean;
   pullError: string | null;
+  /** Changes the server refused outright (a constraint, a bad table name). */
+  pushRejected: number;
+  pushError: string | null;
+}
+
+interface PushResult {
+  sent: number;
+  rejected: number;
+  error: string | null;
 }
 
 /* --------------------------------- cursors -------------------------------- */
@@ -127,11 +136,14 @@ export function toWireRow(change: SyncOutboxRow, stored: Record<string, unknown>
   };
 }
 
-async function pushOnce(): Promise<number> {
-  if (!supabase) return 0;
+const rowKey = (change: { table_name: string; row_id: string }) =>
+  `${change.table_name}\u0000${change.row_id}`;
+
+async function pushOnce(): Promise<PushResult> {
+  if (!supabase) return { sent: 0, rejected: 0, error: null };
 
   const pending = await db.sync_outbox.orderBy('id').limit(PUSH_BATCH).toArray();
-  if (pending.length === 0) return 0;
+  if (pending.length === 0) return { sent: 0, rejected: 0, error: null };
 
   const rows = [];
   for (const change of collapsePending(pending)) {
@@ -142,14 +154,48 @@ async function pushOnce(): Promise<number> {
 
   if (rows.length === 0) {
     await db.sync_outbox.bulkDelete(pending.map((change) => change.id as number));
-    return 0;
+    return { sent: 0, rejected: 0, error: null };
   }
 
   const { error } = await supabase.rpc('push_sync_rows', { p_rows: rows });
-  if (error) throw new Error(error.message);
+  if (!error) {
+    await db.sync_outbox.bulkDelete(pending.map((change) => change.id as number));
+    return { sent: rows.length, rejected: 0, error: null };
+  }
 
-  await db.sync_outbox.bulkDelete(pending.map((change) => change.id as number));
-  return rows.length;
+  /*
+   * The batch was refused. One row can do that on its own — a table name the
+   * server's allow-list does not know, a constraint the migration has not
+   * widened yet — and because the RPC is all-or-nothing, a single bad row
+   * would otherwise wedge the entire queue: every sync would fail identically
+   * and nothing would ever upload.
+   *
+   * So retry one row at a time. What succeeds is cleared from the outbox, what
+   * fails stays queued (and is reported), and the rest of the user's work goes
+   * through.
+   */
+  let sent = 0;
+  let rejected = 0;
+  let firstError: string | null = null;
+  const accepted = new Set<string>();
+
+  for (const row of rows) {
+    const single = await supabase.rpc('push_sync_rows', { p_rows: [row] });
+    if (single.error) {
+      rejected += 1;
+      firstError ??= single.error.message;
+    } else {
+      sent += 1;
+      accepted.add(rowKey(row));
+    }
+  }
+
+  const done = pending.filter((change) => accepted.has(rowKey(change)));
+  if (done.length > 0) {
+    await db.sync_outbox.bulkDelete(done.map((change) => change.id as number));
+  }
+
+  return { sent, rejected, error: firstError };
 }
 
 /* ---------------------------------- pull ---------------------------------- */
@@ -216,7 +262,16 @@ async function pullOnce(userId: string): Promise<PullResult> {
  * account's rows must never be uploaded under this session.
  */
 export async function runSync(userId: string): Promise<SyncReport> {
-  if (!supabase) return { pushed: 0, pulled: 0, pullFailed: false, pullError: null };
+  if (!supabase) {
+    return {
+      pushed: 0,
+      pulled: 0,
+      pullFailed: false,
+      pullError: null,
+      pushRejected: 0,
+      pushError: null,
+    };
+  }
 
   const owner = await readDatabaseOwner();
   if (owner !== userId) {
@@ -228,10 +283,17 @@ export async function runSync(userId: string): Promise<SyncReport> {
   const pull = await pullOnce(userId);
 
   let pushed = 0;
+  let rejected = 0;
+  let pushError: string | null = null;
+
   for (;;) {
-    const sent = await pushOnce();
-    pushed += sent;
-    if (sent < PUSH_BATCH) break;
+    const result = await pushOnce();
+    pushed += result.sent;
+    rejected += result.rejected;
+    pushError ??= result.error;
+    /* Stop when the batch was not full, or when nothing moved: a queue made
+       entirely of rejected rows would otherwise loop forever. */
+    if (result.sent + result.rejected < PUSH_BATCH || result.sent === 0) break;
   }
 
   return {
@@ -239,6 +301,8 @@ export async function runSync(userId: string): Promise<SyncReport> {
     pulled: pull.pulled,
     pullFailed: pull.failed,
     pullError: pull.error,
+    pushRejected: rejected,
+    pushError,
   };
 }
 
