@@ -85,15 +85,26 @@ ratings) for no benefit, because no server query reads inside the payload.
    `applyingRemote` flag.
 2. **Push** drains the outbox through `push_sync_rows` in batches (~200 rows),
    oldest first, deleting outbox rows only after the RPC returns.
-3. **Pull** asks for `updated_at > cursor`, ordered, in pages; applies with
+3. **Pull** asks for `updated_seq > cursor`, ordered, in pages; applies with
    `bulkPut` (or a tombstone delete), then advances the cursor. The cursor lives
-   in `localStorage`, per user id.
+   in `sync_meta`, per user id. It is the server's sequence value, not a
+   timestamp: rows written in the same millisecond share `updated_at`, so a
+   `> timestamp` cursor silently drops every one of them that falls past a page
+   boundary (migration `0002_sync_cursor.sql`). A failed page leaves the cursor
+   untouched, so the next attempt re-asks instead of skipping ahead.
 4. **Order on sign-in:** pull first, then push. Pushing first would send rows the
    server already has newer copies of, which is harmless but wastes a round trip.
-5. **Per-user local database.** `new Dexie(\`chess-trainer-db-${userId}\`)` so two
-   accounts on one browser never mix. On first sign-in, copy the existing
-   anonymous `chess-trainer-db` into the namespaced one and keep the original as
-   a backup — that is the migration, and it only happens once.
+5. **Per-user local database** (done — `src/sync/accountDatabase.ts`).
+   `chess-trainer-db-${userId}` for an account, `chess-trainer-db` while
+   anonymous. On first sign-in the anonymous user tables and its outbox are
+   copied in and the account database is marked with an `owner` key, so the
+   claim happens once; `puzzles`/`puzzle_shards` are not copied (shared
+   reference data). `src/db.ts` exposes the database through a proxy, so the
+   fifty modules holding that binding do not change. `src/sync/bootstrap.ts`
+   opens the right database before the first render; a sign-in or sign-out
+   during a session switches and reloads. `runSync` refuses to run unless the
+   open database's owner is the signed-in user, which is the wall that stops one
+   account's games being uploaded under another's.
 6. **Sign out** drops the session and closes the user's Dexie database; it does
    not delete it, so signing back in is instant and offline still works.
 7. **Offline** is the normal case: every write is local and queued; the outbox
@@ -108,8 +119,8 @@ Accounts ship in the hosted build served over https.
 
 ## Order of work
 
-1. Server schema + RLS (done — `supabase/migrations/0001_sync.sql`; run it in the
-   project's SQL editor before the first sync).
+1. Server schema + RLS (done — `supabase/migrations/0001_sync.sql` and
+   `0002_sync_cursor.sql`; run both in the project's SQL editor, in order).
 2. Auth: client, session persistence, sign-in in Settings (done —
    `src/sync/client.ts`, `src/sync/useSync.ts`, the Account section).
 3. Outbox + push, for `played_games` only, then pull on sign-in (done —
@@ -126,7 +137,4 @@ Accounts ship in the hosted build served over https.
   progress are saved locally and stay there.
 * Changes are captured where a table is written (`src/play/gameStore.ts`), not
   centrally, because one table is one seam. That changes in step 4.
-* Local databases are not yet namespaced per account, so signing into two
-  accounts in one browser shares one local database. Row ownership is still
-  enforced server-side by RLS; what is shared is the cache.
 * There is no conflict UI: the newest write wins silently, as designed.

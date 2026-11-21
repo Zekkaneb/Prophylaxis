@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import { ensureDatabaseFor, readDatabaseOwner, LOCAL_OWNER } from './accountDatabase.ts';
 import { supabase, syncConfigured } from './client.ts';
 import { pendingChangeCount, runSync } from './sync.ts';
 
@@ -60,14 +61,33 @@ export function useSync(): SyncController {
     busyRef.current = true;
     setStatus('syncing');
     try {
+      /* Another account's rows must never be uploaded under this session. */
+      if ((await readDatabaseOwner()) !== session.user.id) {
+        setStatus('idle');
+        setMessage('Opening this account’s database…');
+        return;
+      }
+
       const report = await runSync(session.user.id);
+      await refreshPending();
+
+      /* "Nothing was downloaded" and "could not download" must not read the
+         same: only the first means everything is up to date. */
+      if (report.pullFailed) {
+        setStatus('error');
+        setMessage(
+          `Could not download other devices’ games (${report.pullError ?? 'unknown error'}). ` +
+            `Nothing here was lost${report.pushed > 0 ? `, and ${report.pushed} were uploaded` : ''}.`,
+        );
+        return;
+      }
+
       setStatus('idle');
       setMessage(
-        report.pulled + report.pushed === 0
+        report.pushed + report.pulled === 0
           ? 'Everything is up to date.'
           : `Synced ${report.pushed} up, ${report.pulled} down.`,
       );
-      await refreshPending();
     } catch (cause) {
       setStatus('error');
       setMessage(`Sync failed: ${describe(cause)}. Your games are still saved here.`);
@@ -107,6 +127,38 @@ export function useSync(): SyncController {
   useEffect(() => {
     void refreshPending();
   }, [refreshPending]);
+
+  /*
+   * Each account reads and writes its own database. The boot step opens the
+   * right one before the first render; this handles a sign-in or sign-out that
+   * happens while the app is already running, where the cheapest correct
+   * answer is to reload onto the new database rather than unpick the state
+   * every view is holding.
+   */
+  useEffect(() => {
+    if (!syncConfigured || !ready) return;
+    const desired = session?.user?.id ?? LOCAL_OWNER;
+    let cancelled = false;
+
+    void (async () => {
+      const current = await readDatabaseOwner();
+      if (cancelled || current === desired) return;
+
+      setMessage('Opening this account’s database…');
+      try {
+        await ensureDatabaseFor(desired);
+      } catch (cause) {
+        setStatus('error');
+        setMessage(`Could not open that account’s database: ${describe(cause)}`);
+        return;
+      }
+      window.location.reload();
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, session]);
 
   /* Sync on sign-in, on reconnect, and on a slow timer. */
   useEffect(() => {

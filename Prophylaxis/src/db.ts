@@ -301,7 +301,7 @@ const schemaV10 = {
   sync_meta: 'key',
 } as const;
 
-export const db = new Dexie(DB_NAME) as Dexie & {
+export type AppDatabase = Dexie & {
   puzzles: EntityTable<Puzzle, 'puzzle_id'>;
   woodpecker_sets: EntityTable<WoodpeckerSet, 'set_id'>;
   lesson_progress: EntityTable<LessonProgress, 'lesson_id'>;
@@ -319,26 +319,87 @@ export const db = new Dexie(DB_NAME) as Dexie & {
   sync_meta: EntityTable<SyncMetaRow, 'key'>;
 };
 
-db.version(1).stores(schemaV1);
-db.version(2).stores(schemaV2);
-db.version(3).stores(schemaV3);
-db.version(4).stores(schemaV4);
-db.version(5).stores(schemaV5);
-db.version(6).stores(schemaV6);
-db.version(7).stores(schemaV7);
-db.version(8).stores(schemaV8);
-db.version(DB_SCHEMA_VERSION)
-  .stores(schemaV10)
-  .upgrade((tx) =>
-    tx
-      .table('puzzles')
-      .toCollection()
-      .modify((puzzle: { rating?: number }) => {
-        if (typeof puzzle.rating === 'number' && Number.isFinite(puzzle.rating)) {
-          puzzle.rating += LICHESS_TO_CHESSCOM_SHIFT;
-        }
-      }),
-  );
+/**
+ * Builds a database with the full schema history, under any name.
+ *
+ * The name is a parameter rather than a constant because each signed-in
+ * account gets its own database (see `src/sync/accountDatabase.ts`): two people
+ * on one browser must not be able to see, or upload, each other's games.
+ */
+export function createDatabase(name: string): AppDatabase {
+  const instance = new Dexie(name) as AppDatabase;
+
+  instance.version(1).stores(schemaV1);
+  instance.version(2).stores(schemaV2);
+  instance.version(3).stores(schemaV3);
+  instance.version(4).stores(schemaV4);
+  instance.version(5).stores(schemaV5);
+  instance.version(6).stores(schemaV6);
+  instance.version(7).stores(schemaV7);
+  instance.version(8).stores(schemaV8);
+  instance
+    .version(DB_SCHEMA_VERSION)
+    .stores(schemaV10)
+    .upgrade((tx) =>
+      tx
+        .table('puzzles')
+        .toCollection()
+        .modify((puzzle: { rating?: number }) => {
+          if (typeof puzzle.rating === 'number' && Number.isFinite(puzzle.rating)) {
+            puzzle.rating += LICHESS_TO_CHESSCOM_SHIFT;
+          }
+        }),
+    );
+
+  return instance;
+}
+
+let active = createDatabase(DB_NAME);
+
+/** The database the app is currently reading and writing. */
+export function getActiveDatabase(): AppDatabase {
+  return active;
+}
+
+/** The name of the database currently open (used by the account switcher). */
+export function activeDatabaseName(): string {
+  return active.name;
+}
+
+/** Points the app at another database. The caller opens it. */
+export function useDatabase(name: string): AppDatabase {
+  active = createDatabase(name);
+  return active;
+}
+
+/** Adopts an already-open database as the one the app uses. */
+export function setActiveDatabase(instance: AppDatabase): AppDatabase {
+  active = instance;
+  return active;
+}
+
+/**
+ * The one database handle every module imports.
+ *
+ * A proxy rather than a fixed instance, so switching accounts swaps the
+ * underlying database without touching the fifty-odd modules that already hold
+ * a reference to this binding. Methods are bound to the real instance, which is
+ * what Dexie expects.
+ */
+export const db: AppDatabase = new Proxy({} as AppDatabase, {
+  get(_target, property) {
+    /* Never look thenable: awaiting the proxy must not call a Dexie method. */
+    if (property === 'then') return undefined;
+    const value = Reflect.get(active, property, active);
+    return typeof value === 'function' ? value.bind(active) : value;
+  },
+  set(_target, property, value) {
+    return Reflect.set(active, property, value, active);
+  },
+  has(_target, property) {
+    return property in active;
+  },
+});
 
 /**
  * Aggregated row counts, used by diagnostics and the dashboard.
