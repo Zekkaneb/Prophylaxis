@@ -52,6 +52,7 @@ const BANKS: Record<
        beside the other Bryan entries there. */
     | 'emmanuel'
     | 'bryan-widjaja'
+    | 'alex-tang'
   >,
   Bank
 > = {
@@ -489,6 +490,79 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     loss: ['Good game.', 'Yeah, you got me.', 'It’s calm.'],
     draw: ['We good.', 'Yeah, that’s fair.'],
   },
+  /* Alex Tang (Sophomore), 1100: the classmate who is genuinely funny.
+
+     Energetic and tangential, but never a caricature: short bursts, a thought
+     that changes direction mid-sentence, and the occasional all-caps reaction
+     (one or two, not every line). He is upbeat after a mistake and still making
+     jokes when he is losing. Nothing here names a tactic, an evaluation or a
+     search, and nothing reads like another character's register. */
+  'alex-tang': {
+    book: ['Okay okay okay, hear me out.', 'WAIT, hold on, I have an idea.', 'Oh, I like this position!'],
+    deviation: [
+      'Ohhh. That is different.',
+      'Wait, wait, wait. Let me think.',
+      'Okay, that is actually kind of genius.',
+      'Hold on. Hold on. I have a thought.',
+    ],
+    mistake: [
+      'Okay, never mind, that was a terrible idea.',
+      'I genuinely thought that was going to work.',
+      'Wait, what was I doing?',
+      'Okay. We are fine. Probably.',
+    ],
+    strong: [
+      'HAHA, no way that worked.',
+      'I’m actually cooking right now.',
+      'Okay, that was smooth.',
+      'Oh, I like where this is going.',
+    ],
+    brilliant: [
+      'BRO, WHAT?',
+      'WAIT, I just noticed something.',
+      'Nah, there is no way.',
+      'Okay, that is the coolest thing I have seen all game.',
+    ],
+    winning: [
+      'I’m locking in. I’m locking in.',
+      'It is going well. I am trying not to think about it.',
+      'Okay, do not jinx it.',
+    ],
+    losing: [
+      'Okay, so we are just going to ignore that.',
+      'This is fine. This is totally fine.',
+      'I have a plan. I do not know what it is yet.',
+    ],
+    defense: [
+      'Wait, I can save this.',
+      'Hey, I saw that one.',
+      'Okay, hold on, I have an idea.',
+    ],
+    attack: ['Okay, hear me out.', 'I have a plan. It might be a good plan.', 'Oh, this is fun.'],
+    'attack-fail': [
+      'Okay, never mind.',
+      'That is crazy. Anyway...',
+      'Okay, that was a terrible idea.',
+    ],
+    sacrifice: ['Okay, that was on purpose.', 'Trust me. Trust me.'],
+    'material-won': [
+      'Oh, that worked?',
+      'HAHA, no way that worked.',
+      'Okay, that was actually good.',
+    ],
+    'material-lost': [
+      'Wait, what was I doing?',
+      'Okay, that was not the plan.',
+      'Note to self.',
+    ],
+    win: ['That was fun. Good game!', 'Okay, that was actually kind of genius.', 'Alr, that is game.'],
+    loss: [
+      'Good game! That was fun.',
+      'Okay. I am going to think about that one.',
+      'Nah, there is no way. Rematch?',
+    ],
+    draw: ['Okay, that was fun.', 'That is crazy. Anyway...', 'Good game!'],
+  },
 };
 
 export interface DialogueState {
@@ -542,6 +616,10 @@ const CADENCE: Partial<
   /* Bryan Widjaja is reserved: a remark every eight plies at most, and the same
      kind of remark only after a long quiet stretch. */
   'bryan-widjaja': { ordinaryGap: 8, repeatGap: 18 },
+  /* Alex talks when something happens to him: quick, but not a monologue — the
+     repeat gap and the never-repeat-a-line pool still keep him off a catchphrase
+     loop. */
+  'alex-tang': { ordinaryGap: 4, repeatGap: 11 },
 };
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except

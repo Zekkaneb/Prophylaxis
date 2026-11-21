@@ -187,8 +187,8 @@ test('his “Senior” is not Johnfer Quispe’s Senior', () => {
 });
 
 test('the roster gains him once, without disturbing any existing id', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 16);
-  assert.equal(ALL_OPPONENTS.length, 17, 'sixteen personalities plus the General Bot');
+  assert.equal(PERSONALITY_OPPONENTS.length, 17);
+  assert.equal(ALL_OPPONENTS.length, 17, 'seventeen personalities plus the General Bot');
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'edward').length,
     1,

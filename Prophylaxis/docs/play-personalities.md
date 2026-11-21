@@ -169,6 +169,44 @@ cadence (`ordinaryGap: 8`, `repeatGap: 18`): short, chill, understated lines,
 never a narrated tactic, an evaluation or a number, and never a cue to the move
 chooser. The never-repeat-a-line pool and the once-per-game events still apply.
 
+## Alex Tang (Sophomore) — 1100, Beginners
+
+| | |
+|---|---|
+| id | `alex-tang` |
+| Name / subtext | Alex Tang · Sophomore |
+| Rating | 1100, Beginners group ("Novice" in the brief; the catalogue has no separate Novice section) |
+| White | London System: 1.d4, ...Bf4, ...e3, ...Nf3/...Nbd2, ...c3, kingside castling |
+| Black vs 1.e4 | No assigned repertoire: the book is empty and principled selection plays a legal move |
+| Black vs 1.d4 | King's Indian setup: ...Nf6, ...g6, ...Bg7, ...d6, ...O-O, then ...e5 or ...c5 |
+| Profile file | `src/play/personality/styles.ts` (`alex-tang`) |
+| Repertoire | `src/play/personality/repertoires/alexTang.ts` |
+| Dialogue | `DIALOGUE_BANKS['alex-tang']` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/alex-tang.webp` (monogram `AT` if missing) |
+
+The energetic goofball: a straightforward beginner's table — aggression 35,
+risk 30, positional 45, tactical 40, defensive 50, initiative 40,
+simplification 60, complexity 30, king safety 65, material 70. Nothing is maxed
+and nothing is a speciality; he develops, takes the centre and castles when he
+can. The humour lives in the dialogue only: `risk` and `complexity` stay low, so
+being funny never becomes a chaotic move.
+
+Strength is the rating's: `accuracyForElo(1100)` = 0.85,`candidateGapForElo(1100)`
+is wider than a 1400's, the standard search depth is used (no `depthCap`, no
+`mistakeChance`), and the ordinary slip curve gives a 1100 more realistic
+mistakes than a 1550. He keeps his own thinking factors (a quick, interested
+look, slightly longer in a sharp position) and his own cadence
+(`ordinaryGap: 4`, `repeatGap: 11`), so he talks often without looping a
+catchphrase.
+
+White plays the London System only: 1.d4, ...Bf4 outside the pawn chain, ...e3
+and ...c3 supporting the centre, knights on f3/d2, kingside castling, in three
+short lines. Black against 1.d4 registers in the shared King's Indian layer
+(`repertoires/kid.ts`) as a patient builder — setup and castling first, break
+later. Against 1.e4 there is deliberately no repertoire: the book is empty, so
+ordinary principled selection answers with a legal, sensible move. Book moves are
+always re-checked for legality, and outside his lines he improvises normally.
+
 ## Repertoire data
 
 `src/play/personality/repertoires/*.ts` contains the declared SAN lines.

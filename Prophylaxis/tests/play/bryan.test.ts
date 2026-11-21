@@ -73,9 +73,9 @@ test('Bryan (Junior) is on the roster at 1800 with a unique id', () => {
   assert.match(BRYAN.style, /balanced/i);
   assert.match(BRYAN.style, /intuitive/i);
 
-  assert.equal(PERSONALITY_OPPONENTS.length, 16);
-  assert.equal(ALL_OPPONENTS.length, 17, 'sixteen personalities plus the General Bot');
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 17);
+  assert.equal(PERSONALITY_OPPONENTS.length, 17);
+  assert.equal(ALL_OPPONENTS.length, 18, 'seventeen personalities plus the General Bot');
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 18);
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'bryan').length,
     1,

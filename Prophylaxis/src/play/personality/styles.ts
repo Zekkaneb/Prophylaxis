@@ -27,7 +27,8 @@ export type PersonalityId =
   | 'brandon-freshman'
   | 'mabinti'
   | 'emmanuel'
-  | 'bryan-widjaja';
+  | 'bryan-widjaja'
+  | 'alex-tang';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -438,6 +439,36 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 10,
     activePieces: 55,
     openingBias: { solid: 26, positional: 20, developing: 14, sharp: -24, initiative: -14 },
+  },
+  /* Alex Tang (Sophomore), 1100 — the energetic goofball.
+
+     A straightforward beginner's table: develop, fight for the centre, castle,
+     keep the pieces, avoid a mess. Nothing is maxed out and nothing is a
+     speciality; positional and tactical understanding both sit below the
+     midpoint because he is still learning them, while simplification (60) and
+     material care (70) are what he has actually been taught.
+
+     The personality lives in the dialogue, not here: `risk` stays at 30 and
+     `complexity` at 30, so his humour can never turn into chaotic moves.
+     `accuracy` is left to `accuracyForElo(1100)` and there is no `depthCap` or
+     `mistakeChance`, exactly like the other rating-driven profiles. */
+  'alex-tang': {
+    ...BASE,
+    id: 'alex-tang',
+    aggression: 35,
+    risk: 30,
+    positional: 45,
+    tactical: 40,
+    defensive: 50,
+    initiative: 40,
+    simplification: 60,
+    complexity: 30,
+    kingSafety: 65,
+    material: 70,
+    /* A beginner will give a pawn for an idea, never a piece on speculation. */
+    sacrifice: 15,
+    activePieces: 50,
+    openingBias: { developing: 20, solid: 16, positional: 10, sharp: -18, initiative: -10 },
   },
 };
 

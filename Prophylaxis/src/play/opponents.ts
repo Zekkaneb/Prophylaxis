@@ -368,6 +368,29 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'EC',
     usesRepertoire: false,
   },
+  /* Alex Tang (Sophomore), 1100 — the energetic goofball.
+
+     A different person from the Johnfer Sophomore and from Bryan (Sophomore):
+     `alex-tang` is his own id, so a saved game can never resolve him to either
+     of them. He is a Beginners card at 1100 and a straightforward beginner at
+     the board — the loud, funny personality lives in his dialogue only. */
+  {
+    id: 'alex-tang',
+    kind: 'personality',
+    category: 'beginners',
+    name: 'Alex Tang',
+    shortName: 'Alex',
+    title: 'Sophomore',
+    elo: 1100,
+    style:
+      'The energetic beginner: develops naturally, takes the centre and castles when he can — straightforward, understandable chess with the occasional tactical oversight.',
+    portraitPath: 'opponents/alex-tang.webp',
+    /* Painted tight in the source file, like Mabinti's and Bryan Widjaja's, so
+       the shared 1.2 zoom would crop him twice. */
+    portraitScale: 1,
+    initials: 'AT',
+    usesRepertoire: false,
+  },
 ] as const;
 
 export const GENERAL_BOT: OpponentProfile = {

@@ -17,6 +17,7 @@ import { FAADI_REPERTOIRE } from './faadi.ts';
 import { EDWARD_REPERTOIRE } from './edward.ts';
 import { MABINTI_REPERTOIRE } from './mabinti.ts';
 import { BRYAN_WIDJAJA_REPERTOIRE } from './bryanWidjaja.ts';
+import { ALEX_TANG_REPERTOIRE } from './alexTang.ts';
 import {
   BRANDON_FRESHMAN_MAINLINES,
   BRANDON_FRESHMAN_SHARED_BLACK_PREFIX,
@@ -68,6 +69,7 @@ export const PERSONALITY_REPERTOIRES: Record<
   edward: EDWARD_REPERTOIRE,
   mabinti: MABINTI_REPERTOIRE,
   'bryan-widjaja': BRYAN_WIDJAJA_REPERTOIRE,
+  'alex-tang': ALEX_TANG_REPERTOIRE,
 };
 
 export interface PersonalityBooks {

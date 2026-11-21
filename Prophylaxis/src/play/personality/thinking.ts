@@ -210,6 +210,11 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* The defensive question first: a busy board earns a slightly longer look,
          but the time goes into checking threats, not into finding combinations. */
       return 0.95 + (profile.tactical ? 0.1 : 0.04) * profile.complexity;
+    case 'alex-tang':
+      /* A quick, interested look. A sharp position earns him a bit more of a
+         stare — but he is still a beginner, so the extra time buys a check of
+         the obvious, not a calculation. */
+      return 0.85 + (profile.tactical ? 0.16 : 0.05) * profile.complexity;
   }
 }
 
@@ -259,6 +264,10 @@ function deliberationFactor(style: PersonalityStyle): number {
     case 'bryan-widjaja':
       /* Unhurried without being slow: defence is patient, not ponderous. */
       return 1.0;
+    case 'alex-tang':
+      /* Keen, so a little quicker than the table average — he wants to see what
+         happens next. */
+      return 0.82;
   }
 }
 

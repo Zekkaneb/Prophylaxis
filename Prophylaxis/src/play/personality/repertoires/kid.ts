@@ -161,7 +161,8 @@ export function kidPlan(
     style.id !== 'bryan' &&
     style.id !== 'bryan-prime' &&
     style.id !== 'bryan-sophomore' &&
-    style.id !== 'bryan-widjaja'
+    style.id !== 'bryan-widjaja' &&
+    style.id !== 'alex-tang'
   ) {
     return null;
   }
@@ -175,7 +176,9 @@ export function kidPlan(
     style.id === 'bryan' ||
     style.id === 'bryan-prime' ||
     style.id === 'bryan-sophomore' ||
-    style.id === 'bryan-widjaja';
+    style.id === 'bryan-widjaja' ||
+    /* Alex knows the setup, not the timing: build first, break later. */
+    style.id === 'alex-tang';
 
   const nf6 = at(game, 'f6', 'n', 'b');
   const g6 = at(game, 'g6', 'p', 'b');

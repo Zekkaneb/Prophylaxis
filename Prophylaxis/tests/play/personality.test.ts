@@ -45,19 +45,19 @@ function pick(
 test('the profiles are the agreed tendency table', () => {
   assert.deepEqual(
     Object.values(PERSONALITY_STYLES).map((style) => style.aggression),
-    [25, 45, 30, 85, 95, 55, 35, 50, 35, 80, 70, 25, 50, 40, 90, 30],
+    [25, 45, 30, 85, 95, 55, 35, 50, 35, 80, 70, 25, 50, 40, 90, 30, 35],
   );
   assert.deepEqual(
     Object.values(PERSONALITY_STYLES).map((style) => style.risk),
-    [20, 45, 25, 85, 90, 50, 30, 50, 30, 45, 75, 20, 45, 35, 85, 20],
+    [20, 45, 25, 85, 90, 50, 30, 50, 30, 45, 75, 20, 45, 35, 85, 20, 30],
   );
   assert.deepEqual(
     Object.values(PERSONALITY_STYLES).map((style) => style.defensive),
-    [85, 70, 95, 45, 65, 55, 95, 50, 45, 80, 35, 45, 65, 30, 35, 98],
+    [85, 70, 95, 45, 65, 55, 95, 50, 45, 80, 35, 45, 65, 30, 35, 98, 50],
   );
   assert.deepEqual(
     Object.values(PERSONALITY_STYLES).map((style) => style.complexity),
-    [20, 55, 35, 90, 100, 45, 25, 50, 35, 45, 85, 20, 45, 30, 95, 25],
+    [20, 55, 35, 90, 100, 45, 25, 50, 35, 45, 85, 20, 45, 30, 95, 25, 30],
   );
   const brandon = PERSONALITY_STYLES.brandon;
   assert.deepEqual(
