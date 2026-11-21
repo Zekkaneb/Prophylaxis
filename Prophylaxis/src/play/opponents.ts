@@ -439,6 +439,23 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     initials: 'JP',
     usesRepertoire: false,
   },
+  /* Sophia Kuan, 1300 — the gentle defender. */
+  {
+    id: 'sophia-kuan',
+    kind: 'personality',
+    category: 'novice',
+    name: 'Sophia Kuan',
+    shortName: 'Sophia',
+    title: 'Senior',
+    elo: 1300,
+    style:
+      'The gentle defender: cautious, kind and happiest in a simple position. Trades into safety, protects her king and avoids unnecessary complications.',
+    portraitPath: 'opponents/sophia-kuan.webp',
+    /* Framed tight in the source file: the whole head shows at 1. */
+    portraitScale: 1,
+    initials: 'SK',
+    usesRepertoire: false,
+  },
 ] as const;
 
 export const GENERAL_BOT: OpponentProfile = {

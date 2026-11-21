@@ -223,6 +223,9 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* Quiet reading, then a real look once the position sharpens — his tactic
          only appears if the placement was right. */
       return 0.9 + (profile.tactical ? 0.24 : 0.06) * profile.complexity;
+    case 'sophia-kuan':
+      /* She looks for the safe, simple continuation rather than a fight. */
+      return 0.88 + 0.05 * profile.complexity;
   }
 }
 
@@ -282,6 +285,9 @@ function deliberationFactor(style: PersonalityStyle): number {
     case 'jonah-pachikara':
       /* Very chill: no rush, no ceremony. */
       return 0.92;
+    case 'sophia-kuan':
+      /* Hesitant on the clock: she takes the extra moment before committing. */
+      return 0.98;
   }
 }
 

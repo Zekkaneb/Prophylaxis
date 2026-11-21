@@ -23,7 +23,7 @@ same band.
 | Band | Range | Cards, in display order |
 |---|---|---|
 | Beginner | 100–1000 Elo | Emmanuel Domah, Edward Chen, Faadi Granillo Garcia |
-| Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang, Erik Wiessmann |
+| Novice | 1001–1300 Elo | Nina Yang (Freshman), Johnfer Quispe (Freshman), Alex Tang, Erik Wiessmann, Sophia Kuan (Senior) |
 | Intermediate | 1301–1600 Elo | Bryan Martinez-Hernandez (Sophomore), Bryan Widjaja, Johnfer Quispe (Sophomore), Nina Yang (Sophomore), Brandon Tran (Freshman), Jonah Pachikara |
 | Varsity | 1601–2000 Elo | Bryan Martinez-Hernandez (Junior), Johnfer Quispe (Senior) |
 | The Big 4 | Special designation | Brandon Tran (Prime), Johnfer Quispe (Junior), Bryan Martinez-Hernandez (Prime), Mabinti Mansaray |
@@ -302,6 +302,45 @@ Dialogue is event-driven with `ordinaryGap: 6`, `repeatGap: 15`: understated,
 casual, occasionally dry ("Oh, okay.", "That's interesting.", "I think there's
 something here."), level in won and lost games, and free of theory or engine
 talk. The anti-repetition pool and once-per-game events apply.
+
+## Sophia Kuan (Senior) — 1300, Novice
+
+| | |
+|---|---|
+| id | `sophia-kuan` |
+| Name / subtext | Sophia Kuan · Senior |
+| Rating | 1300, Novice band (1001–1300) |
+| White | Vienna Game, the quiet set-up (1.e4, Nc3, Bc4 or Bg2, d3, O-O) |
+| Black vs 1.e4 | 1...e6, French (Rubinstein/trade line, Tarrasch, Advance, Exchange) |
+| Black vs 1.d4 | 1...d5, a sound Queen's Gambit Declined set-up |
+| Profile file | `src/play/personality/styles.ts` (`sophia-kuan`) |
+| Repertoire | `src/play/personality/repertoires/sophiaKuan.ts` |
+| Dialogue | `DIALOGUE_BANKS['sophia-kuan']` in `src/play/personality/dialogue.ts` |
+| Portrait | `public/opponents/sophia-kuan.webp` (monogram `SK` if missing) |
+
+The gentle defender. Simplification 95 is her signature: the engine's trade
+term weighs heavily, so among near-equal moves she takes the one that reduces
+the position, and defence 85 with king safety 90 and material 90 keeps her
+sound. Aggression 20, risk 15, complexity 10 and sacrifice 8 mean she never
+sharpens for its own sake or speculates with material.
+
+That taste never becomes strength: `accuracyForElo(1300)` is the dial, with the
+standard 1300 candidate gap and slip curve (no `depthCap`, no `mistakeChance`).
+A trade that loses material, a clearly better quiet move, or a winning capture
+all still outrank taste, so she is not a blind exchanger.
+
+White plays the Vienna quietly — 1.e4, 2.Nc3, the bishop to c4 or g2, d3,
+development and castling. No Vienna Gambit and no premature f4, either in the
+book or outside it. Black meets 1.e4 with 1...e6: the Rubinstein line trades in
+the centre early, the Tarrasch keeps a compact structure, and the Advance and
+Exchange lines meet White's space calmly. Black meets 1.d4 with 1...d5 into a
+sound Queen's Gambit Declined set-up, plus a calm answer to the London. No
+King's Indian layer; outside the book, engine choice plus her tendencies play.
+
+Dialogue is event-driven with `ordinaryGap: 7`, `repeatGap: 16`: soft-spoken,
+hesitant and exceptionally kind ("Oh, okay.", "I think that's alright.", "Maybe
+I should trade here.", "I hope this works."), polite in won and lost games and
+never taunting. The anti-repetition pool and once-per-game events apply.
 
 ## Repertoire data
 

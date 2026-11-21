@@ -55,6 +55,7 @@ const BANKS: Record<
     | 'alex-tang'
     | 'erik-wiessmann'
     | 'jonah-pachikara'
+    | 'sophia-kuan'
   >,
   Bank
 > = {
@@ -673,6 +674,49 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
     loss: ['Good game.', 'That was interesting.', 'Yeah, that might be a problem.'],
     draw: ['Good game.', 'Okay, that’s fair.', 'That was interesting.'],
   },
+  /* Sophia Kuan, 1300: the gentle defender.
+
+     Soft-spoken, hesitant, exceptionally kind. She is polite whether she is
+     winning or losing, never taunts, and is quietly pleased rather than
+     triumphant. The softness lives in the wording, not in odd spelling. */
+  'sophia-kuan': {
+    book: ['Oh, okay.', 'I think that’s alright.', 'I suppose this is fine.'],
+    deviation: [
+      'Oh, I didn’t notice that.',
+      'That’s okay, I think.',
+      'Hmm, let me think.',
+    ],
+    mistake: [
+      'Oh, that’s a little concerning.',
+      'Oh, I didn’t notice that.',
+      'That’s okay, I think.',
+    ],
+    strong: ['Oh, that was nice.', 'I think that’s alright.', 'I hope this works.'],
+    brilliant: [
+      'Oh, that was nice.',
+      'I hope this works.',
+      'I think that’s alright.',
+    ],
+    winning: ['I think that’s alright.', 'That’s alright. Let’s keep going.', 'Oh, that was nice.'],
+    losing: ['That’s alright. Let’s keep going.', 'Hmm, let me think.', 'I hope this works.'],
+    defense: [
+      'I think that’s alright.',
+      'I hope this works.',
+      'Maybe I should trade here.',
+    ],
+    attack: ['I hope this works.', 'I think that’s alright.', 'Oh, that was nice.'],
+    'attack-fail': ['Oh, I didn’t notice that.', 'That’s okay, I think.', 'Hmm, let me think.'],
+    sacrifice: ['I hope this works.', 'Maybe I should trade here.'],
+    'material-won': ['Oh, that was nice.', 'I think that’s alright.', 'I suppose this is fine.'],
+    'material-lost': [
+      'Oh, that’s a little concerning.',
+      'That’s alright. Let’s keep going.',
+      'I suppose this is fine.',
+    ],
+    win: ['Good game, thank you.', 'That was nice, thank you.', 'I hope that was alright.'],
+    loss: ['Good game, thank you.', 'That’s alright. Let’s keep going.', 'Thank you for the game.'],
+    draw: ['Good game, thank you.', 'I suppose this is fine.', 'That’s alright. Let’s keep going.'],
+  },
 };
 
 export interface DialogueState {
@@ -736,6 +780,9 @@ const CADENCE: Partial<
   /* Jonah is quiet by nature: a remark every six plies at most, and the same
      kind of remark only after a long stretch. */
   'jonah-pachikara': { ordinaryGap: 6, repeatGap: 15 },
+  /* Sophia is quiet and hesitant: a remark every seven plies at most, and the
+     same kind of remark only after a long stretch. */
+  'sophia-kuan': { ordinaryGap: 7, repeatGap: 16 },
 };
   /* He is not a talker: a remark every few moves, and the same kind of remark
      rarely twice. Nothing here is urgent enough to break the quiet gap except

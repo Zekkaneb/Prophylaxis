@@ -30,7 +30,8 @@ export type PersonalityId =
   | 'bryan-widjaja'
   | 'alex-tang'
   | 'erik-wiessmann'
-  | 'jonah-pachikara';
+  | 'jonah-pachikara'
+  | 'sophia-kuan';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -524,6 +525,33 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 20,
     activePieces: 65,
     openingBias: { positional: 24, developing: 16, solid: 10, initiative: 6, sharp: 4 },
+  },
+  /* Sophia Kuan, 1300 — the gentle defender.
+
+     Simplification 95 is the signature: the trade term in
+     `choosePersonalityMove` weighs heavily, so among near-equal moves she takes
+     the one that reduces the position. Defence 85, king safety 90, material 90,
+     aggression 20 and risk 15 keep her safe and unhurried, and complexity 10
+     turns her away from sharpening. Nothing here outvotes the engine's own
+     evaluation, so a trade that loses material or a tactic that wins is still
+     found (or missed) at `accuracyForElo(1300)`. */
+  'sophia-kuan': {
+    ...BASE,
+    id: 'sophia-kuan',
+    aggression: 20,
+    risk: 15,
+    positional: 55,
+    tactical: 35,
+    defensive: 85,
+    initiative: 20,
+    simplification: 95,
+    complexity: 10,
+    kingSafety: 90,
+    material: 90,
+    /* She gives material only when the tactic is concrete. */
+    sacrifice: 8,
+    activePieces: 40,
+    openingBias: { solid: 24, positional: 12, developing: 10, sharp: -26, initiative: -16 },
   },
 };
 

@@ -710,8 +710,8 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
 /* ---------------------------- 16. regressions ---------------------------- */
 
 test('every other opponent and the General Bot are untouched', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 19);
-  assert.equal(ALL_OPPONENTS.length, 20);
+  assert.equal(PERSONALITY_OPPONENTS.length, 20);
+  assert.equal(ALL_OPPONENTS.length, 21);
   const expected: Array<[string, string, string, number, string]> = [
     ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],
     ['sophomore', 'Johnfer Quispe', 'Sophomore', 1450, 'intermediate'],
