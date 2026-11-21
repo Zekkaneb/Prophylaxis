@@ -344,9 +344,6 @@ export function CurrentGameView({
                 {session.opponent.elo}
               </span>
             </span>
-            {/* Only transient state lives on this line: the dot already says the
-                colour and the pill already says the rating. */}
-            <span className="play-seat__meta">{botThinking ? 'thinking' : ''}</span>
             <CapturedPieces
               pieces={browser.captured[opponentColor]}
               color={session.playerColor}

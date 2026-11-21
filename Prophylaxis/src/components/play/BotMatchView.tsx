@@ -128,7 +128,6 @@ export function BotMatchView({
     const ms = color === 'w' ? clock.whiteMs : clock.blackMs;
     /* Reviewing a snapshot? Then the plate follows the position on the board. */
     const running = reviewing ? browser.turn === color : active && clock.active === color;
-    const thinking = session.thinking === color;
     const reaction = session.reactions[color];
     const advantage = browser.material * (color === 'w' ? 1 : -1);
     return (
@@ -151,8 +150,6 @@ export function BotMatchView({
               {opponent.elo}
             </span>
           </span>
-          {/* Colour is the dot, rating is the pill; this line is state only. */}
-          <span className="play-seat__meta">{thinking ? 'thinking' : ''}</span>
           <CapturedPieces
             pieces={browser.captured[color]}
             color={color === 'w' ? 'b' : 'w'}
