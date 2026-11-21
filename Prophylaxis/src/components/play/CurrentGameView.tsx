@@ -286,9 +286,7 @@ export function CurrentGameView({
                         {session.reaction.text}
                       </span>
                     </>
-                  ) : (
-                    <span className="play-rail__line-idle">No line yet.</span>
-                  )}
+                  ) : null}
                 </p>
               </div>
             ) : (

@@ -49,6 +49,31 @@ export interface BotMoveFacts {
  * event that survives the dialogue cooldown, so a material loss outranks a
  * "strong move" in the same ply.
  */
+/**
+ * Events for a move nobody graded.
+ *
+ * The sub-400 random floor picks a legal move without running a search, so the
+ * caller has no candidate list, no gap and no evaluation to narrate from. A
+ * low-rated character used to say nothing at all on those turns — most of a 150
+ * bot's game. Only what is visible on the board is used here: material taken or
+ * given, a check, then the move itself as an ordinary remark. Cooldowns in
+ * `maybeReact` still decide whether any of it is spoken.
+ */
+export function ungradedMoveEvents(
+  features: MoveFeatures | null,
+  materialDelta: number,
+): DialogueEvent[] {
+  const events: DialogueEvent[] = [];
+  if (materialDelta >= 100) events.push('material-won');
+  if (materialDelta <= -100) events.push('material-lost');
+  if (features?.sacrifices) events.push('sacrifice');
+  if (features?.check) events.push('attack');
+  /* Every move is worth a shrug, so a quiet random turn is still a chance to
+     speak rather than a silence. */
+  events.push('strong');
+  return events;
+}
+
 export function botMoveEvents(facts: BotMoveFacts, state: NarrativeState): DialogueEvent[] {
   const events: DialogueEvent[] = [];
 

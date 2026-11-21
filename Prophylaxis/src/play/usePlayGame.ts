@@ -73,6 +73,7 @@ import {
   createNarrativeState,
   endingEvent,
   playerMoveEvents,
+  ungradedMoveEvents,
 } from './personality/events.ts';
 import { bookKey, legalBookMoves } from './personality/repertoires/book.ts';
 import { personalityBookFor } from './personality/repertoires/index.ts';
@@ -1092,9 +1093,9 @@ export function usePlayGame(engine: StockfishController) {
              judged. The probe is skipped when the clock is short. */
           const decision = decisionRef.current;
           decisionRef.current = null;
+          const materialDelta =
+            (materialBalance(fenAfter) - materialBalance(fenBefore)) * ownSign;
           if (decision) {
-            const materialDelta =
-              (materialBalance(fenAfter) - materialBalance(fenBefore)) * ownSign;
             const events = botMoveEvents(
               {
                 style,
@@ -1113,7 +1114,23 @@ export function usePlayGame(engine: StockfishController) {
             }
             react(events, sansRef.current.length);
             bookLineRef.current = decision.bookMove;
+          } else {
+            /* An ungraded move: the sub-400 random floor picks without a
+               candidate list, so there is no gap or evaluation to read. The
+               character still saw its own move, so react to what is on the
+               board instead of saying nothing — those silent turns were most
+               of a 150-rated bot's game. */
+            const uci = `${applied.from}${applied.to}${applied.promotion ?? ''}`;
+            react(
+              ungradedMoveEvents(describeMove(fenBefore, uci), materialDelta),
+              sansRef.current.length,
+            );
+            bookLineRef.current = false;
+          }
 
+          /* The probe judges the player's reply, so it runs whatever the bot's
+             own turn looked like. */
+          {
             const after = clockRef.current?.snapshot(Date.now());
             const left = after
               ? applied.color === 'w'

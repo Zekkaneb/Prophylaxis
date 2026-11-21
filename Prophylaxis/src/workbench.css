@@ -643,10 +643,6 @@
   overflow-wrap: anywhere;
 }
 
-.play-rail__line-idle {
-  color: var(--muted);
-}
-
 /* Moves fill the right rail; the actions sit on its floor. */
 .play-rail--right .play-moves {
   flex: 1 1 auto;

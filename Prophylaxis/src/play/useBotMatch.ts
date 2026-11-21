@@ -16,9 +16,10 @@ import {
   botMoveEvents,
   createNarrativeState,
   endingEvent,
+  ungradedMoveEvents,
   type NarrativeState,
 } from './personality/events.ts';
-import { materialBalance } from './personality/engine.ts';
+import { describeMove, materialBalance } from './personality/engine.ts';
 import { chooseBotMove, type ChosenBotMove } from './personality/chooseMove.ts';
 import { createOpeningMemory, type OpeningMemoryState } from './personality/nina.ts';
 import { styleFor, type PersonalityStyle } from './personality/styles.ts';
@@ -256,21 +257,28 @@ export function useBotMatch(engine: StockfishController) {
       const reactions = { ...sessionRef.current?.reactions };
       const decision = decisionRef.current;
       decisionRef.current = null;
-      if (style && decision) {
+      if (style) {
         const sign = mover === 'w' ? 1 : -1;
         const materialDelta = (materialBalance(after) - materialBalance(before)) * sign;
-        const events = botMoveEvents(
-          {
-            style,
-            gap: decision.gap,
-            best: decision.best,
-            features: decision.features,
-            botPov: decision.botPov,
-            materialDelta,
-          },
-          narrativeRef.current[mover],
-        );
-        if (decision.bookMove && !narrativeRef.current[mover].bookSaid) events.unshift('book');
+        /* A sub-400 random turn comes back ungraded, so there is no candidate
+           list to narrate from; the board itself still has something to say. */
+        const events = decision
+          ? botMoveEvents(
+              {
+                style,
+                gap: decision.gap,
+                best: decision.best,
+                features: decision.features,
+                botPov: decision.botPov,
+                materialDelta,
+              },
+              narrativeRef.current[mover],
+            )
+          : ungradedMoveEvents(
+              describeMove(before, `${applied.from}${applied.to}${applied.promotion ?? ''}`),
+              materialDelta,
+            );
+        if (decision?.bookMove && !narrativeRef.current[mover].bookSaid) events.unshift('book');
         if (forgotLineRef.current[mover]) {
           events.unshift('deviation');
           forgotLineRef.current[mover] = false;

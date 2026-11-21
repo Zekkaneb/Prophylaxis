@@ -7,6 +7,7 @@ import {
   maybeReact,
 } from '../../src/play/personality/dialogue.ts';
 import { PERSONALITY_STYLES } from '../../src/play/personality/styles.ts';
+import { ungradedMoveEvents } from '../../src/play/personality/events.ts';
 
 const IDS = ['freshman', 'sophomore', 'junior', 'senior', 'brandon'] as const;
 const ENGINE_WORDS = /\b(eval|evaluation|centipawn|engine|stockfish|depth|advantage|blunder|inaccuracy)\b/i;
@@ -29,6 +30,32 @@ test('every character has a full bank of short, human lines', () => {
   /* Four distinct voices, not four copies. */
   const openings = IDS.map((id) => DIALOGUE_BANKS[id].book[0]);
   assert.equal(new Set(openings).size, 5);
+});
+
+test('an ungraded move still gives the character something to react to', () => {
+  /* The sub-400 random floor returns no decision, so these events are read off
+     the board alone; every turn still offers at least one remark. */
+  const base = {
+    capture: false,
+    capturedValue: 0,
+    check: false,
+    castle: false,
+    promotion: false,
+    develops: false,
+    centralPawn: false,
+    toEnemyHalf: false,
+    movesKing: false,
+    sacrifices: false,
+    attacksKing: false,
+    trades: false,
+    materialAfter: 0,
+  };
+
+  assert.deepEqual(ungradedMoveEvents(base, 0), ['strong'], 'a quiet move is still a chance to speak');
+  assert.deepEqual(ungradedMoveEvents(base, 320), ['material-won', 'strong']);
+  assert.deepEqual(ungradedMoveEvents(base, -320), ['material-lost', 'strong']);
+  assert.deepEqual(ungradedMoveEvents({ ...base, check: true }, 0), ['attack', 'strong']);
+  assert.deepEqual(ungradedMoveEvents(null, -500), ['material-lost', 'strong']);
 });
 
 test('ordinary remarks respect the quiet gap', () => {
