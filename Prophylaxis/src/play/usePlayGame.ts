@@ -4,6 +4,7 @@ import type { StockfishController } from '../engine/useStockfish';
 import { ChessClock, recoverClock, type ClockSnapshot } from './clock.ts';
 import { applyRatedGame } from './ratingStore.ts';
 import { categoryForSeconds } from './customRating.ts';
+import { performanceRating } from './titles.ts';
 import { profileFromRecord, type OpponentProfile } from './opponents.ts';
 import {
   activeToPlayedGame,
@@ -167,6 +168,9 @@ export interface PlaySession {
   endedAt: number | null;
   saveError: string | null;
   savedGameId: string | null;
+  /** Elo this game was worth, once the result is rated; `null` before that. */
+  ratingDelta: number | null;
+  ratingAfter: number | null;
   /**
    * The opening-practice scorecard while this game is a repertoire sparring
    * session; `null` for every ordinary game.
@@ -518,30 +522,51 @@ export function usePlayGame(engine: StockfishController) {
           /* the archive below is the important write */
         }
 
-        try {
-          await finalizePlayedGame(record);
-          const latest = sessionRef.current;
-          if (latest?.id === gameId) publish({ ...latest, savedGameId: record.game_id });
-          setResumable(null);
+        /* The ladder moves once per finished game. Practice sparring and
+           untimed games never touch it; a bot game is rated at half weight and
+           pays nothing for beating someone far below the player. */
+        const rated = !current.practice && !config.untimed;
+        const whiteWon = record.result === '1-0';
+        const score: 0 | 0.5 | 1 =
+          record.result === '1/2-1/2'
+            ? 0.5
+            : whiteWon === (record.player_color === 'w')
+              ? 1
+              : 0;
+        /* Stored with the game, so Game Analysis can show the performance the
+           title norms were measured on. */
+        if (rated) record.performance_rating = performanceRating(record.opponent_elo, score);
 
-          /* The ladder moves once per finished game. Practice sparring and
-             untimed games never touch it; a bot game is rated at half weight
-             and pays nothing for beating someone far below the player. */
-          if (!current.practice && !config.untimed) {
-            const whiteWon = record.result === '1-0';
-            const score: 0 | 0.5 | 1 =
-              record.result === '1/2-1/2'
-                ? 0.5
-                : whiteWon === (record.player_color === 'w')
-                  ? 1
-                  : 0;
-            void applyRatedGame({
+        /* Settle the ladder before archiving, so the saved game carries what it
+           was worth and the end card can print it. */
+        let ratingDelta: number | null = null;
+        let ratingAfter: number | null = null;
+        if (rated) {
+          try {
+            const move = await applyRatedGame({
               category: categoryForSeconds(config.initialSeconds),
               opponentRating: record.opponent_elo,
               score,
               opponentIsBot: true,
             });
+            if (move) {
+              ratingDelta = Math.round(move.outcome.delta);
+              ratingAfter = Math.round(move.after.rating);
+              record.rating_delta = ratingDelta;
+              record.rating_after = ratingAfter;
+            }
+          } catch {
+            /* an unrateable game still archives, just without a rating line */
           }
+        }
+
+        try {
+          await finalizePlayedGame(record);
+          const latest = sessionRef.current;
+          if (latest?.id === gameId) {
+            publish({ ...latest, savedGameId: record.game_id, ratingDelta, ratingAfter });
+          }
+          setResumable(null);
         } catch {
           const latest = sessionRef.current;
           if (latest?.id === gameId) {
@@ -1417,6 +1442,8 @@ export function usePlayGame(engine: StockfishController) {
         endedAt: null,
         saveError: null,
         savedGameId: null,
+        ratingDelta: null,
+        ratingAfter: null,
       });
       persistRef.current();
 
@@ -1587,6 +1614,8 @@ export function usePlayGame(engine: StockfishController) {
         endedAt: null,
         saveError: null,
         savedGameId: null,
+        ratingDelta: null,
+        ratingAfter: null,
       });
 
       /* A player who flagged while away loses now, through the normal finish

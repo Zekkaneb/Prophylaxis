@@ -11,6 +11,7 @@ import Dexie, { type EntityTable } from 'dexie';
 import type { PgnCourseRecord } from './courses/types';
 import type { ActiveGameRecord, PlayedGameRecord } from './play/types';
 import type { RatingCategory } from './play/customRating.ts';
+import type { TitleId } from './play/titles.ts';
 import type {
   PuzzleAttempt,
   PuzzleCycleProgress,
@@ -21,7 +22,7 @@ import type {
 import { LICHESS_TO_CHESSCOM_SHIFT } from './puzzles/tiers.ts';
 
 export const DB_NAME = 'chess-trainer-db';
-export const DB_SCHEMA_VERSION = 12;
+export const DB_SCHEMA_VERSION = 13;
 
 /**
  * The player's own rating in one time-control category.
@@ -41,7 +42,28 @@ export interface UserRatingRow {
   streak: number;
   /** Rated games finished in this category. */
   games_played: number;
+  /**
+   * The most recent rated games' performance ratings, newest first.
+   *
+   * This is the norm window: a title's norm is the average of the newest N of
+   * these, so the length is capped rather than growing forever.
+   */
+  norm_games?: number[];
   /** Epoch ms of the last change. */
+  updated_at: number;
+}
+
+/**
+ * The account's earned titles: one row, because a title belongs to the person
+ * rather than to a time control.
+ */
+export interface UserTitleRow {
+  /** Always `titles`; there is one row per account database. */
+  id: string;
+  /** Every title ever earned. Never shrinks. */
+  unlocked: TitleId[];
+  /** The title the player chose to wear, or null for the strongest held. */
+  selected: TitleId | null;
   updated_at: number;
 }
 
@@ -345,6 +367,12 @@ const schemaV12 = {
   user_ratings: 'category',
 } as const;
 
+/** v13 adds the earned titles. One row, additive. */
+const schemaV13 = {
+  ...schemaV12,
+  user_titles: 'id',
+} as const;
+
 export type AppDatabase = Dexie & {
   puzzles: EntityTable<Puzzle, 'puzzle_id'>;
   woodpecker_sets: EntityTable<WoodpeckerSet, 'set_id'>;
@@ -363,6 +391,7 @@ export type AppDatabase = Dexie & {
   sync_meta: EntityTable<SyncMetaRow, 'key'>;
   prefs: EntityTable<PrefRow, 'key'>;
   user_ratings: EntityTable<UserRatingRow, 'category'>;
+  user_titles: EntityTable<UserTitleRow, 'id'>;
 };
 
 /**
@@ -397,7 +426,8 @@ export function createDatabase(name: string): AppDatabase {
           }
         }),
     );
-  instance.version(DB_SCHEMA_VERSION).stores(schemaV12);
+  instance.version(12).stores(schemaV12);
+  instance.version(DB_SCHEMA_VERSION).stores(schemaV13);
 
   return instance;
 }

@@ -5,12 +5,12 @@ import { listCourses, courseStats, lineKey } from '../courses/courseService';
 import { summarizeReview } from '../review/gameReviewService';
 import type { PgnCourseRecord } from '../courses/types';
 import {
-  PLAYER_ELO_RANGE,
   PLAYER_NAME_MAX,
   playerDisplayName,
   playerInitials,
 } from '../profile/playerProfile.ts';
 import { updatePlayerProfile, usePlayerProfile } from '../profile/usePlayerProfile.ts';
+import { latestRating, useRatingsMap } from '../play/ratingStore.ts';
 import AvatarPicker from './AvatarPicker';
 import { syncProfileToAccount } from '../sync/profileMirror.ts';
 import { useSessionEmail } from '../sync/useSessionEmail.ts';
@@ -63,13 +63,15 @@ function Dashboard({
   const accountEmail = useSessionEmail();
   const [firstName, setFirstName] = useState(profile.firstName);
   const [lastName, setLastName] = useState(profile.lastName);
-  const [eloDraft, setEloDraft] = useState(String(profile.elo));
+  const ratings = useRatingsMap();
+  /* The rating shown is the player's real one — the category they played most
+     recently — and is never typed in. */
+  const trueRating = latestRating(ratings);
   const [profileStatus, setProfileStatus] = useState<string | null>(null);
 
   useEffect(() => {
     setFirstName(profile.firstName);
     setLastName(profile.lastName);
-    setEloDraft(String(profile.elo));
   }, [profile]);
 
   useEffect(() => {
@@ -178,21 +180,18 @@ function Dashboard({
 
   const completionRate = totals.lines > 0 ? Math.round((totals.learned / totals.lines) * 100) : 0;
 
-  const draftElo = Number(eloDraft);
-  const previewName = playerDisplayName({ firstName, lastName, elo: profile.elo });
-  const previewElo = Number.isFinite(draftElo) && eloDraft.trim() !== '' ? draftElo : profile.elo;
+  const previewName = playerDisplayName({ firstName, lastName, elo: trueRating });
 
   function handleProfileSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const saved = updatePlayerProfile({
       firstName,
       lastName,
-      elo: Number.isFinite(draftElo) ? draftElo : profile.elo,
+      elo: trueRating,
       ...(profile.avatar ? { avatar: profile.avatar } : {}),
     });
     setFirstName(saved.firstName);
     setLastName(saved.lastName);
-    setEloDraft(String(saved.elo));
     /* Name and rating belong to the account, not just this device. */
     void syncProfileToAccount(saved);
     setProfileStatus('Saved');
@@ -246,7 +245,8 @@ function Dashboard({
         <header className="block__head">
           <h2 id="dash-profile-title">Your profile</h2>
           <span className="dash-profile__preview">
-            On the board: <strong>{previewName}</strong> · {previewElo} Elo
+            On the board: <strong>{previewName}</strong>
+            {trueRating ? ` · ${trueRating} Elo` : ' · unrated'}
           </span>
         </header>
 
@@ -258,7 +258,7 @@ function Dashboard({
               updatePlayerProfile({
                 firstName,
                 lastName,
-                elo: Number.isFinite(draftElo) ? draftElo : profile.elo,
+                elo: trueRating,
                 ...(avatar ? { avatar } : {}),
               });
             }}
@@ -293,22 +293,10 @@ function Dashboard({
             />
           </label>
 
-          <label className="dash-profile__field dash-profile__field--elo">
-            <span>Elo rating</span>
-            <input
-              name="elo"
-              type="number"
-              inputMode="numeric"
-              min={PLAYER_ELO_RANGE.min}
-              max={PLAYER_ELO_RANGE.max}
-              step={1}
-              value={eloDraft}
-              onChange={(event) => {
-                setEloDraft(event.target.value);
-                setProfileStatus(null);
-              }}
-            />
-          </label>
+          <p className="dash-profile__note">
+            Your rating comes from rated games, separately for bullet, blitz, rapid and
+            classical — it is not editable.
+          </p>
 
           <div className="dash-profile__actions">
             <button type="submit" className="primary-btn">

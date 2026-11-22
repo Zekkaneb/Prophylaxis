@@ -11,6 +11,9 @@ import type { ClockSnapshot } from '../../play/clock.ts';
 import { opponentMeta } from '../../play/opponents.ts';
 import { playerDisplayName, playerInitials } from '../../profile/playerProfile.ts';
 import { usePlayerProfile } from '../../profile/usePlayerProfile.ts';
+import { useTitleState } from '../../play/titleStore.ts';
+import { ratingForSeconds, useRatingsMap } from '../../play/ratingStore.ts';
+import { PlayerNameplate, botTitle } from '../PlayerNameplate';
 import {
   describePremoveQueue,
   isPromotionPiece,
@@ -133,6 +136,13 @@ export function CurrentGameView({
   const [confirm, setConfirm] = useState<ConfirmKind>(null);
   /* The player's own card, editable on the Dashboard. */
   const profile = usePlayerProfile();
+  const titleState = useTitleState();
+  const ratings = useRatingsMap();
+  /* The board prints the rating for *this* game's time control — the real one,
+     never a number typed into a profile. */
+  const ownRating =
+    ratingForSeconds(ratings, session.config.initialSeconds, session.config.untimed) ||
+    profile.elo;
   const movesRef = useRef<HTMLDivElement | null>(null);
   /** White-POV score of the position on the board, for the evaluation bar. */
   const [evalScore, setEvalScore] = useState<{ cp: number; mate: number | null }>({
@@ -341,12 +351,12 @@ export function CurrentGameView({
                 className={`play-seat__dot play-seat__dot--${opponentColor === 'w' ? 'white' : 'black'}`}
                 aria-hidden="true"
               />
-              <span className="play-seat__label" title={session.opponent.name}>
-                {session.opponent.name}
-              </span>
-              <span className="play-seat__elo" title="Rating">
-                {session.opponent.elo}
-              </span>
+              <PlayerNameplate
+                name={session.opponent.name}
+                rating={session.opponent.elo}
+                title={botTitle(session.opponent.elo)}
+                size="sm"
+              />
             </span>
             <CapturedPieces
               pieces={browser.captured[opponentColor]}
@@ -435,12 +445,12 @@ export function CurrentGameView({
                 className={`play-seat__dot play-seat__dot--${session.playerColor === 'w' ? 'white' : 'black'}`}
                 aria-hidden="true"
               />
-              <span className="play-seat__label" title={playerDisplayName(profile)}>
-                {playerDisplayName(profile)}
-              </span>
-              <span className="play-seat__elo" title="Rating">
-                {profile.elo}
-              </span>
+              <PlayerNameplate
+                name={playerDisplayName(profile)}
+                rating={ownRating}
+                title={titleState.worn}
+                size="sm"
+              />
             </span>
             <span className="play-seat__meta">You</span>
             <CapturedPieces
@@ -700,6 +710,14 @@ export function CurrentGameView({
             <p className="play-end__score">
               {session.result} · {session.sans.length} plies · {formatDuration(duration)}
             </p>
+            {session.ratingDelta !== null ? (
+              <p
+                className={`play-end__elo is-${session.ratingDelta > 0 ? 'up' : session.ratingDelta < 0 ? 'down' : 'flat'}`}
+              >
+                {session.ratingDelta > 0 ? `+${session.ratingDelta}` : session.ratingDelta} Elo
+                {session.ratingAfter ? ` · now ${session.ratingAfter}` : ''}
+              </p>
+            ) : null}
             {practiceFeedback}
             {session.reaction ? (
               <p className="play-end__line">{session.reaction.text}</p>

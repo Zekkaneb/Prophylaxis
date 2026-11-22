@@ -72,6 +72,15 @@ export interface PlayedGameRecord {
   board_orientation?: PlayOrientation;
   /** Preset/custom id from the setup screen (`5+0`, `custom-600+5`, …). */
   time_control_id?: string;
+  /**
+   * This game's performance rating: the opponent's strength adjusted by the
+   * result. The title norms average these. Absent on unrated games.
+   */
+  performance_rating?: number;
+  /** How much the ladder moved for this game, as printed in the history. */
+  rating_delta?: number;
+  /** The rating after the game settled. */
+  rating_after?: number;
 }
 
 /**

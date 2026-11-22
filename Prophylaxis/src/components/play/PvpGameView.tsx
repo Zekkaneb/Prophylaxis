@@ -5,6 +5,10 @@ import { formatClock } from '../../play/timeControls.ts';
 import { bonusTypeLabel, pvpTimeControlLabel, type PvpTimeControl } from '../../play/pvp.ts';
 import { resultReasonLabel, type PlayColor } from '../../play/types.ts';
 import type { PvpGame } from '../../play/useLocalPvp';
+import { useTitleState } from '../../play/titleStore.ts';
+import { ratingForSeconds, useRatingsMap } from '../../play/ratingStore.ts';
+import type { TitleId } from '../../play/titles.ts';
+import { PlayerNameplate } from '../PlayerNameplate';
 
 /**
  * The online board.
@@ -21,6 +25,8 @@ export interface PvpSeatIdentity {
   name: string;
   elo: number;
   avatar?: string;
+  /** The title this seat wears, so the badge travels with presence. */
+  title?: TitleId | null;
 }
 
 function initialsFor(identity: PvpSeatIdentity): string {
@@ -92,6 +98,7 @@ export function PvpGameView({
   opponent,
   onResign,
   onExit,
+  ratingMove,
 }: {
   game: PvpGame;
   control: PvpTimeControl;
@@ -103,8 +110,13 @@ export function PvpGameView({
   /** Ends the game for this screen's own side only. */
   onResign: () => void;
   onExit: () => void;
+  /** What the finished game did to this side's rating, once it has settled. */
+  ratingMove?: { delta: number; after: number } | null;
 }) {
   const { state, clock, playMove, playing, canMove } = game;
+  const titleState = useTitleState();
+  const ratings = useRatingsMap();
+  const ownRating = ratingForSeconds(ratings, control.initialSeconds, control.untimed);
   const [confirmResign, setConfirmResign] = useState(false);
 
   const untimed = control.untimed;
@@ -208,12 +220,12 @@ export function PvpGameView({
                   className={`play-seat__dot play-seat__dot--${top.side === 'w' ? 'white' : 'black'}`}
                   aria-hidden="true"
                 />
-                <span className="play-seat__label" title={top.identity.name}>
-                  {top.identity.name}
-                </span>
-                <span className="play-seat__elo" title="Rating">
-                  {top.identity.elo || '—'}
-                </span>
+                <PlayerNameplate
+                  name={top.identity.name}
+                  rating={top.identity.elo}
+                  title={top.identity.title ?? null}
+                  size="sm"
+                />
               </span>
               <span className="play-seat__meta">{sideLabel(top.side)}</span>
             </div>
@@ -251,12 +263,14 @@ export function PvpGameView({
                   className={`play-seat__dot play-seat__dot--${bottom.side === 'w' ? 'white' : 'black'}`}
                   aria-hidden="true"
                 />
-                <span className="play-seat__label" title={bottom.identity.name}>
-                  {bottom.identity.name}
-                </span>
-                <span className="play-seat__elo" title="Rating">
-                  {bottom.identity.elo || '—'}
-                </span>
+                <PlayerNameplate
+                  name={bottom.identity.name}
+                  rating={
+                    bottom.side === ownSide ? ownRating || bottom.identity.elo : bottom.identity.elo
+                  }
+                  title={bottom.side === ownSide ? titleState.worn : (bottom.identity.title ?? null)}
+                  size="sm"
+                />
               </span>
               <span className="play-seat__meta">
                 {bottom.side === ownSide ? 'You · ' : ''}
@@ -378,6 +392,14 @@ export function PvpGameView({
                   {state.result} · {state.sans.length} plies
                 </p>
               )}
+              {ratingMove ? (
+                <p
+                  className={`play-end__elo is-${ratingMove.delta > 0 ? 'up' : ratingMove.delta < 0 ? 'down' : 'flat'}`}
+                >
+                  {ratingMove.delta > 0 ? `+${ratingMove.delta}` : ratingMove.delta} Elo · now{' '}
+                  {ratingMove.after}
+                </p>
+              ) : null}
               <div className="play-modal__actions">
                 <button type="button" className="primary-btn" onClick={onExit}>
                   Back to the lobby

@@ -8,6 +8,8 @@ import { PvpGameView } from './PvpGameView';
 import type { PlayColor } from '../../play/types.ts';
 import { playerDisplayName } from '../../profile/playerProfile.ts';
 import { usePlayerProfile } from '../../profile/usePlayerProfile.ts';
+import { useTitleState } from '../../play/titleStore.ts';
+import { ratingForSeconds, useRatingsMap } from '../../play/ratingStore.ts';
 import { applyRatedGame } from '../../play/ratingStore.ts';
 import { categoryForSeconds } from '../../play/customRating.ts';
 
@@ -32,10 +34,16 @@ export function PvpOnlineLobby({
 }) {
   const [code, setCode] = useState('');
   const profile = usePlayerProfile();
+  const titles = useTitleState();
+  const ratings = useRatingsMap();
   const identity = {
     name: playerDisplayName(profile) || 'Player',
-    elo: profile.elo,
+    /* The rating the room plays at, so both seats read the same numbers. */
+    elo:
+      (control ? ratingForSeconds(ratings, control.initialSeconds, control.untimed) : 0) ||
+      profile.elo,
     avatar: profile.avatar,
+    title: titles.worn,
   };
 
   /* Whichever side presses start, the other one starts too, on the same
@@ -146,6 +154,9 @@ export function PvpOnlineRoom({
   onExit: () => void;
 }) {
   const profile = usePlayerProfile();
+  const titles = useTitleState();
+  const ratings = useRatingsMap();
+  const ownRating = ratingForSeconds(ratings, control.initialSeconds, control.untimed);
   const ownerSide: PlayColor = room.role === 'host' ? 'w' : 'b';
   /* Fixed orientation: an online game must not flip the board under you. */
   const game = useLocalPvp({ ...control, autoFlip: false, ownerSide });
@@ -268,18 +279,24 @@ export function PvpOnlineRoom({
      includes the start time so a rematch is a different game, and restoring a
      finished game after a rejoin does not pay twice. */
   const ratedRef = useRef<string | null>(null);
+  const [ratingMove, setRatingMove] = useState<{ delta: number; after: number } | null>(null);
   useEffect(() => {
     const finished = game.state.status === 'finished' && game.state.result;
     if (!finished || control.untimed) return;
     const key = `${room.code}:${game.state.startedAt}`;
     if (ratedRef.current === key) return;
     ratedRef.current = key;
+    setRatingMove(null);
 
     const whiteWon = game.state.result === '1-0';
     void applyRatedGame({
       category: categoryForSeconds(control.initialSeconds),
       opponentRating: room.opponent?.elo || 1200,
       score: game.state.result === '1/2-1/2' ? 0.5 : whiteWon === (ownerSide === 'w') ? 1 : 0,
+    }).then((move) => {
+      if (move) {
+        setRatingMove({ delta: Math.round(move.outcome.delta), after: Math.round(move.after.rating) });
+      }
     });
   }, [game.state, control, ownerSide, room.code, room.opponent]);
 
@@ -307,10 +324,12 @@ export function PvpOnlineRoom({
       ownSide={ownerSide}
       self={{
         name: playerDisplayName(profile) || 'Player',
-        elo: profile.elo,
+        elo: ownRating || profile.elo,
         avatar: profile.avatar,
+        title: titles.worn,
       }}
       opponent={room.opponent}
+      ratingMove={ratingMove}
       onResign={() => {
         gameRef.current.resign(ownerSide);
         room.sendResign(ownerSide);

@@ -143,6 +143,14 @@ export function HistoryView({ onStartGame, onOpenGame }: HistoryViewProps) {
                       {formatDuration(game.duration_seconds)}
                     </span>
                   </span>
+                  {typeof game.rating_delta === 'number' && game.rating_delta !== 0 ? (
+                    <span
+                      className={`play-history__elo is-${game.rating_delta > 0 ? 'up' : 'down'}`}
+                      title="Rating change for this game"
+                    >
+                      {game.rating_delta > 0 ? `+${game.rating_delta}` : game.rating_delta}
+                    </span>
+                  ) : null}
                   <span className="play-history__when">{formatDateTime(game.ended_at)}</span>
                   <span
                     className={`play-history__result is-${botMatch ? 'draw' : outcome.tone}`}

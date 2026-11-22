@@ -4,6 +4,9 @@ import { deletePlayedGame, downloadPgn, getPlayedGame } from '../../play/gameSto
 import { getOpponent, profileFromRecord } from '../../play/opponents.ts';
 import { playerDisplayName, playerInitials } from '../../profile/playerProfile.ts';
 import { usePlayerProfile } from '../../profile/usePlayerProfile.ts';
+import { useTitleState } from '../../play/titleStore.ts';
+import { ratingForSeconds, useRatingsMap } from '../../play/ratingStore.ts';
+import { PlayerNameplate, botTitle } from '../PlayerNameplate';
 import { playSoundEvent } from '../../play/audio/soundManager.ts';
 import { replayPlySound, replaySans, type ReplayResult } from '../../play/replay.ts';
 import {
@@ -36,6 +39,8 @@ export interface GameReviewViewProps {
 export function GameReviewView({ gameId, onBack, onDeleted }: GameReviewViewProps) {
   /* The player's own name and monogram, as set on the Dashboard. */
   const profile = usePlayerProfile();
+  const titleState = useTitleState();
+  const ratings = useRatingsMap();
   const [record, setRecord] = useState<PlayedGameRecord | null>(null);
   const [positions, setPositions] = useState<ReplayResult | null>(null);
   const [replayError, setReplayError] = useState<string | null>(null);
@@ -245,7 +250,18 @@ export function GameReviewView({ gameId, onBack, onDeleted }: GameReviewViewProp
           <OpponentAvatar opponent={opponent} size="md" loading="eager" />
           <div className="play-seat__id">
             <span className="play-seat__name">
-              {botMatch ? (blackBot?.name ?? record.black_name ?? record.opponent_name) : opponent.name}
+              <PlayerNameplate
+                name={
+                  botMatch
+                    ? (blackBot?.name ?? record.black_name ?? record.opponent_name)
+                    : opponent.name
+                }
+                rating={Number(botMatch ? (record.black_elo ?? record.opponent_elo) : record.opponent_elo)}
+                title={botTitle(
+                  Number(botMatch ? (record.black_elo ?? record.opponent_elo) : record.opponent_elo),
+                )}
+                size="sm"
+              />
             </span>
             <span className="play-seat__meta">
               {(botMatch ? blackBot : opponent)?.title ?? 'Opponent'} ·{' '}
@@ -301,9 +317,26 @@ export function GameReviewView({ gameId, onBack, onDeleted }: GameReviewViewProp
           )}
           <div className="play-seat__id">
             <span className="play-seat__name">
-              {botMatch
-                ? (whiteBot?.name ?? record.white_name ?? 'White')
-                : playerDisplayName(profile)}
+              <PlayerNameplate
+                name={
+                  botMatch
+                    ? (whiteBot?.name ?? record.white_name ?? 'White')
+                    : playerDisplayName(profile)
+                }
+                rating={
+                  Number(botMatch ? record.white_elo : 0) ||
+                  ratingForSeconds(
+                    ratings,
+                    record.initial_seconds,
+                    record.initial_seconds === 0,
+                  ) ||
+                  profile.elo
+                }
+                title={
+                  botMatch ? botTitle(Number(record.white_elo)) : titleState.worn
+                }
+                size="sm"
+              />
             </span>
             <span className="play-seat__meta">
               {botMatch

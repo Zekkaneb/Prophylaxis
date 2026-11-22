@@ -18,6 +18,7 @@ import { OpponentAvatar } from './OpponentAvatar';
 import { PracticeSetupView, type PracticeStartOptions } from './PracticeSetupView';
 import { PracticeFeedback, PracticeStrip } from './PracticePanel';
 import { PvpSection } from './PvpSection';
+import { TitleUnlockModal } from './TitleUnlockModal';
 import EmptyBoardArt from '../EmptyBoardArt';
 import './play.css';
 
@@ -371,6 +372,8 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
       {view === 'history' ? (
         <HistoryView onStartGame={() => setView('new')} onOpenGame={openReview} />
       ) : null}
+
+      <TitleUnlockModal />
 
       {view === 'review' && reviewId ? (
         <GameReviewView

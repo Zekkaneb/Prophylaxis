@@ -3,7 +3,6 @@ import { syncProfileToAccount } from '../sync/profileMirror.ts';
 import { supabase } from '../sync/client.ts';
 import { useSync } from '../sync/useSync.ts';
 import {
-  clampPlayerElo,
   normalisePlayerName,
   playerDisplayName,
   playerInitials,
@@ -11,6 +10,9 @@ import {
 } from '../profile/playerProfile.ts';
 import { updatePlayerProfile, usePlayerProfile } from '../profile/usePlayerProfile.ts';
 import AvatarPicker from './AvatarPicker';
+import { PlayerNameplate } from './PlayerNameplate';
+import { useTitleState } from '../play/titleStore.ts';
+import { latestRating, useRatingsMap } from '../play/ratingStore.ts';
 import './AccountMenu.css';
 
 /**
@@ -36,7 +38,7 @@ export default function AccountMenu() {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [elo, setElo] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
@@ -77,7 +79,7 @@ export default function AccountMenu() {
     if (!open) return;
     setFirstName(profile.firstName);
     setLastName(profile.lastName);
-    setElo(profile.elo ? String(profile.elo) : '');
+
   }, [open, profile]);
 
   if (!sync.configured) return null;
@@ -99,7 +101,8 @@ export default function AccountMenu() {
       const failure = await sync.signUp(email.trim(), password, {
         first_name: normalisePlayerName(firstName),
         last_name: normalisePlayerName(lastName),
-        elo: elo.trim() ? clampPlayerElo(elo) : 0,
+        /* The account holds the real rating, not a typed guess. */
+        elo: latestRating(ratings),
       });
       setBusy(false);
       if (failure) {
@@ -130,7 +133,7 @@ export default function AccountMenu() {
     const next: PlayerProfile = {
       firstName: normalisePlayerName(firstName),
       lastName: normalisePlayerName(lastName),
-      elo: elo.trim() ? clampPlayerElo(elo) : 0,
+      elo: latestRating(ratings),
       ...(profile.avatar ? { avatar: profile.avatar } : {}),
     };
 
@@ -186,6 +189,8 @@ export default function AccountMenu() {
   };
 
   const displayName = playerDisplayName(profile);
+  const titleState = useTitleState();
+  const ratings = useRatingsMap();
   /* The pill is a face and a full name, signed in or not: the profile is local,
      so the corner already knows who is using this device. Only a brand-new
      profile with no name falls back to the call to action. */
@@ -229,7 +234,18 @@ export default function AccountMenu() {
               <div>
                 <p className="account-eyebrow">{sync.email ? 'Account' : 'Welcome'}</p>
                 <h2 className="account-title">
-                  {sync.email ? displayName : mode === 'create' ? 'Create account' : 'Sign in'}
+                  {sync.email ? (
+                    <PlayerNameplate
+                      name={displayName}
+                      rating={latestRating(ratings)}
+                      title={titleState.worn}
+                      size="lg"
+                    />
+                  ) : mode === 'create' ? (
+                    'Create account'
+                  ) : (
+                    'Sign in'
+                  )}
                 </h2>
                 {sync.email && <p className="account-muted">{sync.email}</p>}
               </div>
@@ -350,15 +366,6 @@ export default function AccountMenu() {
                     </label>
                   </div>
 
-                  <label className="account-field">
-                    <span>Elo</span>
-                    <input
-                      inputMode="numeric"
-                      value={elo}
-                      onChange={(event) => setElo(event.target.value)}
-                      placeholder="1200"
-                    />
-                  </label>
 
                   <button type="submit" className="account-submit" disabled={busy}>
                     Save profile

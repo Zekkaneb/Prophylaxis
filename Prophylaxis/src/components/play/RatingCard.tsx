@@ -14,6 +14,7 @@ import {
   seedRatings,
   type RatingMap,
 } from '../../play/ratingStore.ts';
+import { useTitleProgress } from '../../play/titleStore.ts';
 
 /**
  * The player's rating, and the one-time placement choice.
@@ -25,6 +26,7 @@ import {
 export function RatingCard({ compact = false }: { compact?: boolean }) {
   const [ratings, setRatings] = useState<RatingMap>({});
   const [busy, setBusy] = useState(false);
+  const titleProgress = useTitleProgress();
 
   useEffect(() => {
     let cancelled = false;
@@ -118,6 +120,9 @@ export function RatingCard({ compact = false }: { compact?: boolean }) {
           );
         })}
       </dl>
+      {titleProgress.summary ? (
+        <p className="rating-card__norm">{titleProgress.summary}</p>
+      ) : null}
       <p className="rating-card__note">{RATING_CALIBRATION_HINT}</p>
     </section>
   );

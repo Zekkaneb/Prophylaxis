@@ -1,12 +1,16 @@
+import { useEffect, useState } from 'react';
 import { db, type UserRatingRow } from '../db.ts';
 import { recordSyncedChange } from '../sync/outbox.ts';
 import {
   applyResult,
+  categoryForSeconds,
   RATING_CATEGORIES,
   RATING_MIN,
   type RatingCategory,
   type RatingOutcome,
 } from './customRating.ts';
+import { NORM_WINDOW, performanceRating, type TitleId } from './titles.ts';
+import { evaluateTitles } from './titleStore.ts';
 
 /**
  * The four ratings, stored in Dexie and pushed through the sync outbox like any
@@ -35,6 +39,52 @@ export async function loadRatings(): Promise<RatingMap> {
   for (const row of rows) {
     if (RATING_CATEGORIES.includes(row.category)) map[row.category] = row;
   }
+  return map;
+}
+
+/**
+ * The rating a game of this clock is played at.
+ *
+ * This is the number a nameplate prints: the player's real rating in the
+ * category the game belongs to, never a figure typed into a profile.
+ */
+export function ratingForSeconds(
+  ratings: RatingMap,
+  initialSeconds: number,
+  untimed = false,
+): number {
+  return ratings[categoryForSeconds(initialSeconds, untimed)]?.rating ?? 0;
+}
+
+/** The rating of the category played most recently; 0 before anything is rated. */
+export function latestRating(ratings: RatingMap): number {
+  let newest: UserRatingRow | null = null;
+  for (const row of Object.values(ratings)) {
+    if (!row) continue;
+    if (!newest || (row.updated_at ?? 0) > (newest.updated_at ?? 0)) newest = row;
+  }
+  return newest?.rating ?? 0;
+}
+
+/** Live ratings for any screen that prints one. */
+export function useRatingsMap(): RatingMap {
+  const [map, setMap] = useState<RatingMap>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    const read = () => {
+      void loadRatings().then((next) => {
+        if (!cancelled) setMap(next);
+      });
+    };
+    read();
+    window.addEventListener(RATING_EVENT, read);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(RATING_EVENT, read);
+    };
+  }, []);
+
   return map;
 }
 
@@ -90,6 +140,10 @@ export interface RatedGameResult {
   before: UserRatingRow;
   after: UserRatingRow;
   outcome: RatingOutcome;
+  /** This game's performance rating, the number the norms average. */
+  performance: number;
+  /** Titles this game unlocked, for the congratulations card. */
+  unlocked: TitleId[];
 }
 
 /**
@@ -131,6 +185,17 @@ async function applyNow(input: RatedGameInput): Promise<RatedGameResult> {
       updated_at: Date.now(),
     };
 
+  /* Performance is the opponent's strength seen through the result; the norm
+     window keeps the newest few, so a title always reflects recent play. */
+  const performance = performanceRating(input.opponentRating, input.score);
+  const rated = input.rated ?? true;
+  const window = rated
+    ? [performance, ...(Array.isArray(before.norm_games) ? before.norm_games : [])].slice(
+        0,
+        NORM_WINDOW,
+      )
+    : before.norm_games;
+
   const outcome = applyResult({
     rating: before.rating,
     peak: before.peak,
@@ -150,10 +215,15 @@ async function applyNow(input: RatedGameInput): Promise<RatedGameResult> {
     floor: outcome.floor,
     streak: outcome.streak,
     games_played: outcome.gamesPlayed,
+    norm_games: window,
     updated_at: Date.now(),
   };
 
   await writeRow(after);
   notify();
-  return { before, after, outcome };
+
+  /* The ladder is checked on every rated game; titles are never revoked, so a
+     returning empty list simply means nothing new this time. */
+  const unlocked = rated ? await evaluateTitles() : [];
+  return { before, after, outcome, performance, unlocked };
 }
