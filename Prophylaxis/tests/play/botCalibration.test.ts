@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Chess } from 'chess.js';
 import { chooseBotMove } from '../../src/play/personality/chooseMove.ts';
-import { PERSONALITY_STYLES } from '../../src/play/personality/styles.ts';
+import { styleFor } from '../../src/play/personality/styles.ts';
 import { HUMAN_MULTI_PV, humanSearchDepth } from '../../src/play/humanStrength.ts';
 import { botTraces, setBotTraceEnabled } from '../../src/play/botDebug.ts';
 import type { StockfishController } from '../../src/engine/useStockfish.ts';
@@ -140,7 +140,9 @@ async function run({ elo, seed, turns = 240 }: RunOptions): Promise<{
   } as unknown as StockfishController;
 
   const random = seeded(seed);
-  const style = elo >= 2000 ? PERSONALITY_STYLES.brandon : PERSONALITY_STYLES['bryan-widjaja'];
+  /* The production path: `styleFor` resolves the profile's accuracy from the
+     rating, which a raw `PERSONALITY_STYLES` lookup does not. */
+  const style = styleFor(elo >= 2000 ? 'brandon' : 'bryan-widjaja', elo);
   const game = new Chess(START);
   const ranks: number[] = [];
   const losses: number[] = [];
