@@ -17,6 +17,7 @@ import { NewGameView } from './NewGameView';
 import { OpponentAvatar } from './OpponentAvatar';
 import { PracticeSetupView, type PracticeStartOptions } from './PracticeSetupView';
 import { PracticeFeedback, PracticeStrip } from './PracticePanel';
+import { PvpSection } from './PvpSection';
 import EmptyBoardArt from '../EmptyBoardArt';
 import './play.css';
 
@@ -26,6 +27,7 @@ export type PlayView =
   | 'current'
   | 'bots'
   | 'match'
+  | 'pvp'
   | 'history'
   | 'review';
 
@@ -150,6 +152,15 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
             {match.session && match.session.status !== 'finished' ? (
               <span className="play-tabs__dot" aria-label="Bot match in progress" />
             ) : null}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'pvp'}
+            className={`play-tabs__tab${view === 'pvp' ? ' is-active' : ''}`}
+            onClick={() => setView('pvp')}
+          >
+            Two players
           </button>
           <button
             type="button"
@@ -354,6 +365,8 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
           </div>
         )
       ) : null}
+
+      {view === 'pvp' ? <PvpSection /> : null}
 
       {view === 'history' ? (
         <HistoryView onStartGame={() => setView('new')} onOpenGame={openReview} />

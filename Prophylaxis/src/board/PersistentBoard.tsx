@@ -14,6 +14,7 @@
    -------------------------------------------------------------------------- */
 
 import {
+  Component,
   createContext,
   useContext,
   useLayoutEffect,
@@ -29,6 +30,40 @@ import ChessBoardWrapper, {
 } from '../components/ChessBoardWrapper';
 import BoardScaleGrip from '../components/BoardScaleGrip';
 import './PersistentBoard.css';
+
+/**
+ * Keeps a board that cannot be measured yet from taking the app down.
+ *
+ * The board measures its squares to size the pieces; in a tab that is not
+ * laying out (backgrounded, mid-navigation) that measurement is missing and the
+ * board throws "Square width not found". The failure is transient, so it is
+ * contained here and retried a few times instead of reaching the app's error
+ * boundary, where it would replace the whole screen.
+ */
+class BoardGuard extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  private retries = 0;
+  private timer: number | null = null;
+
+  static getDerivedStateFromError(): { failed: boolean } {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: unknown): void {
+    if (import.meta.env.DEV) console.warn('[board] the board is not laid out yet', error);
+    if (this.retries >= 3) return;
+    this.retries += 1;
+    this.timer = window.setTimeout(() => this.setState({ failed: false }), 400 * this.retries);
+  }
+
+  componentWillUnmount(): void {
+    if (this.timer) window.clearTimeout(this.timer);
+  }
+
+  render(): ReactNode {
+    return this.state.failed ? null : this.props.children;
+  }
+}
 
 interface BoardStore {
   getProps: () => ChessBoardWrapperProps;
@@ -227,11 +262,13 @@ function PersistentBoard({ store }: { store: BoardStore }) {
     <div className="board-layer">
       <div className="board-layer__clip" ref={clipRef} style={{ visibility: 'hidden' }}>
         <div className="board-layer__board" ref={frameRef}>
-          <ChessBoardWrapper ref={handle} {...props} />
-          {/* The board's own corner arrow: in the layer, with the board, so it
-              rides the frame's corner on every screen and can never be buried
-              under a view's wrapper. */}
-          <BoardScaleGrip />
+          <BoardGuard>
+            <ChessBoardWrapper ref={handle} {...props} />
+            {/* The board's own corner arrow: in the layer, with the board, so
+                it rides the frame's corner on every screen and can never be
+                buried under a view's wrapper. */}
+            <BoardScaleGrip />
+          </BoardGuard>
         </div>
       </div>
     </div>
