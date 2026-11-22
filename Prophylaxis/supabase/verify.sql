@@ -98,7 +98,13 @@ select 'constraint allows every synced table',
          ) like '%woodpecker_sets%'
          and pg_get_constraintdef(
            (select oid from pg_constraint where conname = 'sync_rows_known_table')
-         ) like '%prefs%',
+         ) like '%prefs%'
+         and pg_get_constraintdef(
+           (select oid from pg_constraint where conname = 'sync_rows_known_table')
+         ) like '%user_ratings%'
+         and pg_get_constraintdef(
+           (select oid from pg_constraint where conname = 'sync_rows_known_table')
+         ) like '%user_titles%',
          false
        )
 

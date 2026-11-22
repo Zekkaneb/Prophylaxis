@@ -13,6 +13,19 @@ import { QUEUE_EVENT } from './outbox.ts';
 import { pendingChangeCount, runSync } from './sync.ts';
 
 /**
+ * The newest migration that re-creates `sync_rows_known_table` with every synced
+ * table in it. Because each allow-list migration supersedes the last, running
+ * this one file fixes any "unknown table" rejection — naming an older file here
+ * is what told players to run the woodpecker-set migration for `user_ratings`.
+ */
+const LATEST_ALLOW_LIST = '0006_user_titles.sql';
+
+function allowListHint(tables: string[]): string {
+  const named = tables.length ? tables.join(', ') : 'these rows';
+  return ` Run supabase/migrations/${LATEST_ALLOW_LIST} in the Supabase SQL editor: the server's allow-list still excludes ${named}.`;
+}
+
+/**
  * Signed-in state plus a background sync loop.
  *
  * Nothing here gates the app: without a session every feature works exactly as
@@ -108,7 +121,7 @@ export function useSync(): SyncController {
         /* Name the fix when the server's own message identifies it: this is
            the one rejection a user can resolve and the app can recognise. */
         const hint = /sync_rows_known_table/.test(report.pushError ?? '')
-          ? ' Run supabase/migrations/0003_woodpecker_sets.sql in the Supabase SQL editor: the allow-list still excludes woodpecker_sets.'
+          ? allowListHint(report.pushRejectedRows)
           : '';
         setStatus('error');
         setMessage(

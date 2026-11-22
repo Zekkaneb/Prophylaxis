@@ -3397,10 +3397,23 @@
   white-space: nowrap;
 }
 
+/* The rating is a pill, matching `.play-seat__elo` on the bot seats and the
+   Game review player bar: same accent fill, same radius, sized in em so it
+   scales with the nameplate's `--sm`/`--md`/`--lg`. */
 .nameplate__rating {
-  color: var(--muted);
-  font-weight: 500;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--type-2xs);
+  font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
+  line-height: 1.5;
   white-space: nowrap;
 }
 

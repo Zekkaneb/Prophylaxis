@@ -126,7 +126,10 @@ Accounts ship in the hosted build served over https.
 ## Order of work
 
 1. Server schema + RLS (done — `supabase/migrations/0001_sync.sql`,
-   `0002_sync_cursor.sql` and `0003_woodpecker_sets.sql`; run them in order).
+   `0002_sync_cursor.sql`, `0003_woodpecker_sets.sql`, `0004_prefs.sql`,
+   `0005_user_ratings.sql` and `0006_user_titles.sql`; run them in order, and
+   re-run the newest allow-list file whenever sync reports
+   `sync_rows_known_table`).
 2. Auth: client, session persistence, sign-in from the account corner (done —
    `src/sync/client.ts`, `src/sync/useSync.ts`, `src/components/AccountMenu.tsx`).
 3. Outbox + push, for `played_games` only, then pull on sign-in (done —

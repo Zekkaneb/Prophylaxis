@@ -1,13 +1,16 @@
 import { titleForRating, titleSpec, type TitleId } from '../play/titles.ts';
 
 /**
- * A player's name, with the title they earned in front of it.
+ * A player's name, with the title they earned in front of it and their rating
+ * as a pill after it.
  *
- * `[GM] First Last (2510)` when titled, `First Last (1720)` when not. The badge
- * carries the title's own colour: yellow for the club badge, red for the master
- * ladder. Used on the board, in the PvP lobby, in reviews and in the account
- * panel, so a name reads the same everywhere.
+ * `[GM] First Last [2510]` when titled, `First Last [1720]` when not. The title
+ * badge carries the rank's colour (yellow for the club badge, red for the master
+ * ladder) and the rating sits in the same accent pill the bot seats and Game
+ * review already use — never a bare "(1720)". Used on the board, in PvP seats,
+ * in reviews and in the account panel, so a name reads the same everywhere.
  */
+
 export function PlayerNameplate({
   name,
   rating,
@@ -40,7 +43,11 @@ export function PlayerNameplate({
         </span>
       ) : null}
       <span className="nameplate__name">{name}</span>
-      {showScore ? <span className="nameplate__rating">({rating})</span> : null}
+      {showScore ? (
+        <span className="nameplate__rating" title={`${rating} Elo`}>
+          {rating}
+        </span>
+      ) : null}
     </span>
   );
 }
