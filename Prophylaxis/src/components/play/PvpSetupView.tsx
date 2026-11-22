@@ -12,26 +12,18 @@ import {
 } from '../../play/pvp.ts';
 import type { BonusType } from '../../play/clock.ts';
 
-export interface PvpStartOptions {
-  control: PvpTimeControl;
-  autoFlip: boolean;
-}
-
 const CUSTOM_ID = 'custom';
 
 /**
- * The PvP lobby: quick-pick presets, the custom control panel, and the two ways
- * to play.
+ * The PvP lobby: a room, quick-pick presets and the custom control panel.
  *
  * The presets are the ones the clock labels mean; a delay clock is chosen in
  * the custom panel, because `5+3` cannot say which of the three bonus mechanics
  * it is.
  */
 export function PvpSetupView({
-  onStart,
   online,
 }: {
-  onStart: (options: PvpStartOptions) => void;
   /**
    * Online lobby content. A render prop, because the room has to adopt the time
    * control chosen in this form rather than the other way round.
@@ -42,8 +34,6 @@ export function PvpSetupView({
   const [customMinutes, setCustomMinutes] = useState('10');
   const [customBonus, setCustomBonus] = useState('5');
   const [bonusType, setBonusType] = useState<BonusType>('fischer');
-  const [autoFlip, setAutoFlip] = useState(true);
-  const [mode, setMode] = useState<'local' | 'online'>('local');
 
   const custom = useMemo(
     () => validateCustomPvp(customMinutes, customBonus, bonusType),
@@ -88,32 +78,11 @@ export function PvpSetupView({
     <div className="pvp-setup">
       <section className="play-block" aria-labelledby="pvp-how-title">
         <div className="play-block__head">
-          <p className="play-eyebrow">01 — Players</p>
-          <h2 id="pvp-how-title">How are you playing?</h2>
+          <p className="play-eyebrow">01 — Room</p>
+          <h2 id="pvp-how-title">Play someone</h2>
         </div>
 
-        <div className="play-segment" role="group" aria-label="Play mode">
-          <button
-            type="button"
-            aria-pressed={mode === 'local'}
-            className={`play-segment__option${mode === 'local' ? ' is-selected' : ''}`}
-            onClick={() => setMode('local')}
-          >
-            <span>Pass and play</span>
-            <small>Two people, one device</small>
-          </button>
-          <button
-            type="button"
-            aria-pressed={mode === 'online'}
-            className={`play-segment__option${mode === 'online' ? ' is-selected' : ''}`}
-            onClick={() => setMode('online')}
-          >
-            <span>Online</span>
-            <small>Two devices, one room</small>
-          </button>
-        </div>
-
-        {mode === 'online' ? online?.(control) : null}
+        {online?.(control)}
       </section>
 
       {
@@ -256,19 +225,6 @@ export function PvpSetupView({
               ) : null}
             </div>
 
-            <label className="pvp-toggle">
-              <input
-                type="checkbox"
-                checked={autoFlip}
-                onChange={(event) => setAutoFlip(event.target.checked)}
-              />
-              <span>
-                <span className="pvp-toggle__label">Flip the board each turn</span>
-                <span className="pvp-toggle__hint">
-                  The side to move always plays from the bottom.
-                </span>
-              </span>
-            </label>
           </section>
 
           <aside className="practice-preview" aria-label="Match summary">
@@ -284,26 +240,16 @@ export function PvpSetupView({
                 <dd>{BONUS_TYPES.find((entry) => entry.id === (control?.bonusType ?? bonusType))?.label}</dd>
               </div>
               <div>
-                <dt>Board</dt>
-                <dd>{autoFlip ? 'Flips each turn' : 'Fixed'}</dd>
+                <dt>Room</dt>
+                <dd>Code shared, both seats</dd>
               </div>
             </dl>
-            {mode === 'local' ? (
-              <button
-                type="button"
-                className="primary-btn"
-                disabled={!control}
-                onClick={() => control && onStart({ control, autoFlip })}
-              >
-                Start pass-and-play
-              </button>
-            ) : (
-              <p className="practice-preview__note">
-                Start the game from the room above once your opponent has joined.
-              </p>
-            )}
             <p className="practice-preview__note">
-              White moves first. Pause whenever you need to; the clocks stop for both sides.
+              Create a room, then start once your opponent has joined.
+            </p>
+            <p className="practice-preview__note">
+              White moves first and the host takes White. Each side runs its own
+              clock; you can only resign your own.
             </p>
           </aside>
         </>

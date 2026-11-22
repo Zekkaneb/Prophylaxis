@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { bonusTypeLabel, pvpTimeControlLabel, type PvpTimeControl } from '../../play/pvp.ts';
 import { useLocalPvp } from '../../play/useLocalPvp.ts';
 import type { OnlineRoomApi } from '../../play/pvpOnline.ts';
 import { PvpGameView } from './PvpGameView';
 import type { PlayColor } from '../../play/types.ts';
+import { playerDisplayName } from '../../profile/playerProfile.ts';
+import { usePlayerProfile } from '../../profile/usePlayerProfile.ts';
 
 /**
  * Online PvP: one room code, two browsers.
  *
  * The lobby hands the live room object up to the section once both seats are
- * present; the room itself mirrors the local board and forwards every own move
- * — with the position and both clock readings — to the other client.
+ * present; the room itself mirrors the board and forwards every own move — with
+ * the position and both clock readings — to the other client.
  */
 export function PvpOnlineLobby({
   room,
@@ -24,6 +27,24 @@ export function PvpOnlineLobby({
   onStart: (args: { room: OnlineRoomApi; control: PvpTimeControl }) => void;
 }) {
   const [code, setCode] = useState('');
+  const profile = usePlayerProfile();
+  const identity = {
+    name: playerDisplayName(profile) || 'Player',
+    elo: profile.elo,
+  };
+
+  /* Whichever side presses start, the other one starts too, on the same
+     control — otherwise one player sits in the lobby while the other's clock
+     is already running. */
+  const startRef = useRef(onStart);
+  startRef.current = onStart;
+  useEffect(
+    () =>
+      room.onStart((incoming) => {
+        startRef.current({ room, control: incoming });
+      }),
+    [room],
+  );
 
   if (!control) {
     return (
@@ -39,7 +60,7 @@ export function PvpOnlineLobby({
         <button
           type="button"
           className="secondary-btn"
-          onClick={() => room.create(control)}
+          onClick={() => room.create(control, identity)}
           disabled={room.status === 'connecting' || room.status === 'waiting'}
         >
           Create a room
@@ -57,7 +78,7 @@ export function PvpOnlineLobby({
           <button
             type="button"
             className="play-action"
-            onClick={() => room.join(code, control)}
+            onClick={() => room.join(code, control, identity)}
             disabled={code.trim().length < 4}
           >
             Join
@@ -77,7 +98,9 @@ export function PvpOnlineLobby({
               : room.status === 'connecting'
                 ? 'Connecting…'
                 : room.opponentHere
-                  ? 'Your opponent is here.'
+                  ? `${room.opponent?.name ?? 'Your opponent'} is here — you play ${
+                      room.role === 'host' ? 'White' : 'Black'
+                    }.`
                   : 'Share the code — waiting for your opponent…'}
           </p>
           <div className="pvp-online__actions">
@@ -85,7 +108,10 @@ export function PvpOnlineLobby({
               <button
                 type="button"
                 className="primary-btn"
-                onClick={() => onStart({ room, control })}
+                onClick={() => {
+                  room.sendStart(control);
+                  onStart({ room, control });
+                }}
               >
                 Start the game
               </button>
@@ -104,7 +130,7 @@ export function PvpOnlineLobby({
   );
 }
 
-/** The online board: the local board, locked to this screen's side. */
+/** The online board: the playing room's layout, locked to this screen's side. */
 export function PvpOnlineRoom({
   room,
   control,
@@ -114,7 +140,9 @@ export function PvpOnlineRoom({
   control: PvpTimeControl;
   onExit: () => void;
 }) {
+  const profile = usePlayerProfile();
   const ownerSide: PlayColor = room.role === 'host' ? 'w' : 'b';
+  /* Fixed orientation: an online game must not flip the board under you. */
   const game = useLocalPvp({ ...control, autoFlip: false, ownerSide });
   const sentPlyRef = useRef(0);
   const gameRef = useRef(game);
@@ -176,13 +204,34 @@ export function PvpOnlineRoom({
     [ownerSide, room],
   );
 
+  /* Only the side that owns it may resign, and the other client is told. */
+  useEffect(
+    () =>
+      room.onResign((color) => {
+        const current = gameRef.current;
+        if (color === ownerSide) return;
+        current.resign(color);
+      }),
+    [ownerSide, room],
+  );
+
   return (
     <PvpGameView
       game={game}
       control={control}
+      code={room.code ?? ''}
+      ownSide={ownerSide}
+      self={{
+        name: playerDisplayName(profile) || 'Player',
+        elo: profile.elo,
+        avatar: profile.avatar,
+      }}
+      opponent={room.opponent ? { name: room.opponent.name, elo: room.opponent.elo } : null}
+      onResign={() => {
+        gameRef.current.resign(ownerSide);
+        room.sendResign(ownerSide);
+      }}
       onExit={onExit}
-      onRematch={onExit}
-      online={{ code: room.code ?? '', side: ownerSide }}
     />
   );
 }

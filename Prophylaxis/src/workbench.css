@@ -40,7 +40,9 @@
    before the chip instead of running underneath it. */
 .app-shell--locked {
   --account-inset: clamp(10px, 1.4vw, 24px);
-  --account-reserve: 56px;
+  /* The pill still shows a face and a name at this width, so the reserve has to
+     cover both or the tab strip runs underneath it. */
+  --account-reserve: 132px;
 }
 
 @media (min-width: 861px) {
