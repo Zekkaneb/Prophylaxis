@@ -1,13 +1,17 @@
 import { Chess } from 'chess.js';
 import type { StockfishController } from '../../engine/useStockfish.ts';
-import { depthForElo, chooseCandidate, chooseBlunder } from '../strength.ts';
+import { chooseCandidate, chooseBlunder } from '../strength.ts';
 import {
   HUMAN_MULTI_PV,
   lastCaptureOf,
+  pickCategory,
   planHumanSearch,
   rollSub400RandomFloor,
   selectHumanBotMove,
+  slipBand,
   timeControlCategory,
+  type Bucket,
+  type HumanSearchPlan,
 } from '../humanStrength.ts';
 import { chooseRandomLegalMove } from '../blunders.ts';
 import type { PlayColor } from '../types.ts';
@@ -19,7 +23,7 @@ import {
   type SelectionResult,
 } from './engine.ts';
 import { bryanAlapinPreference } from './bryan.ts';
-import { hasPreparedOpening, openingSource, shouldTakeBlunder } from './opening.ts';
+import { hasPreparedOpening, openingSource } from './opening.ts';
 import { legalBookMoves } from './repertoires/book.ts';
 import { theoryWindow } from '../theory.ts';
 import { personalityBookFor } from './repertoires/index.ts';
@@ -40,6 +44,7 @@ import {
 } from './brandonFreshman.ts';
 import type { PersonalityStyle } from './styles.ts';
 import { computeThinkingPlan, type ThinkingPlan } from './thinking.ts';
+import { traceBotMove } from '../botDebug.ts';
 
 /**
  * Shared bot move selection.
@@ -96,6 +101,45 @@ export interface ChosenBotMove {
   candidates: readonly PersonalityCandidate[];
 }
 
+/**
+ * One roll for this turn's slip, then a move from that band.
+ *
+ * The calibrated path gets its strength from `selectHumanBotMove`; a character
+ * bot used to get it from `blunderChance`, a curve that only ever produced a
+ * blunder and only when a five-line deep list happened to contain an 80 cp
+ * worse move — which at depth 16 it usually does not. Rolling the rated quality
+ * distribution instead means a 1400's turn is an inaccuracy, a mistake or a
+ * blunder at the frequency its rating implies, and the chosen move really sits
+ * in that band.
+ */
+function rollCharacterSlip(input: {
+  style: PersonalityStyle;
+  plan: HumanSearchPlan;
+  source: ChosenBotMove['source'];
+  botColor: PlayColor;
+  elo: number;
+  candidates: readonly PersonalityCandidate[];
+  random: () => number;
+}): { uci: string; kind: Bucket } | null {
+  const { style, plan, source, botColor, elo, candidates, random } = input;
+  if (hasPreparedOpening(source)) return null;
+
+  /* A character with its own dial keeps it: `mistakeChance` expresses a
+     difficulty the curve cannot (it floors out at 45%), so those characters
+     roll their slip directly. Everyone else rolls the rated distribution. */
+  const kind: Bucket =
+    style.mistakeChance !== undefined
+      ? random() < style.mistakeChance
+        ? 'blunder'
+        : 'best'
+      : pickCategory(random(), plan.quality);
+  const band = slipBand(kind);
+  if (!band) return null;
+
+  const uci = chooseBlunder(candidates, botColor, elo, random, band);
+  return uci ? { uci, kind } : null;
+}
+
 export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBotMove | null> {
   const { game, fen, history, botColor, style, elo, engine } = input;
   const random = input.random ?? Math.random;
@@ -110,6 +154,11 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   };
 
   let uci: string | null = null;
+  /* The rated search plan, kept outside the engine branch so the dev trace can
+     report the depth and effective rating the move was actually chosen at. */
+  let searchPlan: HumanSearchPlan | null = null;
+  /** The quality class the slip roll asked for, for the dev trace. */
+  let slipKind: Bucket | null = null;
   let plan: ThinkingPlan | null = null;
   let decision: ChosenBotMove['decision'] = null;
   let bookMove = false;
@@ -201,49 +250,62 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   if (!uci) {
     if (style) plan = computeThinkingPlan({ ...thinking, style, bookMove: false });
 
-    /* Five lines: the personality layer and the blunder pick both choose from
-       this list, so it needs real alternatives near the best move. A bot with
-       no personality is calibrated to its USCF rating instead: six lines, the
-       tier's depth, and a human deliberation the search spends itself. */
-    const humanSearch = style
-      ? null
-      : planHumanSearch({
-          fen,
-          elo,
-          moveNumber: Math.floor(history.length / 2) + 1,
-          timeControlCategory: timeControlCategory(input.initialMs),
-          remainingTimeMs: input.clockMs,
-          incrementMs: input.incrementMs,
-          lastMove: lastCaptureOf(game),
-          random,
-        });
-    /* `depthCap` is a per-character ceiling (Edward's beginner calculation);
-       every other profile still searches at the depth its rating earns. */
+    /* Every bot searches at the depth its rating earns, character or not: the
+       rating's human plan is the strength dial, and a per-character `depthCap`
+       can only shorten that look (Edward's beginner calculation). MultiPV is the
+       same wide list for both paths, so the slip picker always has real
+       alternatives — a five-line list at a deep search is all near-best moves,
+       which is how a 1400 used to come out at engine strength. */
+    const humanSearch = planHumanSearch({
+      fen,
+      elo,
+      moveNumber: Math.floor(history.length / 2) + 1,
+      timeControlCategory: timeControlCategory(input.initialMs),
+      remainingTimeMs: input.clockMs,
+      incrementMs: input.incrementMs,
+      lastMove: lastCaptureOf(game),
+      /* A character has its own deliberation curve (`computeThinkingPlan`), so
+         only the plan's *quality* is read here. Handing it the shared random
+         source would spend rolls on think-time the character never uses. */
+      random: style ? () => 0.5 : random,
+    });
+    const searchDepth = Math.min(
+      humanSearch.depth,
+      style?.depthCap ?? Number.POSITIVE_INFINITY,
+    );
+    searchPlan = humanSearch;
     const evaluation = style
-      ? await engine.evaluateWithin(
-          fen,
-          Math.min(depthForElo(elo), style.depthCap ?? depthForElo(elo)),
-          5,
-          plan?.searchMs ?? 1200,
-        )
+      ? await engine.evaluateWithin(fen, searchDepth, HUMAN_MULTI_PV, plan?.searchMs ?? 1200)
       : await engine.evaluateWithin(
           fen,
-          humanSearch!.depth,
+          searchDepth,
           HUMAN_MULTI_PV,
-          humanSearch!.thinkTimeMs,
-          humanSearch!.nodeCap ?? 0,
+          humanSearch.thinkTimeMs,
+          humanSearch.nodeCap ?? 0,
         );
     candidates = evaluation.candidates;
 
     if (aborted()) return null;
 
-    /* Personalities roll once per turn for a human-style mistake. The calibrated
-       path carries its own mistake model inside `selectHumanBotMove`. */
-    const rolled =
-      style &&
-      shouldTakeBlunder(elo, random, hasPreparedOpening(source), style.mistakeChance)
-        ? chooseBlunder(evaluation.candidates, botColor, elo, random)
-        : null;
+    /* A personality rolls the same quality distribution the calibrated path
+       does — the rating's own error mass — and fills the rolled band from the
+       engine's list. A character with an explicit `mistakeChance` keeps that
+       dial instead, since it expresses difficulty the curve cannot (it floors
+       out at 45%). The calibrated path carries the full model inside
+       `selectHumanBotMove`, so it never reaches this roll. */
+    const slip = style
+      ? rollCharacterSlip({
+          style,
+          plan: humanSearch,
+          source,
+          botColor,
+          elo,
+          candidates: evaluation.candidates,
+          random,
+        })
+      : null;
+    const rolled = slip?.uci ?? null;
+    slipKind = slip?.kind ?? null;
     /* Faadi still sees a free piece: his wildcard error is an idea he missed,
        not a queen handed over in broad daylight. */
     const blunder =
@@ -297,7 +359,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
           });
           const childEval = await engine.evaluateWithin(
             child.fen(),
-            Math.max(4, depthForElo(elo) - 2),
+            Math.max(2, searchDepth - 2),
             1,
             300,
           );
@@ -385,6 +447,29 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
     uci = chooseRandomLegalMove(game, elo, random);
   }
   if (!uci) return null;
+
+  /* Calibration trace: target rating, the search that was really run, where the
+     move sat in the engine's list and what it cost. Answers "is the 1400 bot
+     actually playing like a 1400" from data instead of impressions. */
+  if (searchPlan) {
+    const chosen = candidates.find((candidate) => candidate.uci === uci);
+    const bestCp = candidates.reduce(
+      (best, candidate) => Math.max(best, candidate.scoreCp),
+      Number.NEGATIVE_INFINITY,
+    );
+    traceBotMove({
+      elo,
+      effectiveElo: searchPlan.calibration.elo,
+      depth: Math.min(searchPlan.depth, style?.depthCap ?? Number.POSITIVE_INFINITY),
+      multiPv: HUMAN_MULTI_PV,
+      source,
+      bookMove,
+      rank: candidates.findIndex((candidate) => candidate.uci === uci) + 1,
+      cpLoss:
+        chosen && Number.isFinite(bestCp) ? Math.max(0, Math.round(bestCp - chosen.scoreCp)) : 0,
+      kind: slipKind,
+    });
+  }
 
   return { uci, plan, decision, bookMove, forgotten, source, candidates };
 }

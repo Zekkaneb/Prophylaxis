@@ -152,6 +152,26 @@ function personalityAllowance(style: PersonalityStyle): number {
   return Math.round(4 + style.risk * 0.18 + style.aggression * 0.12);
 }
 
+/**
+ * How far a character's taste may outrank the engine's evaluation at this rating.
+ *
+ * `PersonalityStyle.accuracy` was documented as "set from Elo" but every profile
+ * carried the same value, so a 2800 and a 1200 weighed a taste bonus identically:
+ * a 25 cp nudge consistently beat a 20 cp evaluation gap, and the strongest bots
+ * were not playing engine lines at all. Taste now shrinks with rating — full
+ * weight at club level, a quarter of it at the top of the ladder.
+ */
+function tasteScale(elo: number): number {
+  /* Taste is a near-tie breaker, never a strength dial: a profile's maximum
+     bonus is a few tens of centipawns, so at club level it may swing a 15-20 cp
+     decision and at the top it may only swing a handful. Above 2400 it stops
+     shrinking — those bots still have a character, they just do not trade real
+     evaluation for it. */
+  if (elo <= 1000) return 0.6;
+  if (elo >= 2400) return 0.1;
+  return 0.6 - ((elo - 1000) / 1400) * 0.5;
+}
+
 function featureScore(
   style: PersonalityStyle,
   features: MoveFeatures,
@@ -239,7 +259,7 @@ export function choosePersonalityMove(input: {
       return {
         ...entry,
         gap,
-        score: -gap * style.accuracy + featureScore(style, entry.features, entry.botPov),
+        score: -gap * style.accuracy + featureScore(style, entry.features, entry.botPov) * tasteScale(elo),
       };
     })
     .filter((entry) => entry.gap <= allowance);

@@ -223,6 +223,29 @@ export const BUCKET_CENTRES = {
 } as const;
 
 /**
+ * The centipawn band a rolled bucket covers, for callers that fill it from the
+ * engine's own MultiPV list instead of the depth-9 reference pass.
+ *
+ * The calibrated selector scores every candidate against a reference search and
+ * fills the bucket by win drop. A character bot has no reference pass, so the
+ * same roll has to be expressed in centipawns: a 1400's `?!` is a 40-120 cp
+ * move, a `?` is 120-280 and a `??` is 280-900. `null` means the roll asked for
+ * a best/excellent/good move, where personality may choose freely.
+ */
+export function slipBand(kind: Bucket): { minGap: number; maxGap: number } | null {
+  switch (kind) {
+    case 'inaccuracy':
+      return { minGap: 40, maxGap: 120 };
+    case 'mistake':
+      return { minGap: 120, maxGap: 280 };
+    case 'blunder':
+      return { minGap: 280, maxGap: 900 };
+    default:
+      return null;
+  }
+}
+
+/**
  * Ratings at which a bucket leaves the distribution entirely.
  *
  * A 2100 does not blunder by choice: the error mass that the smooth curve would

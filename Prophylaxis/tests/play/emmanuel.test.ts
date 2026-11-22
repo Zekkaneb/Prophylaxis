@@ -52,6 +52,7 @@ import {
 import { computeThinkingPlan } from '../../src/play/personality/thinking.ts';
 import { shouldTakeBlunder } from '../../src/play/personality/opening.ts';
 import { chooseBlunder, blunderChance, depthForElo } from '../../src/play/strength.ts';
+import { HUMAN_MULTI_PV, humanSearchDepth } from '../../src/play/humanStrength.ts';
 import { buildPgn } from '../../src/play/pgn.ts';
 import type { StockfishController } from '../../src/engine/useStockfish.ts';
 
@@ -277,7 +278,7 @@ test('the slip rate is his alone: the shared rating curve continues to apply', (
   assert.equal(blunderChance(150), 0.45, 'the shared curve is unchanged at 150');
 });
 
-test('his search is capped at six plies, however deep the calling rating asks', async () => {
+test('his search follows his rating, and his own ceiling can only shorten it', async () => {
   const seen = { depth: 0, multipv: 0 };
   const played = position('e4', 'e5');
   await chooseBotMove({
@@ -302,8 +303,11 @@ test('his search is capped at six plies, however deep the calling rating asks', 
     ),
     random: () => 0.99,
   });
-  assert.equal(seen.depth, 6);
-  assert.equal(seen.multipv, 5);
+  /* A 150-rated character no longer gets the shared depth-16 look: the search
+     is the rating's own plan, capped by his character sheet when that is
+     shorter. The wide list is what the slip picker fills from. */
+  assert.equal(seen.depth, Math.min(humanSearchDepth(150), STYLE.depthCap ?? Infinity));
+  assert.equal(seen.multipv, HUMAN_MULTI_PV);
 });
 
 test('a slip replaces his good move with a visibly worse one from the same list', async () => {
@@ -377,6 +381,8 @@ test('a weak mover still takes something: he is not random legal moves', async (
         { uci: 'e7e6', scoreCp: -30 },
         { uci: 'g8f6', scoreCp: -55 },
         { uci: 'a7a6', scoreCp: -120 },
+        { uci: 'h7h6', scoreCp: -300 },
+        { uci: 'g7g6', scoreCp: -520 },
       ]),
       random: afterFloor(() => roll),
     });

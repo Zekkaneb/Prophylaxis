@@ -534,6 +534,17 @@ instead of shrinking the engine. There is no `UCI_Elo` anywhere: the position is
 searched with `MultiPV 10`, and the move is chosen from those engine-assessed
 lines by a six-bucket **move-quality distribution** over 100-2800 USCF.
 
+Character bots read the same plan. They used to search at the shared depth-16
+ceiling over five lines, which is how a 1400 could come out at engine accuracy:
+a deep, narrow list holds no move bad enough for its error bands, so the rated
+slip quietly became a best move. Their search now uses `humanSearchDepth(elo)`
+(capped by any per-character `depthCap`) over `MultiPV 10`, and their slip roll —
+`slipBand` in `humanStrength.ts` — fills the same `?!`/`?`/`??` bands from that
+list. Personality chooses inside the rolled band, not instead of it; taste also
+shrinks with rating (`tasteScale` in `personality/engine.ts`), so a 2350 plays
+engine lines and a 1200 does not. `play/botDebug.ts` traces one line per engine
+move (target Elo, depth, MultiPV, rank, centipawn drop) in dev builds.
+
 With `s = (clamp(elo, 100, 2800) - 100) / 2700`:
 
 - **Blunder** (`??`, 20%+ win drop) `0.46 * exp(-5.8 * s^1.15)`, off at 2100

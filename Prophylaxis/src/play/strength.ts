@@ -96,10 +96,24 @@ export function chooseBlunder(
   sideToMove: 'w' | 'b',
   elo: number,
   random: () => number = Math.random,
+  /** The rolled severity band, in centipawns. Omitted by the shared curve. */
+  band?: { minGap: number; maxGap: number },
 ): string | null {
   if (candidates.length === 0) return null;
 
   const sign = sideToMove === 'w' ? 1 : -1;
+
+  /* A forced mate is not a strength question. No rating throws a mate away on
+     purpose, and slipping around one is how a "40-120 cp inaccuracy" turned
+     into a 9000 cp trace: the best line was mate and the band pick was anything
+     else. Skipping the slip here keeps the error model about chess, not about
+     throwing won games. */
+  const hasMate =
+    candidates.some(
+      (candidate) => candidate.mate !== undefined && candidate.mate !== null && sign * candidate.mate > 0,
+    ) || candidates.some((candidate) => sign * candidate.scoreCp > 5000);
+  if (hasMate) return null;
+
   const scored = candidates.map((candidate) => ({
     uci: candidate.uci,
     botPov: sign * candidate.scoreCp,
@@ -114,9 +128,13 @@ export function chooseBlunder(
   if (mistaken.length === 0) return null;
 
   /* Prefer a slip inside this rating's severity; if every candidate is worse
-     than that, take the mildest one rather than the worst line on the list. */
+     than that, take the mildest one rather than the worst line on the list.
+     A caller that rolled a specific bucket passes its band, so the move really
+     is the class the roll asked for. */
   const severity = blunderSeverityCp(elo);
-  const within = mistaken.filter((entry) => entry.gap <= severity);
+  const minGap = band?.minGap ?? BLUNDER_MIN_GAP_CP;
+  const maxGap = Math.min(band?.maxGap ?? severity, severity);
+  const within = mistaken.filter((entry) => entry.gap >= minGap && entry.gap <= maxGap);
   const pool =
     within.length > 0
       ? within
