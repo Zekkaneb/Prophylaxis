@@ -2619,3 +2619,322 @@
     padding: 36px 18px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Opening practice
+
+   A setup screen with the course list on the left and the summary card on the
+   right, the scorecard strip above a live board, and the drill's feedback in
+   the end-of-game card.
+   -------------------------------------------------------------------------- */
+
+.practice-setup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 348px);
+  gap: 24px;
+  align-items: start;
+  min-width: 0;
+}
+
+.practice-courses {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.practice-course {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.practice-course:hover {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+}
+
+.practice-course.is-selected {
+  border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-1));
+}
+
+.practice-course__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.practice-course__title {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.practice-course__side {
+  flex: none;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.practice-course__meta {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.practice-modes {
+  display: grid;
+  gap: 8px;
+}
+
+.practice-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.practice-mode:hover {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+}
+
+.practice-mode.is-selected {
+  border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-1));
+}
+
+.practice-mode__label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.practice-mode__hint {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.practice-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface-1);
+}
+
+.practice-preview h2 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.practice-preview__note {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* The scorecard above the board. */
+
+.practice-live {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.practice-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface-1));
+  font-size: 13px;
+  color: var(--text);
+}
+
+.practice-strip__course {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.practice-strip__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.practice-strip__mode {
+  padding: 1px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.practice-strip__stat {
+  color: var(--text);
+}
+
+.practice-strip__stat strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.practice-strip__stat--quiet {
+  color: var(--muted);
+}
+
+.practice-strip__stat--good {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.practice-strip__deviation {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  font-size: 12px;
+}
+
+/* The feedback block inside the end-of-game card. */
+
+.practice-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 2px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-1);
+  text-align: left;
+}
+
+.practice-feedback__title {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.practice-feedback__lede {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.practice-feedback__facts {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.practice-feedback__facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.practice-feedback__facts dt {
+  color: var(--muted);
+}
+
+.practice-feedback__facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.practice-feedback__note {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  font-size: 12.5px;
+}
+
+.practice-feedback__note p {
+  margin: 0;
+}
+
+.practice-feedback__hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.practice-feedback__lines ul {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+}
+
+.practice-feedback__lines li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.practice-feedback__line-move {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.practice-feedback__line-kind {
+  color: var(--muted);
+}
+
+.practice-feedback__line-ok {
+  color: var(--accent);
+}
+
+.practice-feedback__line-off {
+  color: var(--danger-ink);
+}
+
+@media (max-width: 1100px) {
+  .practice-setup {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

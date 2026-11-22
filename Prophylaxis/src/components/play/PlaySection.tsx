@@ -15,10 +15,19 @@ import { GameReviewView } from './GameReviewView';
 import { HistoryView } from './HistoryView';
 import { NewGameView } from './NewGameView';
 import { OpponentAvatar } from './OpponentAvatar';
+import { PracticeSetupView, type PracticeStartOptions } from './PracticeSetupView';
+import { PracticeFeedback, PracticeStrip } from './PracticePanel';
 import EmptyBoardArt from '../EmptyBoardArt';
 import './play.css';
 
-export type PlayView = 'new' | 'current' | 'bots' | 'match' | 'history' | 'review';
+export type PlayView =
+  | 'new'
+  | 'practice'
+  | 'current'
+  | 'bots'
+  | 'match'
+  | 'history'
+  | 'review';
 
 /**
  * The playing views share one live-game owner, so switching between them (and
@@ -37,6 +46,9 @@ export interface PlaySectionProps {
 export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
   const [view, setView] = useState<PlayView>('new');
   const [reviewId, setReviewId] = useState<string | null>(null);
+  /* Set when a practice game is over and the player asks for a new one: the
+     finished board stays mounted behind its end card until then. */
+  const [practiceSetup, setPracticeSetup] = useState(false);
   /* One shared Stockfish worker serves both the human game and bot matches. */
   const engine = useStockfish();
   const game = usePlayGame(engine);
@@ -44,10 +56,14 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
   const { setVisible } = game;
   const setMatchVisible = match.setVisible;
 
-  /* Only the board view can run the bot; the player's clock keeps its own time. */
+  /* Only a board view can run the bot; the player's clock keeps its own time.
+     Repertoire practice opens the same board, so it counts as one while its
+     game is live. */
+  const boardOpen = view === 'current' || (view === 'practice' && Boolean(game.session));
+
   useEffect(() => {
-    setVisible(view === 'current');
-  }, [setVisible, view]);
+    setVisible(boardOpen);
+  }, [boardOpen, setVisible]);
 
   useEffect(() => {
     setMatchVisible(view === 'match');
@@ -93,6 +109,23 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
             onClick={() => setView('new')}
           >
             New Game
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'practice'}
+            className={`play-tabs__tab${view === 'practice' ? ' is-active' : ''}`}
+            onClick={() => {
+              /* Re-entering the tab during a practice game goes straight back to
+                 the board instead of hiding it behind the setup form. */
+              setView('practice');
+              window.scrollTo({ top: 0 });
+            }}
+          >
+            Repertoire
+            {game.session?.practice ? (
+              <span className="play-tabs__dot" aria-label="Practice game in progress" />
+            ) : null}
           </button>
           <button
             type="button"
@@ -161,6 +194,44 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
           onAbandon={() => void game.abandonResumable()}
           onDismissResumeError={game.clearResumeError}
         />
+      ) : null}
+
+      {view === 'practice' ? (
+        game.session && !practiceSetup ? (
+          <div className="practice-live">
+            {game.session.practice ? <PracticeStrip practice={game.session.practice} /> : null}
+            <CurrentGameView
+              session={game.session}
+              clock={game.clock}
+              engine={engine}
+              botThinking={game.botThinking}
+              notice={game.notice}
+              onMove={game.playMove}
+              onPremove={game.queuePremove}
+              onResign={game.resign}
+              onDraw={() => void game.offerDraw()}
+              onRematch={game.rematch}
+              onNewGame={() => setPracticeSetup(true)}
+              onHistory={() => setView('history')}
+              onFlip={game.flipBoard}
+              onReview={onReviewGame ?? openReview}
+              onDismissNotice={game.clearNotice}
+              practiceFeedback={
+                game.session.practice ? (
+                  <PracticeFeedback practice={game.session.practice} />
+                ) : null
+              }
+            />
+          </div>
+        ) : (
+          <PracticeSetupView
+            onStart={(options: PracticeStartOptions) => {
+              setPracticeSetup(false);
+              game.startPractice(options);
+              window.scrollTo({ top: 0 });
+            }}
+          />
+        )
       ) : null}
 
       {view === 'current' ? (

@@ -65,6 +65,11 @@ export interface CurrentGameViewProps {
   onFlip: () => void;
   onReview: (gameId: string) => void;
   onDismissNotice: () => void;
+  /**
+   * Extra feedback for the end-of-game card, used by repertoire practice to
+   * report the opening drill before the player leaves for the review.
+   */
+  practiceFeedback?: ReactNode;
 }
 
 /** "You won", "You lost" or "Draw", from the stored White-POV result. */
@@ -123,6 +128,7 @@ export function CurrentGameView({
   onFlip,
   onReview,
   onDismissNotice,
+  practiceFeedback,
 }: CurrentGameViewProps) {
   const [confirm, setConfirm] = useState<ConfirmKind>(null);
   /* The player's own card, editable on the Dashboard. */
@@ -694,6 +700,7 @@ export function CurrentGameView({
             <p className="play-end__score">
               {session.result} · {session.sans.length} plies · {formatDuration(duration)}
             </p>
+            {practiceFeedback}
             {session.reaction ? (
               <p className="play-end__line">{session.reaction.text}</p>
             ) : null}

@@ -80,6 +80,21 @@ import { personalityBookFor } from './personality/repertoires/index.ts';
 import { chooseKidMove, kidPlan } from './personality/repertoires/kid.ts';
 import { theoryOpen } from './theory.ts';
 import {
+  PRACTICE_PARTNER,
+  bookMovesFor,
+  choosePartnerBookMove,
+  createPracticeState,
+  notePartnerMove,
+  notePlayerMove,
+  partnerShouldDeviate,
+  practiceSnapshot,
+  type PracticeEntry,
+  type PracticeMode,
+  type PracticeSnapshot,
+  type PracticeState,
+} from './practice.ts';
+import type { PgnCourseRecord } from '../courses/types.ts';
+import {
   chooseNinaBookMove,
   chooseNinaPlanMove,
   createOpeningMemory,
@@ -150,6 +165,11 @@ export interface PlaySession {
   endedAt: number | null;
   saveError: string | null;
   savedGameId: string | null;
+  /**
+   * The opening-practice scorecard while this game is a repertoire sparring
+   * session; `null` for every ordinary game.
+   */
+  practice?: PracticeSnapshot | null;
 }
 
 interface BotTimers {
@@ -308,9 +328,24 @@ export function usePlayGame(engine: StockfishController) {
   /** Set while a move is being chosen after Nina forgot her line. */
   const forgotLineRef = useRef(false);
 
+  /** The course being practised, and the running scorecard for this game. */
+  const practiceRef = useRef<PracticeState | null>(null);
+  const practiceCourseRef = useRef<PgnCourseRecord | null>(null);
+  /** What the partner just chose, so `commit` can record it against the course. */
+  const practiceEntryRef = useRef<PracticeEntry | null>(null);
+  const practiceOffBookRef = useRef(false);
+
   const publish = useCallback((next: PlaySession | null) => {
-    sessionRef.current = next;
-    setSession(next);
+    /* Every publication carries the practice scorecard, so the panel and the
+       end-of-game feedback read one object instead of subscribing separately. */
+    const merged = next
+      ? {
+          ...next,
+          practice: practiceRef.current ? practiceSnapshot(practiceRef.current) : null,
+        }
+      : null;
+    sessionRef.current = merged;
+    setSession(merged);
   }, []);
 
   /**
@@ -558,6 +593,8 @@ export function usePlayGame(engine: StockfishController) {
     const inBookWindow = theoryOpen(elo, sansRef.current.length);
     /** A search that resolves after a rematch must not move in the new game. */
     const searchGameId = gameIdRef.current;
+    /** The course this game is practising, if any. */
+    const practiceState = practiceRef.current;
     let uci: string | null = null;
     let pauseMs = 180;
     let plan: ThinkingPlan | null = null;
@@ -593,6 +630,55 @@ export function usePlayGame(engine: StockfishController) {
           decisionRef.current = null;
           plan = computeThinkingPlan({ ...thinkingInput, style, bookMove: false });
           pauseMs = plan.pauseMs;
+        }
+      }
+
+      /* --------------------------- opening practice --------------------------- */
+
+      /* The chosen course answers before any personality book or search: strict
+         main line, a written side line, or one sound move off the book. When
+         the course has nothing here the ordinary path below takes over, which
+         is the hand-over from prepared play to a real game. */
+      if (!uci && practiceState) {
+        const entry = choosePartnerBookMove(
+          practiceState,
+          fen,
+          botColor,
+          sansRef.current.length,
+        );
+        if (entry) {
+          uci = entry.uci;
+          practiceEntryRef.current = entry;
+          /* A book move is instant, but the partner is not a database: it takes
+             a beat, like a person recalling the line. */
+          pauseMs = 520;
+          humanWaitMs = 520;
+        } else if (
+          partnerShouldDeviate(practiceState, fen, botColor, sansRef.current.length)
+        ) {
+          /* The test: the engine's best move that the course does not have, so
+             the player has to play the position rather than the line. */
+          const booked = new Set(bookMovesFor(practiceState, fen, botColor));
+          const legal = new Set(
+            game.moves({ verbose: true }).map((move) => `${move.from}${move.to}${move.promotion ?? ''}`),
+          );
+          const deviation = await engineRef.current
+            .evaluateWithin(fen, 8, 6, 600)
+            .catch(() => null);
+          if (statusRef.current !== 'playing' || gameIdRef.current !== searchGameId) {
+            setBotThinking(false);
+            return;
+          }
+          const candidate = deviation?.candidates.find(
+            (option) => legal.has(option.uci) && !booked.has(option.uci),
+          );
+          if (candidate) {
+            uci = candidate.uci;
+            practiceEntryRef.current = null;
+            practiceOffBookRef.current = true;
+            pauseMs = 680;
+            humanWaitMs = 680;
+          }
         }
       }
 
@@ -1029,6 +1115,29 @@ export function usePlayGame(engine: StockfishController) {
       }
 
       sansRef.current = [...sansRef.current, applied.san];
+
+      /* Opening practice scores every move against the course: the player's
+         replies (kept, misplaced, or outside the course) and the partner's
+         (book, side line or deliberate deviation). */
+      if (practiceRef.current) {
+        const uci = `${applied.from}${applied.to}${applied.promotion ?? ''}`;
+        if (applied.color === playerColorRef.current) {
+          notePlayerMove(practiceRef.current, {
+            fenBefore,
+            fenAfter,
+            uci,
+            san: applied.san,
+          });
+        } else {
+          notePartnerMove(practiceRef.current, {
+            entry: practiceEntryRef.current,
+            offBook: practiceOffBookRef.current,
+            san: applied.san,
+          });
+          practiceEntryRef.current = null;
+          practiceOffBookRef.current = false;
+        }
+      }
       const current = sessionRef.current;
       if (current) {
         publish({
@@ -1233,6 +1342,12 @@ export function usePlayGame(engine: StockfishController) {
   const startGame = useCallback(
     (opponent: OpponentProfile, config: GameConfig) => {
       clearTimers();
+      /* A new board is never a practice session unless `startPractice` says so
+         straight afterwards. */
+      practiceRef.current = null;
+      practiceCourseRef.current = null;
+      practiceEntryRef.current = null;
+      practiceOffBookRef.current = false;
       const playerColor: PlayColor =
         config.color === 'random' ? (Math.random() < 0.5 ? 'w' : 'b') : config.color;
       const game = new Chess();
@@ -1289,6 +1404,51 @@ export function usePlayGame(engine: StockfishController) {
     [clearTimers, publish, primePersonality],
   );
 
+  /* ---------------------------- opening practice ---------------------------- */
+
+  /**
+   * Starts a repertoire sparring game from one of the player's courses.
+   *
+   * The board, saving, history and review are the ordinary live-game ones; the
+   * only difference is who supplies the partner's moves — the course, until the
+   * course runs out.
+   */
+  const startPractice = useCallback(
+    (options: {
+      course: PgnCourseRecord;
+      mode: PracticeMode;
+      playerColor: PlayColor;
+      /** Rating the engine plays at once the book ends. */
+      elo?: number;
+    }) => {
+      const partner: OpponentProfile = {
+        ...PRACTICE_PARTNER,
+        elo: options.elo ?? PRACTICE_PARTNER.elo,
+      };
+
+      startGame(partner, {
+        color: options.playerColor,
+        timeControlId: 'practice',
+        initialSeconds: 0,
+        incrementSeconds: 0,
+        untimed: true,
+      });
+
+      practiceRef.current = createPracticeState(
+        options.course,
+        options.mode,
+        options.playerColor,
+      );
+      practiceCourseRef.current = options.course;
+
+      /* `startGame` already published the board; publish once more so the
+         session carries its practice scorecard from the first frame. */
+      const current = sessionRef.current;
+      if (current) publish({ ...current });
+    },
+    [publish, startGame],
+  );
+
   /* -------------------------------- restore -------------------------------- */
 
   /**
@@ -1298,6 +1458,12 @@ export function usePlayGame(engine: StockfishController) {
   const resumeGame = useCallback(
     (record: ActiveGameRecord): boolean => {
       setResumeError(null);
+      /* A stored game does not carry its course, so a resumed game is an
+         ordinary game: the practice panel is not shown for it. */
+      practiceRef.current = null;
+      practiceCourseRef.current = null;
+      practiceEntryRef.current = null;
+      practiceOffBookRef.current = false;
 
       if (!recordLooksConsistent(record)) {
         setResumeError('That unfinished game is incomplete and could not be restored.');
@@ -1546,8 +1712,20 @@ export function usePlayGame(engine: StockfishController) {
   const rematch = useCallback(() => {
     const opponent = opponentRef.current;
     const config = configRef.current;
-    if (opponent && config) startGame(opponent, config);
-  }, [startGame]);
+    if (!opponent || !config) return;
+
+    /* A practice game is a drill: the rematch keeps the same course, mode and
+       colour instead of dropping the player into an ordinary game. */
+    const course = practiceCourseRef.current;
+    const previous = practiceRef.current;
+    startGame(opponent, config);
+    if (course && previous) {
+      practiceRef.current = createPracticeState(course, previous.mode, previous.playerColor);
+      practiceCourseRef.current = course;
+      const current = sessionRef.current;
+      if (current) publish({ ...current });
+    }
+  }, [publish, startGame]);
 
   /** Called by the playing section when the current-game view is entered/left. */
   const setVisible = useCallback(
@@ -1621,6 +1799,7 @@ export function usePlayGame(engine: StockfishController) {
     resumeError,
     loadingActive,
     startGame,
+    startPractice,
     resumeGame,
     abandonResumable,
     playMove,
