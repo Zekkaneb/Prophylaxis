@@ -43,7 +43,10 @@ function hasValues(profile: PlayerProfile): boolean {
 
 function sameProfile(a: PlayerProfile, b: PlayerProfile): boolean {
   return (
-    a.firstName === b.firstName && a.lastName === b.lastName && a.elo === b.elo
+    a.firstName === b.firstName &&
+    a.lastName === b.lastName &&
+    a.elo === b.elo &&
+    a.avatar === b.avatar
   );
 }
 
@@ -107,7 +110,14 @@ export async function applySignedInProfile(): Promise<void> {
     const local = loadPlayerProfile();
 
     if (fromAccount) {
-      if (!sameProfile(fromAccount, local)) updatePlayerProfile(fromAccount);
+      /* The account holds the name and rating, never the picture: it is too big
+         for `user_metadata` and belongs to this device. Applying the account's
+         values must therefore keep the local photo, or every boot would wipe
+         the face the player chose. */
+      const merged: PlayerProfile = local.avatar
+        ? { ...fromAccount, avatar: local.avatar }
+        : fromAccount;
+      if (!sameProfile(merged, local)) updatePlayerProfile(merged);
       return;
     }
 

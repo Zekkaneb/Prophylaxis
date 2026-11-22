@@ -1,5 +1,5 @@
 import { db } from '../db.ts';
-import { PLAYER_PROFILE_KEY } from '../profile/playerProfile.ts';
+import { loadPlayerProfile, PLAYER_PROFILE_KEY } from '../profile/playerProfile.ts';
 import { recordSyncedChange } from './outbox.ts';
 
 /**
@@ -92,18 +92,40 @@ export async function syncPreference(key: PreferenceKey, value: string): Promise
   }
 }
 
+/**
+ * Keeps the one part of the profile that is per-device.
+ *
+ * The picture is a data URL megabytes away from a synced row, so a profile
+ * from another device (or the account's metadata, which never held one) arrives
+ * without it. Taking such a value verbatim would wipe a photo the player chose
+ * whenever a sync round trip landed. The name and rating still win; the face
+ * stays.
+ */
+function keepLocalAvatar(value: string): string {
+  let incoming: { avatar?: unknown } | null = null;
+  try {
+    incoming = JSON.parse(value) as { avatar?: unknown } | null;
+  } catch {
+    return value;
+  }
+  if (!incoming || typeof incoming !== 'object' || incoming.avatar) return value;
+  const local = loadPlayerProfile();
+  return local.avatar ? JSON.stringify({ ...incoming, avatar: local.avatar }) : value;
+}
+
 /** Applies a value that arrived from the server. Runs under `withRemoteApply`. */
 export async function applyRemotePreference(key: string, value: string): Promise<void> {
   if (!isPreferenceKey(key) || typeof value !== 'string') return;
-  writeLocal(key, value);
+  const next = key === 'profile' ? keepLocalAvatar(value) : value;
+  writeLocal(key, next);
 
   try {
-    appliers.get(key)?.(value);
+    appliers.get(key)?.(next);
   } catch {
     /* a malformed value from another build: keep the local setting */
   }
 
-  await db.prefs.put({ key, value });
+  await db.prefs.put({ key, value: next });
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event(PREFERENCES_APPLIED_EVENT));
   }
