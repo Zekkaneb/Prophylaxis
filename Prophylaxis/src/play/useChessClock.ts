@@ -35,6 +35,8 @@ export interface ChessClockApi {
   stop: () => void;
   /** Takes the opponent's measured times (online play), keeping the turn. */
   adopt: (whiteMs: number, blackMs: number) => void;
+  /** Rebuilds the clock for a game picked up mid-play (rejoining online). */
+  restore: (whiteMs: number, blackMs: number, active: 'w' | 'b' | null) => void;
   /** True while the clock is deliberately held. */
   paused: boolean;
   untimed: boolean;
@@ -164,5 +166,13 @@ export function useChessClock(options: ChessClockOptions): ChessClockApi {
     [publish],
   );
 
-  return { snapshot, start, afterMove, pause, resume, stop, adopt, paused, untimed };
+  const restore = useCallback(
+    (whiteMs: number, blackMs: number, active: 'w' | 'b' | null) => {
+      clockRef.current?.restoreTimes(whiteMs, blackMs, active, now());
+      publish();
+    },
+    [publish],
+  );
+
+  return { snapshot, start, afterMove, pause, resume, stop, adopt, restore, paused, untimed };
 }

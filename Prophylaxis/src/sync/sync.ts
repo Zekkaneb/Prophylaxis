@@ -103,6 +103,10 @@ const GROWING_FIELDS: Record<string, readonly string[]> = {
   puzzle_sets: ['current_cycle'],
   line_progress: ['attempts', 'best_percent', 'mastery', 'last_drilled'],
   lesson_progress: ['last_practiced'],
+  /* A rating can fall, but these two can never be lowered by a merge: the peak
+     is a record and the floor is a promise once earned. A game count that only
+     grows also keeps the calibration badge from coming back. */
+  user_ratings: ['peak', 'floor', 'games_played'],
 };
 
 export function mergeRemoteRow(

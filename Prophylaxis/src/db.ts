@@ -10,6 +10,7 @@ import Dexie, { type EntityTable } from 'dexie';
 
 import type { PgnCourseRecord } from './courses/types';
 import type { ActiveGameRecord, PlayedGameRecord } from './play/types';
+import type { RatingCategory } from './play/customRating.ts';
 import type {
   PuzzleAttempt,
   PuzzleCycleProgress,
@@ -20,7 +21,29 @@ import type {
 import { LICHESS_TO_CHESSCOM_SHIFT } from './puzzles/tiers.ts';
 
 export const DB_NAME = 'chess-trainer-db';
-export const DB_SCHEMA_VERSION = 11;
+export const DB_SCHEMA_VERSION = 12;
+
+/**
+ * The player's own rating in one time-control category.
+ *
+ * One row per category rather than one row with four columns: a row is the
+ * unit the sync pipeline pushes, so two devices that play different categories
+ * on the same day cannot overwrite each other's progress.
+ */
+export interface UserRatingRow {
+  category: RatingCategory;
+  rating: number;
+  /** Highest rating ever held, never lowered. */
+  peak: number;
+  /** Milestone floor, only ever raised. */
+  floor: number;
+  /** Current run of wins (rated games only). */
+  streak: number;
+  /** Rated games finished in this category. */
+  games_played: number;
+  /** Epoch ms of the last change. */
+  updated_at: number;
+}
 
 /**
  * One local change waiting to be uploaded.
@@ -316,6 +339,12 @@ const schemaV11 = {
   prefs: 'key',
 } as const;
 
+/** v12 adds the four category ratings. Additive: nothing is migrated. */
+const schemaV12 = {
+  ...schemaV11,
+  user_ratings: 'category',
+} as const;
+
 export type AppDatabase = Dexie & {
   puzzles: EntityTable<Puzzle, 'puzzle_id'>;
   woodpecker_sets: EntityTable<WoodpeckerSet, 'set_id'>;
@@ -333,6 +362,7 @@ export type AppDatabase = Dexie & {
   sync_outbox: EntityTable<SyncOutboxRow, 'id'>;
   sync_meta: EntityTable<SyncMetaRow, 'key'>;
   prefs: EntityTable<PrefRow, 'key'>;
+  user_ratings: EntityTable<UserRatingRow, 'category'>;
 };
 
 /**
@@ -355,7 +385,7 @@ export function createDatabase(name: string): AppDatabase {
   instance.version(8).stores(schemaV8);
   instance.version(10).stores(schemaV10);
   instance
-    .version(DB_SCHEMA_VERSION)
+    .version(11)
     .stores(schemaV11)
     .upgrade((tx) =>
       tx
@@ -367,6 +397,7 @@ export function createDatabase(name: string): AppDatabase {
           }
         }),
     );
+  instance.version(DB_SCHEMA_VERSION).stores(schemaV12);
 
   return instance;
 }

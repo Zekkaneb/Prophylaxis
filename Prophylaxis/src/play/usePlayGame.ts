@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Chess, type Move } from 'chess.js';
 import type { StockfishController } from '../engine/useStockfish';
 import { ChessClock, recoverClock, type ClockSnapshot } from './clock.ts';
+import { applyRatedGame } from './ratingStore.ts';
+import { categoryForSeconds } from './customRating.ts';
 import { profileFromRecord, type OpponentProfile } from './opponents.ts';
 import {
   activeToPlayedGame,
@@ -521,6 +523,25 @@ export function usePlayGame(engine: StockfishController) {
           const latest = sessionRef.current;
           if (latest?.id === gameId) publish({ ...latest, savedGameId: record.game_id });
           setResumable(null);
+
+          /* The ladder moves once per finished game. Practice sparring and
+             untimed games never touch it; a bot game is rated at half weight
+             and pays nothing for beating someone far below the player. */
+          if (!current.practice && !config.untimed) {
+            const whiteWon = record.result === '1-0';
+            const score: 0 | 0.5 | 1 =
+              record.result === '1/2-1/2'
+                ? 0.5
+                : whiteWon === (record.player_color === 'w')
+                  ? 1
+                  : 0;
+            void applyRatedGame({
+              category: categoryForSeconds(config.initialSeconds),
+              opponentRating: record.opponent_elo,
+              score,
+              opponentIsBot: true,
+            });
+          }
         } catch {
           const latest = sessionRef.current;
           if (latest?.id === gameId) {

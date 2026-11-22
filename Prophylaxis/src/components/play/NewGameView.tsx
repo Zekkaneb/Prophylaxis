@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { RatingCard } from './RatingCard';
 import {
   GENERAL_BOT,
   GENERAL_BOT_ELO,
@@ -175,6 +176,7 @@ export function NewGameView({
 
   return (
     <div className="play-setup">
+      <RatingCard />
       {resumable && resumeProfile ? (
         <div className="play-resume" role="status">
           <OpponentAvatar opponent={resumeProfile} size="md" loading="eager" />

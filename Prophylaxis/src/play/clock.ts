@@ -218,6 +218,29 @@ export class ChessClock {
     return this.snapshot(now);
   }
 
+  /**
+   * Rebuilds a clock from a snapshot of a game already in progress.
+   *
+   * Used when a client rejoins an online game: the times come from the side
+   * that stayed, and the clock has to resume charging exactly the side to move,
+   * with no increment paid for a move nobody played here.
+   */
+  restoreTimes(
+    whiteMs: number,
+    blackMs: number,
+    active: 'w' | 'b' | null,
+    now: number,
+  ): ClockSnapshot {
+    this.whiteMs = Math.max(0, Math.round(whiteMs));
+    this.blackMs = Math.max(0, Math.round(blackMs));
+    this.started = active !== null;
+    this.active = active;
+    this.pausedSide = null;
+    this.lastTick = now;
+    this.delayMs = this.bonusType === 'simple' ? this.incrementMs : 0;
+    return this.snapshot(now);
+  }
+
   /** Stops for good (game over). No further time is charged. */
   stop(): void {
     if (this.active) {

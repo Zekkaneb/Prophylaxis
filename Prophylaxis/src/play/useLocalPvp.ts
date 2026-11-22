@@ -186,6 +186,64 @@ export function useLocalPvp(options: PvpGameOptions) {
     [finish],
   );
 
+  /**
+   * Adopts a game already in progress, as sent by the side that stayed.
+   *
+   * Moves are replayed from SAN rather than trusted as a position, so a corrupt
+   * or partial snapshot leaves the current game alone instead of putting a
+   * board on screen that no rule engine agrees with.
+   */
+  const restore = useCallback(
+    (snapshot: {
+      sans: string[];
+      whiteTimeMs: number;
+      blackTimeMs: number;
+      status: 'playing' | 'finished';
+      result: PlayResult | null;
+      reason: ResultReason | null;
+      flaggedColor: PlayColor | null;
+      startedAt: number;
+    }) => {
+      const game = new Chess();
+      const sans: string[] = [];
+      let lastMove: { from: string; to: string } | null = null;
+      for (const san of snapshot.sans) {
+        let played: Move | null = null;
+        try {
+          played = game.move(san);
+        } catch {
+          return false;
+        }
+        if (!played) return false;
+        sans.push(played.san);
+        lastMove = { from: played.from, to: played.to };
+      }
+
+      gameRef.current = game;
+      const finished = snapshot.status === 'finished';
+      statusRef.current = finished ? 'finished' : 'playing';
+      clockRef.current.restore(
+        snapshot.whiteTimeMs,
+        snapshot.blackTimeMs,
+        finished ? null : game.turn(),
+      );
+      setState({
+        fen: game.fen(),
+        sans,
+        lastMove,
+        turn: game.turn(),
+        status: finished ? 'finished' : 'playing',
+        result: snapshot.result,
+        reason: snapshot.reason,
+        startedAt: snapshot.startedAt || Date.now(),
+        endedAt: finished ? Date.now() : null,
+        flaggedColor: snapshot.flaggedColor,
+      });
+      return true;
+    },
+    [],
+  );
+
   const flip = useCallback(() => {
     setManualOrientation((current) => (current === 'white' ? 'black' : 'white'));
   }, []);
@@ -204,6 +262,7 @@ export function useLocalPvp(options: PvpGameOptions) {
     pause,
     resume,
     resign,
+    restore,
     flip,
     playing: state.status === 'playing',
     paused: state.status === 'paused',

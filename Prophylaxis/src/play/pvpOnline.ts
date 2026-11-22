@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase, syncConfigured } from '../sync/client.ts';
-import type { PlayColor } from './types.ts';
+import type { PlayColor, ResultReason } from './types.ts';
 import type { PvpTimeControl } from './pvp.ts';
 
 /**
@@ -19,6 +19,29 @@ import type { PvpTimeControl } from './pvp.ts';
 export interface PvpIdentity {
   name: string;
   elo: number;
+  /** The player's own picture, so the other side sees a face, not initials. */
+  avatar?: string;
+}
+
+/**
+ * A whole game in one message.
+ *
+ * Broadcast cannot replay history, so a client that joins (or rejoins) mid-game
+ * asks for this and rebuilds from it: the moves, the position, both clocks as
+ * the other side sees them and whether the game is already over.
+ */
+export interface PvpSnapshot {
+  sans: string[];
+  fen: string;
+  whiteTimeMs: number;
+  blackTimeMs: number;
+  ply: number;
+  status: 'playing' | 'finished';
+  result: '1-0' | '0-1' | '1/2-1/2' | null;
+  /** A `ResultReason`; typed loosely so an older peer cannot break the room. */
+  reason: ResultReason | null;
+  flaggedColor: 'w' | 'b' | null;
+  startedAt: number;
 }
 
 export interface PvpMovePayload {
@@ -67,6 +90,22 @@ export interface OnlineRoomApi extends PvpRoomState {
   /** "Start" carries the time control, so both clients begin on the same one. */
   sendStart: (control: PvpTimeControl) => void;
   onStart: (handler: (control: PvpTimeControl) => void) => () => void;
+  /** Asks the other seat for the game as it stands, after a rejoin. */
+  requestSnapshot: () => void;
+  sendSnapshot: (snapshot: PvpSnapshot) => void;
+  onSnapshot: (handler: (snapshot: PvpSnapshot) => void) => () => void;
+  /**
+   * The game as it stands, for answering a rejoin. The board registers this so
+   * the channel can reply without holding any game state itself.
+   */
+  provideSnapshot: (provider: (() => PvpSnapshot | null) | null) => void;
+  /** Opens an existing room under a kept role, instead of creating or joining. */
+  rejoin: (
+    code: string,
+    role: 'host' | 'guest',
+    control: PvpTimeControl,
+    identity: PvpIdentity,
+  ) => void;
 }
 
 export function useOnlineRoom(): OnlineRoomApi {
@@ -83,6 +122,8 @@ export function useOnlineRoom(): OnlineRoomApi {
   const moveHandlers = useRef(new Set<(payload: PvpMovePayload) => void>());
   const resignHandlers = useRef(new Set<(color: PlayColor) => void>());
   const startHandlers = useRef(new Set<(control: PvpTimeControl) => void>());
+  const snapshotHandlers = useRef(new Set<(snapshot: PvpSnapshot) => void>());
+  const snapshotProvider = useRef<(() => PvpSnapshot | null) | null>(null);
 
   const leave = useCallback(() => {
     const channel = channelRef.current;
@@ -146,6 +187,21 @@ export function useOnlineRoom(): OnlineRoomApi {
         for (const handler of startHandlers.current) handler(control);
       });
 
+      channel.on('broadcast', { event: 'state' }, (message) => {
+        const snapshot = (message as { payload?: PvpSnapshot }).payload;
+        if (!snapshot || !Array.isArray(snapshot.sans)) return;
+        for (const handler of snapshotHandlers.current) handler(snapshot);
+      });
+
+      /* The seat that has been in the room all along answers with the game. */
+      channel.on('broadcast', { event: 'state-request' }, () => {
+        const ask = snapshotProvider.current;
+        if (!ask) return;
+        const snapshot = ask();
+        if (!snapshot) return;
+        void channel.send({ type: 'broadcast', event: 'state', payload: snapshot });
+      });
+
       channel.on('presence', { event: 'sync' }, () => {
         const states = channel.presenceState() as Record<
           string,
@@ -187,6 +243,25 @@ export function useOnlineRoom(): OnlineRoomApi {
       open(newRoomCode(), 'host', control, identity),
     [open],
   );
+
+  const requestSnapshot = useCallback(() => {
+    const channel = channelRef.current;
+    if (!channel) return;
+    void channel.send({ type: 'broadcast', event: 'state-request', payload: {} });
+  }, []);
+
+  const sendSnapshot = useCallback((snapshot: PvpSnapshot) => {
+    const channel = channelRef.current;
+    if (!channel) return;
+    void channel.send({ type: 'broadcast', event: 'state', payload: snapshot });
+  }, []);
+
+  const onSnapshot = useCallback((handler: (snapshot: PvpSnapshot) => void) => {
+    snapshotHandlers.current.add(handler);
+    return () => {
+      snapshotHandlers.current.delete(handler);
+    };
+  }, []);
 
   const join = useCallback(
     (code: string, control: PvpTimeControl, identity: PvpIdentity) => {
@@ -230,6 +305,16 @@ export function useOnlineRoom(): OnlineRoomApi {
     };
   }, []);
 
+  const provideSnapshot = useCallback((provider: (() => PvpSnapshot | null) | null) => {
+    snapshotProvider.current = provider;
+  }, []);
+
+  const rejoin = useCallback(
+    (code: string, role: 'host' | 'guest', control: PvpTimeControl, identity: PvpIdentity) =>
+      open(code, role, control, identity),
+    [open],
+  );
+
   const sendStart = useCallback((control: PvpTimeControl) => {
     const channel = channelRef.current;
     if (!channel) return;
@@ -254,5 +339,10 @@ export function useOnlineRoom(): OnlineRoomApi {
     onResign,
     sendStart,
     onStart,
+    requestSnapshot,
+    sendSnapshot,
+    onSnapshot,
+    provideSnapshot,
+    rejoin,
   };
 }

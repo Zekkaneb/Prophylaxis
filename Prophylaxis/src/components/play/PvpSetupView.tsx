@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { RatingCard } from './RatingCard';
 import {
   BONUS_TYPES,
   PVP_CATEGORY_LABELS,
@@ -23,7 +24,16 @@ const CUSTOM_ID = 'custom';
  */
 export function PvpSetupView({
   online,
+  resume,
 }: {
+  /** The room this device was last in, offered back after leaving mid-game. */
+  resume?: {
+    code: string;
+    label: string;
+    side: string;
+    onRejoin: () => void;
+    onDismiss: () => void;
+  } | null;
   /**
    * Online lobby content. A render prop, because the room has to adopt the time
    * control chosen in this form rather than the other way round.
@@ -76,11 +86,32 @@ export function PvpSetupView({
 
   return (
     <div className="pvp-setup">
+      <RatingCard compact />
       <section className="play-block" aria-labelledby="pvp-how-title">
         <div className="play-block__head">
           <p className="play-eyebrow">01 — Room</p>
           <h2 id="pvp-how-title">Play someone</h2>
         </div>
+
+        {resume ? (
+          <div className="pvp-resume" role="status">
+            <div className="pvp-resume__text">
+              <p className="pvp-resume__title">Room {resume.code} is still open</p>
+              <p className="pvp-resume__meta">
+                {resume.label} · you were {resume.side}. Rejoin to pick the game up
+                where it stands.
+              </p>
+            </div>
+            <div className="pvp-resume__actions">
+              <button type="button" className="primary-btn" onClick={resume.onRejoin}>
+                Rejoin game
+              </button>
+              <button type="button" className="play-action" onClick={resume.onDismiss}>
+                Forget it
+              </button>
+            </div>
+          </div>
+        ) : null}
 
         {online?.(control)}
       </section>

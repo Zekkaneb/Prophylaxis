@@ -35,7 +35,8 @@ function initialsFor(identity: PvpSeatIdentity): string {
 }
 
 function SeatAvatar({ identity, self }: { identity: PvpSeatIdentity; self: boolean }) {
-  const photo = self ? identity.avatar : undefined;
+  /* The picture travels in presence, so the opponent arrives with a face. */
+  const photo = identity.avatar;
   return (
     <span
       className={`play-avatar play-avatar--md${self ? ' play-avatar--self' : ''}`}

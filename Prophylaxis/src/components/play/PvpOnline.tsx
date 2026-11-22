@@ -2,11 +2,14 @@ import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { bonusTypeLabel, pvpTimeControlLabel, type PvpTimeControl } from '../../play/pvp.ts';
 import { useLocalPvp } from '../../play/useLocalPvp.ts';
-import type { OnlineRoomApi } from '../../play/pvpOnline.ts';
+import type { OnlineRoomApi, PvpSnapshot } from '../../play/pvpOnline.ts';
+import { clearPvpSession, savePvpSession } from '../../play/pvpSession.ts';
 import { PvpGameView } from './PvpGameView';
 import type { PlayColor } from '../../play/types.ts';
 import { playerDisplayName } from '../../profile/playerProfile.ts';
 import { usePlayerProfile } from '../../profile/usePlayerProfile.ts';
+import { applyRatedGame } from '../../play/ratingStore.ts';
+import { categoryForSeconds } from '../../play/customRating.ts';
 
 /**
  * Online PvP: one room code, two browsers.
@@ -24,13 +27,15 @@ export function PvpOnlineLobby({
       game does not close the channel the game is about to use. */
   room: OnlineRoomApi;
   control: PvpTimeControl | null;
-  onStart: (args: { room: OnlineRoomApi; control: PvpTimeControl }) => void;
+  /** Only the control travels: the room is read live by the section. */
+  onStart: (args: { control: PvpTimeControl }) => void;
 }) {
   const [code, setCode] = useState('');
   const profile = usePlayerProfile();
   const identity = {
     name: playerDisplayName(profile) || 'Player',
     elo: profile.elo,
+    avatar: profile.avatar,
   };
 
   /* Whichever side presses start, the other one starts too, on the same
@@ -41,9 +46,9 @@ export function PvpOnlineLobby({
   useEffect(
     () =>
       room.onStart((incoming) => {
-        startRef.current({ room, control: incoming });
+        startRef.current({ control: incoming });
       }),
-    [room],
+    [room.onStart],
   );
 
   if (!control) {
@@ -110,7 +115,7 @@ export function PvpOnlineLobby({
                 className="primary-btn"
                 onClick={() => {
                   room.sendStart(control);
-                  onStart({ room, control });
+                  onStart({ control });
                 }}
               >
                 Start the game
@@ -154,6 +159,61 @@ export function PvpOnlineRoom({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* Remember the room, so leaving the board (or the tab) still offers a way
+     back to the same game. */
+  useEffect(() => {
+    if (!room.code || !room.role) return;
+    savePvpSession({
+      code: room.code,
+      role: room.role,
+      control,
+      startedAt: Date.now(),
+    });
+  }, [room.code, room.role, control]);
+
+  /* The other side can ask for the game as it stands: this is what a rejoining
+     client rebuilds from. */
+  useEffect(() => {
+    room.provideSnapshot((): PvpSnapshot => {
+      const current = gameRef.current;
+      return {
+        sans: current.state.sans,
+        fen: current.state.fen,
+        whiteTimeMs: Math.round(current.clock.whiteMs),
+        blackTimeMs: Math.round(current.clock.blackMs),
+        ply: current.state.sans.length,
+        status: current.state.status === 'finished' ? 'finished' : 'playing',
+        result: current.state.result,
+        reason: current.state.reason,
+        flaggedColor: current.state.flaggedColor,
+        startedAt: current.state.startedAt,
+      };
+    });
+    return () => room.provideSnapshot(null);
+  }, [room.provideSnapshot]);
+
+  /* Ask for the game once the channel is up; the seat that stayed answers. */
+  useEffect(() => {
+    if (!room.opponentHere) return;
+    const timer = window.setTimeout(() => room.requestSnapshot(), 600);
+    return () => window.clearTimeout(timer);
+  }, [room.requestSnapshot, room.opponentHere]);
+
+  /* Adopt the game when we are behind it — which is exactly the state a
+     rejoin, or a reconnect, leaves us in. */
+  useEffect(
+    () =>
+      room.onSnapshot((snapshot) => {
+        const current = gameRef.current;
+        const behind = snapshot.ply > current.state.sans.length;
+        const ended = snapshot.status === 'finished' && current.state.status !== 'finished';
+        if (snapshot.ply < current.state.sans.length) return;
+        if (!behind && !ended) return;
+        if (current.restore(snapshot)) sentPlyRef.current = snapshot.sans.length;
+      }),
+    [room.onSnapshot]
+  );
+
   /* Own moves go out with the position and both clock readings. */
   useEffect(() => {
     const { sans, lastMove, fen } = game.state;
@@ -173,7 +233,7 @@ export function PvpOnlineRoom({
       ply: sans.length,
       color: mover,
     });
-  }, [game.state, ownerSide, room]);
+  }, [game.state, ownerSide, room.sendMove]);
 
   /* The opponent's move, applied only when it is the move we are expecting. */
   useEffect(
@@ -201,8 +261,32 @@ export function PvpOnlineRoom({
           }
         }
       }),
-    [ownerSide, room],
+    [ownerSide, room.onMove],
   );
+
+  /* One rating change per finished game, on each side's own ladder. The key
+     includes the start time so a rematch is a different game, and restoring a
+     finished game after a rejoin does not pay twice. */
+  const ratedRef = useRef<string | null>(null);
+  useEffect(() => {
+    const finished = game.state.status === 'finished' && game.state.result;
+    if (!finished || control.untimed) return;
+    const key = `${room.code}:${game.state.startedAt}`;
+    if (ratedRef.current === key) return;
+    ratedRef.current = key;
+
+    const whiteWon = game.state.result === '1-0';
+    void applyRatedGame({
+      category: categoryForSeconds(control.initialSeconds),
+      opponentRating: room.opponent?.elo || 1200,
+      score: game.state.result === '1/2-1/2' ? 0.5 : whiteWon === (ownerSide === 'w') ? 1 : 0,
+    });
+  }, [game.state, control, ownerSide, room.code, room.opponent]);
+
+  /* A finished game has nothing left to rejoin. */
+  useEffect(() => {
+    if (game.state.status === 'finished') clearPvpSession();
+  }, [game.state.status]);
 
   /* Only the side that owns it may resign, and the other client is told. */
   useEffect(
@@ -212,7 +296,7 @@ export function PvpOnlineRoom({
         if (color === ownerSide) return;
         current.resign(color);
       }),
-    [ownerSide, room],
+    [ownerSide, room.onResign]
   );
 
   return (
@@ -226,7 +310,7 @@ export function PvpOnlineRoom({
         elo: profile.elo,
         avatar: profile.avatar,
       }}
-      opponent={room.opponent ? { name: room.opponent.name, elo: room.opponent.elo } : null}
+      opponent={room.opponent}
       onResign={() => {
         gameRef.current.resign(ownerSide);
         room.sendResign(ownerSide);
