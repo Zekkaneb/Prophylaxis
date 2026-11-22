@@ -1,5 +1,5 @@
 import { backfillSyncedRows, ensureDatabaseFor, LOCAL_OWNER } from './accountDatabase.ts';
-import { applySignedInProfile } from './accountProfile.ts';
+import { applySignedInProfile, rememberLocalProfile } from './accountProfile.ts';
 import { seedPreferences } from './preferences.ts';
 import { supabase, syncConfigured } from './client.ts';
 
@@ -31,6 +31,10 @@ async function storedOwner(): Promise<string> {
 export async function bootstrapDatabase(): Promise<void> {
   const owner = await storedOwner();
   if (owner === LOCAL_OWNER) return;
+
+  /* The device's own profile is remembered before the account's name can
+     replace it, so signing out later has something to restore. */
+  rememberLocalProfile();
 
   try {
     await ensureDatabaseFor(owner);

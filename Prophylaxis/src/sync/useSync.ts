@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { activeDatabaseName } from '../db.ts';
-import { ensureDatabaseFor, readDatabaseOwner, LOCAL_OWNER } from './accountDatabase.ts';
+import {
+  databaseNameFor,
+  ensureDatabaseFor,
+  readDatabaseOwner,
+  LOCAL_OWNER,
+} from './accountDatabase.ts';
+import { rememberLocalProfile, restoreLocalProfileAfterSignOut } from './accountProfile.ts';
 import { supabase, syncConfigured, syncDisabledReason, type SyncDisabledReason } from './client.ts';
 import { QUEUE_EVENT } from './outbox.ts';
 import { pendingChangeCount, runSync } from './sync.ts';
@@ -198,11 +204,18 @@ export function useSync(): SyncController {
     let cancelled = false;
 
     void (async () => {
-      const current = await readDatabaseOwner();
-      if (cancelled || current === desired) return;
+      /* The open database's *name* decides, not the synced `owner` row: a
+         database created before that row existed reported `local`, so signing
+         out left the account's games and name on screen. Signing out must also
+         hand the device's own profile back to the nameplate. */
+      if (cancelled || activeDatabaseName() === databaseNameFor(desired)) return;
 
       setMessage('Opening this account’s database…');
       try {
+        /* Onto an account: keep the device's own profile safe first. Off it:
+           put that profile back. */
+        if (desired === LOCAL_OWNER) restoreLocalProfileAfterSignOut();
+        else rememberLocalProfile();
         await ensureDatabaseFor(desired);
       } catch (cause) {
         setStatus('error');
@@ -261,7 +274,17 @@ export function useSync(): SyncController {
 
   const signOut = useCallback(async () => {
     if (!supabase) return;
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      /* A sign-out that cannot reach the server must still sign this device
+         out: the local session is what keeps the account's games and name on
+         screen. */
+      await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+    }
+    /* The name the account put on this device goes back to what it was; the
+       database switch below then reloads onto the local rows. */
+    restoreLocalProfileAfterSignOut();
     setStatus('idle');
     setMessage('Signed out. Games stay saved on this device.');
   }, []);

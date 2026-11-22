@@ -48,6 +48,47 @@ function sameProfile(a: PlayerProfile, b: PlayerProfile): boolean {
 }
 
 /**
+ * What this device's player profile looked like before an account was applied.
+ *
+ * Signing in copies the account's name onto the nameplate; signing out has to
+ * give the name back to whoever was using the device before, so the account's
+ * identity never lingers in the top corner or on the board.
+ */
+const PRE_ACCOUNT_PROFILE_KEY = 'opening-lab.profile-before-account.v1';
+
+/**
+ * Remembers the device's own profile before an account takes the nameplate.
+ *
+ * Called whenever the app moves *onto* an account database, so it is in place
+ * before any account value can reach storage — including a `profile`
+ * preference pulled from another device. An existing snapshot is kept: the
+ * first one is the real "before".
+ */
+export function rememberLocalProfile(): void {
+  try {
+    if (window.localStorage.getItem(PRE_ACCOUNT_PROFILE_KEY) !== null) return;
+    window.localStorage.setItem(
+      PRE_ACCOUNT_PROFILE_KEY,
+      JSON.stringify(loadPlayerProfile()),
+    );
+  } catch {
+    /* storage is optional */
+  }
+}
+
+/** Restores the device's own profile after a sign-out. Safe to call twice. */
+export function restoreLocalProfileAfterSignOut(): void {
+  try {
+    const raw = window.localStorage.getItem(PRE_ACCOUNT_PROFILE_KEY);
+    if (!raw) return;
+    window.localStorage.removeItem(PRE_ACCOUNT_PROFILE_KEY);
+    updatePlayerProfile(JSON.parse(raw) as PlayerProfile);
+  } catch {
+    /* an unreadable snapshot is simply dropped */
+  }
+}
+
+/**
  * Reconciles the account with the local profile at boot.
  *
  * Account wins when it has anything to say — that is the value every device
