@@ -112,7 +112,26 @@ export interface ChosenBotMove {
  * blunder at the frequency its rating implies, and the chosen move really sits
  * in that band.
  */
-function rollCharacterSlip(input: {
+/**
+ * The mistakes this character would really make.
+ *
+ * Faadi does not hand over a free piece, Edward does not walk into the obvious
+ * tactic, and the two Widjaja profiles and freshman Brandon have their own
+ * blind spots. Applied inside the slip pool (not after the pick), so a vetoed
+ * candidate costs the character a different error rather than a free best move.
+ */
+export function characterSlipGuard(
+  fen: string,
+  style: PersonalityStyle | null,
+): (uci: string) => boolean {
+  return (uci) =>
+    faadiAllowsMistake(fen, uci, style) &&
+    edwardAllowsMistake(fen, uci, style) &&
+    bryanWidjajaAllowsMistake(fen, uci, style) &&
+    brandonFreshmanAllowsMistake(fen, uci, style);
+}
+
+export function rollCharacterSlip(input: {
   style: PersonalityStyle;
   plan: HumanSearchPlan;
   source: ChosenBotMove['source'];
@@ -120,8 +139,10 @@ function rollCharacterSlip(input: {
   elo: number;
   candidates: readonly PersonalityCandidate[];
   random: () => number;
+  /** The position the mistake is being made in, for the character's guard. */
+  fen: string;
 }): { uci: string; kind: Bucket } | null {
-  const { style, plan, source, botColor, elo, candidates, random } = input;
+  const { style, plan, source, botColor, elo, candidates, random, fen } = input;
   if (hasPreparedOpening(source)) return null;
 
   /* A character with its own dial keeps it: `mistakeChance` expresses a
@@ -133,10 +154,11 @@ function rollCharacterSlip(input: {
         ? 'blunder'
         : 'best'
       : pickCategory(random(), plan.quality);
-  const band = slipBand(kind);
+  /* The band itself is rated: a 2400's inaccuracy is a third of a beginner's. */
+  const band = slipBand(kind, elo);
   if (!band) return null;
 
-  const uci = chooseBlunder(candidates, botColor, elo, random, band);
+  const uci = chooseBlunder(candidates, botColor, elo, random, band, characterSlipGuard(fen, style));
   return uci ? { uci, kind } : null;
 }
 
@@ -144,6 +166,10 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   const { game, fen, history, botColor, style, elo, engine } = input;
   const random = input.random ?? Math.random;
   const aborted = () => input.shouldAbort?.() ?? false;
+  /* Where the character *plays*, not where its card says it plays: `styleFor`
+     folds the per-character offset into one rating, so a neighbour's card 1600
+     can play like a 1450 without the card lying about it. */
+  const ratedElo = style?.planElo ?? elo;
 
   const thinking = {
     fen,
@@ -171,7 +197,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
      lives for the calibrated path, so without this guard a 150 would obey only
      his dials and never make the random move his rating implies. */
   if (style) {
-    const floorMove = rollSub400RandomFloor(game, elo, random);
+    const floorMove = rollSub400RandomFloor(game, ratedElo, random);
     if (floorMove !== null) {
       return {
         uci: floorMove,
@@ -258,7 +284,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
        which is how a 1400 used to come out at engine strength. */
     const humanSearch = planHumanSearch({
       fen,
-      elo,
+      elo: ratedElo,
       moveNumber: Math.floor(history.length / 2) + 1,
       timeControlCategory: timeControlCategory(input.initialMs),
       remainingTimeMs: input.clockMs,
@@ -299,23 +325,14 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
           plan: humanSearch,
           source,
           botColor,
-          elo,
+          elo: ratedElo,
           candidates: evaluation.candidates,
           random,
+          fen,
         })
       : null;
-    const rolled = slip?.uci ?? null;
+    const blunder = slip?.uci ?? null;
     slipKind = slip?.kind ?? null;
-    /* Faadi still sees a free piece: his wildcard error is an idea he missed,
-       not a queen handed over in broad daylight. */
-    const blunder =
-      rolled &&
-      faadiAllowsMistake(fen, rolled, style) &&
-      edwardAllowsMistake(fen, rolled, style) &&
-      bryanWidjajaAllowsMistake(fen, rolled, style) &&
-      brandonFreshmanAllowsMistake(fen, rolled, style)
-        ? rolled
-        : null;
 
     if (style) {
       const sign = botColor === 'w' ? 1 : -1;
@@ -340,7 +357,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
             history,
             style,
             color: botColor,
-            elo,
+            elo: ratedElo,
             candidates: evaluation.candidates,
           })
         : null;
@@ -393,7 +410,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
             history,
             style,
             color: botColor,
-            elo,
+            elo: ratedElo,
             candidates: evaluation.candidates,
             forgotten: input.openingMemory?.forgotten,
           })
@@ -405,7 +422,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
         fen,
         candidates: evaluation.candidates,
         style,
-        elo,
+        elo: ratedElo,
         random,
       });
 
@@ -414,7 +431,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
         kidSelection ??
         ninaSelection ??
         funkSelection ??
-        choosePersonalityMove({ fen, candidates: evaluation.candidates, style, elo });
+        choosePersonalityMove({ fen, candidates: evaluation.candidates, style, elo: ratedElo });
       if (selection) {
         uci = selection.uci;
         decision = {
@@ -430,13 +447,13 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
          catastrophic-move heuristics, and a tier-specific mistake rate. */
       const choice = selectHumanBotMove({
         fen,
-        elo,
+        elo: ratedElo,
         candidates: evaluation.candidates,
         lastMove: lastCaptureOf(game),
         plan: humanSearch!,
         random,
       });
-      uci = choice.uci ?? chooseCandidate(evaluation.candidates, elo, random, fen);
+      uci = choice.uci ?? chooseCandidate(evaluation.candidates, ratedElo, random, fen);
       if (!uci) uci = evaluation.bestMove;
     }
   }
@@ -444,7 +461,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   if (!uci) {
     /* Engine unavailable: fall back to a legal move, but still refuse the
        free-piece accidents the static guard can see. */
-    uci = chooseRandomLegalMove(game, elo, random);
+    uci = chooseRandomLegalMove(game, ratedElo, random);
   }
   if (!uci) return null;
 

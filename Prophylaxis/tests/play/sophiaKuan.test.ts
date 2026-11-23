@@ -286,7 +286,7 @@ test('but she never forces an exchange that costs material or ignores a win', ()
 });
 
 test('her 1300 dials are intact: defensive taste is not extra strength', () => {
-  assert.equal(STYLE.accuracy, accuracyForElo(1300));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1300));
   assert.ok(STYLE.accuracy < accuracyForElo(1600), 'no accuracy inflation');
   assert.equal(STYLE.depthCap, undefined, 'no artificial search ceiling');
   assert.equal(STYLE.mistakeChance, undefined, 'the rating curve decides her slips');

@@ -200,7 +200,7 @@ test('his tendency table is the straightforward beginner table', () => {
 /* --------------------------- 7. 1100 strength --------------------------- */
 
 test('1100 is the strength dial and nothing inflates it', () => {
-  assert.equal(STYLE.accuracy, accuracyForElo(1100));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1100));
   assert.ok(STYLE.accuracy < accuracyForElo(1400), 'no accuracy inflation');
   assert.equal(STYLE.depthCap, undefined, 'no artificial search ceiling');
   assert.equal(STYLE.mistakeChance, undefined, 'the rating curve decides his slips');

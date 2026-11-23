@@ -176,7 +176,7 @@ test('Bryan’s tendency profile is the balanced table as specified', () => {
 });
 
 test('accuracy still comes from the rating, so 1800 is the strength dial', () => {
-  assert.equal(BRYAN_STYLE.accuracy, accuracyForElo(1800));
+  assert.equal(BRYAN_STYLE.accuracy, accuracyForElo(BRYAN_STYLE.planElo ?? 1800));
   assert.ok(BRYAN_STYLE.accuracy > accuracyForElo(1550));
   assert.ok(BRYAN_STYLE.accuracy < accuracyForElo(2150));
   assert.equal(candidateGapForElo(1800), 90);
@@ -570,7 +570,7 @@ test('Prime’s tendencies are neutral; Junior keeps his softer edges', () => {
 });
 
 test('the two strength profiles are independent', () => {
-  assert.equal(PRIME_STYLE.accuracy, accuracyForElo(2000));
+  assert.equal(PRIME_STYLE.accuracy, accuracyForElo(PRIME_STYLE.planElo ?? 2000));
   assert.ok(candidateGapForElo(2000) < candidateGapForElo(1800), 'a tighter candidate window');
   assert.ok(blunderChance(2000) < blunderChance(1800), 'and fewer visible mistakes');
 

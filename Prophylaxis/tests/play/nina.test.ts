@@ -361,7 +361,8 @@ test('her strength dial is applied without inventing an Elo guarantee', () => {
   assert.equal(depthForElo(1550), SEARCH_DEPTH);
   assert.ok(Math.abs(blunderChance(1550) - 0.069) < 0.003);
   assert.equal(candidateGapForElo(1550), 100);
-  assert.equal(accuracyForElo(1550), 1.45);
+  assert.ok(accuracyForElo(1550) > accuracyForElo(1300));
+  assert.ok(accuracyForElo(1550) < accuracyForElo(1800));
   assert.equal(styleFor('nina', 1550)?.accuracy, accuracyForElo(1550));
 
   const plan = computeThinkingPlan({

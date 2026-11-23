@@ -25,11 +25,13 @@ import type { PersonalityStyle } from './styles.ts';
  *    the enemy king, pawns crossing the middle and speculative sacrifices, and
  *    he is cold on trades and on tucking his own king away. The bonus is a
  *    handful of centipawns — enough to reorder moves the rating already
- *    considers playable, never enough to rescue a lost position.
+ *    considers playable, never enough to rescue a lost position, and it never
+ *    vetoes the move the search itself rates best.
  * 3. Occasional speculation. Every so often he takes the most ambitious idea
- *    in the list instead of the best one, which is how a 1600 overestimates his
- *    own attack: the move is still legal, still from the engine's MultiPV list,
- *    and still bounded by his Elo gap plus one pawn of optimism.
+ *    inside his rating's own candidate gap instead of the best one, which is how
+ *    a 1600 overestimates his own attack: the move is still legal, still from
+ *    the engine's MultiPV list, and never outside the range the card is rated
+ *    to consider.
  *
  * Nothing here invents moves: no random-legal generator, and a candidate that
  * simply hands over material without attacking anything is refused outright.
@@ -117,7 +119,6 @@ export const BRANDON_FRESHMAN_FUNK = {
   tradePenalty: 8,
   castlePenalty: 5,
   quietPenalty: 3,
-  accuracyRelief: 0.55,
   speculativeAllowance: 70,
   tieMargin: 6,
 } as const;
@@ -210,12 +211,24 @@ export function chooseBrandonFreshmanMove(input: {
       (entry) =>
         entry.gap <= allowance &&
         entry.botMate === null &&
-        brandonFreshmanAllowsMove(fen, entry.uci, entry.features),
+        /* The guard never vetoes the move the search itself rates best: the
+           static "this hangs material" check is a heuristic, and when it
+           disagrees with the engine's own top line it is the heuristic that is
+           wrong. Vetoing the best move used to leave only the flashy
+           alternatives as "playable" — a 1600 then played the boldest
+           hundred-centipawn-worse idea every time his best move was a trade,
+           which is why his card measured a class below the 1550s. */
+        (entry.gap === 0 || brandonFreshmanAllowsMove(fen, entry.uci, entry.features)),
     );
   if (playable.length === 0) return null;
 
+  /* His funk is weighted like every other profile's taste: the same rating
+     curve decides how much of it survives, so a 1600 who loves checks does not
+     pay a fixed tax the rest of the ladder never pays. The old constant relief
+     (0.55) was a second, hidden strength dial and measured him a class below
+     his card. */
   const score = (entry: Evaluated) =>
-    -entry.gap * style.accuracy * BRANDON_FRESHMAN_FUNK.accuracyRelief + entry.funk;
+    -entry.gap * style.accuracy + entry.funk * (style.taste ?? 0.6);
 
   const finish = (entry: Evaluated): SelectionResult => ({
     uci: entry.uci,

@@ -342,7 +342,7 @@ test('a forced mate is still a forced mate', () => {
 /* -------------------------------- strength -------------------------------- */
 
 test('1350 is the strength dial: a wide window, fewer blunders than a beginner', () => {
-  assert.equal(STYLE.accuracy, accuracyForElo(1350));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1350));
   assert.ok(STYLE.accuracy < JUNIOR.accuracy, 'less accurate than 1800');
   assert.ok(STYLE.accuracy < PRIME.accuracy, 'less accurate than 2000');
   assert.ok(STYLE.accuracy > accuracyForElo(1100), 'more accurate than Faadi');

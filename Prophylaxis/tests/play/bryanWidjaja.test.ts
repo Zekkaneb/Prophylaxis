@@ -246,7 +246,7 @@ test('his defence is the strongest on the roster, and his tactics are not', () =
 });
 
 test('1400 is the strength dial: the Wall does not play like a 2000', () => {
-  assert.equal(STYLE.accuracy, accuracyForElo(1400));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1400));
   assert.ok(STYLE.accuracy < accuracyForElo(1800), 'no accuracy inflation');
   assert.equal(STYLE.depthCap, undefined, 'no artificial search ceiling');
   assert.equal(STYLE.mistakeChance, undefined, 'the rating curve decides his slips');

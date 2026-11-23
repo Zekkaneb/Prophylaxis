@@ -50,8 +50,8 @@ His strength is three strength dials, not a label:
 
 - `depthCap: 6` — the shallowest search in the roster (the 800-rated beginner
   searches 10), so he sees a couple of moves and misses the reply.
-- **accuracy at the floor** of the rating scale (0.85), which every profile
-  below 1300 shares.
+- **accuracy at the floor** of the rating scale (0.80), which every profile
+  below 800 shares.
 - `mistakeChance: 0.55` — a per-character override of the shared mistake curve,
   which floors at 45% for anything rated 800 or below. This is the dial that a
   rating alone could not express (`blunderChance(150)` is the same 0.45 as
@@ -168,12 +168,24 @@ punctuation, never phonetic spelling or an accent written into words, and no lin
 mentions an engine, an evaluation or a search.
 
 The Elo values are target approximations for the bot's playing strength, not
-FIDE or Chess.com ratings. Every character — and the General Bot — searches to
-the same depth (`SEARCH_DEPTH = 16`, capped by the clock's movetime), so the
-move on the board is a genuinely calculated one. Rating is expressed as the
-chance of a deliberate mistake, plus the candidate-gap tolerance and evaluation
-accuracy in `src/play/personality/styles.ts`. None of it changes a character's
-tendencies.
+FIDE or Chess.com ratings. Every character searches at the depth its rating
+earns (`planHumanSearch`), so a 1400 looks five plies deep and a 2350 eleven,
+whatever its personality. Rating is expressed by one curve,
+`personalityWeighting(elo)` in `src/play/personality/styles.ts`: `accuracy` (how
+much a centipawn of evaluation is worth) rises with the rating while `taste` (how
+much of the profile's preference survives) falls. The two are resolved together
+and never set by hand, so character comes through where a centipawn is cheap and
+fades out of the way where evaluation decides games.
+
+A card's rating is not always where it plays: `strengthOffset` moves the plan
+rating for a character whose hand-authored tendencies measure a class above or
+below its card. `styleFor` folds the offset into `planElo`, and the search plan,
+the slip roll and the candidate allowance all read it. The card Elo it is
+displayed at never changes, and the opening book still reads the card rating.
+
+The slip itself is rated too: `slipBand` scales the centipawn size of an
+inaccuracy, mistake or blunder with the rating (a 2400's `?!` is roughly a third
+of a beginner's), so a higher card means both fewer mistakes and smaller ones.
 
 `blunderChance` in `src/play/strength.ts` is an exponential decay anchored at
 800 Elo (45%) with a 400-Elo e-folding: about 15% at 1250, 7% at 1550, 2% at 2050
@@ -183,8 +195,8 @@ from Stockfish's own MultiPV list whose score is worse by a rating-capped amount
 (700cp for a beginner, 200cp at 2200), never one that walks into mate.
 
 Senior therefore steps up from Junior through the blunder curve, the tighter
-60cp candidate gap (vs 70) and accuracy 2.2 (vs 2.05), not through a shallower
-search. His aggression, risk and tactical tendencies are unchanged.
+60cp candidate gap (vs 70) and a higher accuracy on the shared curve, not through
+a shallower search. His aggression, risk and tactical tendencies are unchanged.
 
 ## Bryan Widjaja (Prime) — 1400, Intermediate
 
@@ -210,7 +222,7 @@ developing tags while penalising sharp and initiative ones. "Prime" here is the
 card subtext, not a strength group — he is an Intermediate card at 1400.
 
 Defence is a selection preference, not accuracy. His strength dials come from
-1400 exactly as they do for any other profile: `accuracyForElo(1400)` = 1.05,
+1400 exactly as they do for any other profile: `accuracyForElo(1400)` = 1.42,
 `candidateGapForElo(1400)` = 115, the standard search depth and the standard
 blunder curve (about 15% at 1250, 7% at 1550). Tactical awareness is 35, below
 the other cards at his rating, so complicated forcing lines are still missed at
@@ -220,8 +232,10 @@ One small per-character guard keeps the defence honest rather than strong: when
 the blunder roll fires, `bryanWidjajaAllowsMistake` in
 `src/play/personality/bryanWidjaja.ts` rejects a deliberate slip that is a
 blatant material blunder or allows mate in one, following the existing
-`faadiAllowsMistake` / `edwardAllowsMistake` pattern. He still slips; he does not
-throw a piece or walk into mate on purpose. The guard is wired into both blunder
+`faadiAllowsMistake` / `edwardAllowsMistake` pattern. The guard filters the slip
+pool rather than vetoing the finished pick, so a rejected candidate costs him a
+different error instead of a free best move. He still slips at his rating's rate;
+he does not throw a piece or walk into mate on purpose. The guard is wired into both blunder
 paths (`chooseMove.ts` and `usePlayGame.ts`) and touches no other profile or
 engine setting.
 
@@ -261,7 +275,7 @@ and nothing is a speciality; he develops, takes the centre and castles when he
 can. The humour lives in the dialogue only: `risk` and `complexity` stay low, so
 being funny never becomes a chaotic move.
 
-Strength is the rating's: `accuracyForElo(1100)` = 0.85,`candidateGapForElo(1100)`
+Strength is the rating's: `accuracyForElo(1100)` = 1.11,`candidateGapForElo(1100)`
 is wider than a 1400's, the standard search depth is used (no `depthCap`, no
 `mistakeChance`), and the ordinary slip curve gives a 1100 more realistic
 mistakes than a 1550. He keeps his own thinking factors (a quick, interested
@@ -299,7 +313,7 @@ sacrifice is 10 — nothing is given without a concrete reason. The opening bias
 favours developing, solid and positional tags and penalises sharp ones.
 
 That is all taste. Strength still comes from the 1100 rating:
-`accuracyForElo(1100)` = 0.85, the same candidate gap as any other 1100, the
+`accuracyForElo(1100)` = 1.11, the same candidate gap as any other 1100, the
 standard search depth (no `depthCap`, no `mistakeChance`) and the ordinary slip
 curve — a logical personality does not calculate better than its rating.
 

@@ -247,7 +247,7 @@ test('Beginner is the first ladder band and holds the lowest ratings', () => {
 test('his strength dials are the weakest in the roster', () => {
   assert.equal(STYLE.id, 'emmanuel');
   assert.equal(STYLE.accuracy, accuracyForElo(150), 'accuracy still comes from the rating');
-  assert.equal(STYLE.accuracy, 0.85, 'the floor of the accuracy scale');
+  assert.equal(STYLE.accuracy, accuracyForElo(100), 'the floor of the accuracy scale');
   assert.equal(STYLE.depthCap, 6, 'the shallowest search in the roster');
   assert.ok(STYLE.depthCap! < (PERSONALITY_STYLES.edward.depthCap ?? 16));
   assert.ok(STYLE.depthCap! < depthForElo(150), 'strictly below the shared depth');

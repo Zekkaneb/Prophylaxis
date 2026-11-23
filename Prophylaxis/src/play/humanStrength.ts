@@ -228,21 +228,38 @@ export const BUCKET_CENTRES = {
  *
  * The calibrated selector scores every candidate against a reference search and
  * fills the bucket by win drop. A character bot has no reference pass, so the
- * same roll has to be expressed in centipawns: a 1400's `?!` is a 40-120 cp
- * move, a `?` is 120-280 and a `??` is 280-900. `null` means the roll asked for
- * a best/excellent/good move, where personality may choose freely.
+ * same roll has to be expressed in centipawns. The band is rated, not fixed: an
+ * inaccuracy is 40-120 cp at 800 and roughly a third of that at 2400, because a
+ * strong player's `?!` is a loose move, not a piece. A fixed band was why every
+ * card rating between 1400 and 2350 measured the same mean loss: the top of the
+ * ladder made fewer mistakes, each one as large as a beginner's. `null` means
+ * the roll asked for a best/excellent/good move, where personality chooses
+ * freely.
  */
-export function slipBand(kind: Bucket): { minGap: number; maxGap: number } | null {
-  switch (kind) {
-    case 'inaccuracy':
-      return { minGap: 40, maxGap: 120 };
-    case 'mistake':
-      return { minGap: 120, maxGap: 280 };
-    case 'blunder':
-      return { minGap: 280, maxGap: 900 };
-    default:
-      return null;
-  }
+export function slipBand(
+  kind: Bucket,
+  elo = 1400,
+): { minGap: number; maxGap: number } | null {
+  const base = (() => {
+    switch (kind) {
+      case 'inaccuracy':
+        return { minGap: 40, maxGap: 120 };
+      case 'mistake':
+        return { minGap: 120, maxGap: 280 };
+      case 'blunder':
+        return { minGap: 280, maxGap: 900 };
+      default:
+        return null;
+    }
+  })();
+  if (!base) return null;
+
+  const t = Math.min(1, Math.max(0, (clampElo(elo) - 800) / 1600));
+  const scale = 1 - 0.68 * t; // 1.0 at 800 → 0.32 at 2400
+  return {
+    minGap: Math.max(8, Math.round(base.minGap * scale)),
+    maxGap: Math.max(20, Math.round(base.maxGap * scale)),
+  };
 }
 
 /**

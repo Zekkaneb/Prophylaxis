@@ -344,6 +344,15 @@ export default function GameReviewDashboard({
       return;
     }
 
+    /* A game saved from Play remembers which plies were prepared play; review
+       labels them Book and leaves them out of accuracy. Imported PGN files have
+       no such provenance and fall back to the review's own opening book. */
+    let bookPlies: readonly number[] | undefined;
+    if (source) {
+      const played = await db.played_games.get(source.game_id).catch(() => undefined);
+      bookPlies = played?.book_plies;
+    }
+
     const controller = new AbortController();
     abortRef.current = controller;
     setRetry(null);
@@ -354,6 +363,7 @@ export default function GameReviewDashboard({
       const result = await analyzeGame(parsed, stockfish.evaluatePosition, {
         depth: reviewProfile.depth,
         signal: controller.signal,
+        bookPlies,
         onProgress: (next) => setProgress(next),
       });
       abortRef.current = null;

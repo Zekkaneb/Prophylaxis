@@ -261,7 +261,7 @@ test('he is more developed than the Freshman and less refined than the Prime', (
 
   /* Rating sits between the two, and strength is the rating dial. */
   assert.ok(SOPHOMORE.elo > FRESHMAN.elo && SOPHOMORE.elo < PRIME.elo);
-  assert.equal(STYLE.accuracy, accuracyForElo(1850));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1850));
   assert.ok(STYLE.accuracy > FRESH_STYLE.accuracy);
   assert.ok(STYLE.accuracy < PRIME_STYLE.accuracy);
   assert.ok(candidateGapForElo(1850) < candidateGapForElo(1600), 'smaller gap than the Freshman');

@@ -29,7 +29,7 @@ import {
   type Premove,
 } from './premove.ts';
 import { replaySans } from './replay.ts';
-import { chooseCandidate, chooseBlunder, depthForElo } from './strength.ts';
+import { chooseCandidate } from './strength.ts';
 import {
   HUMAN_MULTI_PV,
   PROBE_ELO,
@@ -54,11 +54,8 @@ import {
   type PhaseProfile,
 } from './humanStrength.ts';
 import { chooseRandomLegalMove } from './blunders.ts';
-import {
-  hasPreparedOpening,
-  openingSource,
-  shouldTakeBlunder,
-} from './personality/opening.ts';
+import { openingSource } from './personality/opening.ts';
+import { rollCharacterSlip } from './personality/chooseMove.ts';
 import {
   choosePersonalityMove,
   describeMove,
@@ -103,8 +100,7 @@ import {
   createOpeningMemory,
   ninaPlan,
 } from './personality/nina.ts';
-import { faadiAllowsMistake } from './personality/faadi.ts';
-import { bryanWidjajaAllowsMistake } from './personality/bryanWidjaja.ts';
+
 import { styleFor, type PersonalityStyle } from './personality/styles.ts';
 import { computeThinkingPlan, type ThinkingPlan } from './personality/thinking.ts';
 import type {
@@ -340,6 +336,12 @@ export function usePlayGame(engine: StockfishController) {
   /** What the partner just chose, so `commit` can record it against the course. */
   const practiceEntryRef = useRef<PracticeEntry | null>(null);
   const practiceOffBookRef = useRef(false);
+  /** Plies played from a prepared line, for Game Review's Book label. */
+  const bookPliesRef = useRef<number[]>([]);
+  /** Set by the bot turn about to be committed, when that move was prepared. */
+  const preparedRef = useRef(false);
+  /** Where this turn's move came from, once the theory layers have run. */
+  const preparedSourceRef = useRef(false);
 
   const publish = useCallback((next: PlaySession | null) => {
     /* Every publication carries the practice scorecard, so the panel and the
@@ -507,6 +509,9 @@ export function usePlayGame(engine: StockfishController) {
       let record: PlayedGameRecord;
       try {
         record = activeToPlayedGame(finished);
+        if (bookPliesRef.current.length > 0) {
+          record.book_plies = [...bookPliesRef.current];
+        }
       } catch {
         const latest = sessionRef.current;
         if (latest) publish({ ...latest, saveError: 'This game could not be archived.' });
@@ -632,6 +637,11 @@ export function usePlayGame(engine: StockfishController) {
     const phase = phaseForMoveNumber(Math.floor(sansRef.current.length / 2) + 1);
     const phaseLevel = phaseProfile[phase];
     const elo = getEffectivePhaseElo(baseElo, phaseLevel);
+    /* The rating this character really plays at: `styleFor` folded its measured
+       offset in, so the search, the slip roll and the candidate allowance all
+       read one number. The card rating still drives the book window and the
+       opponent's displayed Elo. */
+    const ratedElo = style?.planElo ?? elo;
 
     /** Theory is only followed while this rating would still remember it, and
      * only above the random floor: a 200 does not answer 1.e4 with book lines
@@ -778,6 +788,7 @@ export function usePlayGame(engine: StockfishController) {
         ninaPlan: Boolean(nina),
         kidPlan: Boolean(kid),
       });
+      preparedSourceRef.current = source !== 'engine';
 
       if (!uci) {
         /* A King's Indian position needs one more engine line: the preference
@@ -787,40 +798,47 @@ export function usePlayGame(engine: StockfishController) {
           plan = computeThinkingPlan({ ...thinkingInput, style, bookMove: false });
         }
 
-        /* Five lines: the personality layer and the blunder pick both choose
-           from this list, so it needs real alternatives near the best move.
-           A bot with no personality is calibrated to its USCF rating: the plan
-           fixes the depth, the human error rates and the deliberation before
-           the engine runs, and the search itself uses that whole budget. */
-        const humanSearch = style
-          ? null
-          : planHumanSearch({
-              fen,
-              elo: baseElo,
-              phaseProfile,
-              moveNumber: Math.floor(sansRef.current.length / 2) + 1,
-              timeControlCategory: timeControlCategory(
-                (configRef.current?.initialSeconds ?? 0) * 1000,
-              ),
-              remainingTimeMs: remainingMs,
-              incrementMs: (configRef.current?.incrementSeconds ?? 0) * 1000,
-              lastMove: lastCaptureOf(game),
-            });
+        /* Every character searches at the depth its rating earns: the rating's
+           human plan is the strength dial, and a per-character `depthCap` can
+           only shorten that look (Edward's two-move horizon). The wide MultiPV
+           list feeds both paths, so the slip picker always has real
+           alternatives — a five-line list at a deep search is all near-best
+           moves, which is how a 1400 used to come out at engine strength.
+
+           The plan is computed for every bot; a calibrated one keeps its rolled
+           phase profile, while a character already plays at its phase-adjusted
+           `ratedElo`. */
+        const humanSearch = planHumanSearch({
+          fen,
+          elo: style ? ratedElo : baseElo,
+          phaseProfile: style ? undefined : phaseProfile,
+          moveNumber: Math.floor(sansRef.current.length / 2) + 1,
+          timeControlCategory: timeControlCategory(
+            (configRef.current?.initialSeconds ?? 0) * 1000,
+          ),
+          remainingTimeMs: remainingMs,
+          incrementMs: (configRef.current?.incrementSeconds ?? 0) * 1000,
+          lastMove: lastCaptureOf(game),
+        });
+        const searchDepth = Math.min(
+          humanSearch.depth,
+          style?.depthCap ?? Number.POSITIVE_INFINITY,
+        );
         const evaluation = style
           ? await engineRef.current.evaluateWithin(
               fen,
-              depthForElo(elo),
-              5,
+              searchDepth,
+              HUMAN_MULTI_PV,
               plan?.searchMs ?? 1200,
             )
           : await engineRef.current.evaluateWithin(
               fen,
-              humanSearch!.depth,
+              humanSearch.depth,
               HUMAN_MULTI_PV,
-              humanSearch!.thinkTimeMs,
+              humanSearch.thinkTimeMs,
               /* A beginner's whole search: a few dozen nodes, so simple
                  two-ply tactics and forks stay outside its horizon. */
-              humanSearch!.nodeCap ?? 0,
+              humanSearch.nodeCap ?? 0,
             );
 
         /* Pass 2, calibrated bots only: score each PV move's resulting position
@@ -857,20 +875,25 @@ export function usePlayGame(engine: StockfishController) {
           shallowRank = shallow.candidates.map((candidate) => candidate.uci);
         }
 
-        /* Personalities roll once per turn for a human-style mistake. The
-           calibrated path carries its own mistake model in the sampler. */
-        const rolled =
-          style && shouldTakeBlunder(elo, Math.random, hasPreparedOpening(source))
-            ? chooseBlunder(evaluation.candidates, botColor, elo, Math.random)
-            : null;
-        /* Faadi still sees a free piece: his wildcard error is an idea he
-           missed, not a queen handed over in broad daylight. */
-        const blunder =
-          rolled &&
-          faadiAllowsMistake(fen, rolled, style) &&
-          bryanWidjajaAllowsMistake(fen, rolled, style)
-            ? rolled
-            : null;
+        /* Personalities roll the same rated quality distribution the calibrated
+           path does — the rating's own error mass — and fill the rolled band
+           from the engine's list. The calibrated path carries the full model
+           inside `selectHumanBotMove`, so it never reaches this roll. */
+        const slip = style
+          ? rollCharacterSlip({
+              style,
+              plan: humanSearch,
+              source,
+              botColor,
+              elo: ratedElo,
+              candidates: evaluation.candidates,
+              random: Math.random,
+              fen,
+            })
+          : null;
+        /* The character's own guard already filtered the pool, so the rolled
+           slip is the error this character would really make. */
+        const blunder = slip?.uci ?? null;
 
         if (style) {
           /* Judge the player's last move against the bot's own reading of the
@@ -907,7 +930,7 @@ export function usePlayGame(engine: StockfishController) {
                 history: sansRef.current,
                 style,
                 color: botColor,
-                elo,
+                elo: ratedElo,
                 candidates: evaluation.candidates,
               })
             : null;
@@ -930,7 +953,7 @@ export function usePlayGame(engine: StockfishController) {
               });
               const childEval = await engineRef.current.evaluateWithin(
                 child.fen(),
-                Math.max(4, depthForElo(elo) - 2),
+                Math.max(2, searchDepth - 2),
                 1,
                 300,
               );
@@ -967,7 +990,7 @@ export function usePlayGame(engine: StockfishController) {
                 history: sansRef.current,
                 style,
                 color: botColor,
-                elo,
+                elo: ratedElo,
                 candidates: evaluation.candidates,
                 forgotten: openingMemoryRef.current.forgotten,
               })
@@ -981,7 +1004,7 @@ export function usePlayGame(engine: StockfishController) {
               fen,
               candidates: evaluation.candidates,
               style,
-              elo,
+              elo: ratedElo,
             });
           if (selection) {
             uci = selection.uci;
@@ -1118,6 +1141,13 @@ export function usePlayGame(engine: StockfishController) {
     }
 
     const promotion = uci.length > 4 ? uci.substring(4, 5) : undefined;
+    /* Prepared play is remembered per ply: review labels it Book and leaves it
+       out of accuracy, so a repertoire is not mistaken for a perfect game. */
+    preparedRef.current =
+      preparedSourceRef.current ||
+      Boolean(practiceEntryRef.current) ||
+      Boolean(decisionRef.current?.bookMove);
+    preparedSourceRef.current = false;
     commitRef.current(uci.slice(0, 2), uci.slice(2, 4), promotion);
     setBotThinking(false);
   }, []);
@@ -1160,6 +1190,8 @@ export function usePlayGame(engine: StockfishController) {
         setClockView(clock.afterMove(applied.color, game.turn(), now));
       }
 
+      if (preparedRef.current) bookPliesRef.current.push(sansRef.current.length);
+      preparedRef.current = false;
       sansRef.current = [...sansRef.current, applied.san];
 
       /* Opening practice scores every move against the course: the player's
@@ -1413,6 +1445,8 @@ export function usePlayGame(engine: StockfishController) {
       statusRef.current = 'playing';
       savedRef.current = false;
       sansRef.current = [];
+      bookPliesRef.current = [];
+      preparedRef.current = false;
       startedAtRef.current = Date.now();
       viewVisibleRef.current = true;
       premovesRef.current = [];

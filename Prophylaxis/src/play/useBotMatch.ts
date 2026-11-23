@@ -97,6 +97,10 @@ export function useBotMatch(engine: StockfishController) {
   const savedRef = useRef(false);
   const speedRef = useRef<MatchSpeed>('normal');
   const decisionRef = useRef<ChosenBotMove['decision']>(null);
+  /** Plies played from a prepared line, for Game Review's Book label. */
+  const bookPliesRef = useRef<number[]>([]);
+  /** Set by the turn about to be committed, when that move was prepared. */
+  const preparedRef = useRef(false);
   const runTurnRef = useRef<() => Promise<void>>(async () => {});
 
   const publish = useCallback((next: BotMatchSession | null) => {
@@ -203,6 +207,7 @@ export function useBotMatch(engine: StockfishController) {
         reason,
         pgn,
         sans,
+        ...(bookPliesRef.current.length > 0 ? { book_plies: [...bookPliesRef.current] } : {}),
         initial_seconds: config.game.initialSeconds,
         increment_seconds: config.game.incrementSeconds,
         started_at: current.startedAt,
@@ -251,6 +256,8 @@ export function useBotMatch(engine: StockfishController) {
 
       const after = game.fen();
       if (clock) setClockView(clock.afterMove(mover, game.turn(), now));
+      if (preparedRef.current) bookPliesRef.current.push(sansRef.current.length);
+      preparedRef.current = false;
       sansRef.current = [...sansRef.current, applied.san];
 
       const style = stylesRef.current[mover];
@@ -394,6 +401,8 @@ export function useBotMatch(engine: StockfishController) {
     if (!chosen || token !== tokenRef.current || statusRef.current !== 'playing') return;
     decisionRef.current = chosen.decision;
     forgotLineRef.current[mover] = chosen.forgotten;
+    /* Prepared play is remembered per ply so review can label it Book. */
+    preparedRef.current = chosen.source !== 'engine' || chosen.bookMove;
     commit(chosen.uci, token);
   }, [commit, engine, publish]);
 
@@ -422,6 +431,8 @@ export function useBotMatch(engine: StockfishController) {
       openingMemoryRef.current = { w: createOpeningMemory(), b: createOpeningMemory() };
       forgotLineRef.current = { w: false, b: false };
       sansRef.current = [];
+      bookPliesRef.current = [];
+      preparedRef.current = false;
       statusRef.current = 'playing';
       savedRef.current = false;
       decisionRef.current = null;

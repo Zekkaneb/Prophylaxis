@@ -202,7 +202,7 @@ test('her tendency table is the balanced enthusiast as specified', () => {
   );
   assert.equal(STYLE.id, 'mabinti');
   /* Strength comes from the rating, never from the tendencies. */
-  assert.equal(STYLE.accuracy, accuracyForElo(1550));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1550));
   assert.equal(STYLE.depthCap, undefined, 'no artificial search ceiling');
   assert.ok(STYLE.sacrifice < 50, 'no taste for handing over material');
   assert.ok((STYLE.openingBias.positional ?? 0) > 0);

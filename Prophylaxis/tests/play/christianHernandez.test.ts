@@ -268,7 +268,7 @@ test('his tendency table is the natural player: no speciality, a trade preferenc
 });
 
 test('950 is the strength dial and nothing inflates it', () => {
-  assert.equal(STYLE.accuracy, accuracyForElo(950));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 950));
   assert.ok(STYLE.accuracy < accuracyForElo(1400), 'no accuracy inflation');
   assert.equal(STYLE.depthCap, undefined, 'no artificial search ceiling');
   assert.equal(STYLE.mistakeChance, undefined, 'the rating curve decides his slips');

@@ -243,8 +243,9 @@ test('tactical ambition is Prime’s; tactical accuracy is the 1600 rating', () 
   assert.ok(STYLE.material < PERSONALITY_STYLES.senior.material);
   assert.ok(STYLE.sacrifice > PERSONALITY_STYLES.faadi.sacrifice);
 
-  /* Accuracy: the same ambition, judged far worse. Derived, never hand-set. */
-  assert.equal(STYLE.accuracy, accuracyForElo(1600));
+  /* Accuracy: the same ambition, judged far worse. Derived, never hand-set —
+     from the 1600 he plays at, with no offset standing in for a weaker funk. */
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1600));
   assert.ok(STYLE.accuracy < PRIME_STYLE.accuracy);
   assert.ok(accuracyForElo(1600) < accuracyForElo(2350));
   assert.ok(blunderChance(1600) > blunderChance(2350));
@@ -765,8 +766,8 @@ test('both Brandons can play each other, each on his own repertoire', async () =
      Prime’s Grünfeld. */
   assert.ok(!legalBookMoves(personalityBookFor('brandon', 'b'), position('d4')).some((move) => move.san === 'd5'));
   assert.ok(legalBookMoves(personalityBookFor('brandon-freshman', 'b'), position('d4')).some((move) => move.san === 'd5'));
-  assert.equal(STYLE.accuracy, accuracyForElo(1600));
-  assert.equal(PRIME_STYLE.accuracy, accuracyForElo(2350));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1600));
+  assert.equal(PRIME_STYLE.accuracy, accuracyForElo(PRIME_STYLE.planElo ?? 2350));
 });
 
 /* ---------------------------- persistence / PGN --------------------------- */

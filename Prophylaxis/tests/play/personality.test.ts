@@ -11,6 +11,7 @@ import type { BookMove } from '../../src/play/personality/repertoires/book.ts';
 import {
   PERSONALITY_STYLES,
   accuracyForElo,
+  personalityWeighting,
   styleFor,
 } from '../../src/play/personality/styles.ts';
 
@@ -66,34 +67,31 @@ test('the profiles are the agreed tendency table', () => {
   );
 });
 
-test('accuracy comes from the rating, not the character', () => {
-  assert.deepEqual(
-    ['freshman', 'sophomore', 'junior', 'senior', 'brandon', 'nina'].map(
-      (id) =>
-        styleFor(
-          id,
-          id === 'brandon'
-            ? 2350
-            : id === 'junior'
-              ? 2150
-              : id === 'senior'
-                ? 2250
-                : id === 'sophomore'
-                  ? 1450
-                  : id === 'nina'
-                    ? 1550
-                    : 1250,
-        )?.accuracy,
-    ),
-    [
-      accuracyForElo(1250),
-      accuracyForElo(1450),
-      accuracyForElo(2150),
-      accuracyForElo(2250),
-      accuracyForElo(2350),
-      accuracyForElo(1550),
-    ],
-  );
+test('one curve sets both strength dials from the rating the card plays at', () => {
+  const cards: Array<[string, number]> = [
+    ['freshman', 1250],
+    ['sophomore', 1450],
+    ['junior', 2150],
+    ['senior', 2250],
+    ['brandon', 2350],
+    ['nina', 1550],
+  ];
+
+  for (const [id, elo] of cards) {
+    const style = styleFor(id, elo);
+    assert.ok(style, `${id} has a style`);
+    /* `planElo` is the card rating plus the character's measured offset; both
+       dials are read there, never from separate curves. */
+    const weighting = personalityWeighting(style.planElo ?? elo);
+    assert.equal(style.accuracy, weighting.accuracy, `${id} accuracy`);
+    assert.equal(style.taste, weighting.taste, `${id} taste`);
+    assert.equal(
+      style.planElo,
+      elo + (PERSONALITY_STYLES[id as keyof typeof PERSONALITY_STYLES].strengthOffset ?? 0),
+      `${id} plays at its card rating plus its offset`,
+    );
+  }
+
   assert.ok(accuracyForElo(1250) < accuracyForElo(1450));
   assert.ok(accuracyForElo(1450) < accuracyForElo(2150));
   assert.ok(accuracyForElo(2150) < accuracyForElo(2250));

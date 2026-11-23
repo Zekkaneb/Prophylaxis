@@ -98,6 +98,14 @@ export function chooseBlunder(
   random: () => number = Math.random,
   /** The rolled severity band, in centipawns. Omitted by the shared curve. */
   band?: { minGap: number; maxGap: number },
+  /**
+   * Which mistakes this character would actually make. A guard that only vetoed
+   * the finished pick (Faadi and Bryan Widjaja do not hand over a free piece)
+   * silently turned every vetoed slip into a best move, which made those cards
+   * play a class above their rating. Filtering the pool instead keeps the rated
+   * error rate and only changes which error is chosen.
+   */
+  accept?: (uci: string) => boolean,
 ): string | null {
   if (candidates.length === 0) return null;
 
@@ -121,10 +129,15 @@ export function chooseBlunder(
   }));
   const best = Math.max(...scored.map((entry) => entry.botPov));
 
+  /* A rolled band may start below the shared 80 cp floor: at the top of the
+     ladder an inaccuracy is a 12-36 cp move, and refusing to look below 80 cp
+     would turn every high-rating slip into a beginner-sized one. */
+  const minGap = band?.minGap ?? BLUNDER_MIN_GAP_CP;
+  const floor = Math.min(BLUNDER_MIN_GAP_CP, minGap);
   const mistaken = scored
     .filter((entry) => !entry.mated)
     .map((entry) => ({ uci: entry.uci, gap: best - entry.botPov }))
-    .filter((entry) => entry.gap >= BLUNDER_MIN_GAP_CP);
+    .filter((entry) => entry.gap >= floor);
   if (mistaken.length === 0) return null;
 
   /* Prefer a slip inside this rating's severity; if every candidate is worse
@@ -132,13 +145,22 @@ export function chooseBlunder(
      A caller that rolled a specific bucket passes its band, so the move really
      is the class the roll asked for. */
   const severity = blunderSeverityCp(elo);
-  const minGap = band?.minGap ?? BLUNDER_MIN_GAP_CP;
   const maxGap = Math.min(band?.maxGap ?? severity, severity);
   const within = mistaken.filter((entry) => entry.gap >= minGap && entry.gap <= maxGap);
+  /* The guard chooses a different error only among the ones this rating's band
+     already allows. Severity belongs to the rating; only the choice of error
+     belongs to the character. Filtering the whole list instead meant that a
+     band holding nothing the guard accepted fell back to a move *above* the
+     band, so a rule meant to stop a character hanging a piece quietly made
+     every one of its slips bigger — which is how a guarded 1600 measured with
+     a much weaker card's slips and needed an Elo offset to hide it. */
+  const allowed = accept ? within.filter((entry) => accept(entry.uci)) : within;
   const pool =
-    within.length > 0
-      ? within
-      : [mistaken.reduce((a, b) => (a.gap <= b.gap ? a : b))];
+    allowed.length > 0
+      ? allowed
+      : within.length > 0
+        ? within
+        : [mistaken.reduce((a, b) => (a.gap <= b.gap ? a : b))];
 
   return pool[Math.floor(random() * pool.length)]?.uci ?? null;
 }

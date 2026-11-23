@@ -55,6 +55,32 @@ export interface PersonalityStyle {
   /** How strongly raw engine evaluation outranks taste. Set from Elo. */
   accuracy: number;
   /**
+   * How much of a profile's taste bonus is left once evaluation is weighted.
+   *
+   * Resolved by `styleFor` from the same curve as `accuracy`; raw profiles leave
+   * it unset and the scorer derives it from `accuracy`. A profile never sets it
+   * by hand — that is how taste stops being a second, hidden strength dial.
+   */
+  taste?: number;
+  /**
+   * Where this character actually plays, once `styleFor` has applied the
+   * character's `strengthOffset` to the card rating.
+   *
+   * The search plan, the slip roll and the candidate allowance read this number;
+   * the opening book still reads the card rating, because remembered theory is a
+   * fact about the character rather than about this turn's sharpness.
+   */
+  planElo?: number;
+  /**
+   * Per-character correction between the card rating and measured strength.
+   *
+   * A roster is authored by hand, so two neighbours can measure a hundred
+   * centipawns apart. The offset moves where the character *plays*; the card
+   * rating it is displayed at never changes. Calibrated in
+   * `tests/play/botCalibration.test.ts`.
+   */
+  strengthOffset?: number;
+  /**
    * Optional search ceiling for a character who genuinely calculates less.
    *
    * Most profiles leave this unset and search at `depthForElo`, because the
@@ -133,6 +159,9 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     material: 90,
     sacrifice: 18,
     activePieces: 55,
+    /* Measured level with the 2000 cards; the extra 40 keeps the 2150 card
+       ahead of them without changing how he plays. */
+    strengthOffset: 40,
     openingBias: { positional: 26, solid: 16, developing: 8, sharp: -18, initiative: -4 },
   },
   senior: {
@@ -409,6 +438,10 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     material: 30,
     sacrifice: 80,
     activePieces: 85,
+    /* No offset: measured on the card ladder his funk re-ranking costs a few
+       tenths of a centipawn a move, because it can only reorder moves the 1600
+       curve already rates within a few pawn-centipawns of each other. He plays at
+       the 1600 his card advertises. */
     openingBias: { sharp: 28, initiative: 24, developing: 8, solid: -16, positional: -8 },
   },
   /* Bryan Widjaja (Prime), 1400 — the Wall.
@@ -553,6 +586,9 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     /* She gives material only when the tactic is concrete. */
     sacrifice: 8,
     activePieces: 40,
+    /* Measured level with the 1250 card below her; plays at 1340 so the 1300
+       card is not a step down. */
+    strengthOffset: 40,
     openingBias: { solid: 24, positional: 12, developing: 10, sharp: -26, initiative: -16 },
   },
   /* Brandon Tran (Sophomore), 1850 — the funky attacker, between Freshman and
@@ -581,6 +617,9 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     material: 40,
     sacrifice: 88,
     activePieces: 88,
+    /* Measured just under the 1800 card ahead of him; plays at 1930 so the
+       ladder does not go backwards between the two Brandon middlegame cards. */
+    strengthOffset: 80,
     openingBias: { sharp: 27, initiative: 21, developing: 6, solid: -17, positional: -7 },
   },
   /* Christian Hernandez (Senior), 950 — the Natural.
@@ -620,31 +659,62 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
   },
 };
 
-/**
- * Accuracy is a function of strength, not character: a tactical 2250 still
- * trusts the engine less than a positional 2150.
- */
-const ACCURACY_BY_ELO: Array<[number, number]> = [
-  [1300, 0.85],
-  [1500, 1.05],
-  [1800, 1.45],
-  [2050, 1.7],
-  [2200, 2.05],
-  [2325, 2.35],
-];
+const RATING_MIN = 100;
+const RATING_MAX = 2800;
 
-export function accuracyForElo(elo: number): number {
-  for (const [limit, value] of ACCURACY_BY_ELO) {
-    if (elo < limit) return value;
-  }
-  return 2.45;
+function clampRating(elo: number): number {
+  if (!Number.isFinite(elo)) return 1500;
+  return Math.min(RATING_MAX, Math.max(RATING_MIN, elo));
 }
 
-/** The profile with its accuracy resolved from the opponent's target rating. */
+function clampUnit(value: number): number {
+  return Math.min(1, Math.max(0, value));
+}
+
+/**
+ * The one strength curve, and both of its faces.
+ *
+ * `accuracy` is what one centipawn of evaluation loss is worth to the scorer;
+ * `taste` is the weight of the character's own preferences. They are resolved
+ * together from the rating — never tuned apart — so flavour is strongest where a
+ * centipawn is cheap and fades as evaluation starts to decide games. The old pair
+ * (this curve plus a second `tasteScale` inside the scorer) was two curves doing
+ * one job: one could hand a profile a strength dial and the other quietly take it
+ * back, which is how a 1600 played at engine strength.
+ */
+export function personalityWeighting(elo: number): { accuracy: number; taste: number } {
+  const t = clampUnit((clampRating(elo) - 800) / 1600); // 800 → 2400
+  return {
+    /* 0.80 at club level, 2.45 for the top of the roster. */
+    accuracy: 0.8 + 1.65 * t,
+    /* A profile's whole taste bonus is worth a few tens of centipawns at 800 and
+       a near-tie-breaker at 2400 — never a tactical decision. */
+    taste: 0.65 - 0.55 * t,
+  };
+}
+
+/** The taste weight that belongs to an accuracy value (raw profiles lack both). */
+export function tasteForAccuracy(accuracy: number): number {
+  return 0.65 - 0.55 * clampUnit((accuracy - 0.8) / 1.65);
+}
+
+/** Accuracy alone, for callers that only need the evaluation weight. */
+export function accuracyForElo(elo: number): number {
+  return personalityWeighting(elo).accuracy;
+}
+
+/**
+ * The profile with its strength resolved from the opponent's target rating.
+ *
+ * `planElo` is the card rating plus the character's measured offset; both dials
+ * are read at that rating, so the card and the game agree about how strong this
+ * opponent is.
+ */
 export function styleFor(id: string, elo: number): PersonalityStyle | null {
   if (!(id in PERSONALITY_STYLES)) return null;
   const style = PERSONALITY_STYLES[id as PersonalityId];
-  return { ...style, accuracy: accuracyForElo(elo) };
+  const planElo = clampRating(elo + (style.strengthOffset ?? 0));
+  return { ...style, planElo, ...personalityWeighting(planElo) };
 }
 
 export function isPersonalityId(id: string): id is PersonalityId {

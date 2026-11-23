@@ -197,8 +197,8 @@ test('his tendency table is the principled, low-risk one', () => {
 /* ---------------------------- strength dials ---------------------------- */
 
 test('his logic is taste, not strength: 1100 still owns the dials', () => {
-  assert.equal(STYLE.accuracy, accuracyForElo(1100));
-  assert.equal(STYLE.accuracy, 0.85);
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1100));
+  assert.ok(STYLE.accuracy > 0.8, 'the club end of the one strength curve');
   assert.equal(STYLE.depthCap, undefined, 'no artificial search ceiling');
   assert.equal(STYLE.mistakeChance, undefined, 'the rating curve decides his slips');
   assert.equal(candidateGapForElo(1100), candidateGapForElo(1100));

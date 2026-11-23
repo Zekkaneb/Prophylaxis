@@ -254,7 +254,9 @@ export function moveAccuracyWeight(move: AccuracyMoveInput): number {
     case 'forced':
       return 0;
     case 'book':
-      return 0.5;
+      /* Recall, not calculation: a prepared move says nothing about how well
+         the game was played, so it carries no accuracy weight at all. */
+      return 0;
     case 'brilliant':
     case 'clutch':
       return 1.3;
@@ -928,6 +930,12 @@ export interface AnalysisOptions {
   depth?: number;
   signal?: AbortSignal;
   onProgress?: (progress: AnalysisProgress) => void;
+  /**
+   * 0-based ply indices the game recorded as prepared play (see
+   * `PlayedGameRecord.book_plies`). Marked Book without a search, so a bot's
+   * own repertoire is credited to its notes rather than to its play.
+   */
+  bookPlies?: readonly number[];
 }
 
 export type ClassificationCounts = Record<MoveClassification, number>;
@@ -1003,6 +1011,7 @@ export async function analyzeGame(
   if (signal?.aborted) throw abortError();
 
   const repertoire = buildRepertoireIndex();
+  const prepared = new Set(options.bookPlies ?? []);
   const deviationSeen: Record<'w' | 'b', boolean> = { w: false, b: false };
 
   const evaluations: MoveEvaluation[] = [];
@@ -1025,7 +1034,9 @@ export async function analyzeGame(
 
     const bookMatch = index < BOOK_PLY_LIMIT ? lookupBookMove(move.fenAfter) : null;
 
-    if (bookMatch && !deviation) {
+    /* Theory is theory whether this review's book knows the line or the game
+       recorded it at the board: a bot's repertoire or practice course counts. */
+    if ((bookMatch && !deviation) || prepared.has(index)) {
       const bookBefore: EvalSnapshot = before
         ? { scoreCp: before.scoreCp, mate: before.mate }
         : { scoreCp: 0, mate: null };

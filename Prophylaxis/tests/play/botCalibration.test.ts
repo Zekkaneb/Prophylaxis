@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Chess } from 'chess.js';
 import { chooseBotMove } from '../../src/play/personality/chooseMove.ts';
-import { styleFor } from '../../src/play/personality/styles.ts';
+import { personalityWeighting, styleFor } from '../../src/play/personality/styles.ts';
+import { PERSONALITY_OPPONENTS } from '../../src/play/opponents.ts';
 import { HUMAN_MULTI_PV, humanSearchDepth } from '../../src/play/humanStrength.ts';
 import { botTraces, setBotTraceEnabled } from '../../src/play/botDebug.ts';
 import type { StockfishController } from '../../src/engine/useStockfish.ts';
@@ -78,6 +79,45 @@ function seeded(seed: number): () => number {
   };
 }
 
+/** The engine contract, answered with a static evaluation of every legal move. */
+function staticEngine(seen: { depth: number; multipv: number; nodes: number }) {
+  return {
+    evaluateWithin: async (
+      fen: string,
+      depth: number,
+      multiPv: number,
+      _movetime?: number,
+      nodes?: number,
+    ) => {
+      seen.depth = depth;
+      seen.multipv = multiPv;
+      seen.nodes = nodes ?? 0;
+      const lines = rankMoves(fen).slice(0, multiPv);
+      return {
+        fen,
+        depth,
+        bestMove: lines[0]?.uci ?? null,
+        secondBestMove: lines[1]?.uci ?? null,
+        ponder: null,
+        pv: lines[0] ? [lines[0].uci] : [],
+        scoreCp: lines[0]?.cp ?? 0,
+        mate: null,
+        secondScoreCp: lines[1]?.cp ?? 0,
+        secondMate: null,
+        shallowScoreCp: lines[0]?.cp ?? 0,
+        shallowMate: null,
+        candidates: lines.map((line, index) => ({
+          rank: index + 1,
+          uci: line.uci,
+          scoreCp: line.cp,
+          mate: null,
+          pv: [line.uci],
+        })),
+      };
+    },
+  } as unknown as StockfishController;
+}
+
 interface RunOptions {
   elo: number;
   seed: number;
@@ -103,41 +143,7 @@ async function run({ elo, seed, turns = 240 }: RunOptions): Promise<{
   seenEngine: { depth: number; multipv: number; nodes: number };
 }> {
   const seenEngine = { depth: 0, multipv: 0, nodes: 0 };
-  const engine = {
-    evaluateWithin: async (
-      fen: string,
-      depth: number,
-      multiPv: number,
-      _movetime?: number,
-      nodes?: number,
-    ) => {
-      seenEngine.depth = depth;
-      seenEngine.multipv = multiPv;
-      seenEngine.nodes = nodes ?? 0;
-      const lines = rankMoves(fen).slice(0, multiPv);
-      return {
-        fen,
-        depth,
-        bestMove: lines[0]?.uci ?? null,
-        secondBestMove: lines[1]?.uci ?? null,
-        ponder: null,
-        pv: lines[0] ? [lines[0].uci] : [],
-        scoreCp: lines[0]?.cp ?? 0,
-        mate: null,
-        secondScoreCp: lines[1]?.cp ?? 0,
-        secondMate: null,
-        shallowScoreCp: lines[0]?.cp ?? 0,
-        shallowMate: null,
-        candidates: lines.map((line, index) => ({
-          rank: index + 1,
-          uci: line.uci,
-          scoreCp: line.cp,
-          mate: null,
-          pv: [line.uci],
-        })),
-      };
-    },
-  } as unknown as StockfishController;
+  const engine = staticEngine(seenEngine);
 
   const random = seeded(seed);
   /* The production path: `styleFor` resolves the profile's accuracy from the
@@ -257,4 +263,123 @@ test('the trace records the target Elo, the chosen rank and the centipawn drop',
   } finally {
     setBotTraceEnabled(false);
   }
+});
+
+/**
+ * Quiet, non-terminal positions every card is measured on.
+ *
+ * The ladder has to be compared on the *same* board: two self-games diverge on
+ * move one, so a character's mean loss then mixes its strength with the
+ * positions it happened to reach. These come from one neutral playout, and each
+ * character is asked for a move on each of them.
+ */
+function quietPositions(count: number): string[] {
+  const game = new Chess(START);
+  const random = seeded(99);
+  const out: string[] = [];
+  for (let step = 0; step < count * 3 && out.length < count; step += 1) {
+    if (game.isGameOver()) game.load(START);
+    const lines = rankMoves(game.fen()).slice(0, HUMAN_MULTI_PV);
+    if (lines.length > 1 && Math.abs(lines[0].cp) < 500) out.push(game.fen());
+    const moves = game.moves({ verbose: true });
+    const move = moves[Math.floor(random() * moves.length)];
+    game.move({ from: move.from, to: move.to, promotion: move.promotion });
+  }
+  return out;
+}
+
+/** Mean centipawn loss of one card, measured on the shared positions. */
+async function cardLoss(id: string, elo: number, positions: readonly string[]): Promise<number> {
+  const style = styleFor(id, elo);
+  const random = seeded(5);
+  const engine = staticEngine({ depth: 0, multipv: 0, nodes: 0 });
+  let total = 0;
+  let samples = 0;
+
+  for (const fen of positions) {
+    const game = new Chess(fen);
+    const lines = rankMoves(fen).slice(0, HUMAN_MULTI_PV);
+    const chosen = await chooseBotMove({
+      game,
+      fen,
+      history: Array.from({ length: 20 }, (_, index) => `m${index}`),
+      botColor: game.turn() as 'w' | 'b',
+      style,
+      elo,
+      clockMs: 180_000,
+      incrementMs: 2000,
+      initialMs: 180_000,
+      engine,
+      random,
+    });
+    assert.ok(chosen, 'the chooser always returns a move');
+    const index = lines.findIndex((line) => line.uci === chosen.uci);
+    /* A plan move or a book reply can sit outside the top ten lines; only moves
+       the list contains can be scored for loss. */
+    if (index < 0) continue;
+    total += Math.max(0, lines[0].mover - lines[index].mover);
+    samples += 1;
+  }
+
+  return total / samples;
+}
+
+test('the card ladder is monotone: a higher rating never plays measurably worse', async () => {
+  const positions = quietPositions(60);
+  const cards = PERSONALITY_OPPONENTS.filter((opponent) => opponent.kind === 'personality')
+    .map((opponent) => ({ id: opponent.id, elo: opponent.elo }))
+    .sort((a, b) => a.elo - b.elo);
+
+  const byElo = new Map<number, number[]>();
+  for (const card of cards) {
+    assert.ok(styleFor(card.id, card.elo), `${card.id} has no style`);
+    const loss = await cardLoss(card.id, card.elo, positions);
+    byElo.set(card.elo, [...(byElo.get(card.elo) ?? []), loss]);
+  }
+
+  const levels = [...byElo.entries()]
+    .map(([elo, losses]) => ({
+      elo,
+      loss: losses.reduce((sum, loss) => sum + loss, 0) / losses.length,
+    }))
+    .sort((a, b) => a.elo - b.elo);
+
+  /* 60 shared positions through a static evaluation leave roughly ±8 cp of
+     noise on a card's mean. Ten centipawns is the smallest bound that measures
+     the ladder rather than that noise, so anything above it is a real
+     inversion: the roster used to hide a ~20 cp step backwards at 1600 behind
+     a 20 cp tolerance. */
+  const TOLERANCE_CP = 10;
+  for (let index = 1; index < levels.length; index += 1) {
+    const lower = levels[index - 1];
+    const higher = levels[index];
+    assert.ok(
+      higher.loss <= lower.loss + TOLERANCE_CP,
+      `${higher.elo} (${higher.loss.toFixed(1)}cp) plays worse than ${lower.elo} (${lower.loss.toFixed(1)}cp)`,
+    );
+  }
+
+  /* The ladder also has to separate at the ends: the top cards cannot be level
+     with the middle of the roster. */
+  const bottom = levels.filter((level) => level.elo <= 1450);
+  const top = levels.filter((level) => level.elo >= 2000);
+  const bottomLoss = bottom.reduce((sum, level) => sum + level.loss, 0) / bottom.length;
+  const topLoss = top.reduce((sum, level) => sum + level.loss, 0) / top.length;
+  assert.ok(
+    topLoss < bottomLoss - 40,
+    `top cards average ${topLoss.toFixed(1)}cp against ${bottomLoss.toFixed(1)}cp below 1450`,
+  );
+});
+
+test('one weighting curve: accuracy rises and taste falls with the rating', () => {
+  let previous = personalityWeighting(800);
+  for (const elo of [1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400]) {
+    const next = personalityWeighting(elo);
+    assert.ok(next.accuracy > previous.accuracy, `accuracy falls at ${elo}`);
+    assert.ok(next.taste < previous.taste, `taste rises at ${elo}`);
+    previous = next;
+  }
+  /* A profile's whole taste bonus is a few tens of centipawns, so at the top it
+     can never outvote a real evaluation gap. */
+  assert.ok(personalityWeighting(2400).taste < 0.12);
 });

@@ -60,6 +60,15 @@ export interface PlayedGameRecord {
   pgn: string;
   /** SAN move list, in order. */
   sans: string[];
+  /**
+   * 0-based ply indices that came from a prepared line — a repertoire, the
+   * practice course or a character's opening plan — not from a search.
+   *
+   * Game Review labels these Book and leaves them out of accuracy: theory is
+   * recall, so counting it as a perfect decision flatters whoever happened to
+   * have it on file.
+   */
+  book_plies?: number[];
   initial_seconds: number;
   increment_seconds: number;
   started_at: number;

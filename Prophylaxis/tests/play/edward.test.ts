@@ -276,7 +276,7 @@ test('his tendency table is the principled beginner as specified', () => {
     },
   );
   assert.equal(STYLE.id, 'edward');
-  assert.equal(STYLE.accuracy, accuracyForElo(800));
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 800));
   assert.equal(STYLE.sacrifice, 10, 'he does not give material away on purpose');
   assert.ok((STYLE.openingBias.developing ?? 0) > 0, 'developing is what he likes');
   assert.ok((STYLE.openingBias.sharp ?? 0) < 0, 'and complications are what he avoids');

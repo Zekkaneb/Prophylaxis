@@ -1,5 +1,5 @@
 import { Chess, type Color, type Square } from 'chess.js';
-import type { PersonalityStyle } from './styles.ts';
+import { tasteForAccuracy, type PersonalityStyle } from './styles.ts';
 import type { BookMove } from './repertoires/book.ts';
 import {
   NINA_CAUTION_GAP,
@@ -152,27 +152,6 @@ function personalityAllowance(style: PersonalityStyle): number {
   return Math.round(4 + style.risk * 0.18 + style.aggression * 0.12);
 }
 
-/**
- * A second, smaller dial on how far taste may outrank evaluation, on top of
- * `PersonalityStyle.accuracy`.
- *
- * `accuracy` is resolved from the rating by `styleFor` (0.85 at club level up to
- * 2.45 at the top), so evaluation already outranks taste more at higher ratings.
- * This scales the taste *bonus* itself as well: full weight below 1000, a tenth
- * at 2400+. It exists because accuracy alone still let a ~25 cp style nudge beat
- * a 20 cp evaluation gap, which is enough to keep a 2800 off the engine's line.
- */
-function tasteScale(elo: number): number {
-  /* Taste is a near-tie breaker, never a strength dial: a profile's maximum
-     bonus is a few tens of centipawns, so at club level it may swing a 15-20 cp
-     decision and at the top it may only swing a handful. Above 2400 it stops
-     shrinking — those bots still have a character, they just do not trade real
-     evaluation for it. */
-  if (elo <= 1000) return 0.6;
-  if (elo >= 2400) return 0.1;
-  return 0.6 - ((elo - 1000) / 1400) * 0.5;
-}
-
 function featureScore(
   style: PersonalityStyle,
   features: MoveFeatures,
@@ -253,6 +232,10 @@ export function choosePersonalityMove(input: {
 
   const bestPov = Math.max(...legal.map((entry) => entry.botPov));
   const allowance = candidateGapForElo(elo) + personalityAllowance(style);
+  /* `styleFor` resolves both dials from the same curve; a raw profile (one that
+     never went through it) gets the taste weight its accuracy implies, so the
+     two can never disagree about how strong the character is. */
+  const taste = style.taste ?? tasteForAccuracy(style.accuracy);
 
   const scored = legal
     .map((entry) => {
@@ -260,7 +243,7 @@ export function choosePersonalityMove(input: {
       return {
         ...entry,
         gap,
-        score: -gap * style.accuracy + featureScore(style, entry.features, entry.botPov) * tasteScale(elo),
+        score: -gap * style.accuracy + featureScore(style, entry.features, entry.botPov) * taste,
       };
     })
     .filter((entry) => entry.gap <= allowance);

@@ -243,8 +243,8 @@ test('positional taste improves the position; a clear tactic still gets taken', 
 });
 
 test('his tactical ambition does not become tactical accuracy', () => {
-  assert.equal(STYLE.accuracy, accuracyForElo(1400));
-  assert.equal(STYLE.accuracy, 1.05, 'the 1400 dial, not a master curve');
+  assert.equal(STYLE.accuracy, accuracyForElo(STYLE.planElo ?? 1400));
+  assert.ok(STYLE.accuracy < accuracyForElo(2000), 'the 1400 dial, not a master curve');
   assert.equal(STYLE.depthCap, undefined);
   assert.equal(STYLE.mistakeChance, undefined);
   assert.ok(candidateGapForElo(1400) > candidateGapForElo(2000));
