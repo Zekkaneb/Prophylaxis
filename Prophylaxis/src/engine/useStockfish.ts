@@ -100,9 +100,15 @@ const WORKER_URL = assetUrl(WORKER_PATH);
  * pointing emscripten at the inlined `.wasm` — a Blob worker has no directory
  * to resolve `stockfish.wasm` against.
  */
-function createEngineWorker(): Worker {
+interface EngineWorkerHandle {
+  worker: Worker;
+  /** Set for the inlined Blob build; revoked when the worker is dropped. */
+  objectUrl: string | null;
+}
+
+function createEngineWorker(): EngineWorkerHandle {
   const source = assetText(WORKER_PATH);
-  if (!source) return new Worker(WORKER_URL);
+  if (!source) return { worker: new Worker(WORKER_URL), objectUrl: null };
 
   const wasm = assetUrl('stockfish/sf19/stockfish.wasm');
   // emscripten resolves `stockfish.wasm` against the worker's own location, and
@@ -117,7 +123,8 @@ function createEngineWorker(): Worker {
     };
   })();\n`;
   const blob = new Blob([glue, source], { type: 'text/javascript' });
-  return new Worker(URL.createObjectURL(blob));
+  const objectUrl = URL.createObjectURL(blob);
+  return { worker: new Worker(objectUrl), objectUrl };
 }
 /** MB of transposition table; plenty for depth-14 game review without the
  * 1 GB default the threaded builds allocate. */
@@ -282,6 +289,9 @@ export function useStockfish(): StockfishController {
   const [error, setError] = useState<string | null>(null);
 
   const workerRef = useRef<Worker | null>(null);
+  /** Blob URL of the inlined engine source, revoked when its worker is dropped. */
+  const workerUrlRef = useRef<string | null>(null);
+  const readyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const readyRef = useRef<Promise<void> | null>(null);
   const readyResolveRef = useRef<(() => void) | null>(null);
   const pendingRef = useRef<PendingRequest | null>(null);
@@ -304,7 +314,9 @@ export function useStockfish(): StockfishController {
       setStatus('loading');
       setError(null);
 
-      const worker = createEngineWorker();
+      const handle = createEngineWorker();
+      const worker = handle.worker;
+      workerUrlRef.current = handle.objectUrl;
       workerRef.current = worker;
 
       worker.onmessage = (event: MessageEvent) => {
@@ -405,18 +417,37 @@ export function useStockfish(): StockfishController {
         const message = event.message || 'The Stockfish worker failed to start.';
         setStatus('error');
         setError(message);
+        if (readyTimerRef.current) {
+          clearTimeout(readyTimerRef.current);
+          readyTimerRef.current = null;
+        }
         readyRef.current = null;
         readyResolveRef.current = null;
         failPending(message);
+        /* The port is dead: drop it (and the Blob URL that fed it) and let the
+           next search build a fresh worker. Leaving `startedRef` set here would
+           reject every later search with "unavailable" for the life of the tab. */
+        worker.terminate();
+        if (workerRef.current === worker) workerRef.current = null;
+        if (workerUrlRef.current) {
+          URL.revokeObjectURL(workerUrlRef.current);
+          workerUrlRef.current = null;
+        }
+        multiPvRef.current = MULTI_PV;
+        startedRef.current = false;
       };
 
       readyRef.current = new Promise<void>((resolve, reject) => {
-        const timer = setTimeout(() => {
+        readyTimerRef.current = setTimeout(() => {
+          readyTimerRef.current = null;
           setStatus('error');
           reject(new Error('Stockfish did not initialise in time.'));
         }, READY_TIMEOUT_MS);
         readyResolveRef.current = () => {
-          clearTimeout(timer);
+          if (readyTimerRef.current) {
+            clearTimeout(readyTimerRef.current);
+            readyTimerRef.current = null;
+          }
           worker.postMessage('ucinewgame');
           resolve();
         };
@@ -425,6 +456,10 @@ export function useStockfish(): StockfishController {
         readyRef.current = null;
         throw cause;
       });
+      /* A boot that fails while nothing is awaiting it — a review tab closed
+         the instant it opened, say — must not reach the console as an
+         unhandled rejection. Callers that do await it still get the error. */
+      void readyRef.current.catch(() => {});
     }
     return readyRef.current ?? Promise.reject(new Error('Stockfish unavailable.'));
   }, [failPending]);
@@ -563,8 +598,18 @@ export function useStockfish(): StockfishController {
 
   const terminate = useCallback(() => {
     failPending('The Stockfish worker was stopped.');
+    if (readyTimerRef.current) {
+      clearTimeout(readyTimerRef.current);
+      readyTimerRef.current = null;
+    }
     workerRef.current?.terminate();
     workerRef.current = null;
+    /* The inlined build's Blob URL outlives its worker otherwise, so every
+       mount/unmount cycle of a tab would pin another copy of the engine. */
+    if (workerUrlRef.current) {
+      URL.revokeObjectURL(workerUrlRef.current);
+      workerUrlRef.current = null;
+    }
     readyRef.current = null;
     readyResolveRef.current = null;
     startedRef.current = false;

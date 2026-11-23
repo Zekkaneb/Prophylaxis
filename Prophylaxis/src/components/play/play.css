@@ -3610,3 +3610,35 @@
   font-weight: 650;
   font-variant-numeric: tabular-nums;
 }
+
+/* ------------------------------------------------------------ title unlock --
+   The congratulations card arrives on the compositor: a scrim fade and a card
+   that rises 12px and settles, both transform/opacity only, so the animation
+   cannot trigger layout on a phone mid-game. */
+.title-modal {
+  animation: title-scrim-in 180ms var(--ease, ease-out) both;
+}
+
+.title-modal__card {
+  animation: title-card-in 260ms var(--ease, ease-out) both;
+}
+
+@keyframes title-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes title-card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-modal,
+  .title-modal__card {
+    animation: none;
+  }
+}

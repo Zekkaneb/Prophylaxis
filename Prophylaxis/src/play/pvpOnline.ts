@@ -108,6 +108,19 @@ export interface OnlineRoomApi extends PvpRoomState {
   ) => void;
 }
 
+type RoomChannel = ReturnType<NonNullable<typeof supabase>['channel']>;
+type BroadcastMessage = Parameters<RoomChannel['send']>[0];
+
+/**
+ * Broadcasts are fire-and-forget, but Supabase rejects when the socket is
+ * already gone (backgrounded phone, dropped Wi-Fi). Swallowing that keeps an
+ * offline moment out of the console as an unhandled rejection; the room's own
+ * connection state is what reports the outage to the players.
+ */
+function send(channel: RoomChannel, message: BroadcastMessage): void {
+  void channel.send(message).catch(() => {});
+}
+
 export function useOnlineRoom(): OnlineRoomApi {
   const [state, setState] = useState<PvpRoomState>({
     code: null,
@@ -128,7 +141,7 @@ export function useOnlineRoom(): OnlineRoomApi {
   const leave = useCallback(() => {
     const channel = channelRef.current;
     channelRef.current = null;
-    if (channel) void supabase?.removeChannel(channel);
+    if (channel) void supabase?.removeChannel(channel).catch(() => {});
     setState({
       code: null,
       role: null,
@@ -199,7 +212,7 @@ export function useOnlineRoom(): OnlineRoomApi {
         if (!ask) return;
         const snapshot = ask();
         if (!snapshot) return;
-        void channel.send({ type: 'broadcast', event: 'state', payload: snapshot });
+        send(channel, { type: 'broadcast', event: 'state', payload: snapshot });
       });
 
       channel.on('presence', { event: 'sync' }, () => {
@@ -221,7 +234,7 @@ export function useOnlineRoom(): OnlineRoomApi {
 
       channel.subscribe((status) => {
         if (status === 'SUBSCRIBED') {
-          void channel.track({ role, control, identity });
+          void channel.track({ role, control, identity }).catch(() => {});
           setState((current) => ({
             ...current,
             status: current.opponentHere ? 'ready' : 'waiting',
@@ -247,13 +260,13 @@ export function useOnlineRoom(): OnlineRoomApi {
   const requestSnapshot = useCallback(() => {
     const channel = channelRef.current;
     if (!channel) return;
-    void channel.send({ type: 'broadcast', event: 'state-request', payload: {} });
+    send(channel, { type: 'broadcast', event: 'state-request', payload: {} });
   }, []);
 
   const sendSnapshot = useCallback((snapshot: PvpSnapshot) => {
     const channel = channelRef.current;
     if (!channel) return;
-    void channel.send({ type: 'broadcast', event: 'state', payload: snapshot });
+    send(channel, { type: 'broadcast', event: 'state', payload: snapshot });
   }, []);
 
   const onSnapshot = useCallback((handler: (snapshot: PvpSnapshot) => void) => {
@@ -282,7 +295,7 @@ export function useOnlineRoom(): OnlineRoomApi {
   const sendMove = useCallback((payload: PvpMovePayload) => {
     const channel = channelRef.current;
     if (!channel) return;
-    void channel.send({ type: 'broadcast', event: 'move', payload });
+    send(channel, { type: 'broadcast', event: 'move', payload });
   }, []);
 
   const onMove = useCallback((handler: (payload: PvpMovePayload) => void) => {
@@ -295,7 +308,7 @@ export function useOnlineRoom(): OnlineRoomApi {
   const sendResign = useCallback((color: PlayColor) => {
     const channel = channelRef.current;
     if (!channel) return;
-    void channel.send({ type: 'broadcast', event: 'resign', payload: { color } });
+    send(channel, { type: 'broadcast', event: 'resign', payload: { color } });
   }, []);
 
   const onResign = useCallback((handler: (color: PlayColor) => void) => {
@@ -318,7 +331,7 @@ export function useOnlineRoom(): OnlineRoomApi {
   const sendStart = useCallback((control: PvpTimeControl) => {
     const channel = channelRef.current;
     if (!channel) return;
-    void channel.send({ type: 'broadcast', event: 'start', payload: { control } });
+    send(channel, { type: 'broadcast', event: 'start', payload: { control } });
   }, []);
 
   const onStart = useCallback((handler: (control: PvpTimeControl) => void) => {

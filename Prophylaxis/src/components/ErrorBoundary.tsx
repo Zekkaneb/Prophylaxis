@@ -3,6 +3,8 @@ import './ErrorBoundary.css';
 
 interface Props {
   children: ReactNode;
+  /** The feature module this boundary guards, named in the fallback. */
+  label?: string;
 }
 
 interface State {
@@ -35,7 +37,11 @@ export default class ErrorBoundary extends Component<Props, State> {
       <div className="crash" role="alert">
         <div className="crash__panel">
           <p className="crash__eyebrow">Something stopped</p>
-          <h1 className="crash__title">This screen could not be drawn</h1>
+          <h1 className="crash__title">
+            {this.props.label
+              ? `The ${this.props.label} view could not be drawn`
+              : 'This screen could not be drawn'}
+          </h1>
           <p className="crash__body">
             Your games, courses and reviews are still stored on this device. Reloading
             usually clears it; the message below says what went wrong.

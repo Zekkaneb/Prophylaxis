@@ -10,6 +10,7 @@ import GameReviewDashboard from './components/GameReviewDashboard';
 import AnalysisPage from './components/AnalysisPage';
 import SettingsDrawer from './components/SettingsDrawer';
 import AccountMenu from './components/AccountMenu';
+import ErrorBoundary from './components/ErrorBoundary';
 import { PersistentBoardProvider } from './board/PersistentBoard';
 import { listCourses } from './courses/courseService';
 import type { PgnCourseRecord } from './courses/types';
@@ -26,6 +27,17 @@ interface Route {
   /** Present on `#/courses/<id>`: the course open in the study view. */
   courseId: string | null;
 }
+
+/** Named in a feature's crash fallback, so the message says which room died. */
+const ROOM_LABELS: Record<TabId, string> = {
+  dashboard: 'Dashboard',
+  courses: 'Courses',
+  drill: 'Drill',
+  puzzles: 'Puzzles',
+  play: 'Play',
+  review: 'Review',
+  analysis: 'Analysis',
+};
 
 const TAB_IDS: TabId[] = [
   'dashboard',
@@ -247,7 +259,11 @@ export default function App() {
         Skip to content
       </a>
 
-      <AccountMenu />
+      {/* The corner is outside the room boundary: a failure there must not take
+          the navigation with it. */}
+      <ErrorBoundary label="Account">
+        <AccountMenu />
+      </ErrorBoundary>
 
       <SideNav
         tab={route.tab}
@@ -266,6 +282,11 @@ export default function App() {
       <div className="app-shell__body">
       <main className="app-main" id="main" tabIndex={-1}>
         <div className="view">
+          {/* One boundary per room. A parser, an engine report or a board view
+              that throws stops this panel only; the rail, the account corner
+              and every other room stay usable, and navigating away clears it
+              because the key changes. */}
+          <ErrorBoundary key={`${route.tab}:${route.courseId ?? ''}`} label={ROOM_LABELS[route.tab]}>
           {route.tab === 'dashboard' && (
             <Dashboard
               onNavigate={navigateTab}
@@ -378,6 +399,7 @@ export default function App() {
               <WoodpeckerTrainer />
             </div>
           )}
+          </ErrorBoundary>
         </div>
       </main>
 
@@ -392,13 +414,15 @@ export default function App() {
       )}
       </div>
 
-      <SettingsDrawer
-        open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        onExport={handleExportClick}
-        onImport={handleImportClick}
-        dataBusy={busy}
-      />
+      <ErrorBoundary label="Settings">
+        <SettingsDrawer
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          onExport={handleExportClick}
+          onImport={handleImportClick}
+          dataBusy={busy}
+        />
+      </ErrorBoundary>
 
       <input
         ref={fileInput}

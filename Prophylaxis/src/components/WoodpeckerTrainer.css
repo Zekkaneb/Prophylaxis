@@ -1042,3 +1042,9 @@
     animation: none;
   }
 }
+
+/* First read of the saved sets: one quiet line instead of the empty-state art,
+   which would otherwise claim the player has no cycles yet. */
+.wp-loading {
+  padding: 18px 2px;
+}

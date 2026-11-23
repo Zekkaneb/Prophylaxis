@@ -179,6 +179,9 @@ export default function GameReviewDashboard({
   const [pgnText, setPgnText] = useState('');
   const [reviews, setReviews] = useState<SavedReview[]>([]);
   const [reviewsError, setReviewsError] = useState<string | null>(null);
+  /* The archive is a (fast) IndexedDB read, but "no reviews yet" is not true
+     until that read returns — the skeleton holds the panel's height meanwhile. */
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [active, setActive] = useState<SavedReview | null>(null);
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
   const [ply, setPly] = useState(0);
@@ -214,6 +217,8 @@ export default function GameReviewDashboard({
       setReviewsError(null);
     } catch (cause) {
       setReviewsError(`Saved reviews could not be loaded: ${String(cause)}`);
+    } finally {
+      setReviewsLoading(false);
     }
   }, []);
 
@@ -699,7 +704,20 @@ export default function GameReviewDashboard({
           <p className="gr-eyebrow">Archive</p>
           <h2 className="gr-panel__title">Saved reviews</h2>
           {reviewsError && <p className="gr-error">{reviewsError}</p>}
-          {reviews.length === 0 ? (
+          {reviewsLoading && reviews.length === 0 ? (
+            <ul
+              className="gr-history gr-history--loading"
+              aria-busy="true"
+              aria-label="Loading saved reviews"
+            >
+              {[0, 1, 2].map((row) => (
+                <li key={row} className="gr-history__row gr-skeleton-row">
+                  <span className="gr-skeleton gr-skeleton--wide" />
+                  <span className="gr-skeleton gr-skeleton--short" />
+                </li>
+              ))}
+            </ul>
+          ) : reviews.length === 0 ? (
             <div className="gr-empty">
               <EmptyBoardArt glyph="♜" />
               <strong>No analysed games yet</strong>

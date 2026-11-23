@@ -141,6 +141,9 @@ export default function WoodpeckerTrainer() {
 
   const [phase, setPhase] = useState<Phase>('dashboard');
   const [sets, setSets] = useState<WoodpeckerSet[]>([]);
+  /* False until the first read resolves: an empty list before then is "not
+     loaded yet", not "you have no sets", and must not flash the empty state. */
+  const [setsLoaded, setSetsLoaded] = useState(false);
   const [tierSlug, setTierSlug] = useState<string>('intermediate');
   const [poolSizeInput, setPoolSizeInput] = useState('10');
   const [cyclesInput, setCyclesInput] = useState('7');
@@ -276,6 +279,8 @@ export default function WoodpeckerTrainer() {
         }
       } catch (cause) {
         if (alive) setError(`Saved sets could not be loaded: ${String(cause)}`);
+      } finally {
+        if (alive) setSetsLoaded(true);
       }
     })();
 
@@ -753,7 +758,11 @@ export default function WoodpeckerTrainer() {
             <p className="wp-eyebrow">Choose your set</p>
             <h2 className="wp-panel__title">Available sets</h2>
           </header>
-          {sets.length === 0 ? (
+          {!setsLoaded && sets.length === 0 ? (
+            <p className="wp-muted wp-loading" role="status">
+              Loading your saved sets…
+            </p>
+          ) : sets.length === 0 ? (
             <div className="wp-empty">
               <EmptyBoardArt glyph="♟" />
               <strong>No saved cycles yet</strong>

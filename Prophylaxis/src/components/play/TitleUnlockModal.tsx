@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TITLE_UNLOCK_EVENT, type TitleUnlockDetail } from '../../play/titleStore.ts';
 import { titleSpec } from '../../play/titles.ts';
@@ -27,6 +27,24 @@ export function TitleUnlockModal() {
     window.addEventListener(TITLE_UNLOCK_EVENT, onUnlock);
     return () => window.removeEventListener(TITLE_UNLOCK_EVENT, onUnlock);
   }, []);
+
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+  const showing = queue.length > 0;
+
+  /* The card takes the keyboard while it is up: the button holds focus (a game
+     ending underneath must not leave focus stranded behind the dialog) and
+     Escape dismisses it like every other sheet in the app. */
+  useEffect(() => {
+    if (!showing) return;
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setQueue((rest) => rest.slice(1));
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showing, queue.length]);
 
   const current = queue[0];
   if (!current) return null;
@@ -86,7 +104,7 @@ export function TitleUnlockModal() {
         </p>
 
         <div className="play-modal__actions">
-          <button type="button" className="primary-btn" onClick={close}>
+          <button ref={closeRef} type="button" className="primary-btn" onClick={close}>
             {queue.length > 1 ? `Next (${queue.length - 1})` : 'Nice'}
           </button>
         </div>

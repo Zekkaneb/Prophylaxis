@@ -309,3 +309,23 @@
 .account-popover .avatar-picker {
   margin-top: 16px;
 }
+
+/* The corner panel grows out of the chip it belongs to; transform/opacity only,
+   so opening the account menu never repaints the page behind it. */
+.account-popover {
+  transform-origin: top right;
+  animation: account-pop-in 180ms var(--ease, ease-out) both;
+}
+
+@keyframes account-pop-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-popover {
+    animation: none;
+  }
+}

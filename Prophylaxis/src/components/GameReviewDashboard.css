@@ -1529,3 +1529,52 @@
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------- archive --
+   The saved-review list is read from IndexedDB, so for a frame or two it is
+   neither empty nor filled. Three placeholder rows keep the panel's height
+   steady instead of flashing "No analysed games yet". The pulse is opacity
+   only, so it runs on the compositor and never re-lays-out the list. */
+.gr-history--loading {
+  gap: 8px;
+}
+
+.gr-skeleton-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.gr-skeleton {
+  display: block;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--surface-3, rgb(255 255 255 / 8%));
+  animation: gr-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.gr-skeleton--wide {
+  width: 62%;
+}
+
+.gr-skeleton--short {
+  width: 34%;
+}
+
+@keyframes gr-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-skeleton {
+    animation: none;
+    opacity: 0.7;
+  }
+}

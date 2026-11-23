@@ -281,7 +281,13 @@ async function pullOnce(userId: string): Promise<PullResult> {
           const key = payload.key;
           const value = payload.value;
           if (typeof key === 'string' && typeof value === 'string') {
-            await applyRemotePreference(key, value);
+            try {
+              await applyRemotePreference(key, value);
+            } catch {
+              /* A preference this build cannot apply must not abort the pull:
+                 skip it and let every other row land. */
+              skipped += 1;
+            }
           } else {
             skipped += 1;
           }
