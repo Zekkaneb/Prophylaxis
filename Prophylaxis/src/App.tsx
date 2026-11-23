@@ -392,7 +392,13 @@ export default function App() {
       )}
       </div>
 
-      <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsDrawer
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onExport={handleExportClick}
+        onImport={handleImportClick}
+        dataBusy={busy}
+      />
 
       <input
         ref={fileInput}

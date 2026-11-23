@@ -72,6 +72,12 @@
   height: 24px;
 }
 
+/* Phones put Settings in the top row; the rail's own footer carries it at desk
+   widths, so this compact twin is hidden unless `mobile.css` shows it. */
+.sidenav__compact-settings {
+  display: none;
+}
+
 .sidenav__toggle {
   display: grid;
   place-items: center;

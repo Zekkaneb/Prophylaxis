@@ -39,7 +39,7 @@
   /* The bar is sticky, so anything scrolled or focused into view needs to clear
      it instead of landing underneath. */
   html {
-    scroll-padding-top: 124px;
+    scroll-padding-top: 120px;
   }
 
   .page {
@@ -74,17 +74,53 @@
     padding-inline: 10px;
   }
 
+  /* Brand and settings sit together on the left; the search field takes the
+     rest of the row. `flex-start` (not the desk's `space-between`) keeps the
+     settings button out from under the account pill. */
   .sidenav__top,
   .sidenav.is-collapsed .sidenav__top {
     order: 1;
     flex: none;
     flex-direction: row;
+    justify-content: flex-start;
     gap: 6px;
+  }
+
+  /* The brand is a link home: a 44px target even though the mark is 34px. */
+  .sidenav .brand {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  /* Only a phone shows it; the rail keeps its footer actions at desk widths. */
+  .sidenav__compact-settings {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
   }
 
   .sidenav .brand {
     padding: 0;
     font-size: 17px;
+  }
+
+  /* Two rows on a phone: search (with brand and settings), then the rooms. The
+     four utility actions left the bar — sound, theme and premoves live in
+     Settings, export/import in its "Your data" section — because a third row
+     of 44px icons cost the puzzle board a tenth of the screen. */
+  .sidenav .sidebar-bottom {
+    display: none;
   }
 
   /* The mark alone: the wordmark is the one thing the bar can spare. */
@@ -99,7 +135,8 @@
   }
 
   .sidenav__search {
-    order: 2;
+    /* Same row as the brand and settings: the rooms are the row below it. */
+    order: 1;
     flex: 1 1 90px;
     min-width: 0;
     /* Leaves the floating account pill its corner instead of letting the field
@@ -139,7 +176,7 @@
   }
 
   .sidenav .main-nav {
-    order: 4;
+    order: 2;
     display: grid;
     /* Seven rooms, one row: the strip must never wrap its last room onto a
        second line and double the height of the app bar. */
@@ -395,6 +432,134 @@
   .gr-classes__row,
   .gr-candidate {
     min-height: 40px;
+  }
+
+  /* ------------------------------ touch targets ---------------------------
+     The library's pills and the dashboard's inline actions were 16-29px tall,
+     which is a coin flip for a thumb. They keep their look and gain the
+     minimum hit area. */
+  .courses__side-btn,
+  .courses__scope-btn,
+  .course-card__side,
+  .course-card__title-btn,
+  .link-btn,
+  .dash-hero__link,
+  .gr-nav .button,
+  .settings__reset {
+    min-height: 44px;
+  }
+
+  /* Short labels ("All", the ‹ › glyphs) were narrower than a thumb. */
+  .courses__scope-btn,
+  .gr-nav .button {
+    min-width: 44px;
+  }
+
+  /* The general bot's one-line hint is truncated to "… · standard begin" on a
+     phone: let it use the second line its card already has room for. */
+  .play-engine__hint {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.35;
+  }
+
+  .course-card__title-btn,
+  .dash-hero__link,
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* The clear button is drawn at 20px inside a 44px field: the hit area grows
+     past its paint, the field does not. */
+  .sidenav__clear {
+    position: relative;
+  }
+
+  .sidenav__clear::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+  }
+
+  /* -------------------------------- puzzles -------------------------------
+     The trainer's board, feedback and rating panel cannot share a phone
+     screen. The page becomes the scroll container (bar sticky above it), so
+     the whole column scrolls with native iOS/Android momentum instead of
+     overflowing the window. */
+  .app-shell--locked:has(.page--puzzles) {
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-shell--locked:has(.page--puzzles) .app-shell__body,
+  .app-shell--locked:has(.page--puzzles) .app-main {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-shell--locked:has(.page--puzzles) .view {
+    height: 100%;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+
+  .app-shell--locked:has(.page--puzzles) .view > * {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .page--puzzles {
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+
+  /* The board must fit the height left under the bar, not only the width: the
+     ~117px bar plus the timer head, turn strip, status strip and gaps. At 390
+     the width still wins; on a short phone the height does, and the board —
+     with its two status strips — then fits without scrolling. */
+  .wp {
+    --board-chrome: 306px;
+    --board-px: max(200px, min(100%, calc(100svh - var(--board-chrome))));
+  }
+
+  /* The page is the only fixed-height box. Inside it the room and its board
+     size to their content: a flex column that shrank them to the page height
+     cut the board's own square out of its column and let it overlap the
+     rating panel underneath. */
+  .page--puzzles > .wp,
+  .page--puzzles > .wp-dashboard {
+    flex: none;
+    height: auto;
+    min-height: 0;
+  }
+
+  .wp__board,
+  .wp__side {
+    height: auto;
+    min-height: 0;
+  }
+
+  .wp__board-wrap {
+    flex: none;
+    height: auto;
+  }
+
+  /* A board can never be wider than the column, so a zoomed or narrow layout
+     pans inside its own box instead of scrolling the page sideways. */
+  .wp__board-frame {
+    max-width: 100%;
+  }
+
+  .wp__side {
+    min-width: 0;
   }
 }
 

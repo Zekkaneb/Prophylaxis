@@ -1005,10 +1005,9 @@ export default function WoodpeckerTrainer() {
             {orientation === 'white' ? 'White' : 'Black'} to move
           </span>
           <span className="wp__turn-meta">
-            Puzzle {Math.min(puzzleIndex + 1, total)} of {total}
             {userMoves > 0
-              ? ` · ${userMoves} move${userMoves === 1 ? '' : 's'} to find`
-              : ''}
+              ? `${userMoves} move${userMoves === 1 ? '' : 's'} to find`
+              : 'Find the best move'}
           </span>
         </div>
 

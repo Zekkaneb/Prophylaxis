@@ -7,7 +7,7 @@
 import 'fake-indexeddb/auto';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { db } from '../../src/db.ts';
+import { createDatabase, db } from '../../src/db.ts';
 import {
   changeStamp,
   isApplyingRemote,
@@ -15,6 +15,8 @@ import {
   withRemoteApply,
 } from '../../src/sync/outbox.ts';
 import { collapsePending, mergeRemoteRow, toWireRow } from '../../src/sync/sync.ts';
+import { claimLocalRows } from '../../src/sync/accountDatabase.ts';
+import { withRowKey } from '../../src/sync/rowKey.ts';
 import { deleteTrainingSet } from '../../src/puzzles/trainingSets.ts';
 import { clearActiveGame, saveActiveGame } from '../../src/play/gameStore.ts';
 import { applyRemotePreference, syncPreference } from '../../src/sync/preferences.ts';
@@ -200,4 +202,93 @@ test('a delete becomes a tombstone, a re-create becomes a row', () => {
   );
   assert.equal(recreated.deleted, false, 'the row exists again, so it uploads');
   assert.deepEqual(recreated.payload, { game_id: 'back', pgn: '1. e4' });
+});
+
+test('signing in claims the guest’s rating and titles, not just their games', async () => {
+  const stamp = Date.now();
+  const source = createDatabase(`claim-source-${stamp}`);
+  const target = createDatabase(`claim-target-${stamp}`);
+  await source.open();
+  await target.open();
+
+  try {
+    await source.user_ratings.put({
+      category: 'blitz',
+      rating: 1234,
+      peak: 1300,
+      floor: 0,
+      streak: 2,
+      games_played: 40,
+      norm_games: [1300, 1210],
+      updated_at: 1,
+    });
+    await source.user_titles.put({
+      id: 'titles',
+      unlocked: ['CLB'],
+      selected: 'CLB',
+      updated_at: 1,
+    });
+
+    const copied = await claimLocalRows(source, target, 'user-1');
+
+    assert.ok(copied >= 2, `claimed ${copied} rows`);
+    const rating = await target.user_ratings.get('blitz');
+    assert.equal(rating?.rating, 1234, 'the guest rating follows the account');
+    assert.equal(rating?.peak, 1300);
+    assert.deepEqual(
+      await target.user_titles.get('titles').then((row) => row?.unlocked),
+      ['CLB'],
+      'a title earned before signing in is not taken away by signing in',
+    );
+    assert.equal((await target.sync_meta.get('owner'))?.value, 'user-1');
+  } finally {
+    await source.delete();
+    await target.delete();
+  }
+});
+
+test('a rating merge keeps the peak, the game count and the longer norm window', () => {
+  const merged = mergeRemoteRow(
+    'user_ratings',
+    {
+      category: 'blitz',
+      rating: 1410,
+      peak: 1500,
+      floor: 0,
+      streak: 1,
+      games_played: 62,
+      norm_games: [1500, 1490, 1480],
+      updated_at: 10,
+    },
+    {
+      category: 'blitz',
+      rating: 1400,
+      peak: 1450,
+      floor: 0,
+      streak: 0,
+      games_played: 60,
+      norm_games: [1450],
+      updated_at: 20,
+    },
+  );
+
+  assert.equal(merged.rating, 1400, 'the newer rating stands');
+  assert.equal(merged.peak, 1500, 'a peak never falls');
+  assert.equal(merged.games_played, 62, 'a game count never falls');
+  assert.deepEqual(
+    merged.norm_games,
+    [1500, 1490, 1480],
+    'fewer games on the other device never shortens the norm window',
+  );
+});
+
+test('a pulled rating or title row gets its Dexie key back', () => {
+  assert.deepEqual(withRowKey('user_ratings', 'blitz', { rating: 1200 }), {
+    rating: 1200,
+    category: 'blitz',
+  });
+  assert.deepEqual(withRowKey('user_titles', 'titles', { unlocked: ['NM'] }), {
+    unlocked: ['NM'],
+    id: 'titles',
+  });
 });

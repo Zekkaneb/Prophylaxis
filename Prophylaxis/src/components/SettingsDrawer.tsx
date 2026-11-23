@@ -16,6 +16,10 @@ import './SettingsDrawer.css';
 interface SettingsDrawerProps {
   open: boolean;
   onClose: () => void;
+  /** Local backup actions: the phone bar has no room for them. */
+  onExport: () => void;
+  onImport: () => void;
+  dataBusy: 'export' | 'import' | null;
 }
 
 const PALETTE_IDS = Object.keys(BOARD_PALETTES) as BoardPaletteId[];
@@ -24,7 +28,13 @@ const ACCENT_IDS = Object.keys(ACCENTS) as AccentId[];
 const MODE_IDS: ColorMode[] = ['dark', 'light', 'system'];
 
 
-export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
+export default function SettingsDrawer({
+  open,
+  onClose,
+  onExport,
+  onImport,
+  dataBusy,
+}: SettingsDrawerProps) {
   const {
     appearance,
     palette,
@@ -288,6 +298,26 @@ export default function SettingsDrawer({ open, onClose }: SettingsDrawerProps) {
                 onClick={() => savePremovesEnabled(!premovesEnabled)}
               >
                 <span />
+              </button>
+            </div>
+          </section>
+
+          <section className="settings__section" style={{ animationDelay: '260ms' }}>
+            <div className="settings__label-row">
+              <div>
+                <h3>Your data</h3>
+                <p className="settings__hint">
+                  Export this device's games, puzzles and progress as one JSON file,
+                  or restore a file you saved earlier.
+                </p>
+              </div>
+            </div>
+            <div className="settings__data-actions">
+              <button type="button" className="settings__reset" onClick={onExport} disabled={dataBusy !== null}>
+                {dataBusy === 'export' ? 'Exporting…' : 'Export backup'}
+              </button>
+              <button type="button" className="settings__reset" onClick={onImport} disabled={dataBusy !== null}>
+                {dataBusy === 'import' ? 'Importing…' : 'Import backup'}
               </button>
             </div>
           </section>

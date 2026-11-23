@@ -45,6 +45,11 @@ export const CLAIMED_TABLES = [
   'puzzle_attempts',
   'woodpecker_sets',
   'prefs',
+  /* Strength and honours are as personal as a game record: a guest's rating and
+     titles must follow them into the account, or signing in would silently drop
+     the ladder they had already climbed. */
+  'user_ratings',
+  'user_titles',
 ] as const;
 
 export function databaseNameFor(owner: string): string {

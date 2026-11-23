@@ -172,6 +172,18 @@ function SideNavComponent({
           )}
         </a>
 
+        {/* A phone has no room for the footer's four actions: settings moves up
+            here and the rest live in the settings sheet. Hidden above 640px. */}
+        <button
+          type="button"
+          className="sidenav__compact-settings"
+          aria-label="Settings"
+          title="Settings"
+          onClick={onSettings}
+        >
+          <span aria-hidden="true">⚙</span>
+        </button>
+
         <button
           type="button"
           className="sidenav__toggle"

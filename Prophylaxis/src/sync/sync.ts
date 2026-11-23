@@ -131,6 +131,19 @@ export function mergeRemoteRow(
     merged.is_completed = true;
   }
 
+  /* A norm window is history, not a counter: a newer row from a device that has
+     played fewer rated games must not shorten the one here, or the run a title
+     is averaged from would quietly lose games (and a norm already earned could
+     stop being reproducible). The longer list is the one with more of the
+     player's real performances in it. */
+  if (table === 'user_ratings') {
+    const ours = local.norm_games;
+    const theirs = remote.norm_games;
+    if (Array.isArray(ours) && (!Array.isArray(theirs) || ours.length > theirs.length)) {
+      merged.norm_games = ours;
+    }
+  }
+
   return merged;
 }
 

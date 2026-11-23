@@ -25,6 +25,10 @@ export const SYNCED_KEY_FIELD: Record<string, string> = {
   saved_reviews: 'game_id',
   active_game: 'game_id',
   prefs: 'key',
+  /** Four rows, one per category; the category *is* the key. */
+  user_ratings: 'category',
+  /** One row per account, always `titles`. */
+  user_titles: 'id',
 };
 
 /** Returns the payload with its table's key filled in when it is missing. */
