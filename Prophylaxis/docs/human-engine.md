@@ -106,13 +106,13 @@ Produced by calling `getBucketWeights` and `humanCalibration` directly
 | 400 | 0 | 28.9 | 23.3 | 16.3 | 20.4 | 5.4 | 5.7 | 2 | 69% |
 | 600 | 0 | 20.0 | 18.1 | 20.5 | 27.5 | 7.8 | 6.2 | 3 | 59% |
 | 800 | 0 | 13.5 | 14.1 | 22.6 | 32.7 | 10.2 | 6.8 | 3 | 50% |
-| 1000 | 0 | 8.9 | 10.9 | 23.3 | 36.2 | 12.7 | 8.0 | 5 | 43% |
-| 1200 | 0 | 5.8 | 8.5 | 22.8 | 37.8 | 15.2 | 9.8 | 6 | 37% |
-| 1500 | 0 | 3.0 | 5.8 | 20.3 | 37.2 | 19.1 | 14.6 | 7 | 29% |
+| 1000 | 0 | 8.9 | 10.9 | 23.3 | 36.2 | 12.7 | 8.0 | 3 | 43% |
+| 1200 | 0 | 5.8 | 8.5 | 22.8 | 37.8 | 15.2 | 9.8 | 4 | 37% |
+| 1500 | 0 | 3.0 | 5.8 | 20.3 | 37.2 | 19.1 | 14.6 | 5 | 29% |
 | 1800 | 0 | 0 | 4.0 | 16.6 | 33.1 | 22.9 | 23.3 | 9 | 22% |
-| 2100 | 0 | 0 | 2.7 | 12.3 | 26.4 | 26.8 | 31.7 | 10 | 15% |
+| 2100 | 0 | 0 | 2.7 | 12.3 | 26.4 | 26.8 | 31.7 | 11 | 15% |
 | 2400 | 0 | 0 | 0 | 7.7 | 17.9 | 30.7 | 43.7 | 12 | 8% |
-| 2800 | 0 | 0 | 0 | 2.0 | 5.0 | 36.0 | 57.0 | 14 | 2% |
+| 2800 | 0 | 0 | 0 | 2.0 | 5.0 | 36.0 | 57.0 | 13 | 2% |
 
 `BOTTOM_TIER_ELO = 200` replaces the fitted curves with a fixed
 `BOTTOM_TIER_SHARES` (65 / 25 / 4 / 4 / 1.5 / 0.5) rather than interpolating;
@@ -141,6 +141,39 @@ for phase, time control and "trouble" offsets.
 | `SELF_MATE_GUARD_ELO` | 1000 | mate in one is never played |
 | `BEGINNER_ELO` | 600 | beginner curves / spread probe pool |
 | `DEEP_SLIP_ELO` | 1500 | slips must survive the deep calculation |
+
+### USCF class ladder (`uscfClasses.ts`)
+
+`humanSearchDepth(elo)` is the class's depth, not a continuous curve, from
+Class E up. The time-control offset still applies, but Expert+ never drops
+below eleven plies; below 1000 the beginner depth curve and node caps remain.
+
+| Class | USCF | Depth | Book plies | Blunder / throw |
+| --- | --- | --- | --- | --- |
+| Class E | 1000-1199 | 3 | 3 | 8% / 2% |
+| Class D | 1200-1399 | 4 | 5 | 4% / 1% |
+| Class C | 1400-1599 | 5 | 7 | 1% / 0 |
+| Class B | 1600-1799 | 7 | 9 | 0 / 0 |
+| Class A | 1800-1999 | 9 | 11 | **0 / 0** |
+| Expert+ | 2000+ | 11 (+1 at 2400, +2 at 2600) | 14 | **0 / 0** |
+
+`theory.ts` reads `classBookPlies`, so the repertoire window is the same table.
+Each class row is a probability matrix over the **13 move qualities** —
+Clutch, Brilliant, Great, Best, Excellent, Good, Forced, Book, Inaccuracy,
+Mistake, Miss, Blunder, Throw — and every row sums to 1. `classifyMoveQuality`
+maps win-loss onto those qualities (Best <0.5, Excellent <2, Good <5,
+Inaccuracy 5-10, Mistake 10-20, Miss for a 10-35 drop that was winning, Blunder
+20-35, Throw >35), with deterministic overrides for `⇒` Forced (one legal
+move), `▣` Book (inside the ply window) and `○` Clutch (a best/great move under
+15 s or while defending).
+
+`renormalizeWeights` drops qualities the MultiPV list cannot offer and hands
+their mass to the ones it can, proportionally. Class B and above add a
+recapture guard and an unforced-piece-drop veto (`isUnforcedPieceDrop`); Class A
+and Expert+ have zero blunder and throw weight, and `selectClassMove` refuses
+those qualities outright, so no roll, character dial or engine list can reopen
+them. `selectHumanBotMove` and the character slip path both roll
+`rollClassQuality`, and the trace's `kind` is that quality's selection bucket.
 
 The search depth in the table above is `humanSearchDepth(elo)` before the
 time-control offset; `humanCalibration` exposes it as `depth`.

@@ -468,10 +468,10 @@ test('depth and temperature follow the skill curve', () => {
   assert.equal(humanCalibration(300).depth, 2);
   assert.equal(humanCalibration(700).depth, 3);
   assert.equal(humanCalibration(900).depth, 3);
-  assert.equal(humanCalibration(1000).depth, 5);
-  assert.equal(humanCalibration(2800).depth, 14);
-  assert.ok([4, 5].includes(humanCalibration(1100).depth));
-  assert.equal(humanSearchDepth(1100, -2), 3);
+  assert.equal(humanCalibration(1000).depth, 3, 'Class E searches three plies');
+  assert.equal(humanCalibration(2800).depth, 13, 'Expert+ is 11 plus the top bonus');
+  assert.equal(humanCalibration(1100).depth, 3);
+  assert.equal(humanSearchDepth(1100, -2), 2);
   assert.equal(humanSearchDepth(2800, -3), 11);
   assert.ok(Math.abs(humanCalibration(100).temperature - 1.35) < 1e-9);
   assert.ok(Math.abs(humanCalibration(2800).temperature - 0.2467) < 0.002);

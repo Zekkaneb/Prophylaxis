@@ -1,5 +1,14 @@
 import { Chess, type Square } from 'chess.js';
 import { ratedLossCap } from './strength.ts';
+import {
+  type MoveQuality,
+  classGuardsFor,
+  classSearchDepth,
+  isUnforcedPieceDrop,
+  rollClassQuality,
+  selectionBucketFor,
+  uscfClassFor,
+} from './uscfClasses.ts';
 
 /**
  * Continuous USCF rating calibration for the Elo-rated bots.
@@ -489,6 +498,12 @@ export function recaptureChance(elo: number, trade: TradeKind = 'equal'): number
  * is applied before the two-ply floor.
  */
 export function humanSearchDepth(elo: number, depthOffset = 0): number {
+  /* From Class E up the depth is the class's, not a continuous curve: 1000-1199
+     looks three plies, Expert+ eleven even in bullet. Below 1000 the beginner
+     curve below is still in charge, because those bots do not calculate at all. */
+  const classDepth = classSearchDepth(clampElo(elo), depthOffset);
+  if (classDepth !== null) return classDepth;
+
   const s = skillOf(elo);
   const depth = Math.max(2, Math.round(2 + Math.pow(s, 1.3) * 12) + depthOffset);
 
@@ -1311,6 +1326,8 @@ export interface HumanMoveInput extends HumanSearchInput {
   allowProbe?: boolean;
   /** A bucket the caller already rolled, so a retry does not re-roll. */
   forcedBucket?: Bucket;
+  /** A quality the caller already rolled, so a retry does not re-roll. */
+  quality?: MoveQuality;
 }
 
 export interface WeightedMove {
@@ -1327,6 +1344,8 @@ export interface HumanMoveChoice {
   cpLoss: number;
   winDrop: number;
   weights: readonly WeightedMove[];
+  /** The class quality the roll landed on, when this turn used the matrix. */
+  quality?: MoveQuality | null;
   /** Set when `kind` is `probe`: which bucket the caller must fill off-list. */
   probeTarget?: 'mistake' | 'blunder';
 }
@@ -1487,7 +1506,8 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
     cpLoss: number,
     winDrop: number,
     weights: readonly WeightedMove[],
-  ): HumanMoveChoice => ({ uci, kind, plan, cpLoss, winDrop, weights });
+    quality: MoveQuality | null = null,
+  ): HumanMoveChoice => ({ uci, kind, plan, cpLoss, winDrop, weights, quality });
 
   /* 1. Forced move. */
   if (legal.length <= 1) {
@@ -1557,12 +1577,18 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
      queen sortie, central tension. Check replies and checking sacrifices stay
      legal; see `freeHangAfter`. */
   const hangGuarded = elo >= HANG_GUARD_ELO;
+  /* From Class B up an unforced piece drop is vetoed outright, not merely
+     damped: the matrix has no blunder mass there and the guard makes sure the
+     engine's list cannot smuggle one in either. */
+  const classGuards = classGuardsFor(uscfClassFor(elo));
   const hangs = new Map<string, boolean>();
   const isFreeHang = (uci: string): boolean => {
     if (!hangGuarded) return false;
     if (!hangs.has(uci)) hangs.set(uci, freeHangAfter(input.fen, uci));
     return hangs.get(uci) === true;
   };
+  const dropsPiece = (uci: string): boolean =>
+    classGuards.vetoUnforcedDrops && isUnforcedPieceDrop(input.fen, uci);
 
   const safeForElo = (entry: (typeof entries)[number]) =>
     elo < SELF_MATE_GUARD_ELO || !allowsMateInOne(input.fen, entry.uci);
@@ -1621,11 +1647,12 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
         ? raw
         : temptingWeights(raw);
     const chosen = pick(weights, random) ?? weights[0];
-    return finish(chosen.uci, kind, chosen.cpLoss, chosen.winDrop, weights);
+    return finish(chosen.uci, kind, chosen.cpLoss, chosen.winDrop, weights, rolledQuality);
   };
 
   const errorAllowed = (entry: (typeof entries)[number]): boolean => {
     if (isFreeHang(entry.uci)) return false;
+    if (dropsPiece(entry.uci)) return false;
     if (!requiresIntent) return true;
     const rank = entry.shallowRank;
 
@@ -1642,10 +1669,30 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
     return Boolean(intent && hasHumanIntent(intent, entry.winDrop));
   };
 
-  /* 3. One roll against the six-bucket distribution, then the bucket it names
-     is filled from the depth-9 reference pass. */
+  /* 3. One roll against the USCF class's 13-quality matrix, then the selection
+     bucket it names is filled from the depth-9 reference pass. Phase and time
+     control still widen the errors: the plan's error rate relative to the
+     rating's base curve is the multiplier on the matrix's error rows. */
   const buckets = bucketCandidates(entries);
-  const category: Bucket = input.forcedBucket ?? pickCategory(random(), plan.quality);
+  const baseShares = getBucketWeights(elo);
+  const baseError = baseShares.blunder + baseShares.mistake + baseShares.inaccuracy;
+  const errorMultiplier =
+    baseError > 0 ? Math.max(0.05, plan.errorRate / baseError) : 1;
+  const qualityForBucket: Record<Bucket, MoveQuality> = {
+    best: 'best',
+    excellent: 'excellent',
+    good: 'good',
+    inaccuracy: 'inaccuracy',
+    mistake: 'mistake',
+    blunder: 'blunder',
+  };
+  const rolledQuality: MoveQuality =
+    input.quality ??
+    (input.forcedBucket
+      ? qualityForBucket[input.forcedBucket]
+      : rollClassQuality({ elo, random, errorMultiplier }));
+  const category: Bucket =
+    input.forcedBucket ?? selectionBucketFor(rolledQuality);
   const chain = bucketFallbackChain(category, medianBucket(plan.quality));
   const usableUcis = new Set(usable.map((entry) => entry.uci));
 
@@ -1672,7 +1719,7 @@ export function selectHumanBotMove(input: HumanMoveInput): HumanMoveChoice {
           elo,
         );
         const chosen = pick(weights, random) ?? weights[0];
-        return finish(chosen.uci, step, chosen.cpLoss, chosen.winDrop, weights);
+        return finish(chosen.uci, step, chosen.cpLoss, chosen.winDrop, weights, rolledQuality);
       }
       return finishedAt(step, matches, boost);
     }

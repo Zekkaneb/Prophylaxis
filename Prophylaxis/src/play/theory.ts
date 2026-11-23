@@ -1,4 +1,5 @@
 import { usesOpeningBook } from './humanStrength.ts';
+import { classBookPlies } from './uscfClasses.ts';
 
 /**
  * One definition of "this bot may still use prepared theory here".
@@ -14,21 +15,23 @@ import { usesOpeningBook } from './humanStrength.ts';
  * Deepest ply of prepared theory a personality may keep following, by rating.
  *
  * A repertoire is a memory, and memory is part of strength: an 1150 who recites
- * twelve moves of grandmaster theory is not an 1150 any more. The cap counts
- * **plies already played** (White's first move is ply 0), not full moves.
+ * twelve moves of grandmaster theory is not an 1150 any more. The cap is the
+ * USCF class's book depth (Class E 3, D 5, C 7, B 9, A 11, Expert+ 14 plies);
+ * below 1000 the beginner's four plies stay. It counts **plies already played**
+ * (White's first move is ply 0), not full moves.
  */
 export const BOOK_PLY_CAP = {
   beginner: 4,
-  club: 6,
-  expert: 8,
-  master: 12,
+  classE: 3,
+  classD: 5,
+  classC: 7,
+  classB: 9,
+  classA: 11,
+  expert: 14,
 } as const;
 
 export function bookPlyLimit(elo: number): number {
-  if (elo <= 1000) return BOOK_PLY_CAP.beginner;
-  if (elo <= 1500) return BOOK_PLY_CAP.club;
-  if (elo <= 2000) return BOOK_PLY_CAP.expert;
-  return BOOK_PLY_CAP.master;
+  return classBookPlies(elo);
 }
 
 export interface TheoryWindow {

@@ -8,8 +8,8 @@ import {
 } from '../strength.ts';
 import {
   HUMAN_MULTI_PV,
+  getBucketWeights,
   lastCaptureOf,
-  pickCategory,
   planHumanSearch,
   rollSub400RandomFloor,
   selectHumanBotMove,
@@ -18,6 +18,11 @@ import {
   type Bucket,
   type HumanSearchPlan,
 } from '../humanStrength.ts';
+import {
+  type MoveQuality,
+  rollClassQuality,
+  selectionBucketFor,
+} from '../uscfClasses.ts';
 import { chooseRandomLegalMove } from '../blunders.ts';
 import type { PlayColor } from '../types.ts';
 import {
@@ -152,13 +157,19 @@ export function rollCharacterSlip(input: {
 
   /* A character with its own dial keeps it: `mistakeChance` expresses a
      difficulty the curve cannot (it floors out at 45%), so those characters
-     roll their slip directly. Everyone else rolls the rated distribution. */
-  const kind: Bucket =
+     roll their slip directly. Everyone else rolls the USCF class's 13-quality
+     matrix, with the plan's phase/time-control error multiplier applied. */
+  const baseShares = getBucketWeights(elo);
+  const baseError = baseShares.blunder + baseShares.mistake + baseShares.inaccuracy;
+  const errorMultiplier =
+    baseError > 0 ? Math.max(0.05, plan.errorRate / baseError) : 1;
+  const quality: MoveQuality =
     style.mistakeChance !== undefined
       ? random() < style.mistakeChance
         ? 'blunder'
         : 'best'
-      : pickCategory(random(), plan.quality);
+      : rollClassQuality({ elo, random, errorMultiplier });
+  const kind: Bucket = selectionBucketFor(quality);
   /* The band itself is rated: a 2400's inaccuracy is a third of a beginner's. */
   const band = slipBand(kind, elo);
   if (!band) return null;

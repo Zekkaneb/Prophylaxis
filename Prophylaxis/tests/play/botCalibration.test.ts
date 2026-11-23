@@ -6,6 +6,22 @@ import { personalityWeighting, styleFor } from '../../src/play/personality/style
 import { PERSONALITY_OPPONENTS } from '../../src/play/opponents.ts';
 import { HUMAN_MULTI_PV, humanSearchDepth } from '../../src/play/humanStrength.ts';
 import { botTraces, setBotTraceEnabled } from '../../src/play/botDebug.ts';
+import {
+  MOVE_QUALITY_META,
+  MOVE_QUALITY_ORDER,
+  QUALITY_WEIGHTS,
+  USCF_CLASSES,
+  classBookPlies,
+  classSearchDepth,
+  classifyMoveQuality,
+  isUnforcedPieceDrop,
+  renormalizeWeights,
+  rollClassQuality,
+  selectClassMove,
+  totalWeight,
+  uscfClassFor,
+  type MoveQuality,
+} from '../../src/play/uscfClasses.ts';
 import type { StockfishController } from '../../src/engine/useStockfish.ts';
 
 /**
@@ -443,4 +459,309 @@ test('a 2000 searches deep enough to see the recapture', async () => {
   const { seenEngine } = await run({ elo: 2000, seed: 17, turns: 25 });
   assert.ok(seenEngine.depth >= 10, `a 2000 searched at depth ${seenEngine.depth}`);
   assert.equal(seenEngine.nodes, 0, 'a 2000 is out of the beginner node band');
+});
+
+/* --------------------------------------------------------------------------
+   USCF classes and the 13-quality model
+   -------------------------------------------------------------------------- */
+
+const START_BOARD = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+/** One candidate list every class is measured on, best first. */
+const CLASS_CANDIDATES = [
+  { uci: 'e2e4', winPctLoss: 0 },
+  { uci: 'd2d4', winPctLoss: 1 },
+  { uci: 'g1f3', winPctLoss: 4 },
+  { uci: 'b1c3', winPctLoss: 9 },
+  { uci: 'a2a3', winPctLoss: 40 },
+] as const;
+
+/** Midpoint win-loss each quality stands for, in centipawns. */
+const QUALITY_LOSS_CP: Record<MoveQuality, number> = {
+  clutch: 0,
+  brilliant: 0,
+  great: 0,
+  best: 0,
+  excellent: 15,
+  good: 60,
+  forced: 0,
+  book: 0,
+  inaccuracy: 130,
+  mistake: 250,
+  miss: 220,
+  blunder: 450,
+  throw: 900,
+};
+
+test('every USCF class owns the search depth and book depth the spec lists', () => {
+  assert.deepEqual(
+    USCF_CLASSES.map((tier) => [tier.label, tier.min, tier.max, tier.depth, tier.bookPlies]),
+    [
+      ['Class E', 1000, 1199, 3, 3],
+      ['Class D', 1200, 1399, 4, 5],
+      ['Class C', 1400, 1599, 5, 7],
+      ['Class B', 1600, 1799, 7, 9],
+      ['Class A', 1800, 1999, 9, 11],
+      ['Expert+', 2000, null, 11, 14],
+    ],
+  );
+
+  /* The bands are contiguous and their edges belong to the lower class. */
+  assert.deepEqual(
+    [999, 1000, 1199, 1200, 1399, 1400, 1599, 1600, 1799, 1800, 1999, 2000, 2800].map(
+      (elo) => uscfClassFor(elo).id,
+    ),
+    ['E', 'E', 'E', 'D', 'D', 'C', 'C', 'B', 'B', 'A', 'A', 'expert', 'expert'],
+  );
+
+  assert.equal(classSearchDepth(1000), 3);
+  assert.equal(classSearchDepth(1400, -1), 4);
+  assert.equal(classSearchDepth(1600), 7);
+  assert.equal(classSearchDepth(1800), 9);
+  /* Expert+ never drops below its eleven plies, even in bullet. */
+  assert.equal(classSearchDepth(2000, -3), 11);
+  assert.equal(classSearchDepth(2800), 13);
+  assert.equal(classSearchDepth(999), null, 'the beginner curve owns sub-1000 depths');
+  assert.equal(humanSearchDepth(1400), 5);
+  assert.equal(humanSearchDepth(1800), 9);
+  assert.equal(humanSearchDepth(2800), 13);
+
+  assert.equal(classBookPlies(400), 4);
+  assert.equal(classBookPlies(1000), 3);
+  assert.equal(classBookPlies(1200), 5);
+  assert.equal(classBookPlies(1400), 7);
+  assert.equal(classBookPlies(1600), 9);
+  assert.equal(classBookPlies(1800), 11);
+  assert.equal(classBookPlies(2000), 14);
+});
+
+test('the classifier maps win-loss onto the 13 qualities', () => {
+  assert.equal(MOVE_QUALITY_ORDER.length, 13);
+  assert.equal(Object.keys(MOVE_QUALITY_META).length, 13);
+  assert.equal(MOVE_QUALITY_META.forced.symbol, '⇒');
+  assert.equal(MOVE_QUALITY_META.book.symbol, '▣');
+  assert.equal(MOVE_QUALITY_META.clutch.symbol, '○');
+
+  const classify = (winPctLoss: number, extra: Record<string, unknown> = {}) =>
+    classifyMoveQuality({ winPctLoss, ...extra });
+
+  /* Best / Excellent / Good / Inaccuracy / Mistake / Blunder / Throw bands. */
+  assert.equal(classify(0), 'best');
+  assert.equal(classify(0.49), 'best');
+  assert.equal(classify(0.5), 'excellent');
+  assert.equal(classify(1.99), 'excellent');
+  assert.equal(classify(2), 'good');
+  assert.equal(classify(4.99), 'good');
+  assert.equal(classify(5), 'inaccuracy');
+  assert.equal(classify(9.99), 'inaccuracy');
+  assert.equal(classify(10), 'mistake');
+  assert.equal(classify(19.99), 'mistake');
+  assert.equal(classify(20), 'blunder');
+  assert.equal(classify(34.99), 'blunder');
+  assert.equal(classify(35), 'blunder', 'the blunder band ends at 35 inclusive');
+  assert.equal(classify(35.01), 'throw');
+  assert.equal(classify(90), 'throw');
+
+  /* The win that was there and went is a Miss, not a Mistake. */
+  assert.equal(classify(12, { bestWinPct: 92, winPct: 80 }), 'miss');
+  assert.equal(classify(12, { bestWinPct: 60, winPct: 48 }), 'mistake');
+
+  /* Deterministic overrides beat every band. */
+  assert.equal(classify(40, { legalMoves: 1 }), 'forced');
+  assert.equal(classify(40, { book: true }), 'book');
+  assert.equal(classify(0, { rank: 1, clockMs: 8_000 }), 'clutch');
+  assert.equal(classify(0, { rank: 1, defending: true }), 'clutch');
+  assert.equal(classify(0, { rank: 1, sacrificeCp: 300, winPct: 70 }), 'brilliant');
+  assert.equal(classify(0, { rank: 1, secondBestGap: 12 }), 'great');
+  /* Only the engine's first line can be Best. */
+  assert.equal(classify(0, { rank: 2 }), 'excellent');
+});
+
+test('each class has a probability matrix that sums to one and gates its worst moves', () => {
+  for (const tier of USCF_CLASSES) {
+    const row = QUALITY_WEIGHTS[tier.id];
+    assert.ok(Math.abs(totalWeight(row) - 1) < 1e-9, `${tier.label} sums to ${totalWeight(row)}`);
+    /* Deterministic overrides and by-products are never rolled for. */
+    for (const quality of ['forced', 'book', 'clutch', 'brilliant'] as const) {
+      assert.equal(row[quality], 0, `${tier.label} rolls ${quality}`);
+    }
+  }
+
+  /* Class A and Expert+ have no blunder or throw mass at all; neither rolls a
+     mistake, and only the two weakest classes can throw a game. */
+  for (const id of ['A', 'expert'] as const) {
+    assert.equal(QUALITY_WEIGHTS[id].blunder, 0, `${id} blunder`);
+    assert.equal(QUALITY_WEIGHTS[id].throw, 0, `${id} throw`);
+    assert.equal(QUALITY_WEIGHTS[id].mistake, 0, `${id} mistake`);
+  }
+  assert.ok(QUALITY_WEIGHTS.E.throw > 0);
+  assert.ok(QUALITY_WEIGHTS.D.throw > 0);
+  assert.equal(QUALITY_WEIGHTS.C.throw, 0);
+
+  /* An empty bucket hands its mass to the buckets that do exist, in
+     proportion: E's best/excellent ratio survives the re-normalization. */
+  const kept = renormalizeWeights(
+    QUALITY_WEIGHTS.E,
+    (quality) => quality === 'best' || quality === 'excellent',
+  );
+  assert.ok(Math.abs(totalWeight(kept) - 1) < 1e-9);
+  assert.ok(Math.abs(kept.best / kept.excellent - QUALITY_WEIGHTS.E.best / QUALITY_WEIGHTS.E.excellent) < 1e-9);
+  assert.equal(kept.good, 0);
+
+  const nothing = renormalizeWeights(QUALITY_WEIGHTS.E, () => false);
+  assert.equal(nothing.best, 1);
+
+  /* A strong class never rolls a blunder, throw, mistake or miss, whatever the
+     die says. Inaccuracy survives for Class A: a 1800's loose move is real. */
+  const forbidden = new Set<MoveQuality>(['blunder', 'throw', 'mistake', 'miss']);
+  for (const elo of [1800, 2000, 2200, 2800]) {
+    const rolled = new Set<MoveQuality>();
+    const random = seeded(elo);
+    for (let roll = 0; roll < 400; roll += 1) {
+      rolled.add(rollClassQuality({ elo, random }));
+    }
+    for (const quality of rolled) {
+      assert.ok(!forbidden.has(quality), `${elo} rolled ${quality}`);
+    }
+  }
+  /* The floor class still has all 13 outcomes reachable through its matrix. */
+  assert.ok(QUALITY_WEIGHTS.E.mistake > QUALITY_WEIGHTS.A.inaccuracy);
+});
+
+test('higher classes have strictly smaller expected loss', () => {
+  const expected = (tier: (typeof USCF_CLASSES)[number]) =>
+    MOVE_QUALITY_ORDER.reduce(
+      (sum, quality) => sum + QUALITY_WEIGHTS[tier.id][quality] * QUALITY_LOSS_CP[quality],
+      0,
+    );
+  const losses = USCF_CLASSES.map(expected);
+  for (let index = 1; index < losses.length; index += 1) {
+    assert.ok(
+      losses[index] < losses[index - 1],
+      `${USCF_CLASSES[index].label} (${losses[index].toFixed(1)}cp) is not better than ` +
+        `${USCF_CLASSES[index - 1].label} (${losses[index - 1].toFixed(1)}cp)`,
+    );
+  }
+  assert.ok(losses[0] > 100, `Class E expected loss ${losses[0].toFixed(1)}cp`);
+  assert.ok(losses[losses.length - 1] < 10, `Expert+ expected loss ${losses.at(-1)!.toFixed(1)}cp`);
+});
+
+test('the class selector applies the forced, book, recapture and drop guards', () => {
+  const forced = selectClassMove({
+    fen: START_BOARD,
+    elo: 1400,
+    candidates: CLASS_CANDIDATES,
+    legalMoves: 1,
+    random: () => 0.99,
+  });
+  assert.equal(forced?.quality, 'forced');
+  assert.equal(forced?.guard, 'forced');
+
+  const book = selectClassMove({
+    fen: START_BOARD,
+    elo: 1400,
+    candidates: CLASS_CANDIDATES,
+    bookMove: 'e2e4',
+  });
+  assert.equal(book?.quality, 'book');
+  assert.equal(book?.guard, 'book');
+
+  /* An offered recapture is taken back from Class B up, without a roll. */
+  const recaptureFen = '4k3/8/8/8/8/8/8/3qK3 w - - 0 1';
+  const recapture = selectClassMove({
+    fen: recaptureFen,
+    elo: 1600,
+    candidates: [
+      { uci: 'e1d1', winPctLoss: 0 },
+      { uci: 'e1f2', winPctLoss: 15 },
+    ],
+    lastCapture: { to: 'd1' },
+    random: () => 0.99,
+  });
+  assert.equal(recapture?.uci, 'e1d1');
+  assert.equal(recapture?.guard, 'recapture');
+
+  /* An unforced piece drop is vetoed from Class B up. The rook on f3 hits g3;
+     Nf2 is attacked too but defended by the king, so it is not a drop. */
+  const dropFen = '4k3/8/8/8/8/5r2/8/4K2N w - - 0 1';
+  assert.equal(isUnforcedPieceDrop(dropFen, 'h1g3'), true);
+  assert.equal(isUnforcedPieceDrop(dropFen, 'h1f2'), false);
+  const dropCandidates = [
+    { uci: 'h1g3', winPctLoss: 0 },
+    { uci: 'h1f2', winPctLoss: 30 },
+  ];
+  const guarded = selectClassMove({
+    fen: dropFen,
+    elo: 1600,
+    candidates: dropCandidates,
+    random: () => 0.5,
+  });
+  assert.equal(guarded?.uci, 'h1f2');
+  const unguarded = selectClassMove({
+    fen: dropFen,
+    elo: 1000,
+    candidates: dropCandidates,
+    random: () => 0.5,
+  });
+  assert.equal(unguarded?.uci, 'h1g3');
+});
+
+test('Class A and Expert+ never pick a blunder, whatever they roll', () => {
+  for (const elo of [1800, 2000, 2200, 2800]) {
+    for (const roll of [0, 0.5, 0.75, 0.95, 0.999999]) {
+      const pick = selectClassMove({
+        fen: START_BOARD,
+        elo,
+        candidates: CLASS_CANDIDATES,
+        random: () => roll,
+      });
+      assert.ok(pick, `${elo} returned no move`);
+      assert.ok(
+        !['blunder', 'throw', 'mistake', 'miss'].includes(pick.quality),
+        `${elo} played ${pick.quality}`,
+      );
+      assert.notEqual(pick.uci, 'a2a3', `${elo} played the 25-point blunder`);
+    }
+  }
+
+  /* Class E still has the whole distribution: the last roll is the throw. */
+  const thrown = selectClassMove({
+    fen: START_BOARD,
+    elo: 1000,
+    candidates: CLASS_CANDIDATES,
+    random: () => 0.999999,
+  });
+  assert.equal(thrown?.quality, 'throw');
+  assert.equal(thrown?.uci, 'a2a3');
+});
+
+test('on one candidate list every class plays better than the one below it', () => {
+  const meanLoss = (elo: number) => {
+    const random = seeded(1234 + elo);
+    const draws = 900;
+    let total = 0;
+    for (let draw = 0; draw < draws; draw += 1) {
+      const pick = selectClassMove({
+        fen: START_BOARD,
+        elo,
+        candidates: CLASS_CANDIDATES,
+        random,
+      });
+      assert.ok(pick, `${elo} returned no move`);
+      const candidate = CLASS_CANDIDATES.find((entry) => entry.uci === pick.uci);
+      assert.ok(candidate, `${elo} returned an off-list move`);
+      total += candidate.winPctLoss;
+    }
+    return total / draws;
+  };
+
+  const elos = [1000, 1200, 1400, 1600, 1800, 2000];
+  const means = elos.map(meanLoss);
+  for (let index = 1; index < means.length; index += 1) {
+    assert.ok(
+      means[index] < means[index - 1],
+      `${elos[index]} (${means[index].toFixed(2)} points) does not beat ` +
+        `${elos[index - 1]} (${means[index - 1].toFixed(2)} points)`,
+    );
+  }
 });

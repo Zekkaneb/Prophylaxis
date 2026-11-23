@@ -112,21 +112,26 @@ test('a genuine transposition keeps the plan, a missing centre does not', () => 
 /* --------------------------- 2. shared theory window ---------------------- */
 
 test('the theory window counts plies, not full moves', () => {
-  assert.deepEqual(theoryWindow(1000, 0), { open: true, limit: 4, plies: 0 });
-  assert.equal(theoryOpen(1000, 3), true);
-  assert.equal(theoryOpen(1000, 4), false);
-  assert.equal(theoryOpen(1500, 5), true);
-  assert.equal(theoryOpen(1500, 6), false);
-  assert.equal(theoryOpen(2000, 7), true);
-  assert.equal(theoryOpen(2000, 8), false);
-  assert.equal(theoryOpen(2400, 11), true);
-  assert.equal(theoryOpen(2400, 12), false);
+  assert.deepEqual(theoryWindow(1000, 0), { open: true, limit: 3, plies: 0 });
+  assert.equal(theoryOpen(1000, 2), true);
+  assert.equal(theoryOpen(1000, 3), false);
+  assert.equal(theoryOpen(1500, 6), true);
+  assert.equal(theoryOpen(1500, 7), false);
+  assert.equal(theoryOpen(2000, 13), true);
+  assert.equal(theoryOpen(2000, 14), false);
+  assert.equal(theoryOpen(2400, 13), true);
+  assert.equal(theoryOpen(2400, 14), false);
 
-  /* Rating caps are the audit's existing ones, unchanged. */
+  /* The USCF class owns the book depth: E 3, D 5, C 7, B 9, A 11, Expert+ 14.
+     Below 1000 the beginner's four plies stay. */
   assert.equal(bookPlyLimit(400), 4);
-  assert.equal(bookPlyLimit(1000), 4);
-  assert.equal(bookPlyLimit(1001), 6);
-  assert.equal(bookPlyLimit(2001), 12);
+  assert.equal(bookPlyLimit(1000), 3);
+  assert.equal(bookPlyLimit(1199), 3);
+  assert.equal(bookPlyLimit(1200), 5);
+  assert.equal(bookPlyLimit(1400), 7);
+  assert.equal(bookPlyLimit(1600), 9);
+  assert.equal(bookPlyLimit(1800), 11);
+  assert.equal(bookPlyLimit(2001), 14);
 
   /* Below the random floor there is no theory at all, at any depth. */
   assert.equal(theoryOpen(300, 0), false);
