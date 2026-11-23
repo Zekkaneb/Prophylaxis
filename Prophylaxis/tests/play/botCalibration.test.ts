@@ -383,3 +383,64 @@ test('one weighting curve: accuracy rises and taste falls with the rating', () =
      can never outvote a real evaluation gap. */
   assert.ok(personalityWeighting(2400).taste < 0.12);
 });
+
+/**
+ * The regression this file was missing: a 2000-rated card hung a whole piece
+ * for no reason. Two separate holes produced it — the quality roll still gave a
+ * 2000 a ~1% blunder bucket, and `slipBand('blunder', 2000)` sized that bucket
+ * at 137-441 cp, roughly a piece. Both are closed, and the chooser's final
+ * ceiling means no future band, character dial or engine list can reopen them.
+ */
+test('a 2000 bot never gives up a piece while a clean move exists', async () => {
+  const positions = quietPositions(40);
+
+  for (const elo of [2000, 2200]) {
+    const style = styleFor('brandon', elo);
+    assert.ok(style, `${elo} has no style`);
+    const random = seeded(41 + elo);
+    const engine = staticEngine({ depth: 0, multipv: 0, nodes: 0 });
+    let worst = 0;
+    let worstFen = '';
+
+    for (const fen of positions) {
+      const game = new Chess(fen);
+      const lines = rankMoves(fen).slice(0, HUMAN_MULTI_PV);
+      const best = lines[0];
+      /* A bot already 500 cp down may gamble; that is not a hang. */
+      if (!best || best.mover < -500) continue;
+
+      const chosen = await chooseBotMove({
+        game,
+        fen,
+        history: Array.from({ length: 20 }, (_, index) => `m${index}`),
+        botColor: game.turn() as 'w' | 'b',
+        style,
+        elo,
+        clockMs: 180_000,
+        incrementMs: 2000,
+        initialMs: 180_000,
+        engine,
+        random,
+      });
+      assert.ok(chosen, 'the chooser always returns a move');
+
+      const index = lines.findIndex((line) => line.uci === chosen.uci);
+      if (index < 0) continue;
+      const loss = Math.max(0, best.mover - lines[index].mover);
+      if (loss > worst) {
+        worst = loss;
+        worstFen = fen;
+      }
+    }
+
+    /* 120 cp is the 2000 ceiling and 75 the 2200 one; 150 is the bound the bug
+       report asked for, and a hung piece (~300+) is far outside it. */
+    assert.ok(worst <= 150, `${elo} gave up ${worst}cp on ${worstFen}`);
+  }
+});
+
+test('a 2000 searches deep enough to see the recapture', async () => {
+  const { seenEngine } = await run({ elo: 2000, seed: 17, turns: 25 });
+  assert.ok(seenEngine.depth >= 10, `a 2000 searched at depth ${seenEngine.depth}`);
+  assert.equal(seenEngine.nodes, 0, 'a 2000 is out of the beginner node band');
+});

@@ -29,7 +29,7 @@ import {
   type Premove,
 } from './premove.ts';
 import { replaySans } from './replay.ts';
-import { chooseCandidate } from './strength.ts';
+import { chooseCandidate, ratedLossCap } from './strength.ts';
 import {
   HUMAN_MULTI_PV,
   PROBE_ELO,
@@ -55,7 +55,8 @@ import {
 } from './humanStrength.ts';
 import { chooseRandomLegalMove } from './blunders.ts';
 import { openingSource } from './personality/opening.ts';
-import { rollCharacterSlip } from './personality/chooseMove.ts';
+import { enforceRatedCeiling, rollCharacterSlip } from './personality/chooseMove.ts';
+import { traceBotMove } from './botDebug.ts';
 import {
   choosePersonalityMove,
   describeMove,
@@ -1087,6 +1088,57 @@ export function usePlayGame(engine: StockfishController) {
           if (!uci) uci = evaluation.bestMove;
           humanWaitMs = humanSearch!.thinkTimeMs;
         }
+
+        /* The same hard ceiling the bot-vs-bot chooser applies. Whatever the
+           roll, the character's taste or a probe picked, a 1800+ bot that is not
+           already lost does not hand over a piece in a live position. */
+        const ceiling =
+          uci && evaluation.candidates.length > 0
+            ? enforceRatedCeiling({
+                uci,
+                fen,
+                candidates: evaluation.candidates,
+                botColor,
+                elo: ratedElo,
+              })
+            : null;
+        if (ceiling) {
+          uci = ceiling.uci;
+          decisionRef.current = {
+            uci,
+            gap: ceiling.loss,
+            best: false,
+            features: ceiling.features,
+            bookMove: false,
+            botPov: ceiling.bestPov,
+          };
+        }
+
+        /* The Play room now leaves the same trace the bot-vs-bot path does, so a
+           piece hang in a game the player actually saw can be read back from
+           `window.__botTraces` instead of guessed at. */
+        const traceSign = botColor === 'w' ? 1 : -1;
+        const traceBest = evaluation.candidates.reduce(
+          (best, candidate) => Math.max(best, traceSign * candidate.scoreCp),
+          Number.NEGATIVE_INFINITY,
+        );
+        const tracePicked = evaluation.candidates.find((candidate) => candidate.uci === uci);
+        traceBotMove({
+          elo,
+          effectiveElo: humanSearch.effectiveElo,
+          depth: searchDepth,
+          multiPv: HUMAN_MULTI_PV,
+          source,
+          bookMove: false,
+          rank: evaluation.candidates.findIndex((candidate) => candidate.uci === uci) + 1,
+          cpLoss:
+            tracePicked && Number.isFinite(traceBest)
+              ? Math.max(0, Math.round(traceBest - traceSign * tracePicked.scoreCp))
+              : 0,
+          kind: slip?.kind ?? null,
+          rolledBand: slip?.band ?? null,
+          capCp: ratedLossCap(ratedElo),
+        });
       }
     } catch {
       setNotice('The engine is unavailable — the bot played a legal move instead.');

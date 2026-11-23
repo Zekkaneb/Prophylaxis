@@ -1,6 +1,11 @@
 import { Chess } from 'chess.js';
 import type { StockfishController } from '../../engine/useStockfish.ts';
-import { chooseCandidate, chooseBlunder } from '../strength.ts';
+import {
+  chooseCandidate,
+  chooseBlunder,
+  HOPELESS_EVAL_CP,
+  ratedLossCap,
+} from '../strength.ts';
 import {
   HUMAN_MULTI_PV,
   lastCaptureOf,
@@ -141,7 +146,7 @@ export function rollCharacterSlip(input: {
   random: () => number;
   /** The position the mistake is being made in, for the character's guard. */
   fen: string;
-}): { uci: string; kind: Bucket } | null {
+}): { uci: string; kind: Bucket; band: { minGap: number; maxGap: number } } | null {
   const { style, plan, source, botColor, elo, candidates, random, fen } = input;
   if (hasPreparedOpening(source)) return null;
 
@@ -159,7 +164,53 @@ export function rollCharacterSlip(input: {
   if (!band) return null;
 
   const uci = chooseBlunder(candidates, botColor, elo, random, band, characterSlipGuard(fen, style));
-  return uci ? { uci, kind } : null;
+  return uci ? { uci, kind, band } : null;
+}
+
+export interface CeilingCheck {
+  /** The move to play instead: the engine's best line. */
+  uci: string;
+  /** Centipawns the original choice would have cost. */
+  loss: number;
+  /** The best line's score in the bot's own point of view. */
+  bestPov: number;
+  features: MoveFeatures;
+}
+
+/**
+ * The one rule the strength model may not override.
+ *
+ * Everything else models how a rating errs; this is the line past which a move
+ * is not an error but a lost piece. Given whatever the selection produced, it
+ * returns the engine's best line when the choice would cost more than the
+ * rating's ceiling (`ratedLossCap`) in a position that is not already lost, and
+ * `null` when the move stands. Both move-selection paths apply it last, so a
+ * new band, a character dial or an off-list probe cannot reopen the hole a 2000
+ * fell through.
+ */
+export function enforceRatedCeiling(input: {
+  uci: string;
+  fen: string;
+  candidates: readonly PersonalityCandidate[];
+  botColor: PlayColor;
+  elo: number;
+}): CeilingCheck | null {
+  const { uci, fen, candidates, botColor, elo } = input;
+  if (candidates.length === 0) return null;
+  const sign = botColor === 'w' ? 1 : -1;
+  const best = candidates.reduce((a, b) => (sign * b.scoreCp > sign * a.scoreCp ? b : a));
+  const chosen = candidates.find((candidate) => candidate.uci === uci);
+  const cap = ratedLossCap(elo);
+  const bestPov = sign * best.scoreCp;
+  if (!chosen || cap === null || bestPov <= HOPELESS_EVAL_CP) return null;
+  const loss = Math.max(0, Math.round(bestPov - sign * chosen.scoreCp));
+  if (loss <= cap) return null;
+  return {
+    uci: best.uci,
+    loss,
+    bestPov,
+    features: describeMove(fen, best.uci) ?? NEUTRAL_FEATURES,
+  };
 }
 
 export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBotMove | null> {
@@ -185,6 +236,8 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   let searchPlan: HumanSearchPlan | null = null;
   /** The quality class the slip roll asked for, for the dev trace. */
   let slipKind: Bucket | null = null;
+  /** The centipawn band that class covered this turn, for the dev trace. */
+  let slipBandRolled: { minGap: number; maxGap: number } | null = null;
   let plan: ThinkingPlan | null = null;
   let decision: ChosenBotMove['decision'] = null;
   let bookMove = false;
@@ -333,6 +386,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
       : null;
     const blunder = slip?.uci ?? null;
     slipKind = slip?.kind ?? null;
+    slipBandRolled = slip?.band ?? null;
 
     if (style) {
       const sign = botColor === 'w' ? 1 : -1;
@@ -465,13 +519,37 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
   }
   if (!uci) return null;
 
+  /* The hard ceiling for the strong cards: a rolled slip, a character's idea, a
+     plan move or an off-list probe can each end up costing a piece when the
+     engine's list is unlucky, so the pick is checked one last time against the
+     best line. Below 1800 the cap is null and nothing changes. */
+  const ceiling =
+    !bookMove && uci
+      ? enforceRatedCeiling({ uci, fen, candidates, botColor, elo: ratedElo })
+      : null;
+  if (ceiling) {
+    uci = ceiling.uci;
+    decision = {
+      uci,
+      gap: ceiling.loss,
+      best: false,
+      features: ceiling.features,
+      bookMove: false,
+      botPov: ceiling.bestPov,
+    };
+  }
+
   /* Calibration trace: target rating, the search that was really run, where the
      move sat in the engine's list and what it cost. Answers "is the 1400 bot
      actually playing like a 1400" from data instead of impressions. */
   if (searchPlan) {
     const chosen = candidates.find((candidate) => candidate.uci === uci);
+    /* Candidate scores are White's point of view, like the engine's. Comparing
+       them raw made a Black bot's trace report the *worst* score as the best
+       line, so a rank-1 move could print as a 918 cp blunder. */
+    const traceSign = botColor === 'w' ? 1 : -1;
     const bestCp = candidates.reduce(
-      (best, candidate) => Math.max(best, candidate.scoreCp),
+      (best, candidate) => Math.max(best, traceSign * candidate.scoreCp),
       Number.NEGATIVE_INFINITY,
     );
     traceBotMove({
@@ -483,8 +561,12 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
       bookMove,
       rank: candidates.findIndex((candidate) => candidate.uci === uci) + 1,
       cpLoss:
-        chosen && Number.isFinite(bestCp) ? Math.max(0, Math.round(bestCp - chosen.scoreCp)) : 0,
+        chosen && Number.isFinite(bestCp)
+          ? Math.max(0, Math.round(bestCp - traceSign * chosen.scoreCp))
+          : 0,
       kind: slipKind,
+      rolledBand: slipBandRolled,
+      capCp: ratedLossCap(ratedElo),
     });
   }
 

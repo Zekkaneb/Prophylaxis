@@ -58,6 +58,7 @@ import {
   rollPhaseProfile,
   scaleErrors,
   selectHumanBotMove,
+  slipBand,
   suppressTopLines,
   skillOf,
   type Bucket,
@@ -301,11 +302,11 @@ test('the win-drop labels use the same 2 / 5 / 10 / 20 bands as review', () => {
 });
 
 test('the vision windows close as the rating climbs', () => {
-  assert.equal(BUCKET_GATES.blunder, 2100);
+  assert.equal(BUCKET_GATES.blunder, 1800);
   assert.equal(BUCKET_GATES.mistake, 2400);
-  assert.ok(getBucketWeights(2000).blunder > 0);
-  assert.equal(getBucketWeights(2100).blunder, 0);
-  assert.ok(getBucketWeights(2100).mistake > 0);
+  assert.ok(getBucketWeights(1700).blunder > 0);
+  assert.equal(getBucketWeights(1800).blunder, 0);
+  assert.ok(getBucketWeights(1800).mistake > 0);
   assert.equal(getBucketWeights(2400).mistake, 0);
   assert.equal(getBucketWeights(2800).blunder, 0);
   assert.equal(getBucketWeights(2800).mistake, 0);
@@ -323,9 +324,20 @@ test('the vision windows close as the rating climbs', () => {
   assert.equal(medianBucket(getBucketWeights(1800)), 'good');
   assert.equal(medianBucket(getBucketWeights(2800)), 'best');
 
-  /* An 1800 blunders almost never and owns more excellent moves than a 700. */
-  assert.ok(getBucketWeights(1800).blunder < 0.02);
+  /* An 1800 does not roll a blunder by choice and owns more excellent moves
+     than a 700. */
+  assert.equal(getBucketWeights(1800).blunder, 0);
   assert.ok(getBucketWeights(1800).excellent > getBucketWeights(700).excellent * 2);
+
+  /* The slip band follows the same gate, and its ceiling is the rating's loss
+     cap: a 2000's mistake may cost 120 cp, a 2200's 75 — never 280-900. */
+  assert.ok((slipBand('blunder', 1799)?.maxGap ?? 0) >= 280);
+  assert.equal(slipBand('blunder', 1800), null);
+  assert.equal(slipBand('blunder', 2000), null);
+  assert.equal(slipBand('blunder', 2400), null);
+  assert.ok((slipBand('mistake', 2000)?.maxGap ?? 0) <= 120);
+  assert.ok((slipBand('mistake', 2200)?.maxGap ?? 0) <= 75);
+  assert.ok((slipBand('inaccuracy', 2200)?.maxGap ?? 0) <= 75);
 });
 
 test('reference candidates fall into the six selection buckets', () => {

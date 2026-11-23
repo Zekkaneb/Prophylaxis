@@ -109,14 +109,14 @@ Produced by calling `getBucketWeights` and `humanCalibration` directly
 | 1000 | 0 | 8.9 | 10.9 | 23.3 | 36.2 | 12.7 | 8.0 | 5 | 43% |
 | 1200 | 0 | 5.8 | 8.5 | 22.8 | 37.8 | 15.2 | 9.8 | 6 | 37% |
 | 1500 | 0 | 3.0 | 5.8 | 20.3 | 37.2 | 19.1 | 14.6 | 7 | 29% |
-| 1800 | 0 | 1.5 | 4.0 | 16.6 | 33.1 | 22.9 | 21.8 | 9 | 22% |
+| 1800 | 0 | 0 | 4.0 | 16.6 | 33.1 | 22.9 | 23.3 | 9 | 22% |
 | 2100 | 0 | 0 | 2.7 | 12.3 | 26.4 | 26.8 | 31.7 | 10 | 15% |
 | 2400 | 0 | 0 | 0 | 7.7 | 17.9 | 30.7 | 43.7 | 12 | 8% |
 | 2800 | 0 | 0 | 0 | 2.0 | 5.0 | 36.0 | 57.0 | 14 | 2% |
 
 `BOTTOM_TIER_ELO = 200` replaces the fitted curves with a fixed
 `BOTTOM_TIER_SHARES` (65 / 25 / 4 / 4 / 1.5 / 0.5) rather than interpolating;
-`BUCKET_GATES = { blunder: 2100, mistake: 2400 }` removes those buckets
+`BUCKET_GATES = { blunder: 1800, mistake: 2400 }` removes those buckets
 entirely and re-normalises their mass into the quality buckets.
 
 `scaleErrors(shares, multiplier)` grows/shrinks the three error buckets and
@@ -220,8 +220,9 @@ There is no `PlayMenu.tsx` / `ChessBoard.tsx` here; the equivalents are
 | --- | --- | --- |
 | Random floor `((400−elo)/300)^1.8`, uniform legal move | exact, `randomMoveChance` + uniform pick | ✅ synchronised |
 | Six buckets at 2 / 5 / 10 / 20, Best = #1 | `SELECTION_BANDS`, `WIN_THRESHOLDS`, `classifyCandidate`, `isTopEngineMove` | ✅ synchronised |
-| Continuous weights, severe buckets gated off for strong bots | `getBucketWeights`, `BUCKET_GATES` | ✅ (gates at **2100** / **2400**) |
-| "1800 Elo excludes blunders" | at 1800 the fitted blunder share is **1.5%**; zero starts at 2100 | ⚠️ **mismatch** — the curve is smooth, not gated at 1800 |
+| Continuous weights, severe buckets gated off for strong bots | `getBucketWeights`, `BUCKET_GATES` | ✅ (gates at **1800** / **2400**) |
+| "1800 Elo excludes blunders" | `BUCKET_GATES.blunder = 1800`, so the fitted 1.5% share is re-normalised into `best` | ✅ synchronised |
+| 1800+ never hangs a piece on purpose | `ratedLossCap` (140 / 120 / 75 cp) clips `slipBand`, `chooseBlunder` and the final pick in `enforceRatedCeiling` | ✅ synchronised |
 | Probe uses `cpDrop ≥ 150 / 300` | probe uses **win-drop windows** 10–20 / 20–45; the 100/150/250 cp thresholds live in review `CONTEXT_ESCALATION` / `pieceHangCp` | ⚠️ **mismatch** — mechanism differs, effect comparable |
 | Median-directed fallback | `medianBucket` + `bucketFallbackChain` | ✅ synchronised |
 | Accuracy `100·exp(−0.045·winDrop^1.15)` | `baseAccuracyScore` | ✅ synchronised |

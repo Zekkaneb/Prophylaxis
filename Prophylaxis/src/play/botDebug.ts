@@ -26,10 +26,14 @@ export interface BotMoveTrace {
   bookMove: boolean;
   /** 1-based position of the chosen move in the engine's list; 0 if absent. */
   rank: number;
-  /** Centipawn loss against the engine's best line (0 = best move). */
+  /** Centipawn loss against the engine's best line, in the bot's own POV. */
   cpLoss: number;
   /** The rolled quality class, when the move came from a slip band. */
   kind: string | null;
+  /** The centipawn band the roll asked for; null when the roll freed the choice. */
+  rolledBand: { minGap: number; maxGap: number } | null;
+  /** The rating's hard ceiling on a deliberate slip (`ratedLossCap`). */
+  capCp: number | null;
 }
 
 const MAX_TRACES = 200;
@@ -67,7 +71,10 @@ export function traceBotMove(trace: BotMoveTrace): void {
   console.debug(
     `[bot] ${trace.elo} Elo (d${trace.depth}, MultiPV ${trace.multiPv}) · ` +
       `#${trace.rank || '?'} · −${Math.max(0, trace.cpLoss)}cp` +
-      `${trace.kind ? ` · ${trace.kind}` : ''}${trace.bookMove ? ' · book' : ''}`,
+      `${trace.kind ? ` · ${trace.kind}` : ''}` +
+      `${trace.rolledBand ? ` (${trace.rolledBand.minGap}-${trace.rolledBand.maxGap}cp)` : ''}` +
+      `${trace.capCp !== null ? ` · cap ${trace.capCp}cp` : ''}` +
+      `${trace.bookMove ? ' · book' : ''}`,
     trace,
   );
   if (typeof window !== 'undefined') {

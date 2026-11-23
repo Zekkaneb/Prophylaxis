@@ -1,4 +1,5 @@
 import { Chess, type Square } from 'chess.js';
+import { ratedLossCap } from './strength.ts';
 
 /**
  * Continuous USCF rating calibration for the Elo-rated bots.
@@ -19,7 +20,7 @@ import { Chess, type Square } from 'chess.js';
  * drop with `classifyCandidate`: only the engine's #1 move is *best*, and every
  * other move lands in `excellent` (<2), `good` (2-5), `inaccuracy` (5-10),
  * `mistake` (10-20) or `blunder` (20+). `getBucketWeights` decides how often
- * each bucket is asked for; blunders leave the distribution entirely at 2100
+ * each bucket is asked for; blunders leave the distribution entirely at 1800
  * USCF and mistakes at 2400, so a strong bot never has to be talked out of one.
  * The beginner band is carried by those curves alone (46% blunders and 34%
  * mistakes at the 100 floor) and by the node cap (`beginnerNodeCap`, 45 nodes at
@@ -240,6 +241,11 @@ export function slipBand(
   kind: Bucket,
   elo = 1400,
 ): { minGap: number; maxGap: number } | null {
+  /* From 1800 up a blunder-sized error is not chosen on purpose: the 280-900 cp
+     band is a piece or more, and the mass a smooth curve still leaves up there
+     belongs to best. This is the band-level twin of `BUCKET_GATES.blunder`. */
+  if (kind === 'blunder' && clampElo(elo) >= BUCKET_GATES.blunder) return null;
+
   const base = (() => {
     switch (kind) {
       case 'inaccuracy':
@@ -256,21 +262,25 @@ export function slipBand(
 
   const t = Math.min(1, Math.max(0, (clampElo(elo) - 800) / 1600));
   const scale = 1 - 0.68 * t; // 1.0 at 800 → 0.32 at 2400
-  return {
-    minGap: Math.max(8, Math.round(base.minGap * scale)),
-    maxGap: Math.max(20, Math.round(base.maxGap * scale)),
-  };
+  /* The curve says how big this rating's slip is; the ceiling says how big it is
+     allowed to be. Above 1800 a rolled mistake may not cost a piece, so the
+     band's top is clipped to `ratedLossCap` (140/120/75 cp). */
+  const minGap = Math.max(8, Math.round(base.minGap * scale));
+  const cap = ratedLossCap(clampElo(elo)) ?? Number.POSITIVE_INFINITY;
+  const maxGap = Math.min(cap, Math.max(20, Math.round(base.maxGap * scale)));
+  return { minGap: Math.min(minGap, maxGap), maxGap };
 }
 
 /**
  * Ratings at which a bucket leaves the distribution entirely.
  *
- * A 2100 does not blunder by choice: the error mass that the smooth curve would
+ * An 1800 does not blunder by choice: the error mass that the smooth curve would
  * still assign it is re-normalized into the other buckets, so `best` keeps
- * growing at the top instead of the curve leaving a 0.2% tail it can no longer
- * justify.
+ * growing at the top instead of the curve leaving a 1% tail it can no longer
+ * justify. A 2000 rolling a blunder every hundred moves is exactly how a full
+ * piece went missing for no reason.
  */
-export const BUCKET_GATES = { blunder: 2100, mistake: 2400 } as const;
+export const BUCKET_GATES = { blunder: 1800, mistake: 2400 } as const;
 
 /** Win-drop percentages that separate one bucket from the next. */
 export const SELECTION_BANDS = {
@@ -958,7 +968,15 @@ export function planHumanSearch(input: HumanSearchInput): HumanSearchPlan {
   const thinkTimeMs = thinkTimeFor(kind, timeControl.timeScale, timeTrouble, remaining, random);
 
   const scaledDepth = humanSearchDepth(effectiveElo, timeControl.depthOffset);
-  const depth = timeTrouble ? Math.min(scaledDepth, TROUBLE_DEPTH_CAP) : scaledDepth;
+  /* A strong bot finishes the exchange it starts. A short time control may cost
+     a ply or two of the depth its rating earned, but from 2000 up the search is
+     never shallower than the recapture it is about to allow — the horizon is
+     where a tempo-blind piece hang comes from. Time trouble still wins: a flag
+     is a flag. */
+  const depthFloor = effectiveElo >= STRONG_DEPTH_ELO ? STRONG_DEPTH_FLOOR : 0;
+  const depth = timeTrouble
+    ? Math.min(scaledDepth, TROUBLE_DEPTH_CAP)
+    : Math.max(scaledDepth, depthFloor);
 
   /* Phase, time control and time trouble make the same player worse: they scale
      the three error buckets and hand the displaced mass to good/excellent/best. */
@@ -982,6 +1000,10 @@ export function planHumanSearch(input: HumanSearchInput): HumanSearchPlan {
     effectiveElo,
   };
 }
+
+/** From this rating a live move is searched at least `STRONG_DEPTH_FLOOR` deep. */
+export const STRONG_DEPTH_ELO = 2000;
+export const STRONG_DEPTH_FLOOR = 10;
 
 const LOW_CLOCK_MS = 30_000;
 const LOW_INCREMENT_MS = 5_000;

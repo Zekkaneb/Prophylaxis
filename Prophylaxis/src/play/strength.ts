@@ -74,6 +74,27 @@ function blunderSeverityCp(elo: number): number {
 /** Below this gap a choice is not a mistake worth the name. */
 const BLUNDER_MIN_GAP_CP = 80;
 
+/** A bot this far behind (its own point of view) is lost anyway. */
+export const HOPELESS_EVAL_CP = -500;
+
+/**
+ * The hard centipawn ceiling on a deliberate slip, by rating.
+ *
+ * `blunderSeverityCp` describes how badly a rating *may* play; this is the line
+ * past which a move stops being a slip and becomes a lost piece. From 1800 up a
+ * bot that is not already lost may never give up more than this, whatever its
+ * character, its roll or the engine list says: 140 cp at 1800, 120 at 2000 and
+ * 75 at 2200+. Those are inaccuracy-to-small-mistake sizes, never a hang.
+ *
+ * `null` below 1800 keeps the curve's own ceiling — a 900 does drop a piece.
+ */
+export function ratedLossCap(elo: number): number | null {
+  if (elo >= 2200) return 75;
+  if (elo >= 2000) return 120;
+  if (elo >= 1800) return 140;
+  return null;
+}
+
 /** One engine line, scored from White's point of view. */
 export interface ScoredCandidate {
   uci: string;
@@ -145,8 +166,22 @@ export function chooseBlunder(
      A caller that rolled a specific bucket passes its band, so the move really
      is the class the roll asked for. */
   const severity = blunderSeverityCp(elo);
-  const maxGap = Math.min(band?.maxGap ?? severity, severity);
+  /* The rating's ceiling is applied here as well as in `slipBand`, because a
+     caller can hand in its own band (a character's dial, a probe) and the guard
+     has to hold regardless of who asked for the error. A lost position is the
+     exception: gambling there costs nothing it has not already lost. */
+  const cap =
+    best < HOPELESS_EVAL_CP ? Number.POSITIVE_INFINITY : (ratedLossCap(elo) ?? Number.POSITIVE_INFINITY);
+  const maxGap = Math.min(band?.maxGap ?? severity, severity, cap);
   const within = mistaken.filter((entry) => entry.gap >= minGap && entry.gap <= maxGap);
+  /* If the ceiling is live and the mildest mistake on the list already breaks
+     it, there is no slip this bot is allowed to make: it plays well instead.
+     Picking the "least bad" move here is how a 2000 ended up 350 cp down when
+     the engine's list happened to hold no small error. */
+  if (within.length === 0 && cap < Number.POSITIVE_INFINITY) {
+    const mildest = mistaken.reduce((a, b) => (a.gap <= b.gap ? a : b));
+    if (mildest.gap > cap) return null;
+  }
   /* The guard chooses a different error only among the ones this rating's band
      already allows. Severity belongs to the rating; only the choice of error
      belongs to the character. Filtering the whole list instead meant that a

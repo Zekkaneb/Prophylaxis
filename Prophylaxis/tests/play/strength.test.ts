@@ -11,6 +11,7 @@ import {
   chooseBlunder,
   chooseCandidate,
   depthForElo,
+  ratedLossCap,
 } from '../../src/play/strength.ts';
 
 test('every rating searches to the same real depth', () => {
@@ -130,4 +131,52 @@ test('chooses the best candidate for strong bots and can take the runner-up', ()
   assert.equal(chooseCandidate(candidates, 800, () => 0), 'd2d4');
   assert.equal(chooseCandidate(candidates, 800, () => 0.99), 'e2e4');
   assert.equal(chooseCandidate(['e2e4'], 800, () => 0), 'e2e4');
+});
+
+test('a strong bot may not slip past its rating ceiling', () => {
+  assert.equal(ratedLossCap(1799), null);
+  assert.equal(ratedLossCap(1800), 140);
+  assert.equal(ratedLossCap(2000), 120);
+  assert.equal(ratedLossCap(2199), 120);
+  assert.equal(ratedLossCap(2200), 75);
+  assert.equal(ratedLossCap(2800), 75);
+
+  /* The engine's list holds nothing but a 360 cp hang and two fine moves. A
+     2000 is not allowed to take it: no legal slip means the bot plays well. */
+  const candidates = [
+    { uci: 'e2e4', scoreCp: 40, mate: null },
+    { uci: 'd2d4', scoreCp: 20, mate: null },
+    { uci: 'h2h3', scoreCp: -320, mate: null },
+  ];
+  const blunderBand = { minGap: 280, maxGap: 900 };
+  assert.equal(
+    chooseBlunder(candidates, 'w', 2000, () => 0, blunderBand),
+    null,
+    'a 350 cp piece hang is not a slip a 2000 is allowed to make',
+  );
+  assert.equal(
+    chooseBlunder(candidates, 'w', 2200, () => 0, blunderBand),
+    null,
+    'the 2200 ceiling is tighter still',
+  );
+
+  /* Below the gate the same band is a real beginner mistake. */
+  assert.equal(chooseBlunder(candidates, 'w', 900, () => 0, blunderBand), 'h2h3');
+
+  /* A lost position is the exception: there is nothing left to protect. */
+  assert.equal(
+    chooseBlunder(
+      [
+        { uci: 'e2e4', scoreCp: -520, mate: null },
+        { uci: 'd2d4', scoreCp: -540, mate: null },
+        { uci: 'h2h3', scoreCp: -880, mate: null },
+      ],
+      'w',
+      2000,
+      () => 0,
+      blunderBand,
+    ),
+    'h2h3',
+    'a 2000 already 500 cp down may gamble',
+  );
 });

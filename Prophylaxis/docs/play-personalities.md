@@ -184,15 +184,19 @@ the slip roll and the candidate allowance all read it. The card Elo it is
 displayed at never changes, and the opening book still reads the card rating.
 
 The slip itself is rated too: `slipBand` scales the centipawn size of an
-inaccuracy, mistake or blunder with the rating (a 2400's `?!` is roughly a third
-of a beginner's), so a higher card means both fewer mistakes and smaller ones.
+inaccuracy or mistake with the rating (a 2400's `?!` is roughly a third of a
+beginner's), so a higher card means both fewer mistakes and smaller ones. From
+1800 up the blunder band is gone entirely, and `ratedLossCap` clips what a slip
+may cost at 140 cp (1800), 120 (2000) and 75 (2200+) unless the bot is already
+500 cp down. `enforceRatedCeiling` applies that same cap to the finished pick on
+both selection paths, so no roll, character dial or off-list probe can spend more.
 
 `blunderChance` in `src/play/strength.ts` is an exponential decay anchored at
 800 Elo (45%) with a 400-Elo e-folding: about 15% at 1250, 7% at 1550, 2% at 2050
 and 0.9% at 2200 — roughly one mistake in 110 moves at the top of the ladder,
 and none of them fabricated. When the roll fires, `chooseBlunder` picks a line
 from Stockfish's own MultiPV list whose score is worse by a rating-capped amount
-(700cp for a beginner, 200cp at 2200), never one that walks into mate.
+(700cp for a beginner, 75cp at 2200+), never one that walks into mate.
 
 Senior therefore steps up from Junior through the blunder curve, the tighter
 60cp candidate gap (vs 70) and a higher accuracy on the shared curve, not through
@@ -561,7 +565,7 @@ move (target Elo, depth, MultiPV, rank, centipawn drop) in dev builds.
 
 With `s = (clamp(elo, 100, 2800) - 100) / 2700`:
 
-- **Blunder** (`??`, 20%+ win drop) `0.46 * exp(-5.8 * s^1.15)`, off at 2100
+- **Blunder** (`??`, 20%+ win drop) `0.46 * exp(-5.8 * s^1.15)`, off at 1800
 - **Mistake** (`?`, 10-20%) `0.34 * exp(-3.4s)`, off at 2400
 - **Inaccuracy** (`?!`, 5-10%)
   `0.02 + 0.25 * sin(pi * s^0.72) * exp(-0.45s)`
@@ -602,7 +606,7 @@ alone in `best` and buckets every other candidate by its win drop (`excellent`
 under 2, `good` 2-5, `inaccuracy` 5-10, `mistake` 10-20, `blunder` 20+), so a
 strong bot's mistakes are limited to what its own window can still see.
 `getBucketWeights` decides how often each bucket is asked for, and the severe
-ends close: blunders leave the distribution entirely at 2100 USCF and mistakes at
+ends close: blunders leave the distribution entirely at 1800 USCF and mistakes at
 2400, their mass re-normalized into the other buckets rather than played.
 
 Phase and time control only scale the three error buckets; the displaced mass
