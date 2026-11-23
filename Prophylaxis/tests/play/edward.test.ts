@@ -187,16 +187,16 @@ test('his “Senior” is not Johnfer Quispe’s Senior', () => {
 });
 
 test('the roster gains him once, without disturbing any existing id', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 22);
-  assert.equal(ALL_OPPONENTS.length, 23, 'twenty-two personalities plus the General Bot');
+  assert.equal(PERSONALITY_OPPONENTS.length, 23);
+  assert.equal(ALL_OPPONENTS.length, 24, 'twenty-three personalities plus the General Bot');
   assert.equal(
     PERSONALITY_OPPONENTS.filter((opponent) => opponent.id === 'edward').length,
     1,
   );
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 23);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 24);
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    22,
+    23,
     'saved games and PGN headers can always tell two opponents apart',
   );
 

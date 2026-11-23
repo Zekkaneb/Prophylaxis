@@ -33,7 +33,8 @@ export type PersonalityId =
   | 'jonah-pachikara'
   | 'sophia-kuan'
   | 'brandon-varsity'
-  | 'christian-hernandez';
+  | 'christian-hernandez'
+  | 'monkey';
 
 export type OpeningTag = 'solid' | 'sharp' | 'positional' | 'developing' | 'initiative';
 
@@ -90,6 +91,31 @@ export interface PersonalityStyle {
    * opponent's search changes.
    */
   depthCap?: number;
+  /**
+   * Optional search floor for a character that genuinely calculates more.
+   *
+   * The mirror image of `depthCap`, and deliberately per-character: the apex
+   * opponent searches at least this deep whatever its clamped rating or the
+   * time control's offset says. Only `monkey` sets it, so no other opponent's
+   * search changes.
+   */
+  depthFloor?: number;
+  /**
+   * Optional book window override, in plies already played.
+   *
+   * A repertoire is normally remembered only as far as the rating's class does
+   * (`classBookPlies`). The apex opponent's Hippo is its whole identity, so it
+   * keeps the full study line even past Expert+'s fourteen plies.
+   */
+  bookPlies?: number;
+  /**
+   * Play the engine's first line every turn: no allowance and no taste.
+   *
+   * This is the apex switch. It does not touch evaluation, depth or the book;
+   * it only removes the candidate allowance that lets every other character
+   * prefer a move a few centipawns worse.
+   */
+  perfect?: boolean;
   /**
    * Optional per-character chance of the deliberate slip, replacing the rating's
    * own curve (`blunderChance(elo)`).
@@ -656,6 +682,39 @@ export const PERSONALITY_STYLES: Record<PersonalityId, PersonalityStyle> = {
     sacrifice: 20,
     activePieces: 55,
     openingBias: { solid: 18, developing: 16, positional: 6, initiative: 4, sharp: -14 },
+  },
+  /* Monkey, 999,999,999 — the Hippopotamus.
+
+     The roster's apex profile. Its card rating is a joke, but its strength is
+     not: `planElo` is clamped to 2800 like every other profile, and on top of
+     that it gets the three apex switches. `depthFloor: 20` keeps the search
+     deeper than any time control's offset can shorten it; `perfect: true` takes
+     the engine's first line instead of using the candidate allowance; and
+     `mistakeChance: 0` means the shared slip roll never fires. `bookPlies: 40`
+     keeps the supplied Hippo study (20 plies as Black) available for the whole
+     opening. The tendency numbers are only flavour now — `perfect` bypasses
+     taste — and they describe the system: patient, positional, fianchetto
+     bishops, no speculative material. */
+  monkey: {
+    ...BASE,
+    id: 'monkey',
+    aggression: 70,
+    risk: 60,
+    positional: 80,
+    tactical: 85,
+    defensive: 70,
+    initiative: 75,
+    simplification: 45,
+    complexity: 70,
+    kingSafety: 85,
+    material: 60,
+    sacrifice: 55,
+    activePieces: 90,
+    depthFloor: 20,
+    bookPlies: 40,
+    perfect: true,
+    mistakeChance: 0,
+    openingBias: { positional: 18, solid: 14, developing: 10, initiative: 6, sharp: -8 },
   },
 };
 

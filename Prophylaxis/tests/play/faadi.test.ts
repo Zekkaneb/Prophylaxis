@@ -95,8 +95,8 @@ test('Faadi is registered once, in the Beginner band, with his own id', () => {
     true,
     'New Game and Bot vs. Bot both read this list',
   );
-  assert.equal(PERSONALITY_OPPONENTS.length, 22);
-  assert.equal(ALL_OPPONENTS.length, 23);
+  assert.equal(PERSONALITY_OPPONENTS.length, 23);
+  assert.equal(ALL_OPPONENTS.length, 24);
   assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, ALL_OPPONENTS.length);
 });
 

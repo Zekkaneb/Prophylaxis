@@ -197,7 +197,7 @@ test('his portrait is his own file, with the monogram kept as the fallback', () 
 test('Beginner is the first ladder band and holds the lowest ratings', () => {
   assert.deepEqual(
     OPPONENT_CATEGORIES.map((group) => group.label),
-    ['Beginner', 'Novice', 'Intermediate', 'Varsity', 'The Big 4'],
+    ['Beginner', 'Novice', 'Intermediate', 'Varsity', 'The Big 4', '???'],
   );
   assert.equal(OPPONENT_CATEGORIES[0].id, 'beginner');
   assert.equal(OPPONENT_CATEGORIES[0].hint, '100–1000 Elo');
@@ -869,8 +869,8 @@ test('a saved game and its PGN keep his name, subtext, colour and rating', () =>
 /* --------------------------- 14. regressions --------------------------- */
 
 test('every other opponent and the General Bot are untouched', () => {
-  assert.equal(PERSONALITY_OPPONENTS.length, 22);
-  assert.equal(ALL_OPPONENTS.length, 23);
+  assert.equal(PERSONALITY_OPPONENTS.length, 23);
+  assert.equal(ALL_OPPONENTS.length, 24);
 
   const expected: Array<[string, string, string, number, string]> = [
     ['freshman', 'Johnfer Quispe', 'Freshman', 1250, 'novice'],

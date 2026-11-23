@@ -234,6 +234,10 @@ function characterFactor(style: PersonalityStyle, profile: PositionProfile): num
       /* Plays on instinct: a quick, interested look, and only a genuinely sharp
          position buys him a slightly longer one. */
       return 0.86 + (profile.tactical ? 0.12 : 0.04) * profile.complexity;
+    case 'monkey':
+      /* The apex look: the longest at the table, and a sharp position earns a
+         real calculation rather than a glance. */
+      return 1.15 + (profile.tactical ? 0.35 : 0.15) * profile.complexity;
   }
 }
 
@@ -303,6 +307,9 @@ function deliberationFactor(style: PersonalityStyle): number {
       /* Relaxed: he moves when the move feels right, not once every line has
          been checked. */
       return 0.86;
+    case 'monkey':
+      /* Unhurried: the last move is worth as much thought as the first. */
+      return 1.15;
   }
 }
 

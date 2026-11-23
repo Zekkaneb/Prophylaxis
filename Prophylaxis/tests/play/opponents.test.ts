@@ -50,10 +50,11 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
       ['jonah-pachikara', 'Jonah Pachikara', undefined, 1400],
       ['sophia-kuan', 'Sophia Kuan', 'Senior', 1300],
       ['brandon-varsity', 'Brandon Tran', 'Sophomore', 1850],
+      ['monkey', 'Monkey', '???', 999999999],
     ],
   );
 
-  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 22);
+  assert.equal(new Set(PERSONALITY_OPPONENTS.map((opponent) => opponent.id)).size, 23);
   for (const opponent of PERSONALITY_OPPONENTS) {
     assert.doesNotMatch(opponent.name, /\(/, 'the name carries no parenthetical suffix');
     /* Jonah has no specified subtext by design: no title, so no invented stage. */
@@ -73,18 +74,18 @@ test('the roster is the agreed line-up, named like Brandon’s card', () => {
      two Bryans apart, which is how saved games are labelled. */
   assert.equal(
     new Set(PERSONALITY_OPPONENTS.map((opponent) => opponentFullName(opponent))).size,
-    22,
+    23,
   );
 });
 
 test('categories are explicitly configured, complete and ordered by band', () => {
   assert.deepEqual(
     OPPONENT_CATEGORIES.map((group) => group.label),
-    ['Beginner', 'Novice', 'Intermediate', 'Varsity', 'The Big 4'],
+    ['Beginner', 'Novice', 'Intermediate', 'Varsity', 'The Big 4', '???'],
   );
   assert.deepEqual(
     OPPONENT_CATEGORIES.map((group) => group.hint),
-    ['100–1000 Elo', '1001–1300 Elo', '1301–1600 Elo', '1601–2000 Elo', 'Special designation'],
+    ['100–1000 Elo', '1001–1300 Elo', '1301–1600 Elo', '1601–2000 Elo', 'Special designation', 'Beyond the ladder'],
   );
 
   const declared = new Set(OPPONENT_CATEGORIES.map((group) => group.id));
@@ -122,6 +123,12 @@ test('categories are explicitly configured, complete and ordered by band', () =>
       (opponent) => opponent.id,
     ),
     ['brandon', 'junior', 'bryan-prime', 'mabinti'],
+  );
+  assert.deepEqual(
+    PERSONALITY_OPPONENTS.filter((opponent) => opponent.category === 'apex').map(
+      (opponent) => opponent.id,
+    ),
+    ['monkey'],
   );
 
   /* Two 2000s, two different groups: membership is a field, never the rating. */
@@ -183,6 +190,7 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
       'opponents/jonah-pachikara.webp',
       'opponents/sophia-kuan.webp',
       'opponents/brandon-varsity.webp',
+      'opponents/monkey.webp',
     ],
   );
 
@@ -296,8 +304,8 @@ test('keeps the General Bot separate and configurable', () => {
   assert.equal(GENERAL_BOT.kind, 'general');
   assert.equal(GENERAL_BOT.portraitPath, null);
   assert.equal(GENERAL_BOT.usesRepertoire, false);
-  assert.equal(ALL_OPPONENTS.length, 23);
-  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 23);
+  assert.equal(ALL_OPPONENTS.length, 24);
+  assert.equal(new Set(ALL_OPPONENTS.map((opponent) => opponent.id)).size, 24);
   assert.equal(GENERAL_BOT_ELO.min, 100);
   assert.equal(GENERAL_BOT_ELO.max, 2800);
 });

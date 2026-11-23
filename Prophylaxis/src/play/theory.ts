@@ -30,8 +30,13 @@ export const BOOK_PLY_CAP = {
   expert: 14,
 } as const;
 
-export function bookPlyLimit(elo: number): number {
-  return classBookPlies(elo);
+export function bookPlyLimit(elo: number, override?: number): number {
+  const limit = classBookPlies(elo);
+  if (override === undefined || !Number.isFinite(override)) return limit;
+  /* A personality can remember more than its class would (`monkey`'s Hippo),
+     never less: the override is an extension of the class window, not a way to
+     take theory away from another opponent. */
+  return Math.max(limit, Math.round(override));
 }
 
 export interface TheoryWindow {
@@ -43,12 +48,16 @@ export interface TheoryWindow {
   plies: number;
 }
 
-export function theoryWindow(elo: number, plies: number): TheoryWindow {
-  const limit = bookPlyLimit(elo);
+export function theoryWindow(
+  elo: number,
+  plies: number,
+  bookPlies?: number,
+): TheoryWindow {
+  const limit = bookPlyLimit(elo, bookPlies);
   return { open: plies < limit && usesOpeningBook(elo), limit, plies };
 }
 
 /** Convenience form for call sites that only need the decision. */
-export function theoryOpen(elo: number, plies: number): boolean {
-  return theoryWindow(elo, plies).open;
+export function theoryOpen(elo: number, plies: number, bookPlies?: number): boolean {
+  return theoryWindow(elo, plies, bookPlies).open;
 }

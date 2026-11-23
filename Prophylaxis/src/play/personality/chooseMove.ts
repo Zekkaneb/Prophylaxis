@@ -38,6 +38,7 @@ import { legalBookMoves } from './repertoires/book.ts';
 import { theoryWindow } from '../theory.ts';
 import { personalityBookFor } from './repertoires/index.ts';
 import { chooseKidMove, kidPlan } from './repertoires/kid.ts';
+import { hippoPlan } from './repertoires/hippo.ts';
 import {
   chooseNinaBookMove,
   chooseNinaPlanMove,
@@ -107,7 +108,7 @@ export interface ChosenBotMove {
   bookMove: boolean;
   /** True on the move where Nina loses her opening line. */
   forgotten: boolean;
-  source: 'repertoire' | 'nina-principles' | 'kids-indian' | 'engine';
+  source: 'repertoire' | 'nina-principles' | 'kids-indian' | 'hippo-system' | 'engine';
   candidates: readonly PersonalityCandidate[];
 }
 
@@ -277,7 +278,7 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
 
   /* One window for every theory source, shared with regular Play: repertoire,
      Nina's skeleton and the King's Indian plan all stop at the same ply. */
-  const theory = theoryWindow(elo, history.length);
+  const theory = theoryWindow(elo, history.length, style?.bookPlies);
 
   if (style) {
     /* Bryan's one stated preference outranks the shared book: 2.c3 against the
@@ -326,15 +327,35 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
     }
   }
 
+  /* Monkey's Hippo setup is the next layer after its supplied study lines: the
+     system must survive an opponent who leaves the PGN, so it is a forced plan
+     rather than a second, narrow book. */
+  const hippo =
+    !uci && style && theory.open ? hippoPlan(fen, botColor, style) : null;
+  const hippoChoice = hippo?.moves[0] ?? null;
+  if (hippoChoice && style) {
+    uci = hippoChoice.uci;
+    plan = computeThinkingPlan({ ...thinking, style, bookMove: false });
+    decision = {
+      uci,
+      gap: 0,
+      best: true,
+      bookMove: false,
+      botPov: 0,
+      features: describeMove(fen, uci) ?? NEUTRAL_FEATURES,
+    };
+  }
+
   const nina =
     !uci && style && theory.open
       ? ninaPlan(fen, history, style, botColor, input.openingMemory?.forgotten)
       : null;
   const kid = !uci && style && theory.open ? kidPlan(fen, history, style, botColor) : null;
   const source = openingSource({
-    bookMove: Boolean(uci),
+    bookMove,
     ninaPlan: Boolean(nina),
     kidPlan: Boolean(kid),
+    hippoPlan: Boolean(hippoChoice),
   });
 
   if (!uci) {
@@ -359,13 +380,20 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
          source would spend rolls on think-time the character never uses. */
       random: style ? () => 0.5 : random,
     });
+    /* The rating's class depth, lifted to the character's floor (`monkey`'s
+       20 plies) and capped by its ceiling (`edward`'s beginner horizon). Time
+       trouble still wins: a flag is a flag, whatever the floor says. */
     const searchDepth = Math.min(
-      humanSearch.depth,
+      Math.max(humanSearch.depth, humanSearch.timeTrouble ? 0 : (style?.depthFloor ?? 0)),
       style?.depthCap ?? Number.POSITIVE_INFINITY,
     );
     searchPlan = humanSearch;
+    /* Every character except the apex opponent is handed the wide list its
+       error model needs. Monkey searches one PV, so the only line it can play
+       once the Hippo is complete is the engine's best. */
+    const searchMultiPv = style?.perfect ? 1 : HUMAN_MULTI_PV;
     const evaluation = style
-      ? await engine.evaluateWithin(fen, searchDepth, HUMAN_MULTI_PV, plan?.searchMs ?? 1200)
+      ? await engine.evaluateWithin(fen, searchDepth, searchMultiPv, plan?.searchMs ?? 1200)
       : await engine.evaluateWithin(
           fen,
           searchDepth,
@@ -566,8 +594,11 @@ export async function chooseBotMove(input: ChooseBotMoveInput): Promise<ChosenBo
     traceBotMove({
       elo,
       effectiveElo: searchPlan.calibration.elo,
-      depth: Math.min(searchPlan.depth, style?.depthCap ?? Number.POSITIVE_INFINITY),
-      multiPv: HUMAN_MULTI_PV,
+      depth: Math.min(
+        Math.max(searchPlan.depth, searchPlan.timeTrouble ? 0 : (style?.depthFloor ?? 0)),
+        style?.depthCap ?? Number.POSITIVE_INFINITY,
+      ),
+      multiPv: style?.perfect ? 1 : HUMAN_MULTI_PV,
       source,
       bookMove,
       rank: candidates.findIndex((candidate) => candidate.uci === uci) + 1,

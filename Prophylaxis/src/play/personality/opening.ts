@@ -9,7 +9,9 @@
  *    never supplied as PGNs (the rest still passes through engine candidates);
  * 3. `kids-indian` — a principle-based system applies (Sophomore/Junior against
  *    1.d4, whose answer was never supplied as a PGN);
- * 4. `engine` — nothing prepared covers the position, so Stockfish takes over
+ * 4. `hippo-system` — Monkey's Hippo setup continues after the supplied study
+ *    line ends or the opponent deviates from it;
+ * 5. `engine` — nothing prepared covers the position, so Stockfish takes over
  *    for the rest of the game.
  *
  * Two things must never happen: an engine search replacing a prepared move, and
@@ -19,7 +21,12 @@
 
 import { blunderChance } from '../strength.ts';
 
-export type OpeningSource = 'repertoire' | 'nina-principles' | 'kids-indian' | 'engine';
+export type OpeningSource =
+  | 'repertoire'
+  | 'nina-principles'
+  | 'kids-indian'
+  | 'hippo-system'
+  | 'engine';
 
 export interface OpeningInput {
   /** A legal prepared move was found for this position. */
@@ -28,12 +35,15 @@ export interface OpeningInput {
   ninaPlan?: boolean;
   /** The character's principle-based system applies to this position. */
   kidPlan: boolean;
+  /** Monkey's Hippo setup applies to this position. */
+  hippoPlan?: boolean;
 }
 
 export function openingSource(input: OpeningInput): OpeningSource {
   if (input.bookMove) return 'repertoire';
   if (input.ninaPlan) return 'nina-principles';
   if (input.kidPlan) return 'kids-indian';
+  if (input.hippoPlan) return 'hippo-system';
   return 'engine';
 }
 

@@ -231,6 +231,15 @@ export function choosePersonalityMove(input: {
   }
 
   const bestPov = Math.max(...legal.map((entry) => entry.botPov));
+
+  /* The apex opponent has no allowance and no taste: it plays the engine's
+     first line, which is the strongest move the pipeline can produce. Every
+     other profile keeps the rating's allowance below. */
+  if (style.perfect) {
+    const chosen = legal.find((entry) => entry.botPov === bestPov) ?? legal[0];
+    return { uci: chosen.uci, gap: bestPov - chosen.botPov, features: chosen.features, best: true };
+  }
+
   const allowance = candidateGapForElo(elo) + personalityAllowance(style);
   /* `styleFor` resolves both dials from the same curve; a raw profile (one that
      never went through it) gets the taste weight its accuracy implies, so the

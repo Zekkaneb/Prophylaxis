@@ -1,7 +1,7 @@
 /**
  * Opponent catalogue: the Johnfer personalities, Brandon Tran, the three Bryan
- * Martinez-Hernandez strength profiles, Faadi Granillo Garcia, Edward Chen and
- * the General Bot.
+ * Martinez-Hernandez strength profiles, Faadi Granillo Garcia, Edward Chen,
+ * Monkey and the General Bot.
  *
  * This is the single source of truth for names, target ratings, portraits and
  * playing-style copy. A future personality system (repertoires, dialogue,
@@ -32,7 +32,8 @@ export type OpponentCategory =
   | 'novice'
   | 'intermediate'
   | 'varsity'
-  | 'big-4';
+  | 'big-4'
+  | 'apex';
 
 export interface OpponentCategoryGroup {
   id: OpponentCategory;
@@ -49,6 +50,9 @@ export const OPPONENT_CATEGORIES: readonly OpponentCategoryGroup[] = [
   { id: 'intermediate', label: 'Intermediate', hint: '1301–1600 Elo' },
   { id: 'varsity', label: 'Varsity', hint: '1601–2000 Elo' },
   { id: 'big-4', label: 'The Big 4', hint: 'Special designation' },
+  /* Beyond the ladder rather than on it: one card, no rating band, and a
+     rating the display prints as the joke it is. */
+  { id: 'apex', label: '???', hint: 'Beyond the ladder' },
 ] as const;
 
 export interface OpponentProfile {
@@ -498,6 +502,31 @@ export const PERSONALITY_OPPONENTS: readonly OpponentProfile[] = [
     /* Framed tight in the source file: the whole head shows at 1. */
     portraitScale: 1,
     initials: 'BT',
+    usesRepertoire: false,
+  },
+  /* Monkey, 999,999,999 — the Hippopotamus.
+
+     Its own category (`???`), its own portrait, and a rating that exists to
+     make the point rather than to be earned. The Hippo repertoire supplies the
+     book; `styles.ts` gives it the apex strength configuration (a 20-ply floor,
+     no deliberate slips, and the engine's first line every turn). It is a
+     personality profile so it plays through the same pipeline as every card. */
+  {
+    id: 'monkey',
+    kind: 'personality',
+    category: 'apex',
+    name: 'Monkey',
+    shortName: 'Monkey',
+    /* The stage line below the name is as unexplained as the category. */
+    title: '???',
+    elo: 999999999,
+    style:
+      'A quiet Hippopotamus that fianchettoes both bishops and then refuses to give anything back. Good luck.',
+    portraitPath: 'opponents/monkey.webp',
+    /* The photo is framed loose around the whole plush, so it is shown at 1
+       rather than cropped a second time by the shared 1.2 zoom. */
+    portraitScale: 1,
+    initials: 'MK',
     usesRepertoire: false,
   },
 ] as const;

@@ -117,6 +117,9 @@ const BANKS: Record<
     /* Christian's bank is written beside the shared cast below, next to the
        other characters whose voice arrived after the first table. */
     | 'christian-hernandez'
+    /* Monkey is written in `DIALOGUE_BANKS` as well: it is the only voice that
+       is not a student at the school. */
+    | 'monkey'
   >,
   Bank
 > = {
@@ -612,6 +615,28 @@ const BANKS: Record<
 export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
 
   ...BANKS,
+
+  /* Monkey says almost nothing. The lines are short, flat and faintly amused,
+     because a 999,999,999-rated plush toy has nothing to prove and no theory to
+     explain. */
+  monkey: {
+    book: ['Hippo.', 'The bishops go here.', 'Quiet. Then not.'],
+    deviation: ['Fine. We play.', 'A different board, then.', 'I adapt.'],
+    mistake: ['Hm.', 'That was not the plan.', 'Interesting.'],
+    strong: ['Good.', 'The setup holds.', 'As expected.'],
+    brilliant: ['There it is.', 'The sniper bishop sees everything.'],
+    winning: ['The position is mine.', 'No hurry.'],
+    losing: ['Not yet.', 'I have been here before.'],
+    defense: ['Hold the centre.', 'The king is safe.'],
+    attack: ['Now the other bishop.', 'The diagonal opens.'],
+    'attack-fail': ['Unfortunate.', 'We rebuild.'],
+    'material-won': ['A gift.', 'Thank you.'],
+    'material-lost': ['A fair trade.', 'Material is not the point.'],
+    sacrifice: ['Take it.', 'The square matters more.'],
+    win: ['Good game.', 'The Hippo sleeps.'],
+    loss: ['Well played.', 'Even a monkey falls.'],
+    draw: ['A quiet result.', 'We understand each other.'],
+  },
 
   'bryan-prime': BANKS.bryan,
 

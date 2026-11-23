@@ -23,6 +23,7 @@ import { JONAH_PACHIKARA_REPERTOIRE } from './jonahPachikara.ts';
 import { SOPHIA_KUAN_REPERTOIRE } from './sophiaKuan.ts';
 import { BRANDON_VARSITY_REPERTOIRE } from './brandonVarsity.ts';
 import { CHRISTIAN_HERNANDEZ_REPERTOIRE } from './christianHernandez.ts';
+import { MONKEY_REPERTOIRE } from './monkey.ts';
 import {
   BRANDON_FRESHMAN_MAINLINES,
   BRANDON_FRESHMAN_SHARED_BLACK_PREFIX,
@@ -80,6 +81,7 @@ export const PERSONALITY_REPERTOIRES: Record<
   'sophia-kuan': SOPHIA_KUAN_REPERTOIRE,
   'brandon-varsity': BRANDON_VARSITY_REPERTOIRE,
   'christian-hernandez': CHRISTIAN_HERNANDEZ_REPERTOIRE,
+  monkey: MONKEY_REPERTOIRE,
 };
 
 export interface PersonalityBooks {

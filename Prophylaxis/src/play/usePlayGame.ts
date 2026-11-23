@@ -79,6 +79,7 @@ import {
 import { bookKey, legalBookMoves } from './personality/repertoires/book.ts';
 import { personalityBookFor } from './personality/repertoires/index.ts';
 import { chooseKidMove, kidPlan } from './personality/repertoires/kid.ts';
+import { hippoPlan } from './personality/repertoires/hippo.ts';
 import { theoryOpen } from './theory.ts';
 import {
   PRACTICE_PARTNER,
@@ -647,7 +648,7 @@ export function usePlayGame(engine: StockfishController) {
     /** Theory is only followed while this rating would still remember it, and
      * only above the random floor: a 200 does not answer 1.e4 with book lines
      * when it is playing two moves in five at random. */
-    const inBookWindow = theoryOpen(elo, sansRef.current.length);
+    const inBookWindow = theoryOpen(elo, sansRef.current.length, style?.bookPlies);
     /** A search that resolves after a rematch must not move in the new game. */
     const searchGameId = gameIdRef.current;
     /** The course this game is practising, if any. */
@@ -768,6 +769,25 @@ export function usePlayGame(engine: StockfishController) {
         }
       }
 
+      /* Monkey's Hippo setup: the system continues after the supplied study
+         ends, or after any opponent deviation from it. */
+      const hippo =
+        !uci && style && inBookWindow ? hippoPlan(fen, botColor, style) : null;
+      const hippoChoice = hippo?.moves[0] ?? null;
+      if (hippoChoice && style) {
+        uci = hippoChoice.uci;
+        decisionRef.current = {
+          uci: hippoChoice.uci,
+          gap: 0,
+          best: true,
+          bookMove: false,
+          botPov: 0,
+          features: describeMove(fen, hippoChoice.uci) ?? NEUTRAL_FEATURES,
+        };
+        plan = computeThinkingPlan({ ...thinkingInput, style, bookMove: false });
+        pauseMs = plan.pauseMs;
+      }
+
       /* A general bot under 1200 opens from the compact table above — never
          from the player's imported courses. From 1200 up it has no book at all
          and relies on its calibrated error model from the first move. */
@@ -785,9 +805,10 @@ export function usePlayGame(engine: StockfishController) {
       const kid =
         !uci && style && inBookWindow ? kidPlan(fen, sansRef.current, style, botColor) : null;
       const source = openingSource({
-        bookMove: Boolean(uci),
+        bookMove: Boolean(uci) && !hippoChoice,
         ninaPlan: Boolean(nina),
         kidPlan: Boolean(kid),
+        hippoPlan: Boolean(hippoChoice),
       });
       preparedSourceRef.current = source !== 'engine';
 
@@ -821,15 +842,21 @@ export function usePlayGame(engine: StockfishController) {
           incrementMs: (configRef.current?.incrementSeconds ?? 0) * 1000,
           lastMove: lastCaptureOf(game),
         });
+        /* The class depth, lifted to the character's floor (`monkey`) and
+           capped by its ceiling (`edward`). Time trouble still wins. */
         const searchDepth = Math.min(
-          humanSearch.depth,
+          Math.max(humanSearch.depth, humanSearch.timeTrouble ? 0 : (style?.depthFloor ?? 0)),
           style?.depthCap ?? Number.POSITIVE_INFINITY,
         );
+        /* The apex opponent searches a single PV, so the post-opening move it
+           can play is the engine's first line. Everyone else keeps the wide
+           human list their error model fills from. */
+        const searchMultiPv = style?.perfect ? 1 : HUMAN_MULTI_PV;
         const evaluation = style
           ? await engineRef.current.evaluateWithin(
               fen,
               searchDepth,
-              HUMAN_MULTI_PV,
+              searchMultiPv,
               plan?.searchMs ?? 1200,
             )
           : await engineRef.current.evaluateWithin(
@@ -1127,7 +1154,7 @@ export function usePlayGame(engine: StockfishController) {
           elo,
           effectiveElo: humanSearch.effectiveElo,
           depth: searchDepth,
-          multiPv: HUMAN_MULTI_PV,
+          multiPv: searchMultiPv,
           source,
           bookMove: false,
           rank: evaluation.candidates.findIndex((candidate) => candidate.uci === uci) + 1,

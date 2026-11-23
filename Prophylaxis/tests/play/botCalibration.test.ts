@@ -342,7 +342,12 @@ async function cardLoss(id: string, elo: number, positions: readonly string[]): 
 
 test('the card ladder is monotone: a higher rating never plays measurably worse', async () => {
   const positions = quietPositions(60);
-  const cards = PERSONALITY_OPPONENTS.filter((opponent) => opponent.kind === 'personality')
+  /* Monkey is the apex card, not a rung: its 20-ply floor and engine-first
+     selection are deliberately off this ladder, and measuring them here would
+     both be slow and tell the ladder nothing. */
+  const cards = PERSONALITY_OPPONENTS.filter(
+    (opponent) => opponent.kind === 'personality' && opponent.category !== 'apex',
+  )
     .map((opponent) => ({ id: opponent.id, elo: opponent.elo }))
     .sort((a, b) => a.elo - b.elo);
 
