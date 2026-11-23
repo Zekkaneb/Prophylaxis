@@ -11,6 +11,8 @@ import test from 'node:test';
 import {
   CALIBRATION_GAMES,
   MILESTONES,
+  NEW_PLAYER_GAMES,
+  NEW_PLAYER_K,
   RATING_MAX,
   RATING_MIN,
   applyResult,
@@ -25,7 +27,9 @@ import {
 const base = {
   rating: 1200,
   streak: 0,
-  gamesPlayed: 20,
+  /* A settled account: past the new-player K band, so the assertions below read
+     the established-player curve. The boosted band has its own test. */
+  gamesPlayed: 60,
   opponentRating: 1200,
   score: 1 as const,
 };
@@ -49,14 +53,26 @@ test('the expectation is standard Elo', () => {
   assert.equal(Number(expectedScore(1600, 1200).toFixed(4)), 0.9091);
 });
 
-test('K is 48 while placing, then 28 / 20 / 12 by height', () => {
-  assert.equal(kFactorFor(1200, 0), 48);
-  assert.equal(kFactorFor(1200, CALIBRATION_GAMES - 1), 48);
-  assert.equal(kFactorFor(1200, CALIBRATION_GAMES), 28);
-  assert.equal(kFactorFor(1799, 10), 28);
-  assert.equal(kFactorFor(1800, 10), 20);
-  assert.equal(kFactorFor(2299, 10), 20);
-  assert.equal(kFactorFor(2300, 10), 12);
+test('K is 80 while placing, 48 for new accounts, then 28 / 20 / 12 by height', () => {
+  assert.equal(kFactorFor(1200, 0), 80);
+  assert.equal(kFactorFor(1200, CALIBRATION_GAMES - 1), 80);
+  assert.equal(kFactorFor(1200, CALIBRATION_GAMES), 48);
+  assert.equal(kFactorFor(1200, NEW_PLAYER_GAMES - 1), 48);
+  assert.equal(kFactorFor(1799, NEW_PLAYER_GAMES), 28);
+  assert.equal(kFactorFor(1800, NEW_PLAYER_GAMES), 20);
+  assert.equal(kFactorFor(2299, NEW_PLAYER_GAMES), 20);
+  assert.equal(kFactorFor(2300, NEW_PLAYER_GAMES), 12);
+});
+
+test('a new account climbs much faster than a settled one', () => {
+  const placing = applyResult({ ...base, gamesPlayed: 0 });
+  assert.equal(placing.delta, 40);
+  const fresh = applyResult({ ...base, gamesPlayed: CALIBRATION_GAMES });
+  assert.equal(fresh.k, NEW_PLAYER_K);
+  assert.equal(fresh.delta, 24);
+  const settled = applyResult(base);
+  assert.equal(settled.delta, 14);
+  assert.ok(fresh.delta > settled.delta * 1.5, 'the new-player band is a real head start');
 });
 
 test('a win against an equal at 1200 gains K/2', () => {
@@ -67,12 +83,12 @@ test('a win against an equal at 1200 gains K/2', () => {
   assert.equal(out.calibrating, false);
 });
 
-test('placement moves fast: 1200 vs 1200 gains 24', () => {
+test('placement moves fast: 1200 vs 1200 gains 40', () => {
   const out = applyResult({ ...base, gamesPlayed: 0 });
-  assert.equal(out.delta, 24);
+  assert.equal(out.delta, 40);
   assert.equal(out.calibrationLeft, CALIBRATION_GAMES - 1);
   assert.equal(out.calibrating, true);
-  assert.equal(ratingLabel(1224, true), '1224?');
+  assert.equal(ratingLabel(1240, true), '1240?');
 });
 
 test('a loss costs the same half-K, and a draw is neutral', () => {
@@ -160,7 +176,7 @@ test('an unrated game leaves the record alone but still counts the streak', () =
   const out = applyResult({ ...base, rated: false, streak: 0 });
   assert.equal(out.delta, 0);
   assert.equal(out.rating, 1200);
-  assert.equal(out.gamesPlayed, 21);
+  assert.equal(out.gamesPlayed, 61);
 });
 
 test('the peak remembers the highest rating ever held', () => {

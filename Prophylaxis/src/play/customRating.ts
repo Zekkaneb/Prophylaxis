@@ -2,8 +2,9 @@
  * The app's own Elo-style rating engine.
  *
  * Standard Elo decides how likely a result was; the rules around it are ours:
- * a calibration phase for the first ten games, K that narrows as a player
- * climbs, a bonus for streaks against equal-or-stronger opposition, permanent
+ * a calibration phase for the first ten games and a boosted K through the
+ * first forty, K that narrows as a player climbs, a bonus for streaks against
+ * equal-or-stronger opposition, permanent
  * floors once a milestone is reached, and a reduced weight for bot games so the
  * ladder is not farmed.
  *
@@ -40,8 +41,23 @@ export const RATING_CATEGORY_HINT: Record<RatingCategory, string> = {
 export const RATING_MIN = 100;
 export const RATING_MAX = 2800;
 
-/** Games 1–10 are placement: a wider K and a badge on the rating. */
+/** Games 1–10 are placement: the widest K and a badge on the rating. */
 export const CALIBRATION_GAMES = 10;
+
+/**
+ * Games after placement that still climb at a boosted K.
+ *
+ * A new account is still finding its level long after the placement badge is
+ * gone: the first forty games are the climb, and a player should not need a
+ * hundred of them to arrive where they belong.
+ */
+export const NEW_PLAYER_GAMES = 40;
+
+/** ±40 per game against an equal — placement can move a rating fast. */
+export const PLACEMENT_K = 80;
+
+/** Still twice an established player's K, until `NEW_PLAYER_GAMES`. */
+export const NEW_PLAYER_K = 48;
 
 export interface PlacementSeed {
   id: 'beginner' | 'casual' | 'intermediate' | 'advanced';
@@ -72,9 +88,15 @@ export function expectedScore(rating: number, opponentRating: number): number {
   return 1 / (1 + 10 ** ((opponentRating - rating) / 400));
 }
 
-/** K by phase and height: placement is wide, the top of the ladder is narrow. */
+/**
+ * K by phase and height: placement is widest, the first forty games stay
+ * boosted, then the top of the ladder narrows.
+ */
 export function kFactorFor(rating: number, gamesPlayed: number): number {
-  if (gamesPlayed < CALIBRATION_GAMES) return 48;
+  if (gamesPlayed < CALIBRATION_GAMES) return PLACEMENT_K;
+  /* Learning the app and finding a level is one stretch: the boosted band
+     continues past placement so a new player climbs instead of grinding. */
+  if (gamesPlayed < NEW_PLAYER_GAMES) return NEW_PLAYER_K;
   if (rating < 1800) return 28;
   if (rating < 2300) return 20;
   return 12;
