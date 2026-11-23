@@ -42,6 +42,7 @@ import {
 import {
   BRANDON_FRESHMAN_FAMILIARITY,
   BRANDON_FRESHMAN_FUNK,
+  brandonFreshmanAllowsMistake,
   brandonFreshmanAllowsMove,
   brandonFreshmanFamily,
   brandonFreshmanForgetChance,
@@ -330,6 +331,45 @@ test('a losing move is never funk, and a free piece is refused', () => {
     true,
     'a move that is not a blunder needs no justification',
   );
+});
+
+test('his funk keeps the engine’s own best move when the guard would veto it', () => {
+  /* Nxc6 is the engine's top line. The static exchange check calls it material
+     gone — there is no check or king-facing threat to justify it — so the guard
+     refuses the very move the search rates best. */
+  const FEN = 'r1bqkb1r/pp2pppp/2np1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 4 7';
+  const best = describeMove(FEN, 'd4c6');
+  const alternative = describeMove(FEN, 'c3d5');
+  assert.ok(best && alternative);
+  assert.equal(isBlatantMaterialBlunder(FEN, 'd4c6'), true);
+  assert.equal(brandonFreshmanAllowsMove(FEN, 'd4c6', best), false);
+  assert.equal(
+    brandonFreshmanAllowsMove(FEN, 'c3d5', alternative),
+    true,
+    'the quiet alternative is one the guard accepts',
+  );
+
+  /* Vetoing the top line used to leave only the alternative playable, so his
+     funk played a 30 cp worse idea every time his best move was a trade. The
+     guard chooses between errors; it does not overrule the search. */
+  const chosen = chooseBrandonFreshmanMove({
+    fen: FEN,
+    candidates: [
+      { uci: 'd4c6', scoreCp: 230, mate: null },
+      { uci: 'c3d5', scoreCp: 200, mate: null },
+    ],
+    style: STYLE,
+    elo: 1600,
+    random: () => 0.99,
+  });
+  assert.equal(chosen?.uci, 'd4c6');
+  assert.equal(chosen?.gap, 0);
+  assert.equal(chosen?.best, true);
+
+  /* The exemption is his own selection only: a rolled mistake still cannot hand
+     over the piece, which is what keeps the two dials separate. */
+  assert.equal(brandonFreshmanAllowsMistake(FEN, 'd4c6', STYLE), false);
+  assert.equal(brandonFreshmanAllowsMistake(FEN, 'c3d5', STYLE), true);
 });
 
 test('the speculative turn picks the boldest plausible idea, not the best one', () => {

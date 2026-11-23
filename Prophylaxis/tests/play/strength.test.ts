@@ -81,6 +81,47 @@ test('a blunder is a real but survivable mistake from the candidate list', () =>
   );
 });
 
+test('a guard that rejects the whole band still returns a slip from that band', () => {
+  /* The band the roll asked for: 80-200 cp behind the engine's best. */
+  const band = { minGap: 80, maxGap: 200 };
+  const candidates = [
+    { uci: 'e2e4', scoreCp: 30, mate: null },
+    { uci: 'd2d4', scoreCp: -70, mate: null },
+    { uci: 'h2h3', scoreCp: -120, mate: null },
+  ];
+
+  /* The guard refuses both mistakes in the band. Filtering the whole list first
+     emptied it and turned the roll into a best move; severity belongs to the
+     rating, so the pick still comes from the band the rating asked for. */
+  assert.equal(
+    chooseBlunder(candidates, 'w', 1600, () => 0, band, () => false),
+    'd2d4',
+  );
+  assert.equal(
+    chooseBlunder(candidates, 'w', 1600, () => 0.99, band, () => false),
+    'h2h3',
+    'every in-band mistake is still available, whatever the roll lands on',
+  );
+
+  /* A worse slip outside the band must not be substituted for a rejected one. */
+  assert.equal(
+    chooseBlunder(
+      [
+        { uci: 'e2e4', scoreCp: 30, mate: null },
+        { uci: 'd2d4', scoreCp: -70, mate: null },
+        { uci: 'h2h3', scoreCp: -370, mate: null },
+      ],
+      'w',
+      1600,
+      () => 0.99,
+      band,
+      () => false,
+    ),
+    'd2d4',
+    'the guard narrows the choice inside the band, it does not inflate the slip',
+  );
+});
+
 test('chooses the best candidate for strong bots and can take the runner-up', () => {
   assert.equal(chooseCandidate([], 1500), null);
 

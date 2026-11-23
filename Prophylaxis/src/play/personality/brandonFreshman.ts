@@ -119,7 +119,6 @@ export const BRANDON_FRESHMAN_FUNK = {
   tradePenalty: 8,
   castlePenalty: 5,
   quietPenalty: 3,
-  speculativeAllowance: 70,
   tieMargin: 6,
 } as const;
 
@@ -204,12 +203,16 @@ export function chooseBrandonFreshmanMove(input: {
   if (legal.some((entry) => entry.botMate !== null && entry.botMate > 0)) return null;
 
   const bestPov = Math.max(...legal.map((entry) => entry.botPov));
-  const allowance = candidateGapForElo(elo) + BRANDON_FRESHMAN_FUNK.speculativeAllowance;
+  /* The rating's own candidate gap is the whole window. A flat +70 on top of it
+     was measured and changed nothing: at 1600 the accuracy weight (1.6) prices a
+     move past the gap higher than any funk it can earn, so the extra room was
+     never a candidate — only a second, unmeasured strength dial. */
+  const window = candidateGapForElo(elo);
   const playable = legal
     .map((entry) => ({ ...entry, gap: bestPov - entry.botPov }))
     .filter(
       (entry) =>
-        entry.gap <= allowance &&
+        entry.gap <= window &&
         entry.botMate === null &&
         /* The guard never vetoes the move the search itself rates best: the
            static "this hangs material" check is a heuristic, and when it
