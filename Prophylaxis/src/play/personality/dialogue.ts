@@ -866,17 +866,17 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
 
     mistake: [
 
-      'Oh. That’s probably bad.',
+      'I might have to pants you.',
 
-      'Wait, what did I just do?',
+      'I’m gonna tickle you.',
 
-      'I might have messed up.',
+      'You're a terrorist',
 
       "I'm so good that you can't handle it",
 
     ],
 
-    strong: ['Okay, sure.', 'I’m a demon.'],
+    strong: ['Okay, sure.', 'You so petite.'],
 
     brilliant: [
 
@@ -906,7 +906,7 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
 
     sacrifice: ['...'],
 
-    'material-won': ["I'm a genius", 'Okay, sure.'],
+    'material-won': ["I’m gonna tickle you.", 'Okay, sure.'],
 
     'material-lost': ["You're a terrorist.", 'Hm. That seems bad for me.'],
 
