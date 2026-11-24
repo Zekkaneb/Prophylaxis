@@ -870,7 +870,7 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
 
       'I’m gonna tickle you.',
 
-      'You're a terrorist',
+      "You're a terrorist",
 
       "I'm so good that you can't handle it",
 
