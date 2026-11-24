@@ -86,7 +86,6 @@ export function PvpSetupView({
 
   return (
     <div className="pvp-setup">
-      <RatingCard compact />
       <section className="play-block" aria-labelledby="pvp-how-title">
         <div className="play-block__head">
           <p className="play-eyebrow">01 — Room</p>
@@ -285,6 +284,11 @@ export function PvpSetupView({
           </aside>
         </>
       }
+
+      {/* The rating card is reference material, not the lobby's first step:
+          the room and its clock belong at the top, and the placement choices
+          sit at the bottom where they do not push "Play someone" off-screen. */}
+      <RatingCard compact />
     </div>
   );
 }

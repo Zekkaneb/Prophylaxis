@@ -2954,9 +2954,14 @@
   min-width: 0;
 }
 
-.pvp-setup > .play-block:first-child,
-.pvp-setup > .practice-preview {
+/* The room is the lobby's first action, so it leads the right column; the
+   presets fill the left, the summary sits under the room, and the rating card
+   closes the page at full width instead of burying the room under placement
+   choices. Counting children from the room block is safe again because the
+   rating card is last. */
+.pvp-setup > .play-block:first-child {
   grid-column: 2;
+  grid-row: 1;
 }
 
 .pvp-setup > .play-block:nth-child(2) {
@@ -2966,6 +2971,32 @@
 
 .pvp-setup > .play-block:nth-child(3) {
   grid-column: 1;
+}
+
+.pvp-setup > .practice-preview {
+  grid-column: 2;
+  grid-row: 2 / span 2;
+}
+
+.pvp-setup > .rating-card {
+  grid-column: 1 / -1;
+}
+
+/* One column: the room, presets, custom panel, summary and rating card read
+   top to bottom instead of sharing a two-column grid they no longer fit. */
+@media (max-width: 1100px) {
+  .pvp-setup {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pvp-setup > .rating-card,
+  .pvp-setup > .play-block:first-child,
+  .pvp-setup > .play-block:nth-child(2),
+  .pvp-setup > .play-block:nth-child(3),
+  .pvp-setup > .practice-preview {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }
 
 .pvp-group {
