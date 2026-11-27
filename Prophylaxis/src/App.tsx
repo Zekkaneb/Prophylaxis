@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import SideNav, { type TabId } from './components/SideNav';
 import Dashboard from './components/Dashboard';
 import CourseLibrary from './components/CourseLibrary';
-import StudyView from './components/StudyView';
+import StudyView, { type StudyMode } from './components/StudyView';
 import Drill from './components/Drill';
 import PlayPage from './components/PlayPage';
 import WoodpeckerTrainer from './components/WoodpeckerTrainer';
@@ -97,6 +97,8 @@ export default function App() {
   const routeRef = useRef(route);
 
   const [course, setCourse] = useState<PgnCourseRecord | null>(null);
+  /* Which pass a course opens in: reading, or straight into review. */
+  const [studyMode, setStudyMode] = useState<StudyMode>('learn');
   const [query, setQuery] = useState('');
   /* A finished game handed from Play to Review, analysed as soon as it opens. */
   const [reviewGameId, setReviewGameId] = useState<string | null>(null);
@@ -210,7 +212,10 @@ export default function App() {
   /* Stable handlers: the memoised pages only re-render when their data moves. */
   const navigateTab = useCallback((tab: TabId) => go({ tab, courseId: null }), [go]);
   const openCourse = useCallback(
-    (courseId: string) => go({ tab: 'courses', courseId }),
+    (courseId: string, mode: StudyMode = 'learn') => {
+      setStudyMode(mode);
+      go({ tab: 'courses', courseId });
+    },
     [go],
   );
   const openSettings = useCallback(() => setSettingsOpen(true), []);
@@ -302,6 +307,7 @@ export default function App() {
               <StudyView
                 key={course.course_id}
                 course={course}
+                initialMode={studyMode}
                 onExit={exitStudy}
                 onNotify={notify}
                 onOpenSettings={openSettings}

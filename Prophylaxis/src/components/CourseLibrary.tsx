@@ -1,12 +1,15 @@
 import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  chapterLearned,
   courseQuizMoveCount,
-  courseStats,
   deleteCourse,
   importCoursePgn,
+  lineKey,
   listCourses,
+  readStudyProgress,
   setCourseColor,
 } from '../courses/courseService';
+import { db, type LineProgress } from '../db';
 import type { PgnCourseRecord } from '../courses/types';
 import ActionSheet from './ActionSheet';
 import './CourseLibrary.css';
@@ -52,16 +55,22 @@ finishes development before resolving the centre.} *`;
 
 const MAX_FILES = 6;
 
-function formatDate(timestamp: number): string {
-  try {
-    return new Date(timestamp).toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch {
-    return '';
+/* Course art, picked deterministically so a course keeps the same cover. */
+const COVERS = ['/covers/red.jpg', '/covers/blue.jpg', '/covers/gold.jpg'];
+
+function coverFor(courseId: string): string {
+  let hash = 7;
+  for (let index = 0; index < courseId.length; index += 1) {
+    hash = (hash * 31 + courseId.charCodeAt(index)) % 9973;
   }
+  return COVERS[hash % COVERS.length];
+}
+
+interface CourseProgress {
+  chapters: number;
+  learned: number;
+  due: number;
+  percent: number;
 }
 
 export interface CourseLibraryProps {
@@ -69,12 +78,15 @@ export interface CourseLibraryProps {
   query?: string;
   /** Clears that search from the empty state, so one click restores the list. */
   onClearSearch?: () => void;
-  onStudy: (courseId: string) => void;
+  /** `mode` opens the course straight into reading or straight into review. */
+  onStudy: (courseId: string, mode?: 'learn' | 'quiz') => void;
   onNotify?: (message: string, tone?: 'success' | 'error') => void;
 }
 
 function CourseLibrary({ query = '', onClearSearch, onStudy, onNotify }: CourseLibraryProps) {
   const [courses, setCourses] = useState<PgnCourseRecord[]>([]);
+  const [progress, setProgress] = useState<Record<string, LineProgress>>({});
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -85,8 +97,9 @@ function CourseLibrary({ query = '', onClearSearch, onStudy, onNotify }: CourseL
   const fileInput = useRef<HTMLInputElement>(null);
 
   const refresh = useCallback(async () => {
-    const rows = await listCourses();
+    const [rows, progressRows] = await Promise.all([listCourses(), db.line_progress.toArray()]);
     setCourses(rows);
+    setProgress(Object.fromEntries(progressRows.map((row) => [row.id, row])));
     return rows;
   }, []);
 
@@ -163,6 +176,31 @@ function CourseLibrary({ query = '', onClearSearch, onStudy, onNotify }: CourseL
   const [scope, setScope] = useState<'all' | 'w' | 'b'>('all');
   const [pendingDelete, setPendingDelete] = useState<PgnCourseRecord | null>(null);
   const filtered = Boolean(deferredQuery.trim()) || scope !== 'all';
+
+  /* Learned and due are per chapter and come from the same two places the
+     study screen reads: the reading cursor and the quiz history. */
+  const cardProgress = useMemo(() => {
+    const map = new Map<string, CourseProgress>();
+    for (const entry of courses) {
+      const read = readStudyProgress(entry.course_id);
+      let learned = 0;
+      let due = 0;
+      for (const chapter of entry.chapters) {
+        const row = progress[lineKey(entry.course_id, chapter.chapter_id)];
+        const attempts = row?.attempts ?? 0;
+        if (chapterLearned(chapter, read[chapter.chapter_id], attempts)) learned += 1;
+        if (attempts === 0 || (row?.mastery ?? 0) < 3) due += 1;
+      }
+      const chapters = entry.chapters.length;
+      map.set(entry.course_id, {
+        chapters,
+        learned,
+        due,
+        percent: chapters === 0 ? 0 : Math.round((learned / chapters) * 100),
+      });
+    }
+    return map;
+  }, [courses, progress]);
 
   /* Search and scope compose: the bar narrows the collection, the field
      narrows the bar's result. */
@@ -327,71 +365,118 @@ function CourseLibrary({ query = '', onClearSearch, onStudy, onNotify }: CourseL
 
       <div className="courses__grid">
         {visible.map((entry) => {
-          const summary = courseStats(entry);
+          const stats = cardProgress.get(entry.course_id) ?? {
+            chapters: entry.chapters.length,
+            learned: 0,
+            due: 0,
+            percent: 0,
+          };
           /* Testing a study from the wrong side used to open a quiz that could
              never ask a move; the card says so before the user gets there. */
           const answers = courseQuizMoveCount(entry, entry.repertoire_color);
           const wrongSide =
             answers === 0 &&
             courseQuizMoveCount(entry, entry.repertoire_color === 'w' ? 'b' : 'w') > 0;
+          const menuOpen = openMenu === entry.course_id;
           return (
             <article className="course-card" key={entry.course_id}>
-              <div className="course-card__top">
-                <span className="course-card__tag">
-                  {summary.chapters} chapter{summary.chapters === 1 ? '' : 's'}
-                </span>
-                <button
-                  type="button"
-                  className={`course-card__side course-card__side--${entry.repertoire_color}`}
-                  title="Switch the side this course studies"
-                  onClick={() =>
-                    void handleColorChange(entry, entry.repertoire_color === 'w' ? 'b' : 'w')
-                  }
-                >
-                  {entry.repertoire_color === 'b' ? 'Black' : 'White'}
-                </button>
-                <button
-                  type="button"
-                  className="icon-btn course-card__delete"
-                  aria-label={`Delete ${entry.title}`}
-                  title="Delete course"
-                  onClick={() => setPendingDelete(entry)}
-                >
-                  ✕
-                </button>
+              <div className="course-card__cover">
+                <img src={coverFor(entry.course_id)} alt="" loading="lazy" decoding="async" />
               </div>
-              <h3>
-                <button
-                  type="button"
-                  className="course-card__title-btn"
-                  onClick={() => onStudy(entry.course_id)}
-                >
-                  {entry.title}
-                </button>
-              </h3>
-              <p className="course-card__meta">
-                {Math.ceil(summary.plies / 2)} moves · {summary.notes} notes
-                {summary.variations > 0 ? ` · ${summary.variations} variations` : ''}
-              </p>
-              <p className="course-card__source" title={entry.source_name}>
-                {entry.source_name}
-              </p>
-              {wrongSide && (
-                <p className="course-card__warn">
-                  No {entry.repertoire_color === 'w' ? 'White' : 'Black'} moves here — switch
-                  the side to test and drill this study.
+
+              <div className="course-card__main">
+                <div className="course-card__head">
+                  <h3>
+                    <button
+                      type="button"
+                      className="course-card__title"
+                      onClick={() => onStudy(entry.course_id, 'learn')}
+                      title={entry.source_name}
+                    >
+                      {entry.title}
+                    </button>
+                  </h3>
+                  <div className="course-card__tools">
+                    <button
+                      type="button"
+                      className="course-card__chip"
+                      title={`You study ${entry.repertoire_color === 'b' ? 'Black' : 'White'} — click to switch`}
+                      onClick={() =>
+                        void handleColorChange(entry, entry.repertoire_color === 'w' ? 'b' : 'w')
+                      }
+                    >
+                      {entry.repertoire_color === 'b' ? '♟ Black' : '♙ White'}
+                    </button>
+                    <button
+                      type="button"
+                      className="course-card__more"
+                      aria-label={`Actions for ${entry.title}`}
+                      aria-expanded={menuOpen}
+                      onClick={() => setOpenMenu(menuOpen ? null : entry.course_id)}
+                    >
+                      ⋯
+                    </button>
+                  </div>
+                </div>
+
+                <p className="course-card__count">
+                  {stats.learned} / {stats.chapters} chapter{stats.chapters === 1 ? '' : 's'}{' '}
+                  learned
                 </p>
-              )}
-              <div className="course-card__foot">
-                <span className="course-card__date">{formatDate(entry.imported_at)}</span>
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={() => onStudy(entry.course_id)}
+
+                <div
+                  className="course-card__bar"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={stats.percent}
+                  aria-label={`${entry.title} progress`}
                 >
-                  Study
-                </button>
+                  <span style={{ width: `${stats.percent}%` }} />
+                </div>
+
+                {wrongSide && (
+                  <p className="course-card__warn">
+                    No {entry.repertoire_color === 'w' ? 'White' : 'Black'} moves here — switch
+                    the side to review this study.
+                  </p>
+                )}
+
+                <div className="course-card__actions">
+                  <button
+                    type="button"
+                    className="course-card__btn course-card__btn--review"
+                    onClick={() => onStudy(entry.course_id, 'quiz')}
+                    disabled={answers === 0}
+                    title="Test the chapters you have read"
+                  >
+                    Review
+                    {stats.due > 0 && <span className="course-card__badge">{stats.due}</span>}
+                  </button>
+                  <button
+                    type="button"
+                    className="course-card__btn course-card__btn--learn"
+                    onClick={() => onStudy(entry.course_id, 'learn')}
+                  >
+                    Learn
+                  </button>
+                </div>
               </div>
+
+              {menuOpen && (
+                <div className="course-card__menu">
+                  <button
+                    type="button"
+                    className="course-card__menu-item"
+                    onClick={() => {
+                      setOpenMenu(null);
+                      setPendingDelete(entry);
+                    }}
+                  >
+                    Delete course
+                  </button>
+                </div>
+              )}
             </article>
           );
         })}
