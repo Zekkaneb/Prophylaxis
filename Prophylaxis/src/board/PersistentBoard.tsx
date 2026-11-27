@@ -131,6 +131,10 @@ function findClipHost(slot: HTMLElement): HTMLElement | null {
 
 function PersistentBoard({ store }: { store: BoardStore }) {
   const props = useSyncExternalStore(store.subscribe, store.getProps, store.getProps);
+  /* The slot is tracked separately: a view unmounting publishes a null slot
+     with the *same* props object, so a props-only subscription would never
+     re-measure and the board would stay painted at its last rectangle. */
+  const slot = useSyncExternalStore(store.subscribe, store.getSlot, store.getSlot);
   const handle = useBoardHandle();
   const clipRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
@@ -253,10 +257,12 @@ function PersistentBoard({ store }: { store: BoardStore }) {
     };
   }, [store]);
 
-  /* A new view publishing its slot/props: re-measure before the next paint. */
+  /* A new view publishing its slot/props, or a view leaving and publishing no
+     slot at all: re-measure before the next paint. `measure` hides the layer
+     when the slot is gone, which is what unmounts the board from the screen. */
   useLayoutEffect(() => {
     measureRef.current();
-  }, [props]);
+  }, [props, slot]);
 
   return (
     <div className="board-layer">

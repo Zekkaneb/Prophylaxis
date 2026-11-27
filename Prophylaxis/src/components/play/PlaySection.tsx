@@ -4,6 +4,7 @@ import {
   PERSONALITY_OPPONENTS,
   opponentStage,
   profileFromRecord,
+  type OpponentProfile,
 } from '../../play/opponents.ts';
 import { formatClock } from '../../play/timeControls.ts';
 import { usePlayGame } from '../../play/usePlayGame';
@@ -21,6 +22,18 @@ import { PvpSection } from './PvpSection';
 import { TitleUnlockModal } from './TitleUnlockModal';
 import EmptyBoardArt from '../EmptyBoardArt';
 import './play.css';
+
+/**
+ * The live-game chip's name: stage first, then the name — but never the same
+ * word twice, which is what a stored practice partner used to produce.
+ */
+function liveLabel(opponent: OpponentProfile): string {
+  const stage = opponentStage(opponent) ?? opponent.shortName;
+  if (!stage || opponent.name.toLowerCase().includes(stage.toLowerCase())) {
+    return opponent.name;
+  }
+  return `${stage} · ${opponent.name}`;
+}
 
 export type PlayView =
   | 'new'
@@ -62,7 +75,8 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
   /* Only a board view can run the bot; the player's clock keeps its own time.
      Repertoire practice opens the same board, so it counts as one while its
      game is live. */
-  const boardOpen = view === 'current' || (view === 'practice' && Boolean(game.session));
+  const boardOpen =
+    view === 'current' || (view === 'practice' && Boolean(game.session?.practice));
 
   useEffect(() => {
     setVisible(boardOpen);
@@ -181,10 +195,10 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
               {/* Version first: the chip truncates, and two Bryans share a
                   surname. */}
               {liveSession
-                ? `${opponentStage(liveSession.opponent) ?? liveSession.opponent.shortName} · ${liveSession.opponent.name}`
-                : (resumeProfile
-                    ? `${opponentStage(resumeProfile) ?? resumeProfile.shortName} · ${resumeProfile.name}`
-                    : null)}
+                ? liveLabel(liveSession.opponent)
+                : resumeProfile
+                  ? liveLabel(resumeProfile)
+                  : null}
             </span>
             {liveClock ? <span className="play-live__clock">{liveClock}</span> : null}
           </button>
@@ -209,7 +223,7 @@ export function PlaySection({ onReviewGame }: PlaySectionProps = {}) {
       ) : null}
 
       {view === 'practice' ? (
-        game.session && !practiceSetup ? (
+        game.session?.practice && !practiceSetup ? (
           <div className="practice-live">
             {game.session.practice ? <PracticeStrip practice={game.session.practice} /> : null}
             <CurrentGameView

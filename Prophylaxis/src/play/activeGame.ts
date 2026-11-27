@@ -33,6 +33,8 @@ export interface ActiveRecordInput {
   clockStarted: boolean;
   paused: boolean;
   startedAt: number;
+  /** Play time so far, excluding time away from the board. */
+  elapsedMs?: number;
   now: number;
 }
 
@@ -88,6 +90,9 @@ export function createActiveRecord(input: ActiveRecordInput): ActiveGameRecord {
     clock_started: input.clockStarted,
     paused: input.paused,
     started_at: input.startedAt,
+    ...(input.elapsedMs !== undefined
+      ? { elapsed_ms: Math.max(0, Math.round(input.elapsedMs)) }
+      : {}),
     last_sync_at: input.now,
     status: 'playing',
     result: null,
@@ -162,7 +167,15 @@ export function activeToPlayedGame(record: ActiveGameRecord): PlayedGameRecord {
     increment_seconds: record.increment_seconds,
     started_at: record.started_at,
     ended_at: endedAt,
-    duration_seconds: Math.max(1, Math.round((endedAt - record.started_at) / 1000)),
+    /* Time actually played, not wall-clock time since the first move: an
+       overnight gap between sessions used to turn a four-minute game into
+       "47h 27m" in History and Review. */
+    duration_seconds: Math.max(
+      1,
+      Math.round(
+        (record.elapsed_ms ?? Math.max(0, endedAt - record.started_at)) / 1000,
+      ),
+    ),
     final_fen: record.current_fen,
     starting_fen: record.initial_fen,
     board_orientation: record.orientation,

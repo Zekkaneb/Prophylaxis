@@ -163,6 +163,8 @@ export interface PlaySession {
   result: PlayResult | null;
   reason: ResultReason | null;
   startedAt: number;
+  /** Play time so far, excluding time spent away from the board. */
+  elapsedMs?: number;
   endedAt: number | null;
   saveError: string | null;
   savedGameId: string | null;
@@ -297,6 +299,9 @@ export function usePlayGame(engine: StockfishController) {
   const statusRef = useRef<'idle' | 'playing' | 'finished'>('idle');
   const sansRef = useRef<string[]>([]);
   const startedAtRef = useRef(0);
+  /** Accumulated at-the-board time, and the last instant it was measured. */
+  const elapsedMsRef = useRef(0);
+  const elapsedMarkRef = useRef(Date.now());
   const savedRef = useRef(false);
   const viewVisibleRef = useRef(true);
   /** Rolled once per game (keyed by game id) and kept for that whole game. */
@@ -315,6 +320,23 @@ export function usePlayGame(engine: StockfishController) {
   const silentFinishRef = useRef(false);
   const finishRef = useRef<(result: PlayResult, reason: ResultReason) => void>(() => {});
   const persistRef = useRef<() => void>(() => {});
+
+  /**
+   * Adds the time since the last mark, but only while a game is live, the
+   * board is on screen and the tab is visible. A game left overnight then
+   * finishes four minutes long, not forty-seven hours.
+   */
+  const accumulateElapsed = useCallback((now: number): number => {
+    if (
+      statusRef.current === 'playing' &&
+      viewVisibleRef.current &&
+      document.visibilityState !== 'hidden'
+    ) {
+      elapsedMsRef.current += Math.max(0, now - elapsedMarkRef.current);
+    }
+    elapsedMarkRef.current = now;
+    return elapsedMsRef.current;
+  }, []);
 
   /* ------------------------------ personality ------------------------------ */
 
@@ -434,6 +456,7 @@ export function usePlayGame(engine: StockfishController) {
       clockStarted: clock?.isStarted ?? false,
       paused: snapshot ? !snapshot.running : true,
       startedAt: startedAtRef.current,
+      elapsedMs: elapsedMsRef.current,
       now,
     });
 
@@ -448,6 +471,10 @@ export function usePlayGame(engine: StockfishController) {
   const finish = useCallback(
     (result: PlayResult, reason: ResultReason) => {
       if (statusRef.current !== 'playing') return;
+      /* Measure the closing stretch before the status flips, so the archived
+         duration includes the move that ended the game. */
+      const endedAt = Date.now();
+      const elapsedMs = accumulateElapsed(endedAt);
       statusRef.current = 'finished';
       premovesRef.current = [];
       clearTimers();
@@ -468,7 +495,6 @@ export function usePlayGame(engine: StockfishController) {
       if (!current || !opponent || !config || !gameId) return;
 
       const game = gameRef.current;
-      const endedAt = Date.now();
       const finalFen = game.fen();
       const sans = [...sansRef.current];
 
@@ -478,6 +504,7 @@ export function usePlayGame(engine: StockfishController) {
         result,
         reason,
         endedAt,
+        elapsedMs,
         fen: finalFen,
         premoves: [],
         turn: game.turn(),
@@ -505,6 +532,7 @@ export function usePlayGame(engine: StockfishController) {
         clockStarted: clockRef.current?.isStarted ?? false,
         paused: true,
         startedAt: startedAtRef.current,
+        elapsedMs,
         now: endedAt,
       });
       const finished = finishActiveRecord(base, result, reason, endedAt, finalFen);
@@ -582,7 +610,7 @@ export function usePlayGame(engine: StockfishController) {
         }
       })();
     },
-    [clearTimers, publish, react],
+    [accumulateElapsed, clearTimers, publish, react],
   );
   finishRef.current = finish;
 
@@ -1527,6 +1555,8 @@ export function usePlayGame(engine: StockfishController) {
       bookPliesRef.current = [];
       preparedRef.current = false;
       startedAtRef.current = Date.now();
+      elapsedMsRef.current = 0;
+      elapsedMarkRef.current = startedAtRef.current;
       viewVisibleRef.current = true;
       premovesRef.current = [];
       setBotThinking(false);
@@ -1552,6 +1582,7 @@ export function usePlayGame(engine: StockfishController) {
         result: null,
         reason: null,
         startedAt: startedAtRef.current,
+        elapsedMs: 0,
         endedAt: null,
         saveError: null,
         savedGameId: null,
@@ -1656,6 +1687,10 @@ export function usePlayGame(engine: StockfishController) {
       clearTimers();
 
       const now = Date.now();
+      /* Resume the clock on play time, not wall-clock time: the row may have
+         waited overnight before being picked up again. */
+      elapsedMsRef.current = record.elapsed_ms ?? 0;
+      elapsedMarkRef.current = now;
       let clock: ChessClock | null = null;
       let flagged: PlayColor | null = null;
 
@@ -1724,6 +1759,7 @@ export function usePlayGame(engine: StockfishController) {
         result: null,
         reason: null,
         startedAt: record.started_at,
+        elapsedMs: elapsedMsRef.current,
         endedAt: null,
         saveError: null,
         savedGameId: null,
@@ -1920,6 +1956,15 @@ export function usePlayGame(engine: StockfishController) {
     },
     [clearTimers, publish],
   );
+
+  /* -------------------------------- play time ------------------------------- */
+
+  /* One ticker for the whole hook: it advances the elapsed mark even while
+     hidden, so a backgrounded tab cannot bank the gap as play time. */
+  useEffect(() => {
+    const timer = window.setInterval(() => accumulateElapsed(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [accumulateElapsed]);
 
   /* ------------------------------- timeouts -------------------------------- */
 

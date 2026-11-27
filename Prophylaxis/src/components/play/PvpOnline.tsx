@@ -46,6 +46,17 @@ export function PvpOnlineLobby({
     title: titles.worn,
   };
 
+  /* A guest typing a code that nobody is hosting joins an empty channel, so
+     presence never arrives. Say so after a short grace period instead of
+     leaving the host's "share this code" copy on a room that does not exist. */
+  const [noHost, setNoHost] = useState(false);
+  useEffect(() => {
+    setNoHost(false);
+    if (!room.code || room.role !== 'guest' || room.opponentHere) return;
+    const timer = window.setTimeout(() => setNoHost(true), 4000);
+    return () => window.clearTimeout(timer);
+  }, [room.code, room.role, room.opponentHere]);
+
   /* Whichever side presses start, the other one starts too, on the same
      control — otherwise one player sits in the lobby while the other's clock
      is already running. */
@@ -114,8 +125,16 @@ export function PvpOnlineLobby({
                   ? `${room.opponent?.name ?? 'Your opponent'} is here — you play ${
                       room.role === 'host' ? 'White' : 'Black'
                     }.`
-                  : 'Share the code — waiting for your opponent…'}
+                  : room.role === 'guest'
+                    ? 'Waiting for the host to answer…'
+                    : 'Share the code — waiting for your opponent…'}
           </p>
+          {noHost ? (
+            <p className="pvp-error" role="alert">
+              No host answered for room {room.code}. Check the code with whoever
+              shared it, or create a room of your own.
+            </p>
+          ) : null}
           <div className="pvp-online__actions">
             {room.opponentHere ? (
               <button

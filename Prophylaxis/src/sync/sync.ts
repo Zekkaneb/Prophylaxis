@@ -163,6 +163,24 @@ export function toWireRow(change: SyncOutboxRow, stored: Record<string, unknown>
 const rowKey = (change: { table_name: string; row_id: string }) =>
   `${change.table_name}\u0000${change.row_id}`;
 
+/**
+ * Failures that belong to the request rather than to one row in it.
+ *
+ * An expired token, a revoked session or an RLS policy denies the whole call:
+ * retrying the batch row by row would send up to `PUSH_BATCH` more doomed
+ * requests, none of which can be stored, and flood the console with 401s while
+ * the queue stays exactly as it was. A rejected table name or a constraint
+ * failure, by contrast, really is one bad row and earns the slow path below.
+ */
+const WHOLE_BATCH_ERROR = /jwt|not authenticated|invalid api key|permission denied|row-level security/i;
+const WHOLE_BATCH_CODES = new Set(['PGRST301', '42501']);
+
+function isWholeBatchFailure(error: { message?: string; code?: string; status?: number }): boolean {
+  if (error.status === 401 || error.status === 403) return true;
+  if (error.code && WHOLE_BATCH_CODES.has(error.code)) return true;
+  return WHOLE_BATCH_ERROR.test(error.message ?? '');
+}
+
 async function pushOnce(): Promise<PushResult> {
   if (!supabase) return { sent: 0, rejected: 0, rejectedRows: [], error: null };
 
@@ -185,6 +203,18 @@ async function pushOnce(): Promise<PushResult> {
   if (!error) {
     await db.sync_outbox.bulkDelete(pending.map((change) => change.id as number));
     return { sent: rows.length, rejected: 0, rejectedRows: [], error: null };
+  }
+
+  /* Nothing could be uploaded, and no row is to blame: retrying one at a time
+     would only repeat the same refusal. Leave the queue untouched so the next
+     pass after the session is valid uploads it. */
+  if (isWholeBatchFailure(error)) {
+    return {
+      sent: 0,
+      rejected: rows.length,
+      rejectedRows: [...new Set(rows.map((row) => row.table_name))].slice(0, 3),
+      error: error.message,
+    };
   }
 
   /*

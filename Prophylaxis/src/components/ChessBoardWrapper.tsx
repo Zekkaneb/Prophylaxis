@@ -705,7 +705,18 @@ export const ChessBoardWrapper = forwardRef<
       <p className="visually-hidden">Board position, FEN: {currentFen}</p>
 
       <div className="board-scale">
-      <div className="board-frame" aria-hidden="true">
+      {/* The board is a pointer surface: its squares and the dnd-kit piece
+          wrappers are focusable, and focus inside an aria-hidden subtree is
+          both invalid and the source of Chrome's "Blocked aria-hidden"
+          console warning. Drop focus as soon as it lands here; the FEN line
+          and the move list are what assistive tech reads instead. */}
+      <div
+        className="board-frame"
+        aria-hidden="true"
+        onFocusCapture={(event) => {
+          (event.target as HTMLElement).blur();
+        }}
+      >
         <Chessboard
         options={{
           id: boardId.replace(/:/g, ''),

@@ -168,6 +168,12 @@ export function useOnlineRoom(): OnlineRoomApi {
         return;
       }
 
+      /* Creating a room while another one is open replaces the channel; the
+         old one has to be removed or it keeps receiving (and tracking
+         presence) in the background. */
+      const previous = channelRef.current;
+      if (previous) void supabase.removeChannel(previous).catch(() => {});
+
       setState({
         code,
         role,

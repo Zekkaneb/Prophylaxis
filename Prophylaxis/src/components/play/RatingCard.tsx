@@ -44,6 +44,12 @@ export function RatingCard({ compact = false }: { compact?: boolean }) {
   }, []);
 
   const seeded = isSeeded(ratings);
+  /* The headline follows the category played most recently, instead of always
+     printing rapid — which read "— rapid" for a player who only played blitz. */
+  const headline =
+    RATING_CATEGORIES.map((category) => ratings[category])
+      .filter((row) => Boolean(row))
+      .sort((a, b) => (b?.updated_at ?? 0) - (a?.updated_at ?? 0))[0] ?? null;
 
   if (!seeded) {
     return (
@@ -86,8 +92,8 @@ export function RatingCard({ compact = false }: { compact?: boolean }) {
       <div className="rating-card__head">
         <p className="play-eyebrow">Your rating</p>
         <h2 id="rating-title">
-          {ratings.rapid ? ratingLabel(ratings.rapid.rating, ratings.rapid.games_played < 10) : '—'}
-          <small> rapid</small>
+          {headline ? ratingLabel(headline.rating, headline.games_played < 10) : '—'}
+          {headline ? <small> {RATING_LABELS[headline.category].toLowerCase()}</small> : null}
         </h2>
       </div>
       <dl className="rating-grid">

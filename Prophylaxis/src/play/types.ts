@@ -124,6 +124,12 @@ export interface ActiveGameRecord {
   /** True when the clock was deliberately held (bot's turn with the board hidden). */
   paused: boolean;
   started_at: number;
+  /**
+   * Time spent at the board, accumulated only while the game was live and on
+   * screen. Missing on rows written before it was tracked, which fall back to
+   * wall-clock time when archived.
+   */
+  elapsed_ms?: number;
   /** Epoch ms of the clock reading stored above. */
   last_sync_at: number;
   status: 'playing' | 'finished';

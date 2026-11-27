@@ -254,7 +254,15 @@ export function CurrentGameView({
   const playerAdvantage = browser.material * (session.playerColor === 'w' ? 1 : -1);
 
   const finished = session.status === 'finished' && session.result !== null;
-  const duration = session.endedAt ? (session.endedAt - session.startedAt) / 1000 : 0;
+  /* Play time, not wall-clock time since the first move: leaving a game
+     overnight must not print "47h 27m" on the result card. Older sessions
+     without the measurement fall back to the old behaviour. */
+  const duration =
+    session.elapsedMs !== undefined
+      ? session.elapsedMs / 1000
+      : session.endedAt
+        ? (session.endedAt - session.startedAt) / 1000
+        : 0;
 
   function confirmAction() {
     if (confirm === 'resign') onResign();
