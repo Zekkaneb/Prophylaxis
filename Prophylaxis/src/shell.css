@@ -110,7 +110,8 @@
 
 .ledger__cell:first-child {
   border-left: 0;
-  padding-left: 2px;
+  /* Flush with the text column of the cards above and below, not the strip edge. */
+  padding-left: 18px;
 }
 
 .ledger dt {
@@ -149,21 +150,12 @@
 
 .dash-profile__form {
   display: grid;
-  /* Three named tracks: avatar, first name, last name. `auto-fit` opened as
-     many columns as the card had room for — six at 1440 — so the three fields
-     sat in the first three and the rest of a 1268px card stayed empty. */
-  grid-template-columns: auto minmax(150px, 260px) minmax(150px, 260px);
-  justify-content: start;
+  /* Photo, both name fields, then the save button, all on the fields' own line
+     and spread across the card. `auto-fit` used to open a column per 150px —
+     six at 1440 — which stranded the three controls in the left third. */
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 12px;
   align-items: end;
-}
-
-/* A phone stacks the fields, instead of leaving the surname alone on a
-   half-width second row. */
-@media (max-width: 640px) {
-  .dash-profile__form {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 .dash-profile__field {
@@ -210,6 +202,10 @@
 }
 
 .dash-profile__actions {
+  /* On the fields' line, at the card's right edge. */
+  grid-row: 1;
+  grid-column: 4;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -221,11 +217,24 @@
   color: var(--muted);
 }
 
+/* A phone stacks the fields instead of leaving the surname alone on a half-width
+   second row, and the save button goes back underneath them. */
+@media (max-width: 760px) {
+  .dash-profile__form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dash-profile__actions {
+    grid-area: auto;
+    justify-self: start;
+  }
+}
+
 .dash-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .block {
@@ -519,7 +528,7 @@ kbd {
 
   .ledger__cell:nth-child(odd) {
     border-left: 0;
-    padding-left: 2px;
+    padding-left: 18px;
   }
 
   .view {
