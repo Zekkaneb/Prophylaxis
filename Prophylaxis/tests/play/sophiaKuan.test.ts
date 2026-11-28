@@ -121,7 +121,7 @@ test('Sophia Kuan is registered at 1300 as Senior in the Novice band', () => {
   assert.equal(SOPHIA.initials, 'SK');
   assert.equal(SOPHIA.usesRepertoire, false);
   assert.ok(SOPHIA.style.length > 0);
-  assert.match(SOPHIA.style, /defen|gentle|cautious/i);
+  assert.match(SOPHIA.style, /veteran|experience/i);
 
   assert.doesNotMatch(SOPHIA.name, /\(/, 'the name carries no parenthetical suffix');
   assert.doesNotMatch(SOPHIA.name, /senior/i, 'the subtext lives in its own field');

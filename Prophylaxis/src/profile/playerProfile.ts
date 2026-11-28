@@ -38,9 +38,9 @@ export const PLAYER_ELO_RANGE = { min: 100, max: 3000 } as const;
 export const AVATAR_MAX_LENGTH = 160_000;
 
 export const DEFAULT_PLAYER_PROFILE: PlayerProfile = Object.freeze({
-  firstName: '',
-  lastName: '',
-  elo: 0,
+  firstName: 'Player',
+  lastName: 'One',
+  elo: 1200,
 });
 
 /** Collapses whitespace, trims, and caps the length. */

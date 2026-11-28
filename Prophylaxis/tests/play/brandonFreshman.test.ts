@@ -142,8 +142,8 @@ test('Freshman Brandon is his own opponent, 1600, in the Intermediate band', () 
   assert.equal(opponentFullName(FRESH), 'Brandon Tran (Freshman)');
   assert.doesNotMatch(FRESH.name, /\(/);
 
-  assert.match(FRESH.style, /funky/i);
-  assert.match(FRESH.style, /attack/i);
+  assert.match(FRESH.style, /funk/i);
+  assert.match(FRESH.style, /throw|falter/i);
 });
 
 test('Prime is untouched and the two Brandons stay separately selectable', () => {
@@ -615,12 +615,11 @@ test('he speaks with Prime’s voice, line for line', () => {
   const spoken = Object.values(DIALOGUE_BANKS['brandon-freshman']).flat().join(' | ');
   for (const line of [
     'Alright, let’s make this interesting.',
-    'Hope you brought your calculator.',
-    'Oh, you are gonna love this.',
-    'Material is temporary, right?',
-    'You might wanna check on your king.',
-    'Haha, that was fun.',
-    'Okay, okay. I will give you that one.',
+    'Oh you fucked up',
+    'I think I got something here',
+    'Free piece?',
+    'MY GAMBIT MY LEGACYYYY',
+    'oh shit, I forgot about that',
   ]) {
     assert.ok(spoken.includes(line), `missing his voice: ${line}`);
   }

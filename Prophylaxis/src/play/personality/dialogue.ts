@@ -1518,9 +1518,9 @@ export const DIALOGUE_BANKS: Record<PersonalityId, Bank> = {
 
     ],
 
-    defense: [' '],
+    defense: ['We good. We good.'],
 
-    attack: [' '],
+    attack: ['I’m on it.'],
 
     'attack-fail': ['Gracias...', 'That’s fine. That’s fine.', 'My bad.'],
 

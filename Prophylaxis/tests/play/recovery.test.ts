@@ -79,6 +79,8 @@ test('an untimed game (no clock) keeps nothing running', () => {
     active: null,
     running: false,
     flagged: null,
+    delayMs: 0,
+    inDelay: false,
   });
 });
 

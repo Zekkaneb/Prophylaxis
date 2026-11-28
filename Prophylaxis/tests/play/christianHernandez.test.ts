@@ -163,7 +163,7 @@ test('Christian Hernandez is on the roster as Senior, 950, in the Beginner band'
   assert.equal(opponentMeta(CHRISTIAN), 'Senior · 950 Elo');
   assert.equal(opponentFullName(CHRISTIAN), 'Christian Hernandez (Senior)');
   assert.ok(CHRISTIAN.style.length > 0);
-  assert.match(CHRISTIAN.style, /natural/i, 'the card names his archetype');
+  assert.match(CHRISTIAN.style, /Big H/i, 'the card names his archetype');
 });
 
 test('he is registered exactly once, at the top of the Beginner band', () => {
@@ -443,9 +443,16 @@ test('his voice is relaxed, friendly and free of engine or theory talk', () => {
 
   /* The two phrases he is known for, used sparingly rather than as a reflex. */
   const all = Object.values(bank).flat();
-  assert.ok(all.includes('Gracias.'), 'his thank-you is there');
+  assert.ok(
+    all.some((line) => line.startsWith('Gracias')),
+    'his thank-you is there',
+  );
   assert.ok(all.includes('Don’t even trip dawg.'), 'his reassurance is there');
-  assert.equal(all.filter((line) => line.includes('Gracias')).length, 1, 'said once, not every move');
+  assert.equal(
+    all.filter((line) => line.includes('Gracias')).length,
+    2,
+    'said twice, not every move',
+  );
   assert.equal(
     all.filter((line) => /trip dawg/i.test(line)).length,
     1,

@@ -92,7 +92,7 @@ test('the new opponent is Bryan Martinez-Hernandez, Sophomore, 1350', () => {
     'his own portrait, not the shared placeholder path',
   );
   assert.equal(SOPHOMORE.usesRepertoire, false);
-  assert.match(SOPHOMORE.style, /defend/i);
+  assert.match(SOPHOMORE.style, /ambitious|newcomer/i);
 
   /* The card is two fields: name, then the subtext on its own line. */
   assert.doesNotMatch(SOPHOMORE.name, /\(/, 'the name carries no parenthetical suffix');

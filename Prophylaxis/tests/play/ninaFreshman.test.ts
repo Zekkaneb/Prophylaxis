@@ -91,7 +91,7 @@ test('Nina Yang (Freshman) is registered once, at 1200, in the Novice band', () 
   assert.doesNotMatch(FRESHMAN.name, /\(/, 'the card prints name and subtext as two fields');
   assert.equal(opponentFullName(FRESHMAN), 'Nina Yang (Freshman)');
   assert.equal(opponentMeta(FRESHMAN), 'Freshman · 1200 Elo');
-  assert.match(FRESHMAN.style, /balanced/i);
+  assert.match(FRESHMAN.style, /underdog|potential/i);
 
   assert.equal(PERSONALITY_OPPONENTS.length, 23);
   assert.equal(ALL_OPPONENTS.length, 24);

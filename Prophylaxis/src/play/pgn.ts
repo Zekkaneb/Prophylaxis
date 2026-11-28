@@ -55,7 +55,7 @@ function sameFen(a: string, b: string): boolean {
 /** A complete PGN: tag pairs, a blank line, then the numbered moves + result. */
 export function buildPgn(options: PgnOptions, sans: readonly string[]): string {
   const tags = [
-    `[Event "${options.event ?? 'Johnfer Quispe — Playing Lab'}"]`,
+    `[Event "${options.event ?? 'Playing Lab'}"]`,
     `[Site "${options.site ?? 'Local'}"]`,
     `[Date "${pgnDate(options.date)}"]`,
     `[White "${options.white}"]`,

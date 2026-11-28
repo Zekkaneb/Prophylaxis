@@ -184,7 +184,7 @@ export function useBotMatch(engine: StockfishController) {
           blackElo: config.black.elo,
           startingFen: STANDARD_START_FEN,
           event: 'Bot vs. Bot',
-          site: 'Johnfer Quispe — Playing Lab',
+          site: 'Playing Lab',
         },
         sans,
       );

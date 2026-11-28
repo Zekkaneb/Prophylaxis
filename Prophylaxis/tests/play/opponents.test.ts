@@ -204,7 +204,11 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
   const senior = getOpponent('senior');
   assert.ok(senior);
   assert.equal(senior.elo, 2000, 'Senior dropped from 2250 to 2000');
-  assert.match(senior.style, /tactically ambitious/i, 'Senior is still the tactician');
+  assert.match(
+    senior.style,
+    /hard-earned experience|grind you down/i,
+    'Senior still sells his experience as the weapon',
+  );
 
   const brandon = getOpponent('brandon');
   assert.ok(brandon);
@@ -218,10 +222,8 @@ test('maps each personality to its portrait and keeps a monogram fallback', () =
   assert.equal(nina.title, 'Sophomore', 'her stage is the card subtext');
   assert.equal(nina.elo, 1550);
   assert.equal(nina.initials, 'NY');
-  assert.match(nina.style, /charismatic/i);
-  assert.match(nina.style, /playful/i);
-  assert.match(nina.style, /initiative/i);
-  assert.match(nina.style, /selectively cautious/i);
+  assert.match(nina.style, /rapidly improving/i);
+  assert.match(nina.style, /serious threat|prove herself/i);
 });
 
 test('cards show name over subtext; stored games stay unambiguous', () => {

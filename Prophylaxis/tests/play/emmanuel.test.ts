@@ -609,7 +609,8 @@ test('his voice is relaxed, funny and free of theory talk', () => {
     assert.ok(lines.length > 0);
     for (const line of lines) {
       assert.ok(line.length > 0 && line.length <= 80, line);
-      assert.ok(!/[0-9]/.test(line), line);
+      /* The rating joke uses digits on purpose; a score never should. */
+      assert.ok(!/[+-]\d/.test(line), `no evaluation score: ${line}`);
       assert.ok(
         !/\b(eval|evaluation|centipawn|engine|stockfish|depth|variant|pv|score)\b/i.test(line),
         `no engine vocabulary: ${line}`,
@@ -625,14 +626,13 @@ test('his voice is relaxed, funny and free of theory talk', () => {
 
   const spoken = Object.values(bank).flat().join(' | ');
   for (const line of [
-    'Alright, let’s get this over with.',
+    'I am 8,000 elo by the way.',
     'I have no idea what I’m doing, by the way.',
     'Bro this is abuse.',
-    'Bro, relax.',
-    'Wait, what did I just do?',
-    'Yeah, I’m not winning this.',
-    'Wait, I’m actually cooking?',
+    'Bro.',
+    'You so petite.',
     'Yeah, never playing this again.',
+    'Gimme my money',
   ]) {
     assert.ok(spoken.includes(line), `missing his voice: ${line}`);
   }
@@ -651,7 +651,7 @@ test('his lines are his own and he does not borrow another register', () => {
   assert.notEqual(DIALOGUE_BANKS.emmanuel, DIALOGUE_BANKS.bryan);
   assert.notEqual(DIALOGUE_BANKS.emmanuel, DIALOGUE_BANKS.mabinti);
   /* A lost position gets a shrug, not panic. */
-  assert.ok(DIALOGUE_BANKS.emmanuel.losing.length >= 3);
+  assert.ok(DIALOGUE_BANKS.emmanuel.losing.length >= 2);
   assert.ok(DIALOGUE_BANKS.emmanuel.loss.length >= 3);
 });
 

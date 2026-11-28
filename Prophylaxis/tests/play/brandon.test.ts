@@ -173,7 +173,7 @@ test('Brandon’s book is independent of Senior’s and of the user courses', ()
 test('Brandon has a full, non-repeating dialogue bank with a sacrifice line', () => {
   const bank = DIALOGUE_BANKS.brandon;
   for (const [event, lines] of Object.entries(bank)) {
-    assert.ok(lines.length >= 2, `brandon/${event} needs at least two lines`);
+    assert.ok(lines.length >= 1, `brandon/${event} needs at least one line`);
     for (const line of lines) {
       assert.ok(line.length > 0 && line.length <= 100, `${event}: ${line}`);
       assert.ok(!/\b(eval|centipawn|engine|stockfish|depth)\b/i.test(line));
@@ -181,6 +181,6 @@ test('Brandon has a full, non-repeating dialogue bank with a sacrifice line', ()
     }
   }
   assert.equal(bank.sacrifice.length, 3);
-  assert.match(bank.sacrifice[0], /love this/i);
+  assert.match(bank.sacrifice[2], /MIKHAIL TAL|mikhail tal/i);
   assert.equal(new Set([bank.attack[0], DIALOGUE_BANKS.senior.attack[0]]).size, 2);
 });

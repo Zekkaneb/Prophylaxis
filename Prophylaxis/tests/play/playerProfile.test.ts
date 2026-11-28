@@ -41,8 +41,8 @@ function memoryStorage(initial: Record<string, string> = {}): ProfileStorage & {
 test('an untouched profile keeps the name the app shipped with', () => {
   assert.deepEqual(loadPlayerProfile(null), DEFAULT_PLAYER_PROFILE);
   assert.deepEqual(parsePlayerProfile(null), DEFAULT_PLAYER_PROFILE);
-  assert.equal(playerDisplayName(DEFAULT_PLAYER_PROFILE), 'Johnfer Quispe');
-  assert.equal(playerInitials(DEFAULT_PLAYER_PROFILE), 'JQ');
+  assert.equal(playerDisplayName(DEFAULT_PLAYER_PROFILE), 'Player One');
+  assert.equal(playerInitials(DEFAULT_PLAYER_PROFILE), 'PO');
 });
 
 test('names are trimmed, flattened and capped', () => {

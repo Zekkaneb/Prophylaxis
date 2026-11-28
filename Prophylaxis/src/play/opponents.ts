@@ -88,7 +88,7 @@ export interface OpponentProfile {
   usesRepertoire: boolean;
 }
 
-export const PLAYER_NAME = 'Johnfer Quispe';
+export const PLAYER_NAME = 'Player One';
 
 /*
  * Order inside a group is the display order. Group order comes from

@@ -145,7 +145,7 @@ test('Edward Chen is on the roster as Senior, 800, in the Beginner band', () => 
   assert.equal(opponentStage(EDWARD), 'Senior');
   assert.equal(opponentMeta(EDWARD), 'Senior · 800 Elo');
   assert.equal(opponentFullName(EDWARD), 'Edward Chen (Senior)');
-  assert.match(EDWARD.style, /balanced|oversight/i);
+  assert.match(EDWARD.style, /tunnel vision|potential/i);
   assert.ok(EDWARD.style.length > 0);
 });
 

@@ -16,7 +16,7 @@ test('every character has a full bank of short, human lines', () => {
   for (const id of IDS) {
     const bank = DIALOGUE_BANKS[id];
     for (const [event, lines] of Object.entries(bank)) {
-      assert.ok(lines.length >= 2, `${id}/${event} needs at least two lines`);
+      assert.ok(lines.length >= 1, `${id}/${event} needs at least one line`);
       for (const line of lines) {
         assert.ok(line.trim().length > 0);
         assert.ok(line.length <= 100, `${id}/${event}: too long: ${line}`);

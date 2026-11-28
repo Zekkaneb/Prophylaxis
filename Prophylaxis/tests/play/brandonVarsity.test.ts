@@ -482,10 +482,10 @@ test('he sounds exactly like the other Brandons', () => {
   const spoken = Object.values(DIALOGUE_BANKS['brandon-varsity']).flat().join(' | ');
   for (const line of [
     'Alright, let’s make this interesting.',
-    'Hope you brought your calculator.',
-    'Material is temporary, right?',
-    'Okay, respect.',
-    'Haha, that was fun.',
+    'I got my lazer pionted at you',
+    'IM MIKHAIL TAL',
+    'Free piece?',
+    'GGs',
   ]) {
     assert.ok(spoken.includes(line), `missing his voice: ${line}`);
   }

@@ -70,8 +70,8 @@ test('Bryan (Junior) is on the roster at 1800 with a unique id', () => {
     fs.existsSync('public/opponents/bryan-junior.webp'),
     'his own portrait is installed',
   );
-  assert.match(BRYAN.style, /balanced/i);
-  assert.match(BRYAN.style, /intuitive/i);
+  assert.match(BRYAN.style, /dirt|proved himself/i);
+  assert.match(BRYAN.style, /tarnish/i);
 
   assert.equal(PERSONALITY_OPPONENTS.length, 23);
   assert.equal(ALL_OPPONENTS.length, 24, 'twenty-three personalities plus the General Bot');

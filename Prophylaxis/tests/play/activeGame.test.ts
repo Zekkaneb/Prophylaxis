@@ -109,7 +109,7 @@ test('unfinished PGN keeps the neutral result and replays legally', () => {
   });
 
   assert.match(pgn, /\[Result "\*"\]/);
-  assert.match(pgn, /\[White "Johnfer Quispe"\]/);
+  assert.match(pgn, /\[White "Player One"\]/);
   assert.match(pgn, /\[Black "Johnfer Quispe \(Junior\)"\]/);
   assert.match(pgn, /\[BlackElo "2150"\]/);
   assert.match(pgn, /\[WhiteElo "1200"\]/, 'the profile rating labels the human side');
@@ -134,10 +134,10 @@ test('final PGN carries every header and re-imports with chess.js', () => {
   reimported.loadPgn(played.pgn);
   const headers = reimported.getHeaders();
 
-  assert.equal(headers.Event, 'Johnfer Quispe — Playing Lab');
+  assert.equal(headers.Event, 'Playing Lab');
   assert.equal(headers.Site, 'Local');
   assert.equal(headers.Date, pgnDate(finished.ended_at ?? 0));
-  assert.equal(headers.White, 'Johnfer Quispe');
+  assert.equal(headers.White, 'Player One');
   assert.equal(headers.Black, 'Johnfer Quispe (Junior)');
   assert.equal(headers.Result, '0-1');
   assert.equal(headers.TimeControl, '300+3');
