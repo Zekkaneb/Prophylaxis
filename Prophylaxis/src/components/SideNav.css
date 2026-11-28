@@ -111,6 +111,11 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
+  /* Rows keep the height of their contents and the list scrolls, which is what
+     the rail rule above describes. Without this the grid stretches seven rooms
+     over the whole rail — 77px rows beside the footer's 47px buttons — so the
+     icons drift apart on a tall window and the last ones run off a short one. */
+  align-content: start;
 }
 
 .sidenav .nav-item {

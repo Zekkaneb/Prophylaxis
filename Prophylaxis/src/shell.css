@@ -134,11 +134,9 @@
   line-height: 1.45;
 }
 
-/* The player's own card: three fields in one row, the preview above them. */
-.dash-profile {
-  margin-bottom: 16px;
-}
-
+/* The player's own card: the avatar and two name fields on one row. Its spacing
+   comes from the page's own gap, so it sits the same 18px from the hero as
+   every other block instead of 34px. */
 .dash-profile__preview {
   font-size: 12px;
   color: var(--muted);
@@ -151,9 +149,21 @@
 
 .dash-profile__form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  /* Three named tracks: avatar, first name, last name. `auto-fit` opened as
+     many columns as the card had room for — six at 1440 — so the three fields
+     sat in the first three and the rest of a 1268px card stayed empty. */
+  grid-template-columns: auto minmax(150px, 260px) minmax(150px, 260px);
+  justify-content: start;
   gap: 12px;
   align-items: end;
+}
+
+/* A phone stacks the fields, instead of leaving the surname alone on a
+   half-width second row. */
+@media (max-width: 640px) {
+  .dash-profile__form {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .dash-profile__field {

@@ -245,8 +245,13 @@ function Dashboard({
         <header className="block__head">
           <h2 id="dash-profile-title">Your profile</h2>
           <span className="dash-profile__preview">
-            On the board: <strong>{previewName}</strong>
-            {trueRating ? ` · ${trueRating} Elo` : ' · unrated'}
+            On the board:{' '}
+            {previewName ? (
+              <>
+                <strong>{previewName}</strong> ·{' '}
+              </>
+            ) : null}
+            {trueRating ? `${trueRating} Elo` : 'unrated'}
           </span>
         </header>
 
